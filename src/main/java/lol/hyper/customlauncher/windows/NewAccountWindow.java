@@ -1,0 +1,68 @@
+package lol.hyper.customlauncher.windows;
+
+import lol.hyper.customlauncher.JSONManager;
+
+import javax.swing.*;
+
+public class NewAccountWindow extends JFrame {
+    public NewAccountWindow(String title) {
+        super(title);
+        JFrame frame = new JFrame(title);
+        frame.setSize(370, 600);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setResizable(true);
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        // GUI elements
+        JPanel panel = new JPanel();
+        panel.setLayout(null);
+
+        JLabel userLabel = new JLabel("Username");
+        JLabel passwordLabel = new JLabel("Password");
+        JLabel password2Label = new JLabel("Secret Phrase");
+        JTextField userTextField = new JTextField();
+        JPasswordField passwordField = new JPasswordField();
+        JPasswordField password2Field = new JPasswordField();
+        JButton loginButton = new JButton("Save");
+        JButton resetButton = new JButton("Cancel");
+        JLabel warning = new JLabel("<html>Secret phrase is used to encrypt and decrypt <br>your password for security when saving your login info.</html>");
+
+        userLabel.setBounds(50,150,100,30);
+        passwordLabel.setBounds(50,190,100,30);
+        password2Label.setBounds(50,240,100,30);
+        userTextField.setBounds(150,150,150,30);
+        passwordField.setBounds(150,190,150,30);
+        password2Field.setBounds(150,240,150,30);
+        loginButton.setBounds(50,300,100,30);
+        resetButton.setBounds(200,300,100,30);
+        warning.setBounds(50,350,370,100);
+
+        panel.add(userLabel);
+        panel.add(passwordLabel);
+        panel.add(password2Label);
+        panel.add(userTextField);
+        panel.add(passwordField);
+        panel.add(password2Field);
+        panel.add(loginButton);
+        panel.add(resetButton);
+        panel.add(warning);
+
+        // button listeners
+        resetButton.addActionListener(e -> frame.dispose());
+
+        loginButton.addActionListener(e -> {
+            JSONManager.addNewAccount(userTextField.getText(), passwordField.getPassword(), password2Field.getPassword());
+            MainWindow.refreshAccountList();
+            JOptionPane.showMessageDialog(frame, userTextField.getText() + " was saved!");
+            frame.dispose();
+        });
+
+        frame.setVisible(true);
+        frame.add(panel);
+        frame.setLocationRelativeTo(null);
+    }
+}
