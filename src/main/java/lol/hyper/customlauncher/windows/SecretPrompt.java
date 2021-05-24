@@ -44,6 +44,7 @@ public class SecretPrompt extends JFrame {
             if (actualPassword != null) {
                 try {
                     Runtime.getRuntime().exec("C:\\Windows\\System32\\cmd.exe /c start \"\" scripts\\login.bat" + " " + username + " " + actualPassword);
+                    frame.dispose();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
