@@ -36,8 +36,6 @@ public class SecretPrompt extends JFrame {
         panel.add(loginButton);
 
         // button listeners
-        loginButton.addActionListener(e -> frame.dispose());
-
         loginButton.addActionListener(event -> {
             String username = account.getUsername();
             String password = account.getPassword();
@@ -51,6 +49,7 @@ public class SecretPrompt extends JFrame {
                 }
             } else {
                 JOptionPane.showMessageDialog(frame, "You entered the wrong passprhase.", "Passphrase Error", JOptionPane.ERROR_MESSAGE);
+                frame.dispose();
             }
         });
 

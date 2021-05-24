@@ -54,6 +54,10 @@ public class JSONManager {
         }
     }
 
+    /**
+     * Get all of the accounts from the accounts file.
+     * @return List of the accounts.
+     */
     public static List<Account> getAccounts() {
         List<Account> accounts = new ArrayList<>();
         JSONObject accountsFile = readFile(jsonFile);
@@ -73,6 +77,11 @@ public class JSONManager {
         return accounts;
     }
 
+    /**
+     * This will get all of the account indexes from the accounts file. They are always not in order, so we have to manually save this list.
+     * @param jsonObject The object to get the indexes for.
+     * @return A list of the indexes.
+     */
     private static ArrayList<Integer> getAccountIndexes(JSONObject jsonObject) {
         ArrayList<Integer> indexes = new ArrayList<>();
         for (String x : jsonObject.keySet()) {
@@ -81,6 +90,12 @@ public class JSONManager {
         return indexes;
     }
 
+    /**
+     * Adds a new account to the accounts file.
+     * @param username Account username.
+     * @param password Account password.
+     * @param secret Secret passphrase. (Used to encrypt the password.)
+     */
     public static void addNewAccount(String username, char[] password, char[] secret) {
         JSONObject accountsFile = readFile(jsonFile);
         ArrayList<Integer> indexes = getAccountIndexes(accountsFile);
@@ -102,12 +117,21 @@ public class JSONManager {
         writeFile(jsonFile, accountsFile.toString());
     }
 
+    /**
+     * Delete an account from the accounts file.
+     * @param index Index of account to delete.
+     */
     public static void deleteAccount(int index) {
         JSONObject accountsFile = readFile(jsonFile);
         accountsFile.remove(String.valueOf(index));
         writeFile(jsonFile, accountsFile.toString());
     }
 
+    /**
+     * Find the first missing number from the accounts indexes. This will check for a gap (ex: 1,2,4 - 3 is the "first missing").
+     * @param indexes The indexes to check.
+     * @return The first missing number in the sequence.
+     */
     private static int findFirstMissing(ArrayList<Integer> indexes) {
         for (int i = 0; i < indexes.size(); i++) {
             if (!indexes.contains(i)) {
@@ -131,6 +155,12 @@ public class JSONManager {
         }
     }
 
+    /**
+     * Encrypt a string using a secret key.
+     * @param strToEncrypt String to encrypt.
+     * @param secret Secret passphrase.
+     * @return The encrypted string.
+     */
     public static String encrypt(String strToEncrypt, String secret) {
         try {
             setKey(secret);
@@ -144,6 +174,12 @@ public class JSONManager {
         return null;
     }
 
+    /**
+     * Decrypt a string using a secret key.
+     * @param strToDecrypt String to decrypt.
+     * @param secret Secret passphrase.
+     * @return The decrypted string. Returns null if the passphrase was wrong.
+     */
     public static String decrypt(String strToDecrypt, String secret) {
         try {
             setKey(secret);

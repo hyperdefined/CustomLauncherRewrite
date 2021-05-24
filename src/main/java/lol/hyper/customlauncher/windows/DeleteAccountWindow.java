@@ -34,9 +34,9 @@ public class DeleteAccountWindow extends JFrame {
         panel.add(accountsLabel);
 
         // accounts list
-        // get the labels from the accounts and show them in the list
         ArrayList<String> accounts = new ArrayList<>();
         for (int i = 0; i < JSONManager.getAccounts().size(); i++) {
+            // get the indexes of the accounts and save them
             Account account = JSONManager.getAccounts().get(i);
             accounts.add(account.getUsername());
             labelsByIndexes.put(i, account.getUsername());
