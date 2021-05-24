@@ -127,6 +127,7 @@ public class JSONManager {
 
     /**
      * Find the first missing number from the accounts indexes. This will check for a gap (ex: 1,2,4 - 3 is the "first missing").
+     * This is mainly used so the accounts file doesn't have gaps in the account indexes. This will tell the account creator to use the missing index.
      * @param indexes The indexes to check.
      * @return The first missing number in the sequence.
      */
