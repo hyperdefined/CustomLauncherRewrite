@@ -7,7 +7,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MainWindow extends JFrame {
@@ -89,6 +88,11 @@ public class MainWindow extends JFrame {
         frame.setLocationRelativeTo(null);
     }
 
+    /**
+     * This will "refresh" the accounts list after adding/deleting an account.
+     * This is a dirty trick, but it works fine.
+     * This also correctly sorts the accounts by the index from the accounts file.
+     */
     public static void refreshAccountList() {
         model.removeAllElements();
         for (int i = 0; i < JSONManager.getAccounts().size(); i++) {

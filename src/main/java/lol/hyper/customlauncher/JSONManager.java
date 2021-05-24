@@ -19,13 +19,12 @@ public class JSONManager {
 
     /**
      * Read data from JSON file.
-     * @param file File to read data from.
      * @return JSONObject with JSON data.
      */
-    private static JSONObject readFile(File file) {
+    private static JSONObject readFile() {
         JSONObject object = null;
         try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
+            BufferedReader br = new BufferedReader(new FileReader(JSONManager.jsonFile));
             StringBuilder sb = new StringBuilder();
             String line = br.readLine();
             while (line != null) {
@@ -41,12 +40,11 @@ public class JSONManager {
 
     /**
      * Write data to JSON file.
-     * @param file File to write data to.
      * @param jsonToWrite Data to write to file. This much be a JSON string.
      */
-    private static void writeFile(File file, String jsonToWrite) {
+    private static void writeFile(String jsonToWrite) {
         try {
-            FileWriter writer = new FileWriter(file);
+            FileWriter writer = new FileWriter(JSONManager.jsonFile);
             writer.write(jsonToWrite);
             writer.close();
         } catch (IOException e) {
@@ -60,7 +58,7 @@ public class JSONManager {
      */
     public static List<Account> getAccounts() {
         List<Account> accounts = new ArrayList<>();
-        JSONObject accountsFile = readFile(jsonFile);
+        JSONObject accountsFile = readFile();
         System.out.println(accountsFile.toString());
         for (Integer x : getAccountIndexes(accountsFile)) {
             JSONObject temp;
@@ -97,7 +95,7 @@ public class JSONManager {
      * @param secret Secret passphrase. (Used to encrypt the password.)
      */
     public static void addNewAccount(String username, char[] password, char[] secret) {
-        JSONObject accountsFile = readFile(jsonFile);
+        JSONObject accountsFile = readFile();
         ArrayList<Integer> indexes = getAccountIndexes(accountsFile);
         int numberWeUse = findFirstMissing(indexes);
         if (accountsFile.length() == 0) {
@@ -114,7 +112,7 @@ public class JSONManager {
         m.put("username", username);
         m.put("password", encrypt(new String(password), new String(secret)));
         accountsFile.put(String.valueOf(numberWeUse), m);
-        writeFile(jsonFile, accountsFile.toString());
+        writeFile(accountsFile.toString());
     }
 
     /**
@@ -122,9 +120,9 @@ public class JSONManager {
      * @param index Index of account to delete.
      */
     public static void deleteAccount(int index) {
-        JSONObject accountsFile = readFile(jsonFile);
+        JSONObject accountsFile = readFile();
         accountsFile.remove(String.valueOf(index));
-        writeFile(jsonFile, accountsFile.toString());
+        writeFile(accountsFile.toString());
     }
 
     /**
