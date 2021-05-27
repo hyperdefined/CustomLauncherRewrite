@@ -5,7 +5,8 @@ import lol.hyper.customlauncher.login.LoginRequest;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.HashMap;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class TwoFactorAuth extends JFrame{
 
@@ -29,6 +30,17 @@ public class TwoFactorAuth extends JFrame{
         text.setAlignmentX(Component.CENTER_ALIGNMENT);
         JTextField userAuthCode = new JTextField();
         userAuthCode.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        // force the textbox to only have 6 characters
+        // 2fa and toonguard codes are 6 long
+        userAuthCode.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                if (userAuthCode.getText().length() >= 6 )
+                    e.consume();
+            }
+        });
+
         JButton loginButton = new JButton("Submit");
         loginButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
