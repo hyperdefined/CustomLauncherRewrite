@@ -17,6 +17,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -62,6 +63,7 @@ public class Updater extends JFrame {
         try (InputStream in = patchesURL.openStream()) {
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
             patchesJSONRaw = reader.lines().collect(Collectors.joining(System.lineSeparator()));
+            reader.close();
         } catch (IOException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(frame, "There was an error checking files.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -108,7 +110,7 @@ public class Updater extends JFrame {
                 }
                 System.out.println("-----------------------------------------------------------------------");
                 System.out.println(installLocation + File.separator + key);
-                System.out.println("Local: " + localHash.toLowerCase());
+                System.out.println("Local: " + localHash.toLowerCase(Locale.ENGLISH));
                 System.out.println("Expected: " + onlineHash);
                 if (localHash.equalsIgnoreCase(onlineHash)) {
                     System.out.println("File is good!");
