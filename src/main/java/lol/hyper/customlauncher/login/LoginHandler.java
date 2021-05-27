@@ -23,12 +23,18 @@ public class LoginHandler {
     private static final String REQUEST_URL = "https://www.toontownrewritten.com/api/login?format=json";
     private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36";
 
-    public static String handleLoginRequest(LoginRequest loginRequest) {
+    /**
+     * Handle the result of the login request.
+     * This will take a login request and act based on that login request.
+     * This let's us send the login request back to this method over and over again.
+     * @param loginRequest The login request to process.
+     */
+    public static void handleLoginRequest(LoginRequest loginRequest) {
         HashMap<String, String> request;
         try {
             request = sendRequest(loginRequest).getRequestDetails();
         } catch (Exception e) {
-            return null;
+            return;
         }
 
         String status = request.get("success");
@@ -63,10 +69,14 @@ public class LoginHandler {
                 break;
             }
         }
-
-        return request.toString();
     }
 
+    /**
+     * Send the login request to TTR.
+     * @param loginRequest The login request to process.
+     * @return The login request that is sent back.
+     * @throws Exception Throws any errors about reading/sending data.
+     */
     private static LoginRequest sendRequest(LoginRequest loginRequest) throws Exception {
         HttpPost post = new HttpPost(REQUEST_URL);
         post.setHeader("User-Agent", USER_AGENT);
