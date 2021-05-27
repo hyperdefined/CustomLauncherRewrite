@@ -44,9 +44,9 @@ public class JSONManager {
      * Write data to JSON file.
      * @param jsonToWrite Data to write to file. This much be a JSON string.
      */
-    private static void writeFile(String jsonToWrite) {
+    private static void writeFile(String jsonToWrite, File file) {
         try {
-            FileWriter writer = new FileWriter(JSONManager.accountsFile);
+            FileWriter writer = new FileWriter(file);
             writer.write(jsonToWrite);
             writer.close();
         } catch (IOException e) {
@@ -113,7 +113,7 @@ public class JSONManager {
         m.put("username", username);
         m.put("password", encrypt(new String(password), new String(secret)));
         accountsJSON.put(String.valueOf(numberWeUse), m);
-        writeFile(accountsJSON.toString());
+        writeFile(accountsJSON.toString(), accountsFile);
     }
 
     /**
@@ -123,7 +123,7 @@ public class JSONManager {
     public static void deleteAccount(int index) {
         JSONObject accountsJSON = readFile(accountsFile);
         accountsJSON.remove(String.valueOf(index));
-        writeFile(accountsJSON.toString());
+        writeFile(accountsJSON.toString(), accountsFile);
     }
 
     /**
@@ -191,5 +191,30 @@ public class JSONManager {
             System.out.println("Error while decrypting: " + e.toString());
             return null;
         }
+    }
+
+    /**
+     * Add/remove a value from the config.
+     * @param key Key for the JSON.
+     * @param value Value for the key.
+     * @param remove Should we remove this entry or add this entry?
+     */
+    public static void editConfig(String key, Object value, boolean remove) {
+        JSONObject config = readFile(configFile);
+        if (remove) {
+            config.remove(key);
+        } else {
+            config.put(key, value);
+        }
+        writeFile(config.toString(), configFile);
+    }
+
+    /**
+     * Check the config to see if we should check for TTR updates.
+     * @return Yes/no if we should.
+     */
+    public static boolean shouldWeUpdate() {
+        JSONObject config = readFile(configFile);
+        return config.getBoolean("autoCheckTTRUpdates");
     }
 }

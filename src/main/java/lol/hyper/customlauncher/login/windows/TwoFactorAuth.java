@@ -36,8 +36,9 @@ public class TwoFactorAuth extends JFrame{
         userAuthCode.addKeyListener(new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent e) {
-                if (userAuthCode.getText().length() >= 6 )
+                if (userAuthCode.getText().length() >= 6 ) {
                     e.consume();
+                }
             }
         });
 

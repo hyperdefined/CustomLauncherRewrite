@@ -2,9 +2,12 @@ package lol.hyper.customlauncher.accounts.windows;
 
 import lol.hyper.customlauncher.accounts.Account;
 import lol.hyper.customlauncher.accounts.JSONManager;
+import org.json.JSONObject;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
@@ -69,6 +72,16 @@ public class MainWindow extends JFrame {
         deleteAccountButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         deleteAccountButton.setMaximumSize(new Dimension(300, deleteAccountButton.getMinimumSize().height));
         panel.add(deleteAccountButton);
+
+        // options button
+        JButton optionsButton = new JButton("Options");
+        optionsButton.addActionListener(e -> {
+            JFrame options = new OptionsWindow("Options");
+            options.dispose();
+        });
+        optionsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        optionsButton.setMaximumSize(new Dimension(300, optionsButton.getMinimumSize().height));
+        panel.add(optionsButton);
 
         accountList.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent evt) {
