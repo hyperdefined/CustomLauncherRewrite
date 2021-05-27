@@ -15,7 +15,7 @@ public class IncorrectLogin extends JFrame {
             ex.printStackTrace();
         }
 
-        JOptionPane.showMessageDialog(frame, "Login details are incorrect.", "Login Error", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(frame, "Login details are incorrect.", title, JOptionPane.ERROR_MESSAGE);
         frame.setLocationRelativeTo(null);
         frame.dispose();
     }

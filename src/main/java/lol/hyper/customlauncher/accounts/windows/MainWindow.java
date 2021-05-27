@@ -91,7 +91,7 @@ public class MainWindow extends JFrame {
                 if (evt.getClickCount() == 2) {
                     int index = list.getSelectedIndex();
                     Account account = JSONManager.getAccounts().get(index);
-                    SecretPrompt secretPrompt = new SecretPrompt("Passphrase", account);
+                    SecretPrompt secretPrompt = new SecretPrompt("Enter Passphrase", account);
                     secretPrompt.dispose();
                 }
             }

@@ -44,14 +44,14 @@ public class LoginHandler {
             case "false": {
                 // handle incorrect login
                 if (banner.contains("Incorrect username")) {
-                    JFrame incorrectLogin = new IncorrectLogin("Login Error");
+                    JFrame incorrectLogin = new IncorrectLogin("Error");
                     incorrectLogin.dispose();
                 }
                 break;
             }
             case "partial": {
                 // handle 2fa
-                JFrame twoFactorAuth = new TwoFactorAuth("Login Code", banner, request.get("responseToken"));
+                JFrame twoFactorAuth = new TwoFactorAuth("Enter Code", banner, request.get("responseToken"));
                 break;
             }
             case "true": {

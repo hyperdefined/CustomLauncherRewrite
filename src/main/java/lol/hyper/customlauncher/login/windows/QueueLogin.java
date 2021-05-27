@@ -19,7 +19,7 @@ public class QueueLogin extends JFrame {
             ex.printStackTrace();
         }
 
-        JOptionPane.showMessageDialog(frame, "You were placed in a queue. Trying in 5 seconds.", "Queue", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(frame, "You were placed in a queue. Press OK to try again in 5 seconds.", title, JOptionPane.INFORMATION_MESSAGE);
         frame.dispose();
         frame.setLocationRelativeTo(null);
         try {
