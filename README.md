@@ -30,7 +30,7 @@ This program is released under GNU General Public License v3. See [LICENSE](http
 
 | Licenses |
 | ----------- |
-| [org.json](https://github.com/stleary/JSON-java) |
+| [org.json](https://github.com/stleary/JSON-java/blob/master/LICENSE) |
 | [commons-io](https://github.com/apache/commons-io/blob/master/LICENSE.txt) |
 | [commons-compress](https://github.com/apache/commons-compress/blob/master/LICENSE.txt) |
 | [httpcomponents-client](https://github.com/apache/httpcomponents-client/blob/master/LICENSE.txt) |
