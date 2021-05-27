@@ -19,6 +19,12 @@ public class LaunchGame extends Thread {
     public void run() {
         String[] command = {"cmd", "/c", "TTREngine.exe" };
         ProcessBuilder pb = new ProcessBuilder(command);
+
+        // dirty little trick to redirect the output
+        // the game freezes if you don't do this
+        // https://stackoverflow.com/a/58922302
+        pb.redirectOutput(ProcessBuilder.Redirect.PIPE);
+        pb.redirectErrorStream(true);
         pb.directory(new File(Main.installPath));
 
         Map<String, String> env = pb.environment();
@@ -26,6 +32,7 @@ public class LaunchGame extends Thread {
         env.put("TTR_PLAYCOOKIE", this.cookie);
         try {
             Process p = pb.start();
+            p.getInputStream().close();
         } catch (IOException e) {
             e.printStackTrace();
         }
