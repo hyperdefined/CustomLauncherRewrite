@@ -115,7 +115,6 @@ public class JSONManager {
 
     /**
      * Adds a new account to the accounts file.
-     *
      * @param username Account username.
      * @param password Account password.
      * @param secret Secret passphrase. (Used to encrypt the password.)
@@ -136,7 +135,7 @@ public class JSONManager {
 
         Map m = new LinkedHashMap(3);
         m.put("username", username);
-        m.put("password", encrypt(String.valueOf(password), String.valueOf(secret)));
+        m.put("password", encrypt(new String(password), new String(secret)));
         accountsJSON.put(String.valueOf(numberWeUse), m);
         writeFile(accountsJSON.toString(), accountsFile);
     }
