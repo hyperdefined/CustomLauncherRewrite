@@ -2,6 +2,8 @@ package lol.hyper.customlauncher.accounts.windows;
 
 import lol.hyper.customlauncher.accounts.Account;
 import lol.hyper.customlauncher.accounts.JSONManager;
+import lol.hyper.customlauncher.login.LoginHandler;
+import lol.hyper.customlauncher.login.LoginRequest;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -42,16 +44,14 @@ public class SecretPrompt extends JFrame {
             String actualPassword = JSONManager.decrypt(password, new String(secretText.getPassword()));
 
             if (actualPassword != null) {
-                try {
-                    Runtime.getRuntime().exec("C:\\Windows\\System32\\cmd.exe /c start \"\" scripts\\login.bat" + " " + username + " " + actualPassword);
-                    frame.dispose();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                LoginRequest loginRequest = new LoginRequest();
+                loginRequest.addDetails("username", username);
+                loginRequest.addDetails("password", actualPassword);
+                LoginHandler.handleLoginRequest(loginRequest);
             } else {
                 JOptionPane.showMessageDialog(frame, "You entered the wrong passprhase.", "Passphrase Error", JOptionPane.ERROR_MESSAGE);
-                frame.dispose();
             }
+            frame.dispose();
         });
 
         frame.setVisible(true);

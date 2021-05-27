@@ -40,9 +40,6 @@ public class LoginHandler {
         String status = request.get("success");
         String banner = request.get("banner");
 
-        System.out.println("Status: " + status);
-        System.out.println("Banner: " + banner);
-
         switch (status) {
             case "false": {
                 // handle incorrect login
@@ -59,7 +56,8 @@ public class LoginHandler {
             case "true": {
                 String gameServer = request.get("gameserver");
                 String cookie = request.get("cookie");
-                LaunchGame.launchGame(cookie, gameServer);
+                LaunchGame launchGame = new LaunchGame(cookie, gameServer);
+                launchGame.start();
                 break;
             }
             case "delayed": {

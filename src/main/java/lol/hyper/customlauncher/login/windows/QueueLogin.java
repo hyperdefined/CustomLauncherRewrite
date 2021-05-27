@@ -20,6 +20,7 @@ public class QueueLogin extends JFrame {
         }
 
         JOptionPane.showMessageDialog(frame, "You were placed in a queue. Trying in 5 seconds.", "Queue", JOptionPane.INFORMATION_MESSAGE);
+        frame.dispose();
         frame.setLocationRelativeTo(null);
         try {
             TimeUnit.SECONDS.sleep(5);
@@ -30,6 +31,5 @@ public class QueueLogin extends JFrame {
         LoginRequest loginRequest = new LoginRequest();
         loginRequest.addDetails("queueToken", queueToken);
         LoginHandler.handleLoginRequest(loginRequest);
-        frame.dispose();
     }
 }
