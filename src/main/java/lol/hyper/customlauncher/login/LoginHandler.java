@@ -59,8 +59,7 @@ public class LoginHandler {
             case "true": {
                 String gameServer = request.get("gameserver");
                 String cookie = request.get("cookie");
-                System.out.println(gameServer);
-                System.out.println(cookie);
+                LaunchGame.launchGame(cookie, gameServer);
                 break;
             }
             case "delayed": {

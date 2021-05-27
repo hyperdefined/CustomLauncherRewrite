@@ -10,11 +10,13 @@ import java.nio.file.Paths;
 
 public class Main {
 
+    public static String installPath;
+
     public static void main(String[] args) {
         JFrame mainWindow = new MainWindow("Launcher");
 
         JSONObject optionsFile = JSONManager.readFile(JSONManager.configFile);
-        String installPath = optionsFile.getString("ttrInstallLocation");
+        installPath = optionsFile.getString("ttrInstallLocation");
 
         JFrame updater = new Updater("Updater", Paths.get(installPath));
     }
