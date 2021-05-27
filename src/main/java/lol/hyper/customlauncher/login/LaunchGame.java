@@ -25,7 +25,7 @@ public class LaunchGame extends Thread {
         // https://stackoverflow.com/a/58922302
         pb.redirectOutput(ProcessBuilder.Redirect.PIPE);
         pb.redirectErrorStream(true);
-        pb.directory(new File(Main.installPath));
+        pb.directory(new File(Main.pathToUse));
 
         Map<String, String> env = pb.environment();
         env.put("TTR_GAMESERVER", this.gameServer);

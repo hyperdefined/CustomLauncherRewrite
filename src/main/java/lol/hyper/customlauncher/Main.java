@@ -11,24 +11,25 @@ import java.nio.file.Paths;
 
 public class Main {
 
-    public static String installPath;
+    public static String pathToUse;
     public static final String DEFAULT_INSTALL = "C:\\Program Files (x86)\\Toontown Rewritten";
 
     public static void main(String[] args) {
+        JSONObject optionsFile = JSONManager.readFile(JSONManager.configFile);
         // check to see if the default ttr install is there
         // if not, use the path in the config
         if (!Paths.get(DEFAULT_INSTALL).toFile().exists()) {
-            JSONObject optionsFile = JSONManager.readFile(JSONManager.configFile);
-            installPath = optionsFile.getString("ttrInstallLocation");
+            pathToUse = optionsFile.getString("ttrInstallLocation");
             // check the config path
-            if (!Paths.get(installPath).toFile().exists()) {
+            if (!Paths.get(pathToUse).toFile().exists()) {
                 InvalidPath invalidPath = new InvalidPath("Error");
                 System.exit(1);
             }
-            JFrame updater = new Updater("Updater", Paths.get(installPath));
-            updater.dispose();
         } else {
-            JFrame updater = new Updater("Updater", Paths.get(DEFAULT_INSTALL));
+            pathToUse = DEFAULT_INSTALL;
+        }
+        if (optionsFile.getBoolean("autoCheckTTRUpdates")) {
+            JFrame updater = new Updater("Updater", Paths.get(pathToUse));
             updater.dispose();
         }
         JFrame mainWindow = new MainWindow("Launcher");

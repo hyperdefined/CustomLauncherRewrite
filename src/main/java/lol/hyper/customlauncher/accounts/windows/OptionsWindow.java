@@ -26,7 +26,7 @@ public class OptionsWindow extends JFrame {
         JLabel autoUpdate = new JLabel("<html>Check for TTR updates?</html>");
         JCheckBox autoUpdateBox = new JCheckBox();
         JLabel ttrInstall = new JLabel("<html>TTR Installation</html>");
-        JTextField ttrInstallBox = new JTextField(Main.installPath);
+        JTextField ttrInstallBox = new JTextField(Main.pathToUse);
         JButton saveButton = new JButton("Save");
         if (JSONManager.shouldWeUpdate()) {
             autoUpdateBox.setSelected(true);
