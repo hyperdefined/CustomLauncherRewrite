@@ -1,18 +1,17 @@
 package lol.hyper.customlauncher.windows;
 
-import lol.hyper.customlauncher.Account;
-import lol.hyper.customlauncher.JSONManager;
+import lol.hyper.customlauncher.accounts.Account;
+import lol.hyper.customlauncher.accounts.JSONManager;
 
 import javax.swing.*;
 import java.io.IOException;
 
 public class SecretPrompt extends JFrame {
     public SecretPrompt(String title, Account account) {
-        super(title);
         JFrame frame = new JFrame(title);
         frame.setSize(370, 150);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setResizable(true);
+        frame.setResizable(false);
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ex) {

@@ -1,6 +1,6 @@
 package lol.hyper.customlauncher.windows;
 
-import lol.hyper.customlauncher.JSONManager;
+import lol.hyper.customlauncher.accounts.JSONManager;
 
 import javax.swing.*;
 
@@ -10,7 +10,7 @@ public class NewAccountWindow extends JFrame {
         JFrame frame = new JFrame(title);
         frame.setSize(370, 600);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setResizable(true);
+        frame.setResizable(false);
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ex) {
