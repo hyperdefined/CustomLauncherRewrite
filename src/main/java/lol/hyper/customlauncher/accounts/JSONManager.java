@@ -44,9 +44,9 @@ public class JSONManager {
      * Write data to JSON file.
      * @param jsonToWrite Data to write to file. This much be a JSON string.
      */
-    private static void writeFile(String jsonToWrite, File file) {
+    private static void writeFile(String jsonToWrite) {
         try {
-            FileWriter writer = new FileWriter(file);
+            FileWriter writer = new FileWriter(JSONManager.accountsFile);
             writer.write(jsonToWrite);
             writer.close();
         } catch (IOException e) {
@@ -113,7 +113,7 @@ public class JSONManager {
         m.put("username", username);
         m.put("password", encrypt(new String(password), new String(secret)));
         accountsJSON.put(String.valueOf(numberWeUse), m);
-        writeFile(accountsJSON.toString(), accountsFile);
+        writeFile(accountsJSON.toString());
     }
 
     /**
@@ -123,7 +123,7 @@ public class JSONManager {
     public static void deleteAccount(int index) {
         JSONObject accountsJSON = readFile(accountsFile);
         accountsJSON.remove(String.valueOf(index));
-        writeFile(accountsJSON.toString(), accountsFile);
+        writeFile(accountsJSON.toString());
     }
 
     /**

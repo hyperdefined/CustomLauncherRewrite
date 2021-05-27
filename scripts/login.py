@@ -8,7 +8,6 @@ import time
 import platform
 
 
-
 class TTRQuickLauncher:
     login_url = 'https://www.toontownrewritten.com/api/login?format=json'
     username = sys.argv[1]
@@ -61,8 +60,8 @@ class TTRQuickLauncher:
             else:
                 app = raw_input(banner + '\n')
 
-                authRequest = urllib.parse.urlencode({'appToken': app, 'authToken': token})
-                self.postRequest(authRequest)
+                authrequest = urllib.parse.urlencode({'appToken': app, 'authToken': token})
+                self.postRequest(authrequest)
 
         elif success == 'false':
             banner = resp.get('banner', "Login have failed, but the reason why was not given. Try again later.")
