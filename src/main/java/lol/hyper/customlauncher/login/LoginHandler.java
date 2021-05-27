@@ -35,7 +35,6 @@ public class LoginHandler {
             request = sendRequest(loginRequest).getRequestDetails();
         } catch (Exception e) {
             e.printStackTrace();
-            System.exit(1);
             return;
         }
 
