@@ -48,10 +48,10 @@ public class SecretPrompt extends JFrame {
                 loginRequest.addDetails("username", username);
                 loginRequest.addDetails("password", actualPassword);
                 LoginHandler.handleLoginRequest(loginRequest);
+                frame.dispose();
             } else {
                 JOptionPane.showMessageDialog(frame, "You entered the wrong passprhase.", "Passphrase Error", JOptionPane.ERROR_MESSAGE);
             }
-            frame.dispose();
         });
 
         frame.setVisible(true);
