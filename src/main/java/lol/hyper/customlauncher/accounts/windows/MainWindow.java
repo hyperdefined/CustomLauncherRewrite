@@ -68,54 +68,47 @@ public class MainWindow extends JFrame {
 
         // new account button
         JButton newAccountButton = new JButton("New Account");
-        newAccountButton.addActionListener(
-                e -> {
-                    JFrame newAccountWindow = new NewAccountWindow("New Account");
-                    newAccountWindow.dispose();
-                });
+        newAccountButton.addActionListener(e -> {
+            JFrame newAccountWindow = new NewAccountWindow("New Account");
+            newAccountWindow.dispose();
+        });
 
         newAccountButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        newAccountButton.setMaximumSize(
-                new Dimension(300, newAccountButton.getMinimumSize().height));
+        newAccountButton.setMaximumSize(new Dimension(300, newAccountButton.getMinimumSize().height));
         panel.add(newAccountButton);
 
         // delete account button
         JButton deleteAccountButton = new JButton("Delete Account");
-        deleteAccountButton.addActionListener(
-                e -> {
-                    JFrame deleteAccountWindow = new DeleteAccountWindow("Delete Account");
-                    deleteAccountWindow.dispose();
-                });
+        deleteAccountButton.addActionListener(e -> {
+            JFrame deleteAccountWindow = new DeleteAccountWindow("Delete Account");
+            deleteAccountWindow.dispose();
+        });
 
         deleteAccountButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        deleteAccountButton.setMaximumSize(
-                new Dimension(300, deleteAccountButton.getMinimumSize().height));
+        deleteAccountButton.setMaximumSize(new Dimension(300, deleteAccountButton.getMinimumSize().height));
         panel.add(deleteAccountButton);
 
         // options button
         JButton optionsButton = new JButton("Options");
-        optionsButton.addActionListener(
-                e -> {
-                    JFrame options = new OptionsWindow("Options");
-                    options.dispose();
-                });
+        optionsButton.addActionListener(e -> {
+            JFrame options = new OptionsWindow("Options");
+            options.dispose();
+        });
         optionsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         optionsButton.setMaximumSize(new Dimension(300, optionsButton.getMinimumSize().height));
         panel.add(optionsButton);
 
-        accountList.addMouseListener(
-                new MouseAdapter() {
-                    public void mouseClicked(MouseEvent evt) {
-                        JList list = (JList) evt.getSource();
-                        if (evt.getClickCount() == 2) {
-                            int index = list.getSelectedIndex();
-                            Account account = JSONManager.getAccounts().get(index);
-                            SecretPrompt secretPrompt =
-                                    new SecretPrompt("Enter Passphrase", account);
-                            secretPrompt.dispose();
-                        }
-                    }
-                });
+        accountList.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent evt) {
+                JList list = (JList) evt.getSource();
+                if (evt.getClickCount() == 2) {
+                    int index = list.getSelectedIndex();
+                    Account account = JSONManager.getAccounts().get(index);
+                    SecretPrompt secretPrompt = new SecretPrompt("Enter Passphrase", account);
+                    secretPrompt.dispose();
+                }
+            }
+        });
 
         frame.pack();
         frame.setSize(300, 400);

@@ -37,8 +37,7 @@ import java.util.List;
 
 public class LoginHandler {
 
-    private static final String REQUEST_URL =
-            "https://www.toontownrewritten.com/api/login?format=json";
+    private static final String REQUEST_URL = "https://www.toontownrewritten.com/api/login?format=json";
     private static final String USER_AGENT =
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36";
 
@@ -61,37 +60,32 @@ public class LoginHandler {
         String banner = request.get("banner");
 
         switch (status) {
-            case "false":
-                {
-                    // handle incorrect login
-                    if (banner.contains("Incorrect username")) {
-                        JFrame incorrectLogin = new IncorrectLogin("Error");
-                        incorrectLogin.dispose();
-                    }
-                    break;
+            case "false": {
+                // handle incorrect login
+                if (banner.contains("Incorrect username")) {
+                    JFrame incorrectLogin = new IncorrectLogin("Error");
+                    incorrectLogin.dispose();
                 }
-            case "partial":
-                {
-                    // handle 2fa
-                    JFrame twoFactorAuth =
-                            new TwoFactorAuth("Enter Code", banner, request.get("responseToken"));
-                    break;
-                }
-            case "true":
-                {
-                    String gameServer = request.get("gameserver");
-                    String cookie = request.get("cookie");
-                    LaunchGame launchGame = new LaunchGame(cookie, gameServer);
-                    launchGame.start();
-                    break;
-                }
-            case "delayed":
-                {
-                    // handle queue
-                    JFrame queueLogin = new QueueLogin("Queue", request.get("queueToken"));
-                    queueLogin.dispose();
-                    break;
-                }
+                break;
+            }
+            case "partial": {
+                // handle 2fa
+                JFrame twoFactorAuth = new TwoFactorAuth("Enter Code", banner, request.get("responseToken"));
+                break;
+            }
+            case "true": {
+                String gameServer = request.get("gameserver");
+                String cookie = request.get("cookie");
+                LaunchGame launchGame = new LaunchGame(cookie, gameServer);
+                launchGame.start();
+                break;
+            }
+            case "delayed": {
+                // handle queue
+                JFrame queueLogin = new QueueLogin("Queue", request.get("queueToken"));
+                queueLogin.dispose();
+                break;
+            }
         }
     }
 
@@ -109,7 +103,8 @@ public class LoginHandler {
 
         List<NameValuePair> urlParameters = new ArrayList<>();
         for (String x : loginRequest.getRequestDetails().keySet()) {
-            urlParameters.add(new BasicNameValuePair(x, loginRequest.getRequestDetails().get(x)));
+            urlParameters.add(
+                    new BasicNameValuePair(x, loginRequest.getRequestDetails().get(x)));
         }
 
         post.setEntity(new UrlEncodedFormEntity(urlParameters));
