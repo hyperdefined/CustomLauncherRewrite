@@ -26,9 +26,12 @@ public class Main {
                 System.exit(1);
             }
             JFrame updater = new Updater("Updater", Paths.get(installPath));
+            updater.dispose();
         } else {
             JFrame updater = new Updater("Updater", Paths.get(DEFAULT_INSTALL));
+            updater.dispose();
         }
         JFrame mainWindow = new MainWindow("Launcher");
+        mainWindow.dispose();
     }
 }

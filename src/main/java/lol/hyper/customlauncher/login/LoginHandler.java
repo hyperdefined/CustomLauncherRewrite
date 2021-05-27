@@ -45,6 +45,7 @@ public class LoginHandler {
                 // handle incorrect login
                 if (banner.contains("Incorrect username")) {
                     JFrame incorrectLogin = new IncorrectLogin("Login Error");
+                    incorrectLogin.dispose();
                 }
                 break;
             }
@@ -63,6 +64,7 @@ public class LoginHandler {
             case "delayed": {
                 // handle queue
                 JFrame queueLogin = new QueueLogin("Queue", request.get("queueToken"));
+                queueLogin.dispose();
                 break;
             }
         }

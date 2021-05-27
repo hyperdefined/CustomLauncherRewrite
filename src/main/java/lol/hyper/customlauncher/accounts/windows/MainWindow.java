@@ -57,6 +57,7 @@ public class MainWindow extends JFrame {
         JButton newAccountButton = new JButton("New Account");
         newAccountButton.addActionListener(e -> {
             JFrame newAccountWindow = new NewAccountWindow("New Account");
+            newAccountWindow.dispose();
         });
 
         newAccountButton.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -67,6 +68,7 @@ public class MainWindow extends JFrame {
         JButton deleteAccountButton = new JButton("Delete Account");
         deleteAccountButton.addActionListener(e -> {
             JFrame deleteAccountWindow = new DeleteAccountWindow("Delete Account");
+            deleteAccountWindow.dispose();
         });
 
         deleteAccountButton.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -90,6 +92,7 @@ public class MainWindow extends JFrame {
                     int index = list.getSelectedIndex();
                     Account account = JSONManager.getAccounts().get(index);
                     SecretPrompt secretPrompt = new SecretPrompt("Passphrase", account);
+                    secretPrompt.dispose();
                 }
             }
         });
