@@ -65,7 +65,7 @@ public class JSONManager {
      *
      * @param jsonToWrite Data to write to file. This much be a JSON string.
      */
-    private static void writeFile(String jsonToWrite, File file) {
+    public static void writeFile(String jsonToWrite, File file) {
         try {
             FileWriter writer = new FileWriter(file);
             writer.write(jsonToWrite);

@@ -32,6 +32,20 @@ public class Main {
     public static String pathToUse;
 
     public static void main(String[] args) {
+        // create the default files
+        // config.json with default values
+        // accounts.json with no accounts
+        if (!JSONManager.configFile.exists()) {
+            JSONObject newConfig = new JSONObject();
+            newConfig.put("ttrInstallLocation", DEFAULT_INSTALL);
+            newConfig.put("autoCheckTTRUpdates", true);
+            JSONManager.writeFile(newConfig.toString(), JSONManager.configFile);
+        }
+        if (!JSONManager.accountsFile.exists()) {
+            JSONObject newAccounts = new JSONObject();
+            JSONManager.writeFile(newAccounts.toString(), JSONManager.configFile);
+        }
+
         JSONObject optionsFile = JSONManager.readFile(JSONManager.configFile);
         // check to see if the default ttr install is there
         // if not, use the path in the config
