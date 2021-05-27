@@ -53,11 +53,15 @@ public class TwoFactorAuth extends JFrame{
 
         // button listeners
         loginButton.addActionListener(event -> {
-            LoginRequest newLoginRequest = new LoginRequest();
-            newLoginRequest.addDetails("authToken", token);
-            newLoginRequest.addDetails("appToken", userAuthCode.getText());
-            LoginHandler.handleLoginRequest(newLoginRequest);
-            frame.dispose();
+            if (!userAuthCode.getText().isEmpty()) {
+                LoginRequest newLoginRequest = new LoginRequest();
+                newLoginRequest.addDetails("authToken", token);
+                newLoginRequest.addDetails("appToken", userAuthCode.getText());
+                LoginHandler.handleLoginRequest(newLoginRequest);
+                frame.dispose();
+            } else {
+                JOptionPane.showMessageDialog(frame, "You must enter the code.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
         });
 
         frame.setVisible(true);

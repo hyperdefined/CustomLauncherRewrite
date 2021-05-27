@@ -55,10 +55,17 @@ public class NewAccountWindow extends JFrame {
         resetButton.addActionListener(e -> frame.dispose());
 
         loginButton.addActionListener(e -> {
-            JSONManager.addNewAccount(userTextField.getText(), passwordField.getPassword(), password2Field.getPassword());
-            MainWindow.refreshAccountList();
-            JOptionPane.showMessageDialog(frame, userTextField.getText() + " was saved!");
-            frame.dispose();
+            boolean userbox = userTextField.getText().isEmpty();
+            boolean passwordBox = passwordField.getPassword().length == 0;
+            boolean password2Box = password2Field.getPassword().length == 0;
+            if (!userbox && !passwordBox && !password2Box) {
+                JSONManager.addNewAccount(userTextField.getText(), passwordField.getPassword(), password2Field.getPassword());
+                MainWindow.refreshAccountList();
+                JOptionPane.showMessageDialog(frame, userTextField.getText() + " was saved!");
+                frame.dispose();
+            } else {
+                JOptionPane.showMessageDialog(frame, "You must fill in all boxes.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
         });
 
         frame.setVisible(true);

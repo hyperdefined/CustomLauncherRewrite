@@ -39,18 +39,22 @@ public class SecretPrompt extends JFrame {
 
         // button listeners
         loginButton.addActionListener(event -> {
-            String username = account.getUsername();
-            String password = account.getPassword();
-            String actualPassword = JSONManager.decrypt(password, new String(secretText.getPassword()));
+            if (secretText.getPassword().length != 0) {
+                String username = account.getUsername();
+                String password = account.getPassword();
+                String actualPassword = JSONManager.decrypt(password, new String(secretText.getPassword()));
 
-            if (actualPassword != null) {
-                LoginRequest loginRequest = new LoginRequest();
-                loginRequest.addDetails("username", username);
-                loginRequest.addDetails("password", actualPassword);
-                LoginHandler.handleLoginRequest(loginRequest);
-                frame.dispose();
+                if (actualPassword != null) {
+                    LoginRequest loginRequest = new LoginRequest();
+                    loginRequest.addDetails("username", username);
+                    loginRequest.addDetails("password", actualPassword);
+                    LoginHandler.handleLoginRequest(loginRequest);
+                    frame.dispose();
+                } else {
+                    JOptionPane.showMessageDialog(frame, "You entered the wrong passprhase.", "Passphrase Error", JOptionPane.ERROR_MESSAGE);
+                }
             } else {
-                JOptionPane.showMessageDialog(frame, "You entered the wrong passprhase.", "Passphrase Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(frame, "You must enter the passphrase.", "Passphrase Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 
