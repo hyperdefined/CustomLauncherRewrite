@@ -58,7 +58,7 @@ public class SecretPrompt extends JFrame {
             if (secretText.getPassword().length != 0) {
                 String username = account.getUsername();
                 String password = account.getPassword();
-                String actualPassword = JSONManager.decrypt(password, new String(secretText.getPassword()));
+                String actualPassword = JSONManager.decrypt(password, String.valueOf(secretText.getPassword()));
 
                 if (actualPassword != null) {
                     LoginRequest loginRequest = new LoginRequest();
