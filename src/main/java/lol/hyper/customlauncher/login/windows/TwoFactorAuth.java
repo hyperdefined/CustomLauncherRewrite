@@ -23,8 +23,7 @@ public class TwoFactorAuth extends JFrame{
 
         // GUI elements
         JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        Box.createVerticalStrut(10);
+        panel.setLayout(null);
 
         JLabel text = new JLabel("<html>" + banner + "</html>");
         text.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -43,9 +42,10 @@ public class TwoFactorAuth extends JFrame{
         });
 
         JButton loginButton = new JButton("Submit");
-        loginButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         userAuthCode.setMaximumSize(new Dimension(50, 25));
+        text.setBounds(20,20,150,30);
+        userAuthCode.setBounds(120,65,70,30);
 
         panel.add(text);
         panel.add(userAuthCode);
