@@ -30,7 +30,7 @@ public class LoginHandler {
      * @param loginRequest The login request to process.
      */
     public static void handleLoginRequest(LoginRequest loginRequest) {
-        HashMap<String, String> request;
+        HashMap < String, String > request;
         try {
             request = sendRequest(loginRequest).getRequestDetails();
         } catch (Exception e) {
@@ -82,8 +82,8 @@ public class LoginHandler {
         post.setHeader("User-Agent", USER_AGENT);
         post.setHeader("Content-type", "application/x-www-form-urlencoded");
 
-        List<NameValuePair> urlParameters = new ArrayList<>();
-        for (String x : loginRequest.getRequestDetails().keySet()) {
+        List < NameValuePair > urlParameters = new ArrayList < > ();
+        for (String x: loginRequest.getRequestDetails().keySet()) {
             urlParameters.add(new BasicNameValuePair(x, loginRequest.getRequestDetails().get(x)));
         }
 
@@ -91,15 +91,14 @@ public class LoginHandler {
 
         String responseData;
 
-        try (CloseableHttpClient httpClient = HttpClients.createDefault();
-             CloseableHttpResponse response = httpClient.execute(post)) {
+        try (CloseableHttpClient httpClient = HttpClients.createDefault(); CloseableHttpResponse response = httpClient.execute(post)) {
 
             responseData = EntityUtils.toString(response.getEntity());
         }
-        JSONObject responseJSON =  new JSONObject(responseData);
+        JSONObject responseJSON = new JSONObject(responseData);
         LoginRequest newLogin = new LoginRequest();
 
-        for (String x : responseJSON.keySet()) {
+        for (String x: responseJSON.keySet()) {
             newLogin.addDetails(x, responseJSON.getString(x));
         }
 

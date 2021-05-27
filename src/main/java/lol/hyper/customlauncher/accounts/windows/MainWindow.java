@@ -11,7 +11,7 @@ import java.util.HashMap;
 
 public class MainWindow extends JFrame {
 
-    static final HashMap<Integer, String> labelsByIndexes = new HashMap<>();
+    static final HashMap < Integer, String > labelsByIndexes = new HashMap < > ();
 
     public static final DefaultListModel model = new DefaultListModel();
 

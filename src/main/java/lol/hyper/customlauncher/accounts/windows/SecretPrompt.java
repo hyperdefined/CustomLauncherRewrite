@@ -28,9 +28,9 @@ public class SecretPrompt extends JFrame {
         JPasswordField secretText = new JPasswordField();
         JButton loginButton = new JButton("Login");
 
-        secretLabel.setBounds(50,25,100,30);
-        secretText.setBounds(150,25,100,30);
-        loginButton.setBounds(50,75,100,30);
+        secretLabel.setBounds(50, 25, 100, 30);
+        secretText.setBounds(150, 25, 100, 30);
+        loginButton.setBounds(50, 75, 100, 30);
 
         panel.add(secretLabel);
         panel.add(secretText);

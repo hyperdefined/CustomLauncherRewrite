@@ -46,7 +46,7 @@ public class Updater extends JFrame {
         frame.add(updateStatus);
         frame.add(progressBar);
 
-        progressBar.setBounds(150,100,100,30);
+        progressBar.setBounds(150, 100, 100, 30);
         updateStatus.setBounds(100, 25, 370, 40);
 
         frame.setVisible(true);
@@ -61,7 +61,7 @@ public class Updater extends JFrame {
         }
 
         try (InputStream in = patchesURL.openStream()) {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+            BufferedReader reader = new BufferedReader(new InputStreamReader( in ));
             patchesJSONRaw = reader.lines().collect(Collectors.joining(System.lineSeparator()));
             reader.close();
         } catch (IOException e) {
@@ -76,16 +76,16 @@ public class Updater extends JFrame {
         }
 
         JSONObject patches = new JSONObject(patchesJSONRaw);
-        ArrayList<String> filesToDownload = new ArrayList<>();
+        ArrayList < String > filesToDownload = new ArrayList < > ();
 
-        for (String key : patches.keySet()) {
+        for (String key: patches.keySet()) {
             progressBar.setValue(progressBar.getValue() + 1);
-            JSONObject currentFile = (JSONObject)patches.get(key);
+            JSONObject currentFile = (JSONObject) patches.get(key);
             String onlineHash = currentFile.getString("hash");
             JSONArray only = currentFile.getJSONArray("only");
-            List<String> list = new ArrayList<>();
-            for (Object value : only) {
-                list.add((String)value);
+            List < String > list = new ArrayList < > ();
+            for (Object value: only) {
+                list.add((String) value);
             }
 
             if (list.contains("win32") || list.contains("win64")) {
@@ -131,7 +131,7 @@ public class Updater extends JFrame {
             System.out.println(filesToDownload.size() + " file(s) are going to be downloaded.");
             System.out.println(filesToDownload.toString());
 
-            for (String fileToDownload : filesToDownload) {
+            for (String fileToDownload: filesToDownload) {
                 JSONObject file = patches.getJSONObject(fileToDownload);
                 String dl = file.getString("dl");
                 try {
@@ -187,7 +187,7 @@ public class Updater extends JFrame {
     private static void extractFile(File tempFile, File outputFile, Path location) throws IOException {
         FileInputStream in = new FileInputStream("temp" + File.separator + tempFile);
         FileOutputStream out = new FileOutputStream(location + File.separator + outputFile);
-        BZip2CompressorInputStream bzIn = new BZip2CompressorInputStream(in);
+        BZip2CompressorInputStream bzIn = new BZip2CompressorInputStream( in );
         byte[] buffer = new byte[4096];
         int n;
         while (-1 != (n = bzIn.read(buffer))) {

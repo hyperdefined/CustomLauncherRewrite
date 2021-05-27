@@ -17,7 +17,11 @@ public class LaunchGame extends Thread {
     }
 
     public void run() {
-        String[] command = {"cmd", "/c", "TTREngine.exe" };
+        String[] command = {
+                "cmd",
+                "/c",
+                "TTREngine.exe"
+        };
         ProcessBuilder pb = new ProcessBuilder(command);
 
         // dirty little trick to redirect the output
@@ -27,7 +31,7 @@ public class LaunchGame extends Thread {
         pb.redirectErrorStream(true);
         pb.directory(new File(Main.pathToUse));
 
-        Map<String, String> env = pb.environment();
+        Map < String, String > env = pb.environment();
         env.put("TTR_GAMESERVER", this.gameServer);
         env.put("TTR_PLAYCOOKIE", this.cookie);
         try {

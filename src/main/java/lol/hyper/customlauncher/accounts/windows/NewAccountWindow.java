@@ -31,15 +31,15 @@ public class NewAccountWindow extends JFrame {
         JButton resetButton = new JButton("Cancel");
         JLabel warning = new JLabel("<html>Secret phrase is used to encrypt and decrypt <br>your password for security when saving your login info.</html>");
 
-        userLabel.setBounds(50,150,100,30);
-        passwordLabel.setBounds(50,190,100,30);
-        password2Label.setBounds(50,240,100,30);
-        userTextField.setBounds(150,150,150,30);
-        passwordField.setBounds(150,190,150,30);
-        password2Field.setBounds(150,240,150,30);
-        loginButton.setBounds(50,300,100,30);
-        resetButton.setBounds(200,300,100,30);
-        warning.setBounds(50,350,370,100);
+        userLabel.setBounds(50, 150, 100, 30);
+        passwordLabel.setBounds(50, 190, 100, 30);
+        password2Label.setBounds(50, 240, 100, 30);
+        userTextField.setBounds(150, 150, 150, 30);
+        passwordField.setBounds(150, 190, 150, 30);
+        password2Field.setBounds(150, 240, 150, 30);
+        loginButton.setBounds(50, 300, 100, 30);
+        resetButton.setBounds(200, 300, 100, 30);
+        warning.setBounds(50, 350, 370, 100);
 
         panel.add(userLabel);
         panel.add(passwordLabel);

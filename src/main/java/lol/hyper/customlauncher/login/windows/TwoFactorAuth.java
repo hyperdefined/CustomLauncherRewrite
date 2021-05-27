@@ -8,7 +8,7 @@ import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-public class TwoFactorAuth extends JFrame{
+public class TwoFactorAuth extends JFrame {
 
     public TwoFactorAuth(String title, String banner, String token) {
         JFrame frame = new JFrame(title);
@@ -35,7 +35,7 @@ public class TwoFactorAuth extends JFrame{
         userAuthCode.addKeyListener(new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent e) {
-                if (userAuthCode.getText().length() >= 6 ) {
+                if (userAuthCode.getText().length() >= 6) {
                     e.consume();
                 }
             }
@@ -44,8 +44,8 @@ public class TwoFactorAuth extends JFrame{
         JButton loginButton = new JButton("Submit");
 
         userAuthCode.setMaximumSize(new Dimension(50, 25));
-        text.setBounds(20,20,150,30);
-        userAuthCode.setBounds(120,65,70,30);
+        text.setBounds(20, 20, 150, 30);
+        userAuthCode.setBounds(120, 65, 70, 30);
 
         panel.add(text);
         panel.add(userAuthCode);

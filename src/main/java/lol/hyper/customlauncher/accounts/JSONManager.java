@@ -34,7 +34,7 @@ public class JSONManager {
             }
             object = new JSONObject(sb.toString());
             br.close();
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return object;
@@ -58,10 +58,10 @@ public class JSONManager {
      * Get all of the accounts from the accounts file.
      * @return List of the accounts.
      */
-    public static List<Account> getAccounts() {
-        List<Account> accounts = new ArrayList<>();
+    public static List < Account > getAccounts() {
+        List < Account > accounts = new ArrayList < > ();
         JSONObject accountsJSON = readFile(accountsFile);
-        for (Integer x : getAccountIndexes(accountsJSON)) {
+        for (Integer x: getAccountIndexes(accountsJSON)) {
             JSONObject temp;
             try {
                 temp = (JSONObject) accountsJSON.get(x.toString());
@@ -81,9 +81,9 @@ public class JSONManager {
      * @param jsonObject The object to get the indexes for.
      * @return A list of the indexes.
      */
-    private static ArrayList<Integer> getAccountIndexes(JSONObject jsonObject) {
-        ArrayList<Integer> indexes = new ArrayList<>();
-        for (String x : jsonObject.keySet()) {
+    private static ArrayList < Integer > getAccountIndexes(JSONObject jsonObject) {
+        ArrayList < Integer > indexes = new ArrayList < > ();
+        for (String x: jsonObject.keySet()) {
             indexes.add(Integer.valueOf(x));
         }
         return indexes;
@@ -97,7 +97,7 @@ public class JSONManager {
      */
     public static void addNewAccount(String username, char[] password, char[] secret) {
         JSONObject accountsJSON = readFile(accountsFile);
-        ArrayList<Integer> indexes = getAccountIndexes(accountsJSON);
+        ArrayList < Integer > indexes = getAccountIndexes(accountsJSON);
         int numberWeUse = findFirstMissing(indexes);
         if (accountsJSON.length() == 0) {
             numberWeUse = 0;
@@ -106,7 +106,7 @@ public class JSONManager {
         // if there is no missing number in the sequence, then get the last number and add 1
         // this will use the next number in the sequence
         if (numberWeUse == -1) {
-            numberWeUse = indexes.get(indexes.size() -1) + 1;
+            numberWeUse = indexes.get(indexes.size() - 1) + 1;
         }
 
         Map m = new LinkedHashMap(3);
@@ -132,7 +132,7 @@ public class JSONManager {
      * @param indexes The indexes to check.
      * @return The first missing number in the sequence.
      */
-    private static int findFirstMissing(ArrayList<Integer> indexes) {
+    private static int findFirstMissing(ArrayList < Integer > indexes) {
         for (int i = 0; i < indexes.size(); i++) {
             if (!indexes.contains(i)) {
                 return i;
@@ -149,8 +149,7 @@ public class JSONManager {
             key = sha.digest(key);
             key = Arrays.copyOf(key, 16);
             secretKey = new SecretKeySpec(key, "AES");
-        }
-        catch (NoSuchAlgorithmException e) {
+        } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
     }
@@ -167,8 +166,7 @@ public class JSONManager {
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
             cipher.init(Cipher.ENCRYPT_MODE, secretKey);
             return Base64.getEncoder().encodeToString(cipher.doFinal(strToEncrypt.getBytes(StandardCharsets.UTF_8)));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             System.out.println("Error while encrypting: " + e.toString());
         }
         return null;
@@ -186,8 +184,7 @@ public class JSONManager {
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5PADDING");
             cipher.init(Cipher.DECRYPT_MODE, secretKey);
             return Arrays.toString(cipher.doFinal(Base64.getDecoder().decode(strToDecrypt)));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             System.out.println("Error while decrypting: " + e.toString());
             return null;
         }

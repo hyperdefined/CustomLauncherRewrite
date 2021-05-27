@@ -46,11 +46,11 @@ public class OptionsWindow extends JFrame {
         panel.add(ttrInstallBox);
         panel.add(saveButton);
 
-        autoUpdate.setBounds(20,25,100,30);
-        autoUpdateBox.setBounds(120,25,100,30);
-        ttrInstall.setBounds(20,65,100,30);
-        ttrInstallBox.setBounds(120,65,200,30);
-        saveButton.setBounds(20,120,60,30);
+        autoUpdate.setBounds(20, 25, 100, 30);
+        autoUpdateBox.setBounds(120, 25, 100, 30);
+        ttrInstall.setBounds(20, 65, 100, 30);
+        ttrInstallBox.setBounds(120, 65, 200, 30);
+        saveButton.setBounds(20, 120, 60, 30);
         ttrInstallBox.setMaximumSize(new Dimension(200, 25));
 
         frame.setVisible(true);
