@@ -49,6 +49,7 @@ public class Updater extends JFrame {
         updateStatus.setBounds(100, 25, 370, 40);
 
         frame.setVisible(true);
+        frame.setLocationRelativeTo(null);
 
         String patchesJSONRaw = null;
         URL patchesURL = null;
