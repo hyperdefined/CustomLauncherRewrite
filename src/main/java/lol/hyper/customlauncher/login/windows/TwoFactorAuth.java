@@ -49,14 +49,15 @@ public class TwoFactorAuth extends JFrame {
 
         // force the textbox to only have 6 characters
         // 2fa and toonguard codes are 6 long
-        userAuthCode.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-                if (userAuthCode.getText().length() >= 6) {
-                    e.consume();
-                }
-            }
-        });
+        userAuthCode.addKeyListener(
+                new KeyAdapter() {
+                    @Override
+                    public void keyTyped(KeyEvent e) {
+                        if (userAuthCode.getText().length() >= 6) {
+                            e.consume();
+                        }
+                    }
+                });
 
         JButton loginButton = new JButton("Submit");
 
@@ -69,17 +70,22 @@ public class TwoFactorAuth extends JFrame {
         panel.add(loginButton);
 
         // button listeners
-        loginButton.addActionListener(event -> {
-            if (!userAuthCode.getText().isEmpty()) {
-                LoginRequest newLoginRequest = new LoginRequest();
-                newLoginRequest.addDetails("authToken", token);
-                newLoginRequest.addDetails("appToken", userAuthCode.getText());
-                LoginHandler.handleLoginRequest(newLoginRequest);
-                frame.dispose();
-            } else {
-                JOptionPane.showMessageDialog(frame, "You must enter the code.", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        });
+        loginButton.addActionListener(
+                event -> {
+                    if (!userAuthCode.getText().isEmpty()) {
+                        LoginRequest newLoginRequest = new LoginRequest();
+                        newLoginRequest.addDetails("authToken", token);
+                        newLoginRequest.addDetails("appToken", userAuthCode.getText());
+                        LoginHandler.handleLoginRequest(newLoginRequest);
+                        frame.dispose();
+                    } else {
+                        JOptionPane.showMessageDialog(
+                                frame,
+                                "You must enter the code.",
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                });
 
         frame.setVisible(true);
         frame.add(panel);

@@ -24,6 +24,7 @@ public class Account {
 
     /**
      * Create a new account object.
+     *
      * @param username Username of account.
      * @param password Password of account. Must be encrypted.
      */
@@ -34,6 +35,7 @@ public class Account {
 
     /**
      * Returns the username of an account.
+     *
      * @return Username of account.
      */
     public String getUsername() {
@@ -42,6 +44,7 @@ public class Account {
 
     /**
      * Returns the password of an account. This password is encrypted.
+     *
      * @return Password of account.
      */
     public String getPassword() {

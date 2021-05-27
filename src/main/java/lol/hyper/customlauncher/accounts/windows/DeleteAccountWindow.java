@@ -29,7 +29,7 @@ import java.util.HashMap;
 
 public class DeleteAccountWindow extends JFrame {
 
-    final HashMap < Integer, String > labelsByIndexes = new HashMap < > ();
+    final HashMap<Integer, String> labelsByIndexes = new HashMap<>();
 
     public DeleteAccountWindow(String title) {
         JFrame frame = new JFrame(title);
@@ -51,7 +51,7 @@ public class DeleteAccountWindow extends JFrame {
         panel.add(accountsLabel);
 
         // accounts list
-        ArrayList < String > accounts = new ArrayList < > ();
+        ArrayList<String> accounts = new ArrayList<>();
         for (int i = 0; i < JSONManager.getAccounts().size(); i++) {
             // get the indexes of the accounts and save them
             Account account = JSONManager.getAccounts().get(i);
@@ -67,19 +67,21 @@ public class DeleteAccountWindow extends JFrame {
         scrollBar.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.add(scrollBar);
 
-        accountList.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent evt) {
-                JList list = (JList) evt.getSource();
-                if (evt.getClickCount() == 2) {
-                    int index = list.getSelectedIndex();
-                    Account account = JSONManager.getAccounts().get(index);
-                    JSONManager.deleteAccount(index);
-                    MainWindow.refreshAccountList();
-                    JOptionPane.showMessageDialog(frame, account.getUsername() + " was deleted!");
-                    frame.dispose();
-                }
-            }
-        });
+        accountList.addMouseListener(
+                new MouseAdapter() {
+                    public void mouseClicked(MouseEvent evt) {
+                        JList list = (JList) evt.getSource();
+                        if (evt.getClickCount() == 2) {
+                            int index = list.getSelectedIndex();
+                            Account account = JSONManager.getAccounts().get(index);
+                            JSONManager.deleteAccount(index);
+                            MainWindow.refreshAccountList();
+                            JOptionPane.showMessageDialog(
+                                    frame, account.getUsername() + " was deleted!");
+                            frame.dispose();
+                        }
+                    }
+                });
 
         frame.pack();
         frame.setSize(300, 400);

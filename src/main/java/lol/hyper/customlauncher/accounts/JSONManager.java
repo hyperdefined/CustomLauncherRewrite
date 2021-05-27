@@ -31,12 +31,15 @@ import java.util.*;
 
 public class JSONManager {
 
-    public static final File accountsFile = Paths.get("config" + File.separator + "accounts.json").toFile();
-    public static final File configFile = Paths.get("config" + File.separator + "config.json").toFile();
+    public static final File accountsFile =
+            Paths.get("config" + File.separator + "accounts.json").toFile();
+    public static final File configFile =
+            Paths.get("config" + File.separator + "config.json").toFile();
     private static SecretKeySpec secretKey;
 
     /**
      * Read data from JSON file.
+     *
      * @return JSONObject with JSON data.
      */
     public static JSONObject readFile(File file) {
@@ -59,6 +62,7 @@ public class JSONManager {
 
     /**
      * Write data to JSON file.
+     *
      * @param jsonToWrite Data to write to file. This much be a JSON string.
      */
     private static void writeFile(String jsonToWrite, File file) {
@@ -73,12 +77,13 @@ public class JSONManager {
 
     /**
      * Get all of the accounts from the accounts file.
+     *
      * @return List of the accounts.
      */
-    public static List < Account > getAccounts() {
-        List < Account > accounts = new ArrayList < > ();
+    public static List<Account> getAccounts() {
+        List<Account> accounts = new ArrayList<>();
         JSONObject accountsJSON = readFile(accountsFile);
-        for (Integer x: getAccountIndexes(accountsJSON)) {
+        for (Integer x : getAccountIndexes(accountsJSON)) {
             JSONObject temp;
             try {
                 temp = (JSONObject) accountsJSON.get(x.toString());
@@ -94,13 +99,15 @@ public class JSONManager {
     }
 
     /**
-     * This will get all of the account indexes from the accounts file. They are always not in order, so we have to manually save this list.
+     * This will get all of the account indexes from the accounts file. They are always not in
+     * order, so we have to manually save this list.
+     *
      * @param jsonObject The object to get the indexes for.
      * @return A list of the indexes.
      */
-    private static ArrayList < Integer > getAccountIndexes(JSONObject jsonObject) {
-        ArrayList < Integer > indexes = new ArrayList < > ();
-        for (String x: jsonObject.keySet()) {
+    private static ArrayList<Integer> getAccountIndexes(JSONObject jsonObject) {
+        ArrayList<Integer> indexes = new ArrayList<>();
+        for (String x : jsonObject.keySet()) {
             indexes.add(Integer.valueOf(x));
         }
         return indexes;
@@ -108,13 +115,14 @@ public class JSONManager {
 
     /**
      * Adds a new account to the accounts file.
+     *
      * @param username Account username.
      * @param password Account password.
      * @param secret Secret passphrase. (Used to encrypt the password.)
      */
     public static void addNewAccount(String username, char[] password, char[] secret) {
         JSONObject accountsJSON = readFile(accountsFile);
-        ArrayList < Integer > indexes = getAccountIndexes(accountsJSON);
+        ArrayList<Integer> indexes = getAccountIndexes(accountsJSON);
         int numberWeUse = findFirstMissing(indexes);
         if (accountsJSON.length() == 0) {
             numberWeUse = 0;
@@ -135,6 +143,7 @@ public class JSONManager {
 
     /**
      * Delete an account from the accounts file.
+     *
      * @param index Index of account to delete.
      */
     public static void deleteAccount(int index) {
@@ -144,12 +153,14 @@ public class JSONManager {
     }
 
     /**
-     * Find the first missing number from the accounts indexes. This will check for a gap (ex: 1,2,4 - 3 is the "first missing").
-     * This is mainly used so the accounts file doesn't have gaps in the account indexes. This will tell the account creator to use the missing index.
+     * Find the first missing number from the accounts indexes. This will check for a gap (ex: 1,2,4
+     * - 3 is the "first missing"). This is mainly used so the accounts file doesn't have gaps in
+     * the account indexes. This will tell the account creator to use the missing index.
+     *
      * @param indexes The indexes to check.
      * @return The first missing number in the sequence.
      */
-    private static int findFirstMissing(ArrayList < Integer > indexes) {
+    private static int findFirstMissing(ArrayList<Integer> indexes) {
         for (int i = 0; i < indexes.size(); i++) {
             if (!indexes.contains(i)) {
                 return i;
@@ -173,6 +184,7 @@ public class JSONManager {
 
     /**
      * Encrypt a string using a secret key.
+     *
      * @param strToEncrypt String to encrypt.
      * @param secret Secret passphrase.
      * @return The encrypted string.
@@ -182,7 +194,8 @@ public class JSONManager {
             setKey(secret);
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
             cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-            return Base64.getEncoder().encodeToString(cipher.doFinal(strToEncrypt.getBytes(StandardCharsets.UTF_8)));
+            return Base64.getEncoder()
+                    .encodeToString(cipher.doFinal(strToEncrypt.getBytes(StandardCharsets.UTF_8)));
         } catch (Exception e) {
             System.out.println("Error while encrypting: " + e.toString());
         }
@@ -191,6 +204,7 @@ public class JSONManager {
 
     /**
      * Decrypt a string using a secret key.
+     *
      * @param strToDecrypt String to decrypt.
      * @param secret Secret passphrase.
      * @return The decrypted string. Returns null if the passphrase was wrong.
@@ -209,6 +223,7 @@ public class JSONManager {
 
     /**
      * Add/remove a value from the config.
+     *
      * @param key Key for the JSON.
      * @param value Value for the key.
      * @param remove Should we remove this entry or add this entry?
@@ -225,6 +240,7 @@ public class JSONManager {
 
     /**
      * Check the config to see if we should check for TTR updates.
+     *
      * @return Yes/no if we should.
      */
     public static boolean shouldWeUpdate() {

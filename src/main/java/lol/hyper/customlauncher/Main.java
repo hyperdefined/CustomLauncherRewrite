@@ -28,8 +28,8 @@ import java.nio.file.Paths;
 
 public class Main {
 
-    public static String pathToUse;
     public static final String DEFAULT_INSTALL = "C:\\Program Files (x86)\\Toontown Rewritten";
+    public static String pathToUse;
 
     public static void main(String[] args) {
         JSONObject optionsFile = JSONManager.readFile(JSONManager.configFile);

@@ -16,17 +16,18 @@
  */
 
 package lol.hyper.customlauncher.login;
+
 import java.util.HashMap;
 
 public class LoginRequest {
 
-    final HashMap < String, String > requestDetails;
+    final HashMap<String, String> requestDetails;
 
     public LoginRequest() {
-        requestDetails = new HashMap < > ();
+        requestDetails = new HashMap<>();
     }
 
-    public HashMap < String, String > getRequestDetails() {
+    public HashMap<String, String> getRequestDetails() {
         return requestDetails;
     }
 
