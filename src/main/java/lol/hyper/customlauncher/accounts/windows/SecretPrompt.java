@@ -6,7 +6,6 @@ import lol.hyper.customlauncher.login.LoginHandler;
 import lol.hyper.customlauncher.login.LoginRequest;
 
 import javax.swing.*;
-import java.io.IOException;
 
 public class SecretPrompt extends JFrame {
 
@@ -51,7 +50,7 @@ public class SecretPrompt extends JFrame {
                     LoginHandler.handleLoginRequest(loginRequest);
                     frame.dispose();
                 } else {
-                    JOptionPane.showMessageDialog(frame, "You entered the wrong passprhase.", "Passphrase Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, "You entered the wrong passphrase.", "Passphrase Error", JOptionPane.ERROR_MESSAGE);
                 }
             } else {
                 JOptionPane.showMessageDialog(frame, "You must enter the passphrase.", "Passphrase Error", JOptionPane.ERROR_MESSAGE);

@@ -8,8 +8,8 @@ import java.util.Map;
 
 public class LaunchGame extends Thread {
 
-    String cookie;
-    String gameServer;
+    final String cookie;
+    final String gameServer;
 
     public LaunchGame(String cookie, String gameServer) {
         this.cookie = cookie;

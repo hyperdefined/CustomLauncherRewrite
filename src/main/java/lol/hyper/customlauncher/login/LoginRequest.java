@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public class LoginRequest {
 
-    HashMap<String, String> requestDetails;
+    final HashMap<String, String> requestDetails;
 
     public LoginRequest() {
         requestDetails = new HashMap<>();

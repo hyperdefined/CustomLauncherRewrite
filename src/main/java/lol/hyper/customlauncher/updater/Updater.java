@@ -150,7 +150,7 @@ public class Updater extends JFrame {
                     extractFile(Paths.get(dl).toFile(), Paths.get(fileToDownload).toFile(), installLocation);
                 } catch (IOException e) {
                     e.printStackTrace();
-                    JOptionPane.showMessageDialog(frame, "There was an error extracing file " + fileToDownload, "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, "There was an error extracting file " + fileToDownload, "Error", JOptionPane.ERROR_MESSAGE);
                     frame.dispose();
                 }
                 updateStatus.setText("Finished extracting file " + dl);
