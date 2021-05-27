@@ -1,4 +1,4 @@
-package lol.hyper.customlauncher.windows;
+package lol.hyper.customlauncher.accounts.windows;
 
 import lol.hyper.customlauncher.accounts.Account;
 import lol.hyper.customlauncher.accounts.JSONManager;
@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.io.IOException;
 
 public class SecretPrompt extends JFrame {
+
     public SecretPrompt(String title, Account account) {
         JFrame frame = new JFrame(title);
         frame.setSize(370, 150);

@@ -1,7 +1,7 @@
 package lol.hyper.customlauncher;
 
 import lol.hyper.customlauncher.accounts.JSONManager;
-import lol.hyper.customlauncher.windows.MainWindow;
+import lol.hyper.customlauncher.accounts.windows.MainWindow;
 import lol.hyper.customlauncher.updater.Updater;
 import org.json.JSONObject;
 

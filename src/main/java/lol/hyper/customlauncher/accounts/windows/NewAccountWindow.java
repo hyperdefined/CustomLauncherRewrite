@@ -1,4 +1,4 @@
-package lol.hyper.customlauncher.windows;
+package lol.hyper.customlauncher.accounts.windows;
 
 import lol.hyper.customlauncher.accounts.JSONManager;
 
