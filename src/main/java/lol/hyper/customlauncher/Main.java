@@ -30,7 +30,7 @@ import java.nio.file.Paths;
 
 public class Main {
 
-    public static final String DEFAULT_INSTALL = "F:\\Program Files (x86)\\Toontown Rewritten";
+    public static final String DEFAULT_INSTALL = "C:\\Program Files (x86)\\Toontown Rewritten";
     public static String pathToUse;
 
     public static void main(String[] args) throws IOException {
