@@ -19,11 +19,13 @@ package lol.hyper.customlauncher.accounts.windows;
 
 import lol.hyper.customlauncher.accounts.Account;
 import lol.hyper.customlauncher.accounts.JSONManager;
+import org.json.JSONObject;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.nio.file.Paths;
 import java.util.HashMap;
 
 public class MainWindow extends JFrame {
@@ -102,10 +104,19 @@ public class MainWindow extends JFrame {
             public void mouseClicked(MouseEvent evt) {
                 JList list = (JList) evt.getSource();
                 if (evt.getClickCount() == 2) {
-                    int index = list.getSelectedIndex();
-                    Account account = JSONManager.getAccounts().get(index);
-                    SecretPrompt secretPrompt = new SecretPrompt("Enter Passphrase", account);
-                    secretPrompt.dispose();
+                    JSONObject options = JSONManager.readFile(JSONManager.configFile);
+                    if (!Paths.get(options.getString("ttrInstallLocation")).toFile().exists()) {
+                        JOptionPane.showMessageDialog(
+                                frame,
+                                "Unable to launch the game. The install location cannot be found.",
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        int index = list.getSelectedIndex();
+                        Account account = JSONManager.getAccounts().get(index);
+                        SecretPrompt secretPrompt = new SecretPrompt("Enter Passphrase", account);
+                        secretPrompt.dispose();
+                    }
                 }
             }
         });
