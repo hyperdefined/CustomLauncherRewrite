@@ -47,18 +47,17 @@ public class Main {
         }
 
         JSONObject optionsFile = JSONManager.readFile(JSONManager.configFile);
-        // check to see if the default ttr install is there
-        // if not, use the path in the config
-        if (!Paths.get(DEFAULT_INSTALL).toFile().exists()) {
-            pathToUse = optionsFile.getString("ttrInstallLocation");
-            // check the config path
-            if (!Paths.get(pathToUse).toFile().exists()) {
-                InvalidPath invalidPath = new InvalidPath("Error");
-                System.exit(1);
-            }
-        } else {
+
+        // check the config installation path
+        // if it's not valid, use default
+        if (!Paths.get(optionsFile.getString("ttrInstallLocation")).toFile().exists()) {
+            JFrame invalidPath = new InvalidPath("Error");
+            invalidPath.dispose();
             pathToUse = DEFAULT_INSTALL;
+        } else {
+            pathToUse = optionsFile.getString("ttrInstallLocation");
         }
+
         if (optionsFile.getBoolean("autoCheckTTRUpdates")) {
             JFrame updater = new Updater("Updater", Paths.get(pathToUse));
             updater.dispose();

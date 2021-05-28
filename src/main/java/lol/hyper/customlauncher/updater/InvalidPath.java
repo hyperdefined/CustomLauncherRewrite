@@ -34,10 +34,9 @@ public class InvalidPath extends JFrame {
 
         JOptionPane.showMessageDialog(
                 frame,
-                "Unable to detect TTR install path. Please check config.json and make sure that path is correct.",
+                "The install path in the config is not valid. I will use the default path instead.\nIf you installed TTR in a different location, please change it in the settings menu.",
                 "Error",
                 JOptionPane.ERROR_MESSAGE);
         frame.setLocationRelativeTo(null);
-        frame.dispose();
     }
 }
