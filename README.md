@@ -6,6 +6,7 @@ CustomLauncherRewrite is a brand new custom launcher for Toontown Rewritten. Thi
 
 ## Features
 * Ability to save logins for multiple accounts. Sick of typing it in *every* single time?
+* Add accounts right from the launcher. Don't need to mess around with files. 
 * Encrypt login data with a passphrase. You data is encrypted using [AES Encryption](https://searchsecurity.techtarget.com/definition/Advanced-Encryption-Standard).
 * Launch the game directly from the launcher, no external scripts needed. Supports 2FA and ToonGuard.
 * Check for TTR updates.
