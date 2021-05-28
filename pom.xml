@@ -83,7 +83,7 @@
                         <configuration>
                             <headerType>gui</headerType>
                             <jar>${project.build.directory}/CustomLauncherRewrite-${version}.jar</jar>
-                            <outfile>${project.build.directory}/CustomLauncherRewrite.exe</outfile>
+                            <outfile>${project.build.directory}/CustomLauncherRewrite-${version}.exe</outfile>
                             <downloadUrl>http://java.com/download</downloadUrl>
                             <classPath>
                                 <mainClass>lol.hyper.customlauncher.Main</mainClass>
@@ -103,7 +103,7 @@
                                 <productName>${project.name}</productName>
                                 <companyName>hyperdefined</companyName>
                                 <internalName>hyperdefined</internalName>
-                                <originalFilename>CustomLauncherRewrite.exe</originalFilename>
+                                <originalFilename>CustomLauncherRewrite-${version}.exe</originalFilename>
                             </versionInfo>
                         </configuration>
                     </execution>
