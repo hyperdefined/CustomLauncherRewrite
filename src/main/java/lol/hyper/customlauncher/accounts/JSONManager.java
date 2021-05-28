@@ -24,6 +24,8 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -35,6 +37,7 @@ public class JSONManager {
             Paths.get("config" + File.separator + "accounts.json").toFile();
     public static final File configFile =
             Paths.get("config" + File.separator + "config.json").toFile();
+    public static Path configPath = Paths.get("config");
     private static SecretKeySpec secretKey;
 
     /**
@@ -63,12 +66,12 @@ public class JSONManager {
     /**
      * Write data to JSON file.
      *
-     * @param jsonToWrite Data to write to file. This much be a JSON string.
+     * @param json Data to write to file. This much be a JSON string.
      */
-    public static void writeFile(String jsonToWrite, File file) {
+    public static void writeFile(JSONObject json, File file) {
         try {
             FileWriter writer = new FileWriter(file);
-            writer.write(jsonToWrite);
+            writer.write(json.toString());
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -137,7 +140,7 @@ public class JSONManager {
         m.put("username", username);
         m.put("password", encrypt(new String(password), new String(secret)));
         accountsJSON.put(String.valueOf(numberWeUse), m);
-        writeFile(accountsJSON.toString(), accountsFile);
+        writeFile(accountsJSON, accountsFile);
     }
 
     /**
@@ -148,7 +151,7 @@ public class JSONManager {
     public static void deleteAccount(int index) {
         JSONObject accountsJSON = readFile(accountsFile);
         accountsJSON.remove(String.valueOf(index));
-        writeFile(accountsJSON.toString(), accountsFile);
+        writeFile(accountsJSON, accountsFile);
     }
 
     /**
@@ -233,7 +236,7 @@ public class JSONManager {
         } else {
             config.put(key, value);
         }
-        writeFile(config.toString(), configFile);
+        writeFile(config, configFile);
     }
 
     /**

@@ -24,26 +24,31 @@ import lol.hyper.customlauncher.updater.Updater;
 import org.json.JSONObject;
 
 import javax.swing.*;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class Main {
 
-    public static final String DEFAULT_INSTALL = "C:\\Program Files (x86)\\Toontown Rewritten";
+    public static final String DEFAULT_INSTALL = "F:\\Program Files (x86)\\Toontown Rewritten";
     public static String pathToUse;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        if (!JSONManager.configPath.toFile().exists()) {
+            Files.createDirectory(JSONManager.configPath);
+        }
         // create the default files
         // config.json with default values
         // accounts.json with no accounts
         if (!JSONManager.configFile.exists()) {
-            JSONObject newConfig = new JSONObject();
-            newConfig.put("ttrInstallLocation", DEFAULT_INSTALL);
-            newConfig.put("autoCheckTTRUpdates", true);
-            JSONManager.writeFile(newConfig.toString(), JSONManager.configFile);
+            JSONObject newOptions = new JSONObject();
+            newOptions.put("ttrInstallLocation", DEFAULT_INSTALL);
+            newOptions.put("autoCheckTTRUpdates", true);
+            JSONManager.writeFile(newOptions, JSONManager.configFile);
         }
         if (!JSONManager.accountsFile.exists()) {
             JSONObject newAccounts = new JSONObject();
-            JSONManager.writeFile(newAccounts.toString(), JSONManager.configFile);
+            JSONManager.writeFile(newAccounts, JSONManager.accountsFile);
         }
 
         JSONObject optionsFile = JSONManager.readFile(JSONManager.configFile);

@@ -173,7 +173,8 @@ public class Updater extends JFrame {
                     try {
                         System.out.println("Downloading " + PATCHES_URL_DL + dl);
                         updateStatus.setText("Downloading " + dl);
-                        FileUtils.copyURLToFile(new URL(PATCHES_URL_DL + dl), new File(tempFolder + File.separator + dl));
+                        FileUtils.copyURLToFile(
+                                new URL(PATCHES_URL_DL + dl), new File(tempFolder + File.separator + dl));
                         System.out.println("Done downloading " + dl);
                         updateStatus.setText("Finished downloading " + dl);
                     } catch (IOException e) {
@@ -190,7 +191,9 @@ public class Updater extends JFrame {
                     updateStatus.setText("Extracting file " + dl);
                     try {
                         extractFile(
-                                Paths.get(dl).toFile(), Paths.get(fileToDownload).toFile(), installLocation);
+                                Paths.get(dl).toFile(),
+                                Paths.get(fileToDownload).toFile(),
+                                installLocation);
                     } catch (IOException e) {
                         e.printStackTrace();
                         JOptionPane.showMessageDialog(
