@@ -105,7 +105,9 @@ public class MainWindow extends JFrame {
                 JList list = (JList) evt.getSource();
                 if (evt.getClickCount() == 2) {
                     JSONObject options = JSONManager.readFile(JSONManager.configFile);
-                    if (!Paths.get(options.getString("ttrInstallLocation")).toFile().exists()) {
+                    if (!Paths.get(options.getString("ttrInstallLocation"))
+                            .toFile()
+                            .exists()) {
                         JOptionPane.showMessageDialog(
                                 frame,
                                 "Unable to launch the game. The install location cannot be found.",
