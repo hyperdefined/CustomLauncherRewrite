@@ -94,12 +94,12 @@
                                 <jdkPreference>preferJre</jdkPreference>
                             </jre>
                             <versionInfo>
-                                <fileVersion>${project.version}</fileVersion>
-                                <txtFileVersion>${project.version}</txtFileVersion>
+                                <fileVersion>0.0.0.0</fileVersion>
+                                <txtFileVersion>0.0.0.0</txtFileVersion>
                                 <fileDescription>${project.name}</fileDescription>
                                 <copyright>hyperdefined</copyright>
-                                <productVersion>${project.version}</productVersion>
-                                <txtProductVersion>${project.version}</txtProductVersion>
+                                <productVersion>0.0.0.0</productVersion>
+                                <txtProductVersion>0.0.0.0</txtProductVersion>
                                 <productName>${project.name}</productName>
                                 <companyName>hyperdefined</companyName>
                                 <internalName>hyperdefined</internalName>

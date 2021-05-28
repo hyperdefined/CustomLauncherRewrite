@@ -46,7 +46,7 @@ public class Updater extends JFrame {
     public Updater(String title, Path installLocation) {
         JFrame frame = new JFrame(title);
         frame.setSize(370, 150);
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
