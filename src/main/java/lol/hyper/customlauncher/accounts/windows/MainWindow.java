@@ -17,8 +17,10 @@
 
 package lol.hyper.customlauncher.accounts.windows;
 
+import lol.hyper.customlauncher.Main;
 import lol.hyper.customlauncher.accounts.Account;
 import lol.hyper.customlauncher.accounts.JSONManager;
+import lol.hyper.customlauncher.updater.Updater;
 import org.json.JSONObject;
 
 import javax.swing.*;
@@ -99,6 +101,16 @@ public class MainWindow extends JFrame {
         optionsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         optionsButton.setMaximumSize(new Dimension(300, optionsButton.getMinimumSize().height));
         panel.add(optionsButton);
+
+        // update button
+        JButton updateButton = new JButton("Check TTR Updates");
+        updateButton.addActionListener(e -> {
+            JFrame updater = new Updater("Updater", Paths.get(Main.pathToUse));
+            updater.dispose();
+        });
+        updateButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        updateButton.setMaximumSize(new Dimension(300, updateButton.getMinimumSize().height));
+        panel.add(updateButton);
 
         accountList.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent evt) {
