@@ -24,7 +24,7 @@ If you have installed TTR in a different location, copy that installation path a
 You passphrase was typed in wrong. You either typed it incorrectly when you added an account, or you keep typing it incorrectly when you login. Remove the account and re-add it back.
 
 ### I have an issue that is not listed here.
-No problem! Create a new [issue](https://github.com/hyperdefined/CustomLauncherRewrite/issues) and include as much detail as possible so I can help you out.
+No problem! Create a new [issue](https://github.com/hyperdefined/CustomLauncherRewrite/issues) and include as much detail as possible, so I can help you out.
 
 ## License
 This program is released under GNU General Public License v3. See [LICENSE](https://github.com/hyperdefined/CustomLauncherRewrite/blob/master/LICENSE).
