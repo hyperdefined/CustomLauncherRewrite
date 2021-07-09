@@ -208,9 +208,23 @@ public class Updater extends JFrame {
                             + TimeUnit.SECONDS.convert(System.nanoTime() - startTime, TimeUnit.NANOSECONDS)
                             + " seconds.");
                 }
+                File[] tempFolderFiles = tempFolder.listFiles();
+                if (tempFolderFiles != null) {
+                    for (File currentFile : tempFolderFiles) {
+                        try {
+                            Files.delete(currentFile.toPath());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            JOptionPane.showMessageDialog(
+                                    frame, "There was an error deleting" + currentFile + ".", "Error", JOptionPane.ERROR_MESSAGE);
+                            frame.dispose();
+                        }
+                    }
+                }
                 try {
-                    Files.delete(Paths.get("temp"));
+                    Files.delete(Paths.get(System.getProperty("user.dir") + File.separator + "temp"));
                 } catch (IOException e) {
+                    e.printStackTrace();
                     JOptionPane.showMessageDialog(
                             frame, "There was an error deleting \"temp\" folder.", "Error", JOptionPane.ERROR_MESSAGE);
                     frame.dispose();
