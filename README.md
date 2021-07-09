@@ -14,7 +14,10 @@ CustomLauncherRewrite is a brand-new custom launcher for Toontown Rewritten. Thi
 ## Setup
 * You need Java 8 or above installed.
 
-After you have these things, download the latest [release](https://github.com/hyperdefined/CustomLauncherRewrite/releases). Throw the `exe` file into a new folder and run it. To add a new account, simply click "Add Account" and follow the steps. Double click the account to launch the game.
+Simply download the latest [release](https://github.com/hyperdefined/CustomLauncherRewrite/releases). Throw the `exe` file into a new folder and run it. To add a new account, simply click "Add Account" and follow the steps. Double click the account to launch the game.
+
+## Updating
+To update to a new version, simply download the new version and put the new `exe` file in the same folder as in the old one. Run the new `exe` and you are all set.
 
 ## Troubleshooting
 ### It says that it can't find my TTR installation.
