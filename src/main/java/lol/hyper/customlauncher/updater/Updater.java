@@ -64,7 +64,7 @@ public class Updater extends JFrame {
         frame.add(progressBar);
 
         progressBar.setBounds(150, 100, 100, 30);
-        updateStatus.setBounds(100, 25, 370, 40);
+        updateStatus.setBounds(70, 25, 370, 40);
 
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
@@ -165,7 +165,7 @@ public class Updater extends JFrame {
                 }
 
                 System.out.println(filesToDownload.size() + " file(s) are going to be downloaded.");
-                System.out.println(filesToDownload.toString());
+                System.out.println(filesToDownload);
 
                 for (String fileToDownload : filesToDownload) {
                     JSONObject file = patches.getJSONObject(fileToDownload);

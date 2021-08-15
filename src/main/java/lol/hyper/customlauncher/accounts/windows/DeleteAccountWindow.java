@@ -73,7 +73,7 @@ public class DeleteAccountWindow extends JFrame {
                 if (evt.getClickCount() == 2) {
                     int index = list.getSelectedIndex();
                     Account account = JSONManager.getAccounts().get(index);
-                    JSONManager.deleteAccount(index);
+                    JSONManager.deleteAccount(account);
                     MainWindow.refreshAccountList();
                     JOptionPane.showMessageDialog(frame, account.getUsername() + " was deleted!");
                     frame.dispose();
