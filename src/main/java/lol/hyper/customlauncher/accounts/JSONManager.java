@@ -125,14 +125,13 @@ public class JSONManager {
     /**
      * Adds a new account to the accounts file.
      * @param username Account username.
-     * @param password Account password.
-     * @param secret Secret passphrase. (Used to encrypt the password.)
+     * @param encryptedPassword Account encrypted password.
      */
-    public static void addNewAccount(String username, char[] password, char[] secret) {
+    public static void addNewAccount(String username, String encryptedPassword) {
         JSONArray accountsJSON = readJSONArray(accountsFile);
         JSONObject newAccount =  new JSONObject();
         newAccount.put("username", username);
-        newAccount.put("password", encrypt(new String(password), new String(secret)));
+        newAccount.put("password", encryptedPassword);
         accountsJSON.put(newAccount);
         writeFile(accountsJSON, accountsFile);
     }
