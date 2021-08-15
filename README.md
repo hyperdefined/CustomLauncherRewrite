@@ -39,3 +39,4 @@ This program is released under GNU General Public License v3. See [LICENSE](http
 | [commons-compress](https://github.com/apache/commons-compress/blob/master/LICENSE.txt) |
 | [httpcomponents-client](https://github.com/apache/httpcomponents-client/blob/master/LICENSE.txt) |
 | [launch4j](https://github.com/mirror/launch4j/blob/master/LICENSE.txt) |
+| [log4j2](https://github.com/apache/logging-log4j2/blob/master/LICENSE.txt) |
