@@ -106,7 +106,7 @@ public class MainWindow extends JFrame {
             public void mouseClicked(MouseEvent evt) {
                 JList list = (JList) evt.getSource();
                 if (evt.getClickCount() == 2) {
-                    JSONObject options = JSONManager.readJSONObject(JSONManager.configFile);
+                    JSONObject options = new JSONObject(JSONManager.readFile(JSONManager.configFile));
                     if (!Paths.get(options.getString("ttrInstallLocation"))
                             .toFile()
                             .exists()) {

@@ -58,7 +58,14 @@ public class Main {
             logger.info("Creating base accounts file...");
         }
 
-        JSONObject optionsFile = JSONManager.readJSONObject(JSONManager.configFile);
+        JSONObject optionsFile = new JSONObject(JSONManager.readFile(JSONManager.configFile));
+
+        // automatically convert the old format to the new one
+        char firstChar = JSONManager.readFile(JSONManager.accountsFile).charAt(0);
+        if (firstChar == '{') {
+            JSONManager.convertToNewFormat();
+            Main.logger.info("Converting account storage to JSONArray format.");
+        }
 
         // check the config installation path
         // if it's not valid, use default

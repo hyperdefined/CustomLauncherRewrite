@@ -26,6 +26,7 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
@@ -42,49 +43,18 @@ public class JSONManager {
     private static SecretKeySpec secretKey;
 
     /**
-     * Read JSONArray from file.
+     * Read contents of a file.
      *
-     * @return JSONArray with JSON data.
+     * @return Contents of a file.
      */
-    public static JSONArray readJSONArray(File file) {
-        JSONArray object = null;
+    public static String readFile(File file) {
+        byte[] encoded = new byte[0];
         try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            StringBuilder sb = new StringBuilder();
-            String line = br.readLine();
-            while (line != null) {
-                sb.append(line);
-                line = br.readLine();
-            }
-            object = new JSONArray(sb.toString());
-            br.close();
-        } catch (Exception e) {
-            Main.logger.error("Unable to read file!", e);
+            encoded = Files.readAllBytes(file.toPath());
+        } catch (IOException e) {
+            Main.logger.error(e);
         }
-        return object;
-    }
-
-    /**
-     * Read JSONObject from file.
-     *
-     * @return JSONObject with JSON data.
-     */
-    public static JSONObject readJSONObject(File file) {
-        JSONObject object = null;
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            StringBuilder sb = new StringBuilder();
-            String line = br.readLine();
-            while (line != null) {
-                sb.append(line);
-                line = br.readLine();
-            }
-            object = new JSONObject(sb.toString());
-            br.close();
-        } catch (Exception e) {
-            Main.logger.error("Unable to read file!", e);
-        }
-        return object;
+        return new String(encoded, StandardCharsets.UTF_8);
     }
 
     /**
@@ -109,7 +79,7 @@ public class JSONManager {
      */
     public static List<Account> getAccounts() {
         List<Account> accounts = new ArrayList<>();
-        JSONArray accountsJSON = readJSONArray(accountsFile);
+        JSONArray accountsJSON = new JSONArray(readFile(accountsFile));
         for (int i = 0; i < accountsJSON.length(); i++) {
             JSONObject currentAccount = accountsJSON.getJSONObject(i);
             String username = (String) currentAccount.get("username");
@@ -126,7 +96,7 @@ public class JSONManager {
      * @param encryptedPassword Account encrypted password.
      */
     public static void addNewAccount(String username, String encryptedPassword) {
-        JSONArray accountsJSON = readJSONArray(accountsFile);
+        JSONArray accountsJSON = new JSONArray(readFile(accountsFile));
         JSONObject newAccount =  new JSONObject();
         newAccount.put("username", username);
         newAccount.put("password", encryptedPassword);
@@ -140,13 +110,13 @@ public class JSONManager {
      * @param account Account to delete.
      */
     public static void deleteAccount(Account account) {
-        JSONArray accountsJSON = readJSONArray(accountsFile);
+        JSONArray accountsJSON = new JSONArray(readFile(accountsFile));
         accountsJSON.remove(getAccountIndex(account));
         writeFile(accountsJSON, accountsFile);
     }
 
     public static int getAccountIndex(Account account) {
-        JSONArray accountsJSON = readJSONArray(accountsFile);
+        JSONArray accountsJSON = new JSONArray(readFile(accountsFile));
         String username = account.getUsername();
         for (int i = 0; i < accountsJSON.length(); i++) {
             JSONObject currentAccount = accountsJSON.getJSONObject(i);
@@ -217,7 +187,7 @@ public class JSONManager {
      * @param remove Should we remove this entry or add this entry?
      */
     public static void editConfig(String key, Object value, boolean remove) {
-        JSONObject config = readJSONObject(configFile);
+        JSONObject config = new JSONObject(readFile(configFile));
         if (remove) {
             config.remove(key);
         } else {
@@ -232,7 +202,22 @@ public class JSONManager {
      * @return Yes/no if we should.
      */
     public static boolean shouldWeUpdate() {
-        JSONObject config = readJSONObject(configFile);
+        JSONObject config = new JSONObject(readFile(configFile));
         return config.getBoolean("autoCheckTTRUpdates");
+    }
+
+    public static void convertToNewFormat() {
+        JSONObject oldFile = new JSONObject(readFile(accountsFile));
+        JSONArray newFile = new JSONArray();
+        Iterator<String> keys = oldFile.keys();
+
+        while(keys.hasNext()) {
+            String key = keys.next();
+            if (oldFile.get(key) instanceof JSONObject) {
+                JSONObject temp = (JSONObject) oldFile.get(key);
+                newFile.put(temp);
+            }
+        }
+        writeFile(newFile, accountsFile);
     }
 }
