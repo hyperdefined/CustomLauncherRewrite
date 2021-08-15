@@ -17,6 +17,7 @@
 
 package lol.hyper.customlauncher.login;
 
+import lol.hyper.customlauncher.Main;
 import lol.hyper.customlauncher.login.windows.IncorrectLogin;
 import lol.hyper.customlauncher.login.windows.QueueLogin;
 import lol.hyper.customlauncher.login.windows.TwoFactorAuth;
@@ -43,26 +44,31 @@ public class LoginHandler {
 
     /**
      * Handle the result of the login request. This will take a login request and act based on that
-     * login request. This let's us send the login request back to this method over and over again.
+     * login request. This lets us send the login request back to this method over and over again.
      *
      * @param loginRequest The login request to process.
      */
     public static void handleLoginRequest(LoginRequest loginRequest) {
         HashMap<String, String> request;
         try {
+            Main.logger.info("Sending login request...");
             request = sendRequest(loginRequest).getRequestDetails();
         } catch (Exception e) {
-            e.printStackTrace();
+            Main.logger.error(e);
             return;
         }
 
         String status = request.get("success");
         String banner = request.get("banner");
 
+        Main.logger.info("banner=" + banner);
+        Main.logger.info("status=" + status);
+
         switch (status) {
             case "false": {
                 // handle incorrect login
                 if (banner.contains("Incorrect username")) {
+                    Main.logger.info("Username or password is wrong.");
                     JFrame incorrectLogin = new IncorrectLogin("Error");
                     incorrectLogin.dispose();
                 }
@@ -70,10 +76,13 @@ public class LoginHandler {
             }
             case "partial": {
                 // handle 2fa
+                Main.logger.info("Asking user for two-factor auth.");
+
                 JFrame twoFactorAuth = new TwoFactorAuth("Enter Code", banner, request.get("responseToken"));
                 break;
             }
             case "true": {
+                Main.logger.info("Login successful, launching game.");
                 String gameServer = request.get("gameserver");
                 String cookie = request.get("cookie");
                 LaunchGame launchGame = new LaunchGame(cookie, gameServer);
@@ -82,6 +91,7 @@ public class LoginHandler {
             }
             case "delayed": {
                 // handle queue
+                Main.logger.info("Stuck in queue.");
                 JFrame queueLogin = new QueueLogin("Queue", request.get("queueToken"));
                 queueLogin.dispose();
                 break;

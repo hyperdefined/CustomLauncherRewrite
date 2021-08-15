@@ -4,3 +4,4 @@ target/
 out/
 temp/
 config/
+log-*.log

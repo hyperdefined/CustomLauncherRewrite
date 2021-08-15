@@ -17,6 +17,7 @@
 
 package lol.hyper.customlauncher.accounts;
 
+import lol.hyper.customlauncher.Main;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -58,8 +59,7 @@ public class JSONManager {
             object = new JSONArray(sb.toString());
             br.close();
         } catch (Exception e) {
-            System.out.println("Unable to read file!");
-            e.printStackTrace();
+            Main.logger.error("Unable to read file!", e);
         }
         return object;
     }
@@ -82,8 +82,7 @@ public class JSONManager {
             object = new JSONObject(sb.toString());
             br.close();
         } catch (Exception e) {
-            System.out.println("Unable to read file!");
-            e.printStackTrace();
+            Main.logger.error("Unable to read file!", e);
         }
         return object;
     }
@@ -99,8 +98,7 @@ public class JSONManager {
             writer.write(json.toString());
             writer.close();
         } catch (IOException e) {
-            System.out.println("Unable to write file!");
-            e.printStackTrace();
+            Main.logger.error("Unable to write file!", e);
         }
     }
 
@@ -187,8 +185,7 @@ public class JSONManager {
             cipher.init(Cipher.ENCRYPT_MODE, secretKey);
             return Base64.getEncoder().encodeToString(cipher.doFinal(strToEncrypt.getBytes(StandardCharsets.UTF_8)));
         } catch (Exception e) {
-            System.out.println("Error while encrypting input text!");
-            e.printStackTrace();
+            Main.logger.error("Error while encrypting input text!", e);
         }
         return null;
     }
@@ -207,8 +204,7 @@ public class JSONManager {
             cipher.init(Cipher.DECRYPT_MODE, secretKey);
             return new String(cipher.doFinal(Base64.getDecoder().decode(strToDecrypt)), StandardCharsets.UTF_8);
         } catch (Exception e) {
-            System.out.println("Error while decrypting input text!");
-            e.printStackTrace();
+            Main.logger.error("Error while decrypting input text!", e);
             return null;
         }
     }
