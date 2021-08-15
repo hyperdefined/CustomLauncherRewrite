@@ -17,6 +17,7 @@
 
 package lol.hyper.customlauncher.accounts;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -40,11 +41,35 @@ public class JSONManager {
     private static SecretKeySpec secretKey;
 
     /**
-     * Read data from JSON file.
+     * Read JSONArray from file.
+     *
+     * @return JSONArray with JSON data.
+     */
+    public static JSONArray readJSONArray(File file) {
+        JSONArray object = null;
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            StringBuilder sb = new StringBuilder();
+            String line = br.readLine();
+            while (line != null) {
+                sb.append(line);
+                line = br.readLine();
+            }
+            object = new JSONArray(sb.toString());
+            br.close();
+        } catch (Exception e) {
+            System.out.println("Unable to read file!");
+            e.printStackTrace();
+        }
+        return object;
+    }
+
+    /**
+     * Read JSONObject from file.
      *
      * @return JSONObject with JSON data.
      */
-    public static JSONObject readFile(File file) {
+    public static JSONObject readJSONObject(File file) {
         JSONObject object = null;
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
@@ -68,7 +93,7 @@ public class JSONManager {
      *
      * @param json Data to write to file. This much be a JSON string.
      */
-    public static void writeFile(JSONObject json, File file) {
+    public static void writeFile(Object json, File file) {
         try {
             FileWriter writer = new FileWriter(file);
             writer.write(json.toString());
@@ -86,36 +111,15 @@ public class JSONManager {
      */
     public static List<Account> getAccounts() {
         List<Account> accounts = new ArrayList<>();
-        JSONObject accountsJSON = readFile(accountsFile);
-        for (Integer x : getAccountIndexes(accountsJSON)) {
-            JSONObject temp;
-            try {
-                temp = (JSONObject) accountsJSON.get(x.toString());
-            } catch (JSONException exception) {
-                System.out.println("Trying to get an account with invalid index, ignoring...");
-                continue;
-            }
-            String username = (String) temp.get("username");
-            String password = (String) temp.get("password");
+        JSONArray accountsJSON = readJSONArray(accountsFile);
+        for (int i = 0; i < accountsJSON.length(); i++) {
+            JSONObject currentAccount = accountsJSON.getJSONObject(i);
+            String username = (String) currentAccount.get("username");
+            String password = (String) currentAccount.get("password");
             Account account = new Account(username, password);
             accounts.add(account);
         }
         return accounts;
-    }
-
-    /**
-     * This will get all of the account indexes from the accounts file. They are always not in
-     * order, so we have to manually save this list.
-     *
-     * @param jsonObject The object to get the indexes for.
-     * @return A list of the indexes.
-     */
-    private static ArrayList<Integer> getAccountIndexes(JSONObject jsonObject) {
-        ArrayList<Integer> indexes = new ArrayList<>();
-        for (String x : jsonObject.keySet()) {
-            indexes.add(Integer.valueOf(x));
-        }
-        return indexes;
     }
 
     /**
@@ -125,48 +129,32 @@ public class JSONManager {
      * @param secret Secret passphrase. (Used to encrypt the password.)
      */
     public static void addNewAccount(String username, char[] password, char[] secret) {
-        JSONObject accountsJSON = readFile(accountsFile);
-        ArrayList<Integer> indexes = getAccountIndexes(accountsJSON);
-        int numberWeUse = findFirstMissing(indexes);
-        if (accountsJSON.length() == 0) {
-            numberWeUse = 0;
-        }
-
-        // if there is no missing number in the sequence, then get the last number and add 1
-        // this will use the next number in the sequence
-        if (numberWeUse == -1) {
-            numberWeUse = indexes.get(indexes.size() - 1) + 1;
-        }
-
-        Map m = new LinkedHashMap(3);
-        m.put("username", username);
-        m.put("password", encrypt(new String(password), new String(secret)));
-        accountsJSON.put(String.valueOf(numberWeUse), m);
+        JSONArray accountsJSON = readJSONArray(accountsFile);
+        JSONObject newAccount =  new JSONObject();
+        newAccount.put("username", username);
+        newAccount.put("password", encrypt(new String(password), new String(secret)));
+        accountsJSON.put(newAccount);
         writeFile(accountsJSON, accountsFile);
     }
 
     /**
      * Delete an account from the accounts file.
      *
-     * @param index Index of account to delete.
+     * @param account Account to delete.
      */
-    public static void deleteAccount(int index) {
-        JSONObject accountsJSON = readFile(accountsFile);
-        accountsJSON.remove(String.valueOf(index));
+    public static void deleteAccount(Account account) {
+        JSONArray accountsJSON = readJSONArray(accountsFile);
+        accountsJSON.remove(getAccountIndex(account));
         writeFile(accountsJSON, accountsFile);
     }
 
-    /**
-     * Find the first missing number from the accounts indexes. This will check for a gap (ex: 1,2,4
-     * - 3 is the "first missing"). This is mainly used so the accounts file doesn't have gaps in
-     * the account indexes. This will tell the account creator to use the missing index.
-     *
-     * @param indexes The indexes to check.
-     * @return The first missing number in the sequence.
-     */
-    private static int findFirstMissing(ArrayList<Integer> indexes) {
-        for (int i = 0; i < indexes.size(); i++) {
-            if (!indexes.contains(i)) {
+    public static int getAccountIndex(Account account) {
+        JSONArray accountsJSON = readJSONArray(accountsFile);
+        String username = account.getUsername();
+        for (int i = 0; i < accountsJSON.length(); i++) {
+            JSONObject currentAccount = accountsJSON.getJSONObject(i);
+            String usernameTemp = currentAccount.getString("username");
+            if (usernameTemp.equalsIgnoreCase(username)) {
                 return i;
             }
         }
@@ -234,7 +222,7 @@ public class JSONManager {
      * @param remove Should we remove this entry or add this entry?
      */
     public static void editConfig(String key, Object value, boolean remove) {
-        JSONObject config = readFile(configFile);
+        JSONObject config = readJSONObject(configFile);
         if (remove) {
             config.remove(key);
         } else {
@@ -249,7 +237,7 @@ public class JSONManager {
      * @return Yes/no if we should.
      */
     public static boolean shouldWeUpdate() {
-        JSONObject config = readFile(configFile);
+        JSONObject config = readJSONObject(configFile);
         return config.getBoolean("autoCheckTTRUpdates");
     }
 }

@@ -21,6 +21,7 @@ import lol.hyper.customlauncher.accounts.JSONManager;
 import lol.hyper.customlauncher.accounts.windows.MainWindow;
 import lol.hyper.customlauncher.updater.InvalidPath;
 import lol.hyper.customlauncher.updater.Updater;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.swing.*;
@@ -47,11 +48,11 @@ public class Main {
             JSONManager.writeFile(newOptions, JSONManager.configFile);
         }
         if (!JSONManager.accountsFile.exists()) {
-            JSONObject newAccounts = new JSONObject();
+            JSONArray newAccounts = new JSONArray();
             JSONManager.writeFile(newAccounts, JSONManager.accountsFile);
         }
 
-        JSONObject optionsFile = JSONManager.readFile(JSONManager.configFile);
+        JSONObject optionsFile = JSONManager.readJSONObject(JSONManager.configFile);
 
         // check the config installation path
         // if it's not valid, use default
