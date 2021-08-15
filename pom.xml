@@ -23,7 +23,7 @@
 
     <groupId>lol.hyper</groupId>
     <artifactId>CustomLauncherRewrite</artifactId>
-    <version>1.1.1</version>
+    <version>1.2</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -53,6 +53,7 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
+                            <minimizeJar>true</minimizeJar>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>lol.hyper.customlauncher.Main</mainClass>
@@ -94,15 +95,14 @@
                                 <jdkPreference>preferJre</jdkPreference>
                             </jre>
                             <versionInfo>
-                                <fileVersion>0.0.0.0</fileVersion>
-                                <txtFileVersion>0.0.0.0</txtFileVersion>
-                                <fileDescription>${project.name}</fileDescription>
+                                <fileVersion>1.2.0.0</fileVersion>
+                                <txtFileVersion>${project.version}</txtFileVersion>
+                                <fileDescription>A custom launcher for Toontown Rewritten.</fileDescription>
                                 <copyright>hyperdefined</copyright>
-                                <productVersion>0.0.0.0</productVersion>
-                                <txtProductVersion>0.0.0.0</txtProductVersion>
+                                <productVersion>1.2.0.0</productVersion>
+                                <txtProductVersion>1.2.0.0</txtProductVersion>
                                 <productName>${project.name}</productName>
-                                <companyName>hyperdefined</companyName>
-                                <internalName>hyperdefined</internalName>
+                                <internalName>${project.name}</internalName>
                                 <originalFilename>CustomLauncherRewrite-${version}.exe</originalFilename>
                             </versionInfo>
                         </configuration>
