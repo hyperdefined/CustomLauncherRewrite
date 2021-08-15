@@ -96,6 +96,11 @@ public class LoginHandler {
                 queueLogin.dispose();
                 break;
             }
+            default: {
+                Main.logger.error("Weird login response: " + status);
+                Main.logger.error("Exiting!");
+                System.exit(1);
+            }
         }
     }
 
