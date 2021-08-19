@@ -84,6 +84,8 @@ public class Main {
                         "Unable to find your TTR install directory. We won't be able to check for TTR updates nor run the game.");
                 errorWindow.dispose();
                 pathToUse = null;
+            } else {
+                pathToUse = JSONManager.config().getString("ttrInstallLocation");
             }
         }
 
