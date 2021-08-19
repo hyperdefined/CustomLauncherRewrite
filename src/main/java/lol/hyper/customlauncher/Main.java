@@ -58,8 +58,6 @@ public class Main {
             logger.info("Creating base accounts file...");
         }
 
-        JSONObject optionsFile = new JSONObject(JSONManager.readFile(JSONManager.configFile));
-
         // automatically convert the old format to the new one
         char firstChar = JSONManager.readFile(JSONManager.accountsFile).charAt(0);
         if (firstChar == '{') {
@@ -68,16 +66,16 @@ public class Main {
         }
 
         // check the config installation path
-        Main.logger.info("ttrInstallLocation = " + optionsFile.getString("ttrInstallLocation"));
-        if (!Paths.get(optionsFile.getString("ttrInstallLocation")).toFile().exists()) {
+        Main.logger.info("ttrInstallLocation = " + JSONManager.config().getString("ttrInstallLocation"));
+        if (!Paths.get(JSONManager.config().getString("ttrInstallLocation")).toFile().exists()) {
             Main.logger.warn("ttrInstallLocation does not exist. Is the game installed here?");
             JFrame errorWindow = new ErrorWindow("Unable to find your TTR install directory. We won't be able to check for TTR updates nor run the game.");
             errorWindow.dispose();
             pathToUse = null;
         }
 
-        Main.logger.info("autoCheckTTRUpdates = " + optionsFile.getBoolean("autoCheckTTRUpdates"));
-        if (optionsFile.getBoolean("autoCheckTTRUpdates")) {
+        Main.logger.info("autoCheckTTRUpdates = " + JSONManager.config().getBoolean("autoCheckTTRUpdates"));
+        if (JSONManager.config().getBoolean("autoCheckTTRUpdates")) {
             if (pathToUse != null) {
                 JFrame updater = new Updater("Updater", Paths.get(pathToUse));
                 updater.dispose();

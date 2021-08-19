@@ -197,13 +197,11 @@ public class JSONManager {
     }
 
     /**
-     * Check the config to see if we should check for TTR updates.
-     *
-     * @return Yes/no if we should.
+     * Get the contents of the config file into a JSONObject.
+     * @return The config as a JSONObject.
      */
-    public static boolean shouldWeUpdate() {
-        JSONObject config = new JSONObject(readFile(configFile));
-        return config.getBoolean("autoCheckTTRUpdates");
+    public static JSONObject config() {
+        return new JSONObject(readFile(configFile));
     }
 
     public static void convertToNewFormat() {
