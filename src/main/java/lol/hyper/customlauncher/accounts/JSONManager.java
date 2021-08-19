@@ -19,12 +19,13 @@ package lol.hyper.customlauncher.accounts;
 
 import lol.hyper.customlauncher.Main;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -97,7 +98,7 @@ public class JSONManager {
      */
     public static void addNewAccount(String username, String encryptedPassword) {
         JSONArray accountsJSON = new JSONArray(readFile(accountsFile));
-        JSONObject newAccount =  new JSONObject();
+        JSONObject newAccount = new JSONObject();
         newAccount.put("username", username);
         newAccount.put("password", encryptedPassword);
         accountsJSON.put(newAccount);
@@ -209,7 +210,7 @@ public class JSONManager {
         JSONArray newFile = new JSONArray();
         Iterator<String> keys = oldFile.keys();
 
-        while(keys.hasNext()) {
+        while (keys.hasNext()) {
             String key = keys.next();
             if (oldFile.get(key) instanceof JSONObject) {
                 JSONObject temp = (JSONObject) oldFile.get(key);

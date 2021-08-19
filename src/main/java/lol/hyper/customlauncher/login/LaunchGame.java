@@ -29,9 +29,9 @@ import java.util.Map;
 
 public class LaunchGame extends Thread {
 
+    public final Logger logger = LogManager.getLogger(this);
     final String cookie;
     final String gameServer;
-    public final Logger logger = LogManager.getLogger(this);
 
     public LaunchGame(String cookie, String gameServer) {
         this.cookie = cookie;

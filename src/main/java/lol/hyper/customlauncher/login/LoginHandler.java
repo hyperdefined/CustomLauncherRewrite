@@ -17,7 +17,6 @@
 
 package lol.hyper.customlauncher.login;
 
-import lol.hyper.customlauncher.Main;
 import lol.hyper.customlauncher.generic.ErrorWindow;
 import lol.hyper.customlauncher.generic.InfoWindow;
 import lol.hyper.customlauncher.login.windows.TwoFactorAuth;
@@ -41,10 +40,10 @@ import java.util.concurrent.TimeUnit;
 
 public class LoginHandler {
 
+    public static final Logger logger = LogManager.getLogger(LoginHandler.class);
     private static final String REQUEST_URL = "https://www.toontownrewritten.com/api/login?format=json";
     private static final String USER_AGENT =
             "CustomLauncherRewrite https://github.com/hyperdefined/CustomLauncherRewrite";
-    public static final Logger logger = LogManager.getLogger(LoginHandler.class);
 
     /**
      * Handle the result of the login request. This will take a login request and act based on that
@@ -110,7 +109,8 @@ public class LoginHandler {
             default: {
                 logger.error("Weird login response: " + status);
                 logger.info(request);
-                JFrame errorWindow = new ErrorWindow("TTR sent back a weird response, or we got an invalid response.\nCheck the log for more info.");
+                JFrame errorWindow = new ErrorWindow(
+                        "TTR sent back a weird response, or we got an invalid response.\nCheck the log for more info.");
                 errorWindow.dispose();
             }
         }

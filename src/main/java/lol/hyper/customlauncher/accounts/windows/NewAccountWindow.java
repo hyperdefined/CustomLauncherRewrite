@@ -78,7 +78,10 @@ public class NewAccountWindow extends JFrame {
             boolean password2Box = password2Field.getPassword().length == 0;
             if (!userbox && !passwordBox && !password2Box) {
                 JSONManager.addNewAccount(
-                        userTextField.getText(), JSONManager.encrypt(String.valueOf(passwordField.getPassword()), String.valueOf(password2Field.getPassword())));
+                        userTextField.getText(),
+                        JSONManager.encrypt(
+                                String.valueOf(passwordField.getPassword()),
+                                String.valueOf(password2Field.getPassword())));
                 MainWindow.refreshAccountList();
                 JOptionPane.showMessageDialog(frame, userTextField.getText() + " was saved!");
                 frame.dispose();

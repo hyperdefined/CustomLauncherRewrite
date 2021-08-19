@@ -17,10 +17,8 @@
 
 package lol.hyper.customlauncher.accounts.windows;
 
-import lol.hyper.customlauncher.Main;
 import lol.hyper.customlauncher.accounts.Account;
 import lol.hyper.customlauncher.accounts.JSONManager;
-import lol.hyper.customlauncher.updater.Updater;
 import org.json.JSONObject;
 
 import javax.swing.*;
