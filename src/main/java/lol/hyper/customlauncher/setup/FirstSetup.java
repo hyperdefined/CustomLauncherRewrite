@@ -48,9 +48,16 @@ public class FirstSetup extends JFrame {
         }
         if (finalInstallPath == null) {
             JOptionPane.showMessageDialog(
-                    frame, "We are unable to find your install directory. You can set this directory in the settings.");
+                    frame,
+                    "We are unable to find your install directory. You can set this directory in the options menu.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
         } else {
-            JOptionPane.showMessageDialog(frame, "We found your install directory. Everything is good to go!");
+            JOptionPane.showMessageDialog(
+                    frame,
+                    "We found your install directory. Everything is good to go!",
+                    "Info",
+                    JOptionPane.INFORMATION_MESSAGE);
             JSONManager.editConfig("ttrInstallLocation", finalInstallPath);
         }
     }
