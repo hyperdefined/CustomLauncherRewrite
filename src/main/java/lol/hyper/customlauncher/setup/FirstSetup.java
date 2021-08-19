@@ -18,11 +18,15 @@
 package lol.hyper.customlauncher.setup;
 
 import lol.hyper.customlauncher.accounts.JSONManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.io.File;
 
 public class FirstSetup extends JFrame {
+
+    private final Logger logger = LogManager.getLogger(FirstSetup.class);
 
     public FirstSetup() {
         JFrame frame = new JFrame();
@@ -41,9 +45,12 @@ public class FirstSetup extends JFrame {
         for (char alphabet = 'A'; alphabet <= 'Z'; alphabet++) {
             // we make a temp string so we don't replace the template.
             String temp = installPathTest.replace("XX", String.valueOf(alphabet));
+            logger.info("Checking install directory: " + temp);
             File location = new File(temp);
             if (location.exists()) {
                 finalInstallPath = temp;
+                logger.info("Found a valid TTR directory: " + temp);
+                break;
             }
         }
         if (finalInstallPath == null) {
@@ -52,6 +59,7 @@ public class FirstSetup extends JFrame {
                     "We are unable to find your install directory. You can set this directory in the options menu.",
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
+            logger.warn("Can't find a valid install directory.");
         } else {
             JOptionPane.showMessageDialog(
                     frame,

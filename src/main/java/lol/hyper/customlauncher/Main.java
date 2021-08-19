@@ -38,6 +38,7 @@ public class Main {
     public static String pathToUse;
 
     public static void main(String[] args) throws IOException {
+        logger.info("Program is starting.");
         if (!JSONManager.configPath.toFile().exists()) {
             Files.createDirectory(JSONManager.configPath);
             logger.warn("Config path was not found, creating directory...");
@@ -70,6 +71,7 @@ public class Main {
 
         if (runSetup) {
             // run the setup
+            logger.info("Running first time setup.");
             JFrame firstSetup = new FirstSetup();
             firstSetup.dispose();
         } else {
@@ -95,7 +97,7 @@ public class Main {
                 updater.dispose();
             }
         }
-        JFrame mainWindow = new MainWindow("Launcher");
+        JFrame mainWindow = new MainWindow("CustomLauncherRewrite");
         mainWindow.dispose();
     }
 }
