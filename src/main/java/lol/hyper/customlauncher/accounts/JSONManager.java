@@ -185,15 +185,10 @@ public class JSONManager {
      *
      * @param key Key for the JSON.
      * @param value Value for the key.
-     * @param remove Should we remove this entry or add this entry?
      */
-    public static void editConfig(String key, Object value, boolean remove) {
+    public static void editConfig(String key, Object value) {
         JSONObject config = new JSONObject(readFile(configFile));
-        if (remove) {
-            config.remove(key);
-        } else {
-            config.put(key, value);
-        }
+        config.put(key, value);
         writeFile(config, configFile);
     }
 

@@ -51,8 +51,8 @@ public class OptionsWindow extends JFrame {
         saveButton.addActionListener(e -> {
             boolean checkBox = autoUpdateBox.isSelected();
             String path = ttrInstallBox.getText();
-            JSONManager.editConfig("autoCheckTTRUpdates", checkBox, false);
-            JSONManager.editConfig("ttrInstallLocation", path, false);
+            JSONManager.editConfig("autoCheckTTRUpdates", checkBox);
+            JSONManager.editConfig("ttrInstallLocation", path);
             JOptionPane.showMessageDialog(frame, "Settings saved!", "Options", JOptionPane.INFORMATION_MESSAGE);
         });
 
