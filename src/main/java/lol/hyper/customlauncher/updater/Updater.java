@@ -101,13 +101,19 @@ public class Updater extends JFrame {
             } catch (IOException e) {
                 logger.error(e);
                 JOptionPane.showMessageDialog(
-                        frame, "There was an error checking files. Please check your log file for more information.", "Error", JOptionPane.ERROR_MESSAGE);
+                        frame,
+                        "There was an error checking files. Please check your log file for more information.",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
                 frame.dispose();
             }
 
             if (patchesJSONRaw == null) {
                 JOptionPane.showMessageDialog(
-                        frame, "There was an error checking files. Please check your log file for more information.", "Error", JOptionPane.ERROR_MESSAGE);
+                        frame,
+                        "There was an error checking files. Please check your log file for more information.",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
                 frame.dispose();
                 logger.error("patchesJSONRaw returned null. We weren't able to read the contents of the patches list.");
             }
@@ -220,7 +226,10 @@ public class Updater extends JFrame {
                         } catch (IOException e) {
                             logger.error(e);
                             JOptionPane.showMessageDialog(
-                                    frame, "There was an error deleting" + currentFile + ".", "Error", JOptionPane.ERROR_MESSAGE);
+                                    frame,
+                                    "There was an error deleting" + currentFile + ".",
+                                    "Error",
+                                    JOptionPane.ERROR_MESSAGE);
                             frame.dispose();
                         }
                     }
