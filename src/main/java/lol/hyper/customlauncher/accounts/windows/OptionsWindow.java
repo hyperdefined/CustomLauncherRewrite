@@ -44,6 +44,9 @@ public class OptionsWindow extends JFrame {
         JLabel ttrInstall = new JLabel("<html>TTR Installation</html>");
         JTextField ttrInstallBox = new JTextField(JSONManager.config().getString("ttrInstallLocation"));
         JButton saveButton = new JButton("Save");
+
+        ttrInstallBox.setCaretPosition(0);
+
         if (JSONManager.config().getBoolean("autoCheckTTRUpdates")) {
             autoUpdateBox.setSelected(true);
         }
