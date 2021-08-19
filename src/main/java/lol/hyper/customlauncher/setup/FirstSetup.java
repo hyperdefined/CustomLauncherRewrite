@@ -37,7 +37,7 @@ public class FirstSetup extends JFrame {
         }
         JOptionPane.showMessageDialog(
                 frame,
-                "Welcome to CustomLauncherRewrite. I am going to first try and locate your TTR install directory. We need to find this directory in order to check for updates or launch the game.");
+                "Welcome to CustomLauncherRewrite. I am going to first try and locate your TTR install directory.\nWe need to find this directory in order to check for updates or launch the game.");
 
         final String installPathTest = "XX:\\Program Files (x86)\\Toontown Rewritten";
         String finalInstallPath = null;
