@@ -25,7 +25,7 @@ public class NewAccountWindow extends JFrame {
     public NewAccountWindow(String title) {
         super(title);
         JFrame frame = new JFrame(title);
-        frame.setSize(370, 600);
+        frame.setSize(370, 400);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setResizable(false);
         try {
@@ -47,17 +47,17 @@ public class NewAccountWindow extends JFrame {
         JButton loginButton = new JButton("Save");
         JButton resetButton = new JButton("Cancel");
         JLabel warning = new JLabel(
-                "<html>Secret phrase is used to encrypt and decrypt <br>your password for security when saving your login info.</html>");
+                "<html>Secret phrase is used to encrypt and decrypt <br>your password for security when saving your login info.<br>You must enter it every time you login.<br><br>If you don't remember this phrase, then you must<br>delete the account and re-add it.</html>");
 
-        userLabel.setBounds(50, 150, 100, 30);
-        passwordLabel.setBounds(50, 190, 100, 30);
-        password2Label.setBounds(50, 240, 100, 30);
-        userTextField.setBounds(150, 150, 150, 30);
-        passwordField.setBounds(150, 190, 150, 30);
-        password2Field.setBounds(150, 240, 150, 30);
-        loginButton.setBounds(50, 300, 100, 30);
-        resetButton.setBounds(200, 300, 100, 30);
-        warning.setBounds(50, 350, 370, 100);
+        userLabel.setBounds(50, 15, 100, 30);
+        passwordLabel.setBounds(50, 55, 100, 30);
+        password2Label.setBounds(50, 105, 100, 30);
+        userTextField.setBounds(150, 15, 150, 30);
+        passwordField.setBounds(150, 55, 150, 30);
+        password2Field.setBounds(150, 105, 150, 30);
+        loginButton.setBounds(50, 165, 100, 30);
+        resetButton.setBounds(200, 165, 100, 30);
+        warning.setBounds(50, 215, 370, 100);
 
         panel.add(userLabel);
         panel.add(passwordLabel);

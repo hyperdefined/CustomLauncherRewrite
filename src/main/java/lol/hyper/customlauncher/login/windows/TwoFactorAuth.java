@@ -29,7 +29,7 @@ public class TwoFactorAuth extends JFrame {
 
     public TwoFactorAuth(String title, String banner, String token) {
         JFrame frame = new JFrame(title);
-        frame.setSize(370, 170);
+        frame.setSize(370, 200);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setResizable(false);
         try {
@@ -43,9 +43,7 @@ public class TwoFactorAuth extends JFrame {
         panel.setLayout(null);
 
         JLabel text = new JLabel("<html>" + banner + "</html>");
-        text.setAlignmentX(Component.CENTER_ALIGNMENT);
         JTextField userAuthCode = new JTextField();
-        userAuthCode.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         // force the textbox to only have 6 characters
         // 2fa and toonguard codes are 6 long
@@ -61,9 +59,9 @@ public class TwoFactorAuth extends JFrame {
         JButton loginButton = new JButton("Submit");
 
         userAuthCode.setMaximumSize(new Dimension(50, 25));
-        text.setBounds(120, 20, 200, 30);
-        userAuthCode.setBounds(120, 65, 70, 30);
-        loginButton.setBounds(120, 100, 100, 30);
+        text.setBounds(30, 15, 300, 30);
+        userAuthCode.setBounds(30, 50, 70, 30);
+        loginButton.setBounds(30, 85, 100, 30);
 
         panel.add(text);
         panel.add(userAuthCode);
