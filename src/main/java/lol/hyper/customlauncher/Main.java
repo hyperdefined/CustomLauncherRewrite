@@ -34,7 +34,6 @@ import java.nio.file.Paths;
 
 public class Main {
 
-    public static final String DEFAULT_INSTALL = "C:\\Program Files (x86)\\Toontown Rewritten";
     public static final Logger logger = LogManager.getLogger(Main.class);
     public static String pathToUse;
 
@@ -51,7 +50,7 @@ public class Main {
         if (!JSONManager.configFile.exists()) {
             runSetup = true;
             JSONObject newOptions = new JSONObject();
-            newOptions.put("ttrInstallLocation", DEFAULT_INSTALL);
+            newOptions.put("ttrInstallLocation", "");
             newOptions.put("autoCheckTTRUpdates", true);
             JSONManager.writeFile(newOptions, JSONManager.configFile);
             logger.info("Creating base config file...");
