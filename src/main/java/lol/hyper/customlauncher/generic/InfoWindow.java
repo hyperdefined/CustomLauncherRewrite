@@ -15,24 +15,15 @@
  * along with CustomLauncherRewrite.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package lol.hyper.customlauncher.login.windows;
+package lol.hyper.customlauncher.generic;
 
 import javax.swing.*;
 
-public class IncorrectLogin extends JFrame {
+public class InfoWindow extends JFrame {
 
-    public IncorrectLogin(String title) {
-        JFrame frame = new JFrame(title);
-        frame.setSize(370, 150);
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setResizable(false);
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-        JOptionPane.showMessageDialog(frame, "Login details are incorrect.", title, JOptionPane.ERROR_MESSAGE);
+    public InfoWindow(String errorMessage) {
+        JFrame frame = new JFrame();
+        JOptionPane.showMessageDialog(frame, errorMessage, "Info", JOptionPane.INFORMATION_MESSAGE);
         frame.setLocationRelativeTo(null);
         frame.dispose();
     }

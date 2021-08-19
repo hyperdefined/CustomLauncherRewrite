@@ -18,8 +18,8 @@
 package lol.hyper.customlauncher.login;
 
 import lol.hyper.customlauncher.Main;
-import lol.hyper.customlauncher.login.windows.IncorrectLogin;
-import lol.hyper.customlauncher.login.windows.QueueLogin;
+import lol.hyper.customlauncher.generic.ErrorWindow;
+import lol.hyper.customlauncher.generic.InfoWindow;
 import lol.hyper.customlauncher.login.windows.TwoFactorAuth;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -29,18 +29,22 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class LoginHandler {
 
     private static final String REQUEST_URL = "https://www.toontownrewritten.com/api/login?format=json";
     private static final String USER_AGENT =
             "CustomLauncherRewrite https://github.com/hyperdefined/CustomLauncherRewrite";
+    public static final Logger logger = LogManager.getLogger(LoginHandler.class);
 
     /**
      * Handle the result of the login request. This will take a login request and act based on that
@@ -51,38 +55,37 @@ public class LoginHandler {
     public static void handleLoginRequest(LoginRequest loginRequest) {
         HashMap<String, String> request;
         try {
-            Main.logger.info("Sending login request...");
+            logger.info("Sending login request...");
             request = sendRequest(loginRequest).getRequestDetails();
         } catch (Exception e) {
-            Main.logger.error(e);
+            logger.error(e);
             return;
         }
 
         String status = request.get("success");
         String banner = request.get("banner");
 
-        Main.logger.info("banner=" + banner);
-        Main.logger.info("status=" + status);
+        logger.info("banner=" + banner);
+        logger.info("status=" + status);
 
         switch (status) {
             case "false": {
                 // handle incorrect login
                 if (banner.contains("Incorrect username")) {
-                    Main.logger.info("Username or password is wrong.");
-                    JFrame incorrectLogin = new IncorrectLogin("Error");
-                    incorrectLogin.dispose();
+                    logger.info("Username or password is wrong.");
+                    JFrame errorWindow = new ErrorWindow("Login details are incorrect.");
+                    errorWindow.dispose();
                 }
                 break;
             }
             case "partial": {
                 // handle 2fa
-                Main.logger.info("Asking user for two-factor auth.");
-
+                logger.info("Asking user for two-factor auth.");
                 JFrame twoFactorAuth = new TwoFactorAuth("Enter Code", banner, request.get("responseToken"));
                 break;
             }
             case "true": {
-                Main.logger.info("Login successful, launching game.");
+                logger.info("Login successful, launching game.");
                 String gameServer = request.get("gameserver");
                 String cookie = request.get("cookie");
                 LaunchGame launchGame = new LaunchGame(cookie, gameServer);
@@ -91,15 +94,24 @@ public class LoginHandler {
             }
             case "delayed": {
                 // handle queue
-                Main.logger.info("Stuck in queue.");
-                JFrame queueLogin = new QueueLogin("Queue", request.get("queueToken"));
-                queueLogin.dispose();
+                logger.info("Stuck in queue.");
+                JFrame infoWindow = new InfoWindow("You were placed in a queue. Press OK to try again in 5 seconds.");
+                infoWindow.dispose();
+                try {
+                    TimeUnit.SECONDS.sleep(5);
+                } catch (InterruptedException e) {
+                    logger.error(e);
+                }
+                LoginRequest newLoginRequest = new LoginRequest();
+                newLoginRequest.addDetails("queueToken", request.get("queueToken"));
+                LoginHandler.handleLoginRequest(newLoginRequest);
                 break;
             }
             default: {
-                Main.logger.error("Weird login response: " + status);
-                Main.logger.error("Exiting!");
-                System.exit(1);
+                logger.error("Weird login response: " + status);
+                logger.info(request);
+                JFrame errorWindow = new ErrorWindow("TTR sent back a weird response, or we got an invalid response.\nCheck the log for more info.");
+                errorWindow.dispose();
             }
         }
     }

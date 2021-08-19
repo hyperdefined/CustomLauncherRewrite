@@ -19,7 +19,7 @@ package lol.hyper.customlauncher;
 
 import lol.hyper.customlauncher.accounts.JSONManager;
 import lol.hyper.customlauncher.accounts.windows.MainWindow;
-import lol.hyper.customlauncher.updater.InvalidPath;
+import lol.hyper.customlauncher.generic.ErrorWindow;
 import lol.hyper.customlauncher.updater.Updater;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -72,8 +72,8 @@ public class Main {
         Main.logger.info("ttrInstallLocation = " + optionsFile.getString("ttrInstallLocation"));
         if (!Paths.get(optionsFile.getString("ttrInstallLocation")).toFile().exists()) {
             Main.logger.warn("ttrInstallLocation does not exist. Is the game installed here?");
-            JFrame invalidPath = new InvalidPath("Error");
-            invalidPath.dispose();
+            JFrame errorWindow = new ErrorWindow("Unable to find your TTR install directory.");
+            errorWindow.dispose();
             pathToUse = DEFAULT_INSTALL;
         } else {
             pathToUse = optionsFile.getString("ttrInstallLocation");

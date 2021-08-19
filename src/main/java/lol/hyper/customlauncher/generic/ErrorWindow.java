@@ -15,28 +15,16 @@
  * along with CustomLauncherRewrite.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package lol.hyper.customlauncher.updater;
+package lol.hyper.customlauncher.generic;
 
 import javax.swing.*;
 
-public class InvalidPath extends JFrame {
+public class ErrorWindow extends JFrame {
 
-    public InvalidPath(String title) {
-        JFrame frame = new JFrame(title);
-        frame.setSize(370, 150);
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setResizable(false);
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-        JOptionPane.showMessageDialog(
-                frame,
-                "The install path in the config is not valid. I will use the default path instead.\nIf you installed TTR in a different location, please change it in the settings menu.",
-                "Error",
-                JOptionPane.ERROR_MESSAGE);
+    public ErrorWindow(String errorMessage) {
+        JFrame frame = new JFrame();
+        JOptionPane.showMessageDialog(frame, errorMessage, "Error", JOptionPane.ERROR_MESSAGE);
         frame.setLocationRelativeTo(null);
+        frame.dispose();
     }
 }

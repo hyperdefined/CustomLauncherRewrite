@@ -18,7 +18,11 @@
 package lol.hyper.customlauncher.login;
 
 import lol.hyper.customlauncher.Main;
+import lol.hyper.customlauncher.generic.ErrorWindow;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
@@ -27,6 +31,7 @@ public class LaunchGame extends Thread {
 
     final String cookie;
     final String gameServer;
+    public final Logger logger = LogManager.getLogger(this);
 
     public LaunchGame(String cookie, String gameServer) {
         this.cookie = cookie;
@@ -51,7 +56,9 @@ public class LaunchGame extends Thread {
             Process p = pb.start();
             p.getInputStream().close();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e);
+            JFrame errorWindow = new ErrorWindow("Unable to launch game. Please check your log for more information.");
+            errorWindow.dispose();
         }
     }
 }

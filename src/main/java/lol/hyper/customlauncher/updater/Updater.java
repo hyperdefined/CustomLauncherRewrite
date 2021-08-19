@@ -17,9 +17,10 @@
 
 package lol.hyper.customlauncher.updater;
 
-import lol.hyper.customlauncher.Main;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -43,6 +44,7 @@ public class Updater extends JFrame {
 
     public final String PATCHES_URL = "https://cdn.toontownrewritten.com/content/patchmanifest.txt";
     public final String PATCHES_URL_DL = "https://download.toontownrewritten.com/patches/";
+    public final Logger logger = LogManager.getLogger(this);
 
     public Updater(String title, Path installLocation) {
         JFrame frame = new JFrame(title);
@@ -51,8 +53,8 @@ public class Updater extends JFrame {
         frame.setResizable(false);
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (Exception e) {
+            logger.error(e);
         }
 
         // GUI elements
@@ -83,13 +85,13 @@ public class Updater extends JFrame {
         }
 
         if (canWeUpdate) {
-            Main.logger.info("We are checking for TTR updates!");
+            logger.info("We are checking for TTR updates!");
             String patchesJSONRaw = null;
             URL patchesURL = null;
             try {
                 patchesURL = new URL(PATCHES_URL);
             } catch (MalformedURLException e) {
-                Main.logger.error(e);
+                logger.error(e);
             }
 
             try (InputStream in = patchesURL.openStream()) {
@@ -97,16 +99,17 @@ public class Updater extends JFrame {
                 patchesJSONRaw = reader.lines().collect(Collectors.joining(System.lineSeparator()));
                 reader.close();
             } catch (IOException e) {
-                Main.logger.error(e);
+                logger.error(e);
                 JOptionPane.showMessageDialog(
-                        frame, "There was an error checking files.", "Error", JOptionPane.ERROR_MESSAGE);
+                        frame, "There was an error checking files. Please check your log file for more information.", "Error", JOptionPane.ERROR_MESSAGE);
                 frame.dispose();
             }
 
             if (patchesJSONRaw == null) {
                 JOptionPane.showMessageDialog(
-                        frame, "There was an error checking files.", "Error", JOptionPane.ERROR_MESSAGE);
+                        frame, "There was an error checking files. Please check your log file for more information.", "Error", JOptionPane.ERROR_MESSAGE);
                 frame.dispose();
+                logger.error("patchesJSONRaw returned null. We weren't able to read the contents of the patches list.");
             }
 
             JSONObject patches = new JSONObject(patchesJSONRaw);
@@ -127,10 +130,10 @@ public class Updater extends JFrame {
                     File localFile = new File(installLocation + File.separator + key);
                     updateStatus.setText("Checking file " + localFile.getName());
                     if (!localFile.exists()) {
-                        Main.logger.info("-----------------------------------------------------------------------");
-                        Main.logger.info(installLocation + File.separator + key);
-                        Main.logger.info("This file is missing and will be downloaded.");
-                        Main.logger.info("-----------------------------------------------------------------------");
+                        logger.info("-----------------------------------------------------------------------");
+                        logger.info(installLocation + File.separator + key);
+                        logger.info("This file is missing and will be downloaded.");
+                        logger.info("-----------------------------------------------------------------------");
                         filesToDownload.add(key);
                         continue;
                     }
@@ -138,20 +141,20 @@ public class Updater extends JFrame {
                     try {
                         localHash = calcSHA1(localFile);
                     } catch (Exception e) {
-                        Main.logger.error(e);
+                        logger.error(e);
                         continue;
                     }
-                    Main.logger.info("-----------------------------------------------------------------------");
-                    Main.logger.info(installLocation + File.separator + key);
-                    Main.logger.info("Local hash: " + localHash.toLowerCase(Locale.ENGLISH));
-                    Main.logger.info("Expected hash: " + onlineHash);
+                    logger.info("-----------------------------------------------------------------------");
+                    logger.info(installLocation + File.separator + key);
+                    logger.info("Local hash: " + localHash.toLowerCase(Locale.ENGLISH));
+                    logger.info("Expected hash: " + onlineHash);
                     if (localHash.equalsIgnoreCase(onlineHash)) {
-                        Main.logger.info("File is good!");
+                        logger.info("File is good!");
                     } else {
-                        Main.logger.info("File is outdated! Will be downloaded.");
+                        logger.info("File is outdated! Will be downloaded.");
                         filesToDownload.add(key);
                     }
-                    Main.logger.info("-----------------------------------------------------------------------");
+                    logger.info("-----------------------------------------------------------------------");
                 }
             }
             if (filesToDownload.size() > 0) {
@@ -165,21 +168,21 @@ public class Updater extends JFrame {
                     frame.dispose();
                 }
 
-                Main.logger.info(filesToDownload.size() + " file(s) are going to be downloaded.");
-                Main.logger.info(filesToDownload);
+                logger.info(filesToDownload.size() + " file(s) are going to be downloaded.");
+                logger.info(filesToDownload);
 
                 for (String fileToDownload : filesToDownload) {
                     JSONObject file = patches.getJSONObject(fileToDownload);
                     String dl = file.getString("dl");
                     try {
-                        Main.logger.info("Downloading " + PATCHES_URL_DL + dl);
+                        logger.info("Downloading " + PATCHES_URL_DL + dl);
                         updateStatus.setText("Downloading " + dl);
                         FileUtils.copyURLToFile(
                                 new URL(PATCHES_URL_DL + dl), new File(tempFolder + File.separator + dl));
-                        Main.logger.info("Finished downloading " + dl);
+                        logger.info("Finished downloading " + dl);
                         updateStatus.setText("Finished downloading " + dl);
                     } catch (IOException e) {
-                        Main.logger.error(e);
+                        logger.error(e);
                         JOptionPane.showMessageDialog(
                                 frame,
                                 "There was an error saving file " + PATCHES_URL_DL + dl,
@@ -188,7 +191,7 @@ public class Updater extends JFrame {
                         frame.dispose();
                     }
                     long startTime = System.nanoTime();
-                    Main.logger.info("Extracting file " + dl);
+                    logger.info("Extracting file " + dl);
                     updateStatus.setText("Extracting file " + dl);
                     try {
                         extractFile(
@@ -196,7 +199,7 @@ public class Updater extends JFrame {
                                 Paths.get(fileToDownload).toFile(),
                                 installLocation);
                     } catch (IOException e) {
-                        Main.logger.error(e);
+                        logger.error(e);
                         JOptionPane.showMessageDialog(
                                 frame,
                                 "There was an error extracting file " + fileToDownload,
@@ -205,7 +208,7 @@ public class Updater extends JFrame {
                         frame.dispose();
                     }
                     updateStatus.setText("Finished extracting file " + dl);
-                    Main.logger.info("Done, took "
+                    logger.info("Done, took "
                             + TimeUnit.SECONDS.convert(System.nanoTime() - startTime, TimeUnit.NANOSECONDS)
                             + " seconds.");
                 }
@@ -215,7 +218,7 @@ public class Updater extends JFrame {
                         try {
                             Files.delete(currentFile.toPath());
                         } catch (IOException e) {
-                            Main.logger.error(e);
+                            logger.error(e);
                             JOptionPane.showMessageDialog(
                                     frame, "There was an error deleting" + currentFile + ".", "Error", JOptionPane.ERROR_MESSAGE);
                             frame.dispose();
@@ -225,7 +228,7 @@ public class Updater extends JFrame {
                 try {
                     Files.delete(Paths.get(System.getProperty("user.dir") + File.separator + "temp"));
                 } catch (IOException e) {
-                    Main.logger.error(e);
+                    logger.error(e);
                     JOptionPane.showMessageDialog(
                             frame, "There was an error deleting \"temp\" folder.", "Error", JOptionPane.ERROR_MESSAGE);
                     frame.dispose();
