@@ -23,6 +23,11 @@ public class ErrorWindow extends JFrame {
 
     public ErrorWindow(String errorMessage) {
         JFrame frame = new JFrame();
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         JOptionPane.showMessageDialog(frame, errorMessage, "Error", JOptionPane.ERROR_MESSAGE);
         frame.setLocationRelativeTo(null);
         frame.dispose();

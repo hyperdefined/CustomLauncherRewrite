@@ -23,6 +23,11 @@ public class InfoWindow extends JFrame {
 
     public InfoWindow(String errorMessage) {
         JFrame frame = new JFrame();
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         JOptionPane.showMessageDialog(frame, errorMessage, "Info", JOptionPane.INFORMATION_MESSAGE);
         frame.setLocationRelativeTo(null);
         frame.dispose();

@@ -68,21 +68,20 @@ public class Main {
         }
 
         // check the config installation path
-        // if it's not valid, use default
         Main.logger.info("ttrInstallLocation = " + optionsFile.getString("ttrInstallLocation"));
         if (!Paths.get(optionsFile.getString("ttrInstallLocation")).toFile().exists()) {
             Main.logger.warn("ttrInstallLocation does not exist. Is the game installed here?");
-            JFrame errorWindow = new ErrorWindow("Unable to find your TTR install directory.");
+            JFrame errorWindow = new ErrorWindow("Unable to find your TTR install directory. We won't be able to check for TTR updates nor run the game.");
             errorWindow.dispose();
-            pathToUse = DEFAULT_INSTALL;
-        } else {
-            pathToUse = optionsFile.getString("ttrInstallLocation");
+            pathToUse = null;
         }
 
         Main.logger.info("autoCheckTTRUpdates = " + optionsFile.getBoolean("autoCheckTTRUpdates"));
         if (optionsFile.getBoolean("autoCheckTTRUpdates")) {
-            JFrame updater = new Updater("Updater", Paths.get(pathToUse));
-            updater.dispose();
+            if (pathToUse != null) {
+                JFrame updater = new Updater("Updater", Paths.get(pathToUse));
+                updater.dispose();
+            }
         }
         JFrame mainWindow = new MainWindow("Launcher");
         mainWindow.dispose();
