@@ -21,7 +21,7 @@ import lol.hyper.customlauncher.accounts.JSONManager;
 import lol.hyper.customlauncher.accounts.windows.MainWindow;
 import lol.hyper.customlauncher.generic.ErrorWindow;
 import lol.hyper.customlauncher.setup.FirstSetup;
-import lol.hyper.customlauncher.updater.Updater;
+import lol.hyper.customlauncher.ttrupdater.TTRUpdater;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
@@ -93,7 +93,7 @@ public class Main {
         Main.logger.info("autoCheckTTRUpdates = " + JSONManager.config().getBoolean("autoCheckTTRUpdates"));
         if (JSONManager.config().getBoolean("autoCheckTTRUpdates")) {
             if (pathToUse != null) {
-                JFrame updater = new Updater("Updater", Paths.get(pathToUse));
+                JFrame updater = new TTRUpdater("Updater", Paths.get(pathToUse));
                 updater.dispose();
             }
         }

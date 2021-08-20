@@ -15,7 +15,7 @@
  * along with CustomLauncherRewrite.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package lol.hyper.customlauncher.updater;
+package lol.hyper.customlauncher.ttrupdater;
 
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.apache.commons.io.FileUtils;
@@ -40,13 +40,13 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-public class Updater extends JFrame {
+public class TTRUpdater extends JFrame {
 
     public final String PATCHES_URL = "https://cdn.toontownrewritten.com/content/patchmanifest.txt";
     public final String PATCHES_URL_DL = "https://download.toontownrewritten.com/patches/";
     public final Logger logger = LogManager.getLogger(this);
 
-    public Updater(String title, Path installLocation) {
+    public TTRUpdater(String title, Path installLocation) {
         JFrame frame = new JFrame(title);
         frame.setSize(370, 150);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
