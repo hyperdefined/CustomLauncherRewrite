@@ -72,180 +72,173 @@ public class TTRUpdater extends JFrame {
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
 
-        boolean canWeUpdate = true;
-
         if (!installLocation.toFile().exists()) {
             JOptionPane.showMessageDialog(
                     frame,
-                    "Unable to check for TTR updates. The install location cannot be found.",
+                    "Unable to check for TTR updates. We are unable to find your TTR install directory.",
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
             frame.dispose();
-            canWeUpdate = false;
+            logger.warn("Can't find current install directory. Skipping updates.");
         }
 
-        if (canWeUpdate) {
-            logger.info("We are checking for TTR updates!");
-            String patchesJSONRaw = null;
-            URL patchesURL = null;
-            try {
-                patchesURL = new URL(PATCHES_URL);
-            } catch (MalformedURLException e) {
-                logger.error(e);
+        logger.info("We are checking for TTR updates!");
+        String patchesJSONRaw = null;
+        URL patchesURL = null;
+        try {
+            patchesURL = new URL(PATCHES_URL);
+        } catch (MalformedURLException e) {
+            logger.error(e);
+        }
+
+        try (InputStream in = patchesURL.openStream()) {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+            patchesJSONRaw = reader.lines().collect(Collectors.joining(System.lineSeparator()));
+            reader.close();
+        } catch (IOException e) {
+            logger.error(e);
+            JOptionPane.showMessageDialog(
+                    frame,
+                    "There was an error checking files. Please check your log file for more information.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            frame.dispose();
+        }
+
+        if (patchesJSONRaw == null) {
+            JOptionPane.showMessageDialog(
+                    frame,
+                    "There was an error checking files. Please check your log file for more information.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            frame.dispose();
+            logger.error("patchesJSONRaw returned null. We weren't able to read the contents of the patches list.");
+        }
+
+        JSONObject patches = new JSONObject(patchesJSONRaw);
+        ArrayList<String> filesToDownload = new ArrayList<>();
+
+        for (String key : patches.keySet()) {
+            progressBar.setValue(progressBar.getValue() + 1);
+            JSONObject currentFile = (JSONObject) patches.get(key);
+            String onlineHash = currentFile.getString("hash");
+            JSONArray only = currentFile.getJSONArray("only");
+            List<String> list = new ArrayList<>();
+            for (Object value : only) {
+                list.add((String) value);
             }
 
-            try (InputStream in = patchesURL.openStream()) {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                patchesJSONRaw = reader.lines().collect(Collectors.joining(System.lineSeparator()));
-                reader.close();
-            } catch (IOException e) {
-                logger.error(e);
-                JOptionPane.showMessageDialog(
-                        frame,
-                        "There was an error checking files. Please check your log file for more information.",
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE);
-                frame.dispose();
-            }
-
-            if (patchesJSONRaw == null) {
-                JOptionPane.showMessageDialog(
-                        frame,
-                        "There was an error checking files. Please check your log file for more information.",
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE);
-                frame.dispose();
-                logger.error("patchesJSONRaw returned null. We weren't able to read the contents of the patches list.");
-            }
-
-            JSONObject patches = new JSONObject(patchesJSONRaw);
-            ArrayList<String> filesToDownload = new ArrayList<>();
-
-            for (String key : patches.keySet()) {
-                progressBar.setValue(progressBar.getValue() + 1);
-                JSONObject currentFile = (JSONObject) patches.get(key);
-                String onlineHash = currentFile.getString("hash");
-                JSONArray only = currentFile.getJSONArray("only");
-                List<String> list = new ArrayList<>();
-                for (Object value : only) {
-                    list.add((String) value);
-                }
-
-                if (list.contains("win32") || list.contains("win64")) {
-                    String localHash;
-                    File localFile = new File(installLocation + File.separator + key);
-                    updateStatus.setText("Checking file " + localFile.getName());
-                    if (!localFile.exists()) {
-                        logger.info("-----------------------------------------------------------------------");
-                        logger.info(installLocation + File.separator + key);
-                        logger.info("This file is missing and will be downloaded.");
-                        logger.info("-----------------------------------------------------------------------");
-                        filesToDownload.add(key);
-                        continue;
-                    }
-
-                    try {
-                        localHash = calcSHA1(localFile);
-                    } catch (Exception e) {
-                        logger.error(e);
-                        continue;
-                    }
+            if (list.contains("win32") || list.contains("win64")) {
+                String localHash;
+                File localFile = new File(installLocation + File.separator + key);
+                updateStatus.setText("Checking file " + localFile.getName());
+                if (!localFile.exists()) {
                     logger.info("-----------------------------------------------------------------------");
                     logger.info(installLocation + File.separator + key);
-                    logger.info("Local hash: " + localHash.toLowerCase(Locale.ENGLISH));
-                    logger.info("Expected hash: " + onlineHash);
-                    if (localHash.equalsIgnoreCase(onlineHash)) {
-                        logger.info("File is good!");
-                    } else {
-                        logger.info("File is outdated! Will be downloaded.");
-                        filesToDownload.add(key);
-                    }
+                    logger.info("This file is missing and will be downloaded.");
                     logger.info("-----------------------------------------------------------------------");
+                    filesToDownload.add(key);
+                    continue;
                 }
+
+                try {
+                    localHash = calcSHA1(localFile);
+                } catch (Exception e) {
+                    logger.error(e);
+                    continue;
+                }
+                logger.info("-----------------------------------------------------------------------");
+                logger.info(installLocation + File.separator + key);
+                logger.info("Local hash: " + localHash.toLowerCase(Locale.ENGLISH));
+                logger.info("Expected hash: " + onlineHash);
+                if (localHash.equalsIgnoreCase(onlineHash)) {
+                    logger.info("File is good!");
+                } else {
+                    logger.info("File is outdated! Will be downloaded.");
+                    filesToDownload.add(key);
+                }
+                logger.info("-----------------------------------------------------------------------");
             }
-            if (filesToDownload.size() > 0) {
-                File tempFolder = new File("temp");
-                if (!tempFolder.exists() && !tempFolder.mkdirs()) {
+        }
+        if (filesToDownload.size() > 0) {
+            File tempFolder = new File("temp");
+            if (!tempFolder.exists() && !tempFolder.mkdirs()) {
+                JOptionPane.showMessageDialog(
+                        frame,
+                        "Unable to create folder " + tempFolder.getAbsolutePath(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                frame.dispose();
+            }
+
+            logger.info(filesToDownload.size() + " file(s) are going to be downloaded.");
+            logger.info(filesToDownload);
+
+            for (String fileToDownload : filesToDownload) {
+                JSONObject file = patches.getJSONObject(fileToDownload);
+                String dl = file.getString("dl");
+                try {
+                    logger.info("Downloading " + PATCHES_URL_DL + dl);
+                    updateStatus.setText("Downloading " + dl);
+                    FileUtils.copyURLToFile(new URL(PATCHES_URL_DL + dl), new File(tempFolder + File.separator + dl));
+                    logger.info("Finished downloading " + dl);
+                    updateStatus.setText("Finished downloading " + dl);
+                } catch (IOException e) {
+                    logger.error(e);
                     JOptionPane.showMessageDialog(
                             frame,
-                            "Unable to create folder " + tempFolder.getAbsolutePath(),
+                            "There was an error saving file " + PATCHES_URL_DL + dl,
                             "Error",
                             JOptionPane.ERROR_MESSAGE);
                     frame.dispose();
                 }
-
-                logger.info(filesToDownload.size() + " file(s) are going to be downloaded.");
-                logger.info(filesToDownload);
-
-                for (String fileToDownload : filesToDownload) {
-                    JSONObject file = patches.getJSONObject(fileToDownload);
-                    String dl = file.getString("dl");
-                    try {
-                        logger.info("Downloading " + PATCHES_URL_DL + dl);
-                        updateStatus.setText("Downloading " + dl);
-                        FileUtils.copyURLToFile(
-                                new URL(PATCHES_URL_DL + dl), new File(tempFolder + File.separator + dl));
-                        logger.info("Finished downloading " + dl);
-                        updateStatus.setText("Finished downloading " + dl);
-                    } catch (IOException e) {
-                        logger.error(e);
-                        JOptionPane.showMessageDialog(
-                                frame,
-                                "There was an error saving file " + PATCHES_URL_DL + dl,
-                                "Error",
-                                JOptionPane.ERROR_MESSAGE);
-                        frame.dispose();
-                    }
-                    long startTime = System.nanoTime();
-                    logger.info("Extracting file " + dl);
-                    updateStatus.setText("Extracting file " + dl);
-                    try {
-                        extractFile(
-                                Paths.get(dl).toFile(),
-                                Paths.get(fileToDownload).toFile(),
-                                installLocation);
-                    } catch (IOException e) {
-                        logger.error(e);
-                        JOptionPane.showMessageDialog(
-                                frame,
-                                "There was an error extracting file " + fileToDownload,
-                                "Error",
-                                JOptionPane.ERROR_MESSAGE);
-                        frame.dispose();
-                    }
-                    updateStatus.setText("Finished extracting file " + dl);
-                    logger.info("Done, took "
-                            + TimeUnit.SECONDS.convert(System.nanoTime() - startTime, TimeUnit.NANOSECONDS)
-                            + " seconds.");
-                }
-                File[] tempFolderFiles = tempFolder.listFiles();
-                if (tempFolderFiles != null) {
-                    for (File currentFile : tempFolderFiles) {
-                        try {
-                            Files.delete(currentFile.toPath());
-                        } catch (IOException e) {
-                            logger.error(e);
-                            JOptionPane.showMessageDialog(
-                                    frame,
-                                    "There was an error deleting" + currentFile + ".",
-                                    "Error",
-                                    JOptionPane.ERROR_MESSAGE);
-                            frame.dispose();
-                        }
-                    }
-                }
+                long startTime = System.nanoTime();
+                logger.info("Extracting file " + dl);
+                updateStatus.setText("Extracting file " + dl);
                 try {
-                    Files.delete(Paths.get(System.getProperty("user.dir") + File.separator + "temp"));
+                    extractFile(
+                            Paths.get(dl).toFile(), Paths.get(fileToDownload).toFile(), installLocation);
                 } catch (IOException e) {
                     logger.error(e);
                     JOptionPane.showMessageDialog(
-                            frame, "There was an error deleting \"temp\" folder.", "Error", JOptionPane.ERROR_MESSAGE);
+                            frame,
+                            "There was an error extracting file " + fileToDownload,
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
                     frame.dispose();
                 }
+                updateStatus.setText("Finished extracting file " + dl);
+                logger.info("Done, took "
+                        + TimeUnit.SECONDS.convert(System.nanoTime() - startTime, TimeUnit.NANOSECONDS)
+                        + " seconds.");
             }
-            JOptionPane.showMessageDialog(
-                    frame, "Finished checking for TTR updates!", "Done", JOptionPane.INFORMATION_MESSAGE);
+            File[] tempFolderFiles = tempFolder.listFiles();
+            if (tempFolderFiles != null) {
+                for (File currentFile : tempFolderFiles) {
+                    try {
+                        Files.delete(currentFile.toPath());
+                    } catch (IOException e) {
+                        logger.error(e);
+                        JOptionPane.showMessageDialog(
+                                frame,
+                                "There was an error deleting" + currentFile + ".",
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                        frame.dispose();
+                    }
+                }
+            }
+            try {
+                Files.delete(Paths.get(System.getProperty("user.dir") + File.separator + "temp"));
+            } catch (IOException e) {
+                logger.error(e);
+                JOptionPane.showMessageDialog(
+                        frame, "There was an error deleting \"temp\" folder.", "Error", JOptionPane.ERROR_MESSAGE);
+                frame.dispose();
+            }
         }
+        JOptionPane.showMessageDialog(
+                frame, "Finished checking for TTR updates!", "Done", JOptionPane.INFORMATION_MESSAGE);
         frame.dispose();
     }
 
