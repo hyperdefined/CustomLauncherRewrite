@@ -9,7 +9,7 @@ CustomLauncherRewrite is a brand-new custom launcher for Toontown Rewritten. Thi
 * Add accounts right from the launcher. Don't need to mess around with files. 
 * Encrypt login data with a passphrase. Your data is encrypted using [AES Encryption](https://searchsecurity.techtarget.com/definition/Advanced-Encryption-Standard).
 * Launch the game directly from the launcher, no external scripts needed. Supports 2FA and ToonGuard.
-* Check for TTR updates.
+* Update your TTR game files.
 
 ## Setup
 * You need Java 8 or above installed.
@@ -28,6 +28,12 @@ You passphrase was typed in wrong. You either typed it incorrectly when you adde
 
 ### I have an issue that is not listed here.
 No problem! Create a new [issue](https://github.com/hyperdefined/CustomLauncherRewrite/issues) and include as much detail as possible, so I can help you out.
+
+## Known Issues
+* The game updater takes a long time.
+
+## Contributing
+Feel free to fork this and make any suggestions or additions.
 
 ## License
 This program is released under GNU General Public License v3. See [LICENSE](https://github.com/hyperdefined/CustomLauncherRewrite/blob/master/LICENSE).
