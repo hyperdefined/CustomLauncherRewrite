@@ -28,16 +28,20 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class Main {
 
-    public static final Logger logger = LogManager.getLogger(Main.class);
+    public static Logger logger;
     public static String pathToUse;
 
     public static void main(String[] args) throws IOException {
+        System.setProperty("log4j.configurationFile", "log4j2config.xml");
+        logger = LogManager.getLogger(Main.class);
         logger.info("Program is starting.");
         if (!JSONManager.configPath.toFile().exists()) {
             Files.createDirectory(JSONManager.configPath);

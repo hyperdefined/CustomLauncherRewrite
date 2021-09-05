@@ -53,7 +53,6 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <minimizeJar>true</minimizeJar>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>lol.hyper.customlauncher.Main</mainClass>
@@ -83,8 +82,8 @@
                         </goals>
                         <configuration>
                             <headerType>gui</headerType>
-                            <jar>${project.build.directory}/CustomLauncherRewrite-${version}.jar</jar>
-                            <outfile>${project.build.directory}/CustomLauncherRewrite-${version}.exe</outfile>
+                            <jar>${project.build.directory}/CustomLauncherRewrite-${project.version}.jar</jar>
+                            <outfile>${project.build.directory}/CustomLauncherRewrite-${project.version}.exe</outfile>
                             <downloadUrl>http://java.com/download</downloadUrl>
                             <classPath>
                                 <mainClass>lol.hyper.customlauncher.Main</mainClass>
@@ -103,7 +102,7 @@
                                 <txtProductVersion>1.2.0.0</txtProductVersion>
                                 <productName>${project.name}</productName>
                                 <internalName>${project.name}</internalName>
-                                <originalFilename>CustomLauncherRewrite-${version}.exe</originalFilename>
+                                <originalFilename>CustomLauncherRewrite-${project.version}.exe</originalFilename>
                             </versionInfo>
                         </configuration>
                     </execution>
@@ -132,11 +131,6 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>4.5.13</version>
-        </dependency>
-        <dependency>
-            <groupId>com.akathist.maven.plugins.launch4j</groupId>
-            <artifactId>launch4j-maven-plugin</artifactId>
-            <version>2.1.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
