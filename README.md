@@ -15,6 +15,7 @@ CustomLauncherRewrite is a brand-new custom launcher for Toontown Rewritten. Thi
 ![Screenshot1](https://raw.githubusercontent.com/hyperdefined/CustomLauncherRewrite/master/image.png)
 ![Screenshot2](https://raw.githubusercontent.com/hyperdefined/CustomLauncherRewrite/master/image2.png)
 ![Screenshot3](https://raw.githubusercontent.com/hyperdefined/CustomLauncherRewrite/master/image3.png)
+![Screenshot4](https://raw.githubusercontent.com/hyperdefined/CustomLauncherRewrite/master/image4.png)
 
 ## Setup
 * You need Java 8 or above installed.
