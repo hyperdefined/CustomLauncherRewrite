@@ -27,10 +27,19 @@ public class LoginRequest {
         requestDetails = new HashMap<>();
     }
 
+    /**
+     * Login requests get stored as a HashMap. This will get the details of said login request.
+     * @return The HashMap request with all details, saved as key=value.
+     */
     public HashMap<String, String> getRequestDetails() {
         return requestDetails;
     }
 
+    /**
+     * Add a value to the login request.
+     * @param key The key to save it as.
+     * @param value The value of said key.
+     */
     public void addDetails(String key, String value) {
         requestDetails.put(key, value);
     }
