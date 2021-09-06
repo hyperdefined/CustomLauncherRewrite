@@ -19,6 +19,7 @@ package lol.hyper.customlauncher.accounts.windows;
 
 import lol.hyper.customlauncher.accounts.Account;
 import lol.hyper.customlauncher.accounts.JSONManager;
+import lol.hyper.customlauncher.invasiontracker.InvasionTracker;
 import org.json.JSONObject;
 
 import javax.swing.*;
@@ -59,6 +60,7 @@ public class MainWindow extends JFrame {
             labelsByIndexes.put(i, account.getUsername());
             model.addElement(account.getUsername());
         }
+
         JList accountList = new JList(model);
         DefaultListCellRenderer renderer = (DefaultListCellRenderer) accountList.getCellRenderer();
         renderer.setHorizontalAlignment(SwingConstants.CENTER);
@@ -74,7 +76,6 @@ public class MainWindow extends JFrame {
             JFrame newAccountWindow = new NewAccountWindow("New Account");
             newAccountWindow.dispose();
         });
-
         newAccountButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         newAccountButton.setMaximumSize(new Dimension(300, newAccountButton.getMinimumSize().height));
         panel.add(newAccountButton);
@@ -89,6 +90,16 @@ public class MainWindow extends JFrame {
         deleteAccountButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         deleteAccountButton.setMaximumSize(new Dimension(300, deleteAccountButton.getMinimumSize().height));
         panel.add(deleteAccountButton);
+
+        // invasions button
+        JButton invasionsButton = new JButton("Invasions");
+        invasionsButton.addActionListener(e -> {
+            JFrame invasions = new InvasionTracker("Invasions");
+            invasions.dispose();
+        });
+        invasionsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        invasionsButton.setMaximumSize(new Dimension(300, invasionsButton.getMinimumSize().height));
+        panel.add(invasionsButton);
 
         // options button
         JButton optionsButton = new JButton("Options");
