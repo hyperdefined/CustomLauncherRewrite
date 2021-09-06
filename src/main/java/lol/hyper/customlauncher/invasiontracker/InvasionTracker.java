@@ -31,6 +31,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.stream.Collectors;
@@ -119,7 +120,7 @@ public class InvasionTracker extends JFrame {
         }
 
         try (InputStream in = invasionURL.openStream()) {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
             invasionJSONRaw = reader.lines().collect(Collectors.joining(System.lineSeparator()));
             reader.close();
         } catch (IOException e) {
