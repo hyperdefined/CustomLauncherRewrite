@@ -17,6 +17,7 @@
 
 package lol.hyper.customlauncher.invasiontracker;
 
+import lol.hyper.customlauncher.generic.ErrorWindow;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
@@ -31,6 +32,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -108,18 +110,22 @@ public class InvasionTracker extends JFrame {
     /**
      * Read the TTR API and get the current invasions.
      */
-    public void readInvasionAPI() {
+    public void readInvasionAPI() throws IOException {
         invasions.clear();
 
         String invasionJSONRaw = null;
-        URL invasionURL = null;
-        try {
-            invasionURL = new URL(INVASION_URL);
-        } catch (MalformedURLException e) {
-            logger.error(e);
-        }
 
-        try (InputStream in = invasionURL.openStream()) {
+        URL url = new URL(INVASION_URL);
+        URLConnection conn = url.openConnection();
+        conn.setRequestProperty("User-Agent",
+                "CustomLauncherRewrite https://github.com/hyperdefined/CustomLauncherRewrite");
+        conn.connect();
+        BufferedReader serverResponse = new BufferedReader(
+                new InputStreamReader(conn.getInputStream()));
+        System.out.println(serverResponse.readLine());
+        serverResponse.close();
+
+        try (InputStream in = url.openStream()) {
             BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
             invasionJSONRaw = reader.lines().collect(Collectors.joining(System.lineSeparator()));
             reader.close();
@@ -156,7 +162,13 @@ public class InvasionTracker extends JFrame {
      * Updates the invasion list on the actual GUI.
      */
     private void updateInvasionListGUI() {
-        readInvasionAPI();
+        try {
+            readInvasionAPI();
+        } catch (IOException e) {
+            logger.error(e);
+            JFrame errorWindow = new ErrorWindow("Unable to read invasion API. Please check your log file for more information.");
+            errorWindow.dispose();
+        }
         model.clear();
         for (Invasion invasion : invasions) {
             String temp = invasion.getDistrict() + " - " + invasion.getCogType();
