@@ -62,7 +62,7 @@ public class InvasionTracker extends JFrame {
         invasionsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.add(invasionsLabel);
 
-        refreshInvasions();
+        updateInvasionListGUI();
 
         JList invasionList = new JList(model);
         DefaultListCellRenderer renderer = (DefaultListCellRenderer) invasionList.getCellRenderer();
@@ -93,7 +93,7 @@ public class InvasionTracker extends JFrame {
 
         // refresh button
         JButton refreshButton = new JButton("Refresh");
-        refreshButton.addActionListener(e -> refreshInvasions());
+        refreshButton.addActionListener(e -> updateInvasionListGUI());
         refreshButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         refreshButton.setMaximumSize(new Dimension(300, refreshButton.getMinimumSize().height));
         panel.add(refreshButton);
@@ -108,7 +108,7 @@ public class InvasionTracker extends JFrame {
     /**
      * Read the TTR API and get the current invasions.
      */
-    public void updateInvasions() {
+    public void readInvasionAPI() {
         invasions.clear();
 
         String invasionJSONRaw = null;
@@ -153,10 +153,10 @@ public class InvasionTracker extends JFrame {
     }
 
     /**
-     * Reload the invasion list.
+     * Updates the invasion list on the actual GUI.
      */
-    private void refreshInvasions() {
-        updateInvasions();
+    private void updateInvasionListGUI() {
+        readInvasionAPI();
         model.clear();
         for (Invasion invasion : invasions) {
             String temp = invasion.getDistrict() + " - " + invasion.getCogType();
