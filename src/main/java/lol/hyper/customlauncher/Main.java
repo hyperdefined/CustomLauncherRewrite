@@ -20,8 +20,10 @@ package lol.hyper.customlauncher;
 import lol.hyper.customlauncher.accounts.JSONManager;
 import lol.hyper.customlauncher.accounts.windows.MainWindow;
 import lol.hyper.customlauncher.generic.ErrorWindow;
+import lol.hyper.customlauncher.generic.InfoWindow;
 import lol.hyper.customlauncher.setup.FirstSetup;
 import lol.hyper.customlauncher.ttrupdater.TTRUpdater;
+import lol.hyper.customlauncher.updater.UpdateChecker;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
@@ -36,6 +38,7 @@ public class Main {
 
     public static Logger logger;
     public static String pathToUse;
+    public static final String VERSION = "1.2";
 
     public static void main(String[] args) throws IOException {
         System.setProperty("log4j.configurationFile", "log4j2config.xml");
@@ -99,6 +102,11 @@ public class Main {
                 updater.dispose();
             }
         }
+        if (UpdateChecker.checkForUpdates(VERSION)) {
+            JFrame infoWindow = new InfoWindow("A new version is available.\nPlease download the latest version from the GitHub.");
+            infoWindow.dispose();
+        }
+
         JFrame mainWindow = new MainWindow("CustomLauncherRewrite");
         mainWindow.dispose();
     }
