@@ -166,7 +166,6 @@ public class InvasionTracker extends JFrame {
                 "User-Agent", "CustomLauncherRewrite https://github.com/hyperdefined/CustomLauncherRewrite");
         conn.connect();
         BufferedReader serverResponse = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-        System.out.println(serverResponse.readLine());
         serverResponse.close();
 
         try (InputStream in = url.openStream()) {
