@@ -30,20 +30,22 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class InvasionTracker extends JFrame {
 
     public final DefaultListModel model = new DefaultListModel();
     public final ArrayList<Invasion> invasions = new ArrayList<>();
-    public final String INVASION_URL = "https://www.toontownrewritten.com/api/invasions";
     public final Logger logger = LogManager.getLogger(InvasionTracker.class);
+    ScheduledExecutorService scheduledExecutorService;
 
     public InvasionTracker(String title) {
         JFrame frame = new JFrame(title);
@@ -64,7 +66,7 @@ public class InvasionTracker extends JFrame {
         invasionsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.add(invasionsLabel);
 
-        updateInvasionListGUI();
+        scheduledExecutorService = startInvasionRefresh();
 
         JList invasionList = new JList(model);
         DefaultListCellRenderer renderer = (DefaultListCellRenderer) invasionList.getCellRenderer();
@@ -105,23 +107,65 @@ public class InvasionTracker extends JFrame {
         frame.setVisible(true);
         frame.add(panel);
         frame.setLocationRelativeTo(null);
+
+        frame.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                scheduledExecutorService.shutdown();
+            }
+        });
+    }
+
+    /**
+     * Updates the invasion list on the actual GUI.
+     */
+    private void updateInvasionListGUI() {
+        model.clear();
+        for (Invasion invasion : invasions) {
+            String temp = invasion.getDistrict() + " - " + invasion.getCogType();
+            model.addElement(temp);
+        }
+    }
+
+    /**
+     * Read invasion API every 5 seconds.
+     * @return The scheduler.
+     */
+    public ScheduledExecutorService startInvasionRefresh() {
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(0);
+        scheduler.scheduleAtFixedRate(
+                () -> {
+                    try {
+                        readInvasionAPI();
+                    } catch (IOException e) {
+                        logger.error(e);
+                        JFrame errorWindow = new ErrorWindow(
+                                "Unable to read invasion API. Please check your log file for more information.");
+                        errorWindow.dispose();
+                    }
+                },
+                0,
+                5,
+                TimeUnit.SECONDS);
+        return scheduler;
     }
 
     /**
      * Read the TTR API and get the current invasions.
      */
     public void readInvasionAPI() throws IOException {
+        String INVASION_URL = "https://www.toontownrewritten.com/api/invasions";
+
         invasions.clear();
 
         String invasionJSONRaw = null;
 
         URL url = new URL(INVASION_URL);
         URLConnection conn = url.openConnection();
-        conn.setRequestProperty("User-Agent",
-                "CustomLauncherRewrite https://github.com/hyperdefined/CustomLauncherRewrite");
+        conn.setRequestProperty(
+                "User-Agent", "CustomLauncherRewrite https://github.com/hyperdefined/CustomLauncherRewrite");
         conn.connect();
-        BufferedReader serverResponse = new BufferedReader(
-                new InputStreamReader(conn.getInputStream()));
+        BufferedReader serverResponse = new BufferedReader(new InputStreamReader(conn.getInputStream()));
         System.out.println(serverResponse.readLine());
         serverResponse.close();
 
@@ -156,23 +200,7 @@ public class InvasionTracker extends JFrame {
             Invasion newInvasion = new Invasion(cogType, cogsDefeated, cogsTotal, key, time);
             invasions.add(newInvasion);
         }
-    }
 
-    /**
-     * Updates the invasion list on the actual GUI.
-     */
-    private void updateInvasionListGUI() {
-        try {
-            readInvasionAPI();
-        } catch (IOException e) {
-            logger.error(e);
-            JFrame errorWindow = new ErrorWindow("Unable to read invasion API. Please check your log file for more information.");
-            errorWindow.dispose();
-        }
-        model.clear();
-        for (Invasion invasion : invasions) {
-            String temp = invasion.getDistrict() + " - " + invasion.getCogType();
-            model.addElement(temp);
-        }
+        updateInvasionListGUI();
     }
 }
