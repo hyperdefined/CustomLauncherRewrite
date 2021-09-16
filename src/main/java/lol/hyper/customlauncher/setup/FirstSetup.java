@@ -43,7 +43,7 @@ public class FirstSetup extends JFrame {
         String finalInstallPath = null;
 
         for (char alphabet = 'A'; alphabet <= 'Z'; alphabet++) {
-            // we make a temp string so we don't replace the template.
+            // we make a temp string, so we don't replace the template.
             String temp = installPathTest.replace("XX", String.valueOf(alphabet));
             logger.info("Checking install directory: " + temp);
             File location = new File(temp);
