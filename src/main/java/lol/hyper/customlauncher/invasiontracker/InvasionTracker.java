@@ -95,13 +95,6 @@ public class InvasionTracker extends JFrame {
             }
         });
 
-        // refresh button
-        JButton refreshButton = new JButton("Refresh");
-        refreshButton.addActionListener(e -> updateInvasionListGUI());
-        refreshButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        refreshButton.setMaximumSize(new Dimension(300, refreshButton.getMinimumSize().height));
-        panel.add(refreshButton);
-
         frame.pack();
         frame.setSize(300, 400);
         frame.setVisible(true);
@@ -155,10 +148,9 @@ public class InvasionTracker extends JFrame {
      */
     public void readInvasionAPI() throws IOException {
         String INVASION_URL = "https://www.toontownrewritten.com/api/invasions";
+        String invasionJSONRaw = null;
 
         invasions.clear();
-
-        String invasionJSONRaw = null;
 
         URL url = new URL(INVASION_URL);
         URLConnection conn = url.openConnection();
@@ -187,6 +179,9 @@ public class InvasionTracker extends JFrame {
         logger.info("Reading " + INVASION_URL + " for current invasions...");
         logger.info(invasionsObject);
 
+
+        // iterate through each of the invasions (seperate JSONs)
+        // and add them to the list
         Iterator<String> keys = invasionsObject.keys();
         while (keys.hasNext()) {
             String key = keys.next();
