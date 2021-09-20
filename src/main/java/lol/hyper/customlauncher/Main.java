@@ -38,7 +38,7 @@ public class Main {
 
     public static Logger logger;
     public static String pathToUse;
-    public static final String VERSION = "1.2";
+    public static final String VERSION = "1.3.1";
 
     public static void main(String[] args) throws IOException {
         System.setProperty("log4j.configurationFile", "log4j2config.xml");
