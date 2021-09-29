@@ -34,6 +34,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -43,7 +44,7 @@ import java.util.stream.Collectors;
 public class InvasionTracker extends JFrame {
 
     public final DefaultListModel model = new DefaultListModel();
-    public final ArrayList<Invasion> invasions = new ArrayList<>();
+    public final HashMap<String, Invasion> invasions = new HashMap<>();
     public final Logger logger = LogManager.getLogger(InvasionTracker.class);
     ScheduledExecutorService scheduledExecutorService;
 
@@ -114,8 +115,9 @@ public class InvasionTracker extends JFrame {
      */
     private void updateInvasionListGUI() {
         model.clear();
-        for (Invasion invasion : invasions) {
-            String temp = invasion.getDistrict() + " - " + invasion.getCogType();
+        for (String invasion : invasions.keySet()) {
+            Invasion inv = invasions.get(invasion);
+            String temp = invasion + " - " + inv.getCogType();
             model.addElement(temp);
         }
     }
@@ -150,8 +152,6 @@ public class InvasionTracker extends JFrame {
         String INVASION_URL = "https://www.toontownrewritten.com/api/invasions";
         String invasionJSONRaw = null;
 
-        invasions.clear();
-
         URL url = new URL(INVASION_URL);
         URLConnection conn = url.openConnection();
         conn.setRequestProperty(
@@ -180,7 +180,9 @@ public class InvasionTracker extends JFrame {
         logger.info(invasionsObject);
 
 
-        // iterate through each of the invasions (seperate JSONs)
+        HashMap<String, Invasion> newInvasions = new HashMap<>();
+
+        // iterate through each of the invasions (separate JSONs)
         // and add them to the list
         Iterator<String> keys = invasionsObject.keys();
         while (keys.hasNext()) {
@@ -192,7 +194,30 @@ public class InvasionTracker extends JFrame {
             int cogsTotal = Integer.parseInt(progress.substring(progress.indexOf('/') + 1));
             long time = temp.getLong("asOf");
             Invasion newInvasion = new Invasion(cogType, cogsDefeated, cogsTotal, key, time);
-            invasions.add(newInvasion);
+            newInvasions.put(key, newInvasion);
+        }
+
+
+        // these 2 for loops will check for new and old invasions
+        // there is probably a much better way to handle this
+        // alerts will pop up here
+
+        for (String districtName : newInvasions.keySet()) {
+            // this is a NEW invasion
+            if (!invasions.containsKey(districtName)) {
+                // some type of alert?
+                invasions.put(districtName, newInvasions.get(districtName));
+                logger.info("New invasion alert! " + districtName);
+            }
+        }
+
+        for (String districtName : invasions.keySet()) {
+            // this is an OLD invasion that is gone
+            if (!newInvasions.containsKey(districtName)) {
+                // some type of alert?
+                logger.info("Invasion is gone! " + districtName);
+                invasions.remove(districtName);
+            }
         }
 
         updateInvasionListGUI();
