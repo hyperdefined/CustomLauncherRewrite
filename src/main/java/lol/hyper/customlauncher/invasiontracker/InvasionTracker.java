@@ -131,7 +131,7 @@ public class InvasionTracker {
                     }
                 },
                 0,
-                5,
+                10,
                 TimeUnit.SECONDS);
     }
 
