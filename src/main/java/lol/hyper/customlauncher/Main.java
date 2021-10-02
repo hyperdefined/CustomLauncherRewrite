@@ -21,6 +21,7 @@ import lol.hyper.customlauncher.accounts.JSONManager;
 import lol.hyper.customlauncher.accounts.windows.MainWindow;
 import lol.hyper.customlauncher.generic.ErrorWindow;
 import lol.hyper.customlauncher.generic.InfoWindow;
+import lol.hyper.customlauncher.invasiontracker.InvasionTracker;
 import lol.hyper.customlauncher.setup.FirstSetup;
 import lol.hyper.customlauncher.ttrupdater.TTRUpdater;
 import lol.hyper.customlauncher.updater.UpdateChecker;
@@ -36,9 +37,9 @@ import java.nio.file.Paths;
 
 public class Main {
 
+    public static final String VERSION = "1.3.1";
     public static Logger logger;
     public static String pathToUse;
-    public static final String VERSION = "1.3.1";
 
     public static void main(String[] args) throws IOException {
         System.setProperty("log4j.configurationFile", "log4j2config.xml");
@@ -103,11 +104,15 @@ public class Main {
             }
         }
         if (UpdateChecker.checkForUpdates(VERSION)) {
-            JFrame infoWindow = new InfoWindow("A new version is available.\nPlease download the latest version from the GitHub.");
+            JFrame infoWindow =
+                    new InfoWindow("A new version is available.\nPlease download the latest version from the GitHub.");
             infoWindow.dispose();
         }
 
-        JFrame mainWindow = new MainWindow("CustomLauncherRewrite");
+        InvasionTracker invasionTracker = new InvasionTracker();
+        invasionTracker.startInvasionRefresh();
+
+        JFrame mainWindow = new MainWindow("CustomLauncherRewrite", invasionTracker);
         mainWindow.dispose();
     }
 }

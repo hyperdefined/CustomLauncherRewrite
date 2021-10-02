@@ -33,8 +33,9 @@ public class MainWindow extends JFrame {
 
     public static final DefaultListModel model = new DefaultListModel();
     static final HashMap<Integer, String> labelsByIndexes = new HashMap<>();
+    private final InvasionTracker invasionTracker;
 
-    public MainWindow(String title) {
+    public MainWindow(String title, InvasionTracker invasionTracker) {
         JFrame frame = new JFrame(title);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
@@ -43,6 +44,8 @@ public class MainWindow extends JFrame {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+
+        this.invasionTracker = invasionTracker;
 
         // GUI elements
         JPanel panel = new JPanel();
@@ -93,10 +96,7 @@ public class MainWindow extends JFrame {
 
         // invasions button
         JButton invasionsButton = new JButton("Invasions");
-        invasionsButton.addActionListener(e -> {
-            JFrame invasions = new InvasionTracker("Invasions");
-            invasions.dispose();
-        });
+        invasionsButton.addActionListener(e -> invasionTracker.showWindow());
         invasionsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         invasionsButton.setMaximumSize(new Dimension(300, invasionsButton.getMinimumSize().height));
         panel.add(invasionsButton);

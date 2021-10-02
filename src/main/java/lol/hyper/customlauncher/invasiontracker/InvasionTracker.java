@@ -33,7 +33,6 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.concurrent.Executors;
@@ -41,15 +40,15 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-public class InvasionTracker extends JFrame {
+public class InvasionTracker {
 
     public final DefaultListModel model = new DefaultListModel();
     public final HashMap<String, Invasion> invasions = new HashMap<>();
     public final Logger logger = LogManager.getLogger(InvasionTracker.class);
-    ScheduledExecutorService scheduledExecutorService;
+    public ScheduledExecutorService scheduler;
 
-    public InvasionTracker(String title) {
-        JFrame frame = new JFrame(title);
+    public void showWindow() {
+        JFrame frame = new JFrame("Invasions");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setResizable(false);
         try {
@@ -66,8 +65,6 @@ public class InvasionTracker extends JFrame {
         JLabel invasionsLabel = new JLabel("Current Invasions");
         invasionsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.add(invasionsLabel);
-
-        scheduledExecutorService = startInvasionRefresh();
 
         JList invasionList = new JList(model);
         DefaultListCellRenderer renderer = (DefaultListCellRenderer) invasionList.getCellRenderer();
@@ -98,16 +95,9 @@ public class InvasionTracker extends JFrame {
 
         frame.pack();
         frame.setSize(300, 400);
-        frame.setVisible(true);
         frame.add(panel);
         frame.setLocationRelativeTo(null);
-
-        frame.addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                scheduledExecutorService.shutdown();
-            }
-        });
+        frame.setVisible(true);
     }
 
     /**
@@ -124,10 +114,9 @@ public class InvasionTracker extends JFrame {
 
     /**
      * Read invasion API every 5 seconds.
-     * @return The scheduler.
      */
-    public ScheduledExecutorService startInvasionRefresh() {
-        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(0);
+    public void startInvasionRefresh() {
+        scheduler = Executors.newScheduledThreadPool(0);
         scheduler.scheduleAtFixedRate(
                 () -> {
                     try {
@@ -142,7 +131,6 @@ public class InvasionTracker extends JFrame {
                 0,
                 5,
                 TimeUnit.SECONDS);
-        return scheduler;
     }
 
     /**
@@ -179,7 +167,6 @@ public class InvasionTracker extends JFrame {
         logger.info("Reading " + INVASION_URL + " for current invasions...");
         logger.info(invasionsObject);
 
-
         HashMap<String, Invasion> newInvasions = new HashMap<>();
 
         // iterate through each of the invasions (separate JSONs)
@@ -197,15 +184,13 @@ public class InvasionTracker extends JFrame {
             newInvasions.put(key, newInvasion);
         }
 
-
         // these 2 for loops will check for new and old invasions
         // there is probably a much better way to handle this
         // alerts will pop up here
-
+        // TODO: add some type of alert here
         for (String districtName : newInvasions.keySet()) {
             // this is a NEW invasion
             if (!invasions.containsKey(districtName)) {
-                // some type of alert?
                 invasions.put(districtName, newInvasions.get(districtName));
                 logger.info("New invasion alert! " + districtName);
             }
@@ -214,7 +199,6 @@ public class InvasionTracker extends JFrame {
         for (String districtName : invasions.keySet()) {
             // this is an OLD invasion that is gone
             if (!newInvasions.containsKey(districtName)) {
-                // some type of alert?
                 logger.info("Invasion is gone! " + districtName);
                 invasions.remove(districtName);
             }
