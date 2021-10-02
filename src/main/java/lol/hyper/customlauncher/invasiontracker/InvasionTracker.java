@@ -181,8 +181,7 @@ public class InvasionTracker {
             String progress = temp.getString("progress");
             int cogsDefeated = Integer.parseInt(progress.substring(0, progress.indexOf('/')));
             int cogsTotal = Integer.parseInt(progress.substring(progress.indexOf('/') + 1));
-            long time = temp.getLong("asOf");
-            Invasion newInvasion = new Invasion(cogType, cogsDefeated, cogsTotal, key, time);
+            Invasion newInvasion = new Invasion(cogType, cogsDefeated, cogsTotal, key);
             newInvasions.put(key, newInvasion);
         }
 
