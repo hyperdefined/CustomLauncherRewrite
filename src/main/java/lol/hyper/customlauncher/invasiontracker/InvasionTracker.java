@@ -105,8 +105,8 @@ public class InvasionTracker {
     private void updateInvasionListGUI() {
         model.clear();
         List<Invasion> sortedInvasions = new ArrayList<>();
-        for (String inv : invasions.keySet()) {
-            sortedInvasions.add(invasions.get(inv));
+        for (Map.Entry<String, Invasion> entry : invasions.entrySet()) {
+            sortedInvasions.add(entry.getValue());
         }
         Collections.sort(sortedInvasions);
         for (Invasion invasion : sortedInvasions) {
@@ -190,11 +190,11 @@ public class InvasionTracker {
         // there is probably a much better way to handle this
         // alerts will pop up here
         // TODO: add some type of alert here
-        for (String districtName : newInvasions.keySet()) {
+        for (Map.Entry<String, Invasion> entry : newInvasions.entrySet()) {
             // this is a NEW invasion
-            if (!invasions.containsKey(districtName)) {
-                invasions.put(districtName, newInvasions.get(districtName));
-                logger.info("New invasion alert! " + districtName);
+            if (!invasions.containsKey(entry.getKey())) {
+                invasions.put(entry.getKey(), entry.getValue());
+                logger.info("New invasion alert! " + entry.getKey());
             }
         }
 
