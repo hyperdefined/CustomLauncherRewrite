@@ -17,7 +17,7 @@
 
 package lol.hyper.customlauncher.invasiontracker;
 
-public class Invasion {
+public class Invasion implements Comparable<Invasion> {
 
     private final String cogType;
     private final int cogsDefeated;
@@ -31,14 +31,6 @@ public class Invasion {
         this.cogsTotal = cogsTotal;
         this.district = district;
         this.time = time;
-    }
-
-    /**
-     * Get the type of cog.
-     * @return The cog type.
-     */
-    public String getCogType() {
-        return cogType;
     }
 
     /**
@@ -71,5 +63,15 @@ public class Invasion {
      */
     public Long getTime() {
         return time;
+    }
+
+    @Override
+    public String toString() {
+        return district + " - " + cogType;
+    }
+
+    @Override
+    public int compareTo(Invasion invasion) {
+        return (this.getDistrict().compareTo(invasion.getDistrict()));
     }
 }

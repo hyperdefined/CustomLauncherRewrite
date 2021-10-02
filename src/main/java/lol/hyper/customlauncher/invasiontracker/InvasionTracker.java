@@ -33,8 +33,8 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.*;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -42,7 +42,7 @@ import java.util.stream.Collectors;
 
 public class InvasionTracker {
 
-    public final DefaultListModel model = new DefaultListModel();
+    public final DefaultListModel<Invasion> model = new DefaultListModel<>();
     public final HashMap<String, Invasion> invasions = new HashMap<>();
     public final Logger logger = LogManager.getLogger(InvasionTracker.class);
     public ScheduledExecutorService scheduler;
@@ -66,7 +66,7 @@ public class InvasionTracker {
         invasionsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.add(invasionsLabel);
 
-        JList invasionList = new JList(model);
+        JList<Invasion> invasionList = new JList<>(model);
         DefaultListCellRenderer renderer = (DefaultListCellRenderer) invasionList.getCellRenderer();
         renderer.setHorizontalAlignment(SwingConstants.LEFT);
         invasionList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -77,10 +77,9 @@ public class InvasionTracker {
 
         invasionList.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent evt) {
-                JList list = (JList) evt.getSource();
+                JList<Invasion> list = (JList<Invasion>) evt.getSource();
                 if (evt.getClickCount() == 2) {
-                    int index = list.getSelectedIndex();
-                    Invasion temp = invasions.get(index);
+                    Invasion temp = list.getSelectedValue();
                     String district = temp.getDistrict();
                     int totalCogs = temp.getCogsTotal();
                     int defeatedCogs = temp.getCogsDefeated();
@@ -105,10 +104,13 @@ public class InvasionTracker {
      */
     private void updateInvasionListGUI() {
         model.clear();
-        for (String invasion : invasions.keySet()) {
-            Invasion inv = invasions.get(invasion);
-            String temp = invasion + " - " + inv.getCogType();
-            model.addElement(temp);
+        List<Invasion> sortedInvasions = new ArrayList<>();
+        for (String inv : invasions.keySet()) {
+            sortedInvasions.add(invasions.get(inv));
+        }
+        Collections.sort(sortedInvasions);
+        for (Invasion invasion : sortedInvasions) {
+            model.addElement(invasion);
         }
     }
 
