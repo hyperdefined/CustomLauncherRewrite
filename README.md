@@ -36,7 +36,7 @@ You passphrase was typed in wrong. You either typed it incorrectly when you adde
 No problem! Create a new [issue](https://github.com/hyperdefined/CustomLauncherRewrite/issues) and include as much detail as possible, so I can help you out.
 
 ## Known Issues
-* The game updater takes a long time.
+None currently.
 
 ## Contributing
 Feel free to fork this and make any suggestions or additions.
