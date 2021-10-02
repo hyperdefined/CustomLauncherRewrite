@@ -103,7 +103,7 @@ public class InvasionTracker {
      * Updates the invasion list on the actual GUI.
      */
     private void updateInvasionListGUI() {
-        model.clear();
+        model.clear(); // this sadly makes the list "flash" because it waits for the api to respond
         List<Invasion> sortedInvasions = new ArrayList<>();
         for (Map.Entry<String, Invasion> entry : invasions.entrySet()) {
             sortedInvasions.add(entry.getValue());
