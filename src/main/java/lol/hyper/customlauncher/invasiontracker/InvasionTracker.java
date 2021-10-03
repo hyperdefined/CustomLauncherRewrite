@@ -31,6 +31,8 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.*;
 import java.util.concurrent.Executors;
@@ -90,13 +92,18 @@ public class InvasionTracker {
         for (Invasion invasion : sortedInvasions) {
             String district = invasion.getDistrict();
             String cogType = invasion.getCogType();
-            int cogsLeft = invasion.getCogsTotal() - invasion.getCogsDefeated();
+            String timeLeft;
+            if (invasion.endTime == null) {
+                timeLeft = "Estimating...";
+            } else {
+                timeLeft = convertTime(ChronoUnit.SECONDS.between(LocalDateTime.now(), invasion.endTime));
+            }
             finalText
                     .append(district)
                     .append(" - ")
                     .append(cogType)
-                    .append(" - Cogs Left: ")
-                    .append(cogsLeft)
+                    .append(" - ")
+                    .append(timeLeft)
                     .append("\n");
         }
         return finalText.toString();
@@ -179,8 +186,19 @@ public class InvasionTracker {
                 JSONObject temp = invasionsObject.getJSONObject(key);
                 String progress = temp.getString("progress");
                 int cogsDefeated = Integer.parseInt(progress.substring(0, progress.indexOf('/')));
-                logger.info(key + " " + tempInv.getCogsDefeated() + " -> " + cogsDefeated);
+                int difference = cogsDefeated - tempInv.getCogsDefeated();
                 tempInv.updateCogsDefeated(cogsDefeated);
+                if (tempInv.counter == 6) {
+                    long seconds = ((tempInv.getCogsTotal() - tempInv.getCogsDefeated()) / tempInv.cogsPerMinute) * 60L;
+                    logger.info(tempInv.getDistrict() + " - " + seconds + " seconds");
+                    logger.info(tempInv.getDistrict() + " - " + tempInv.cogsPerMinute + " per minute");
+                    tempInv.endTime = LocalDateTime.now().plusSeconds(seconds);
+                    tempInv.counter = 0;
+                    tempInv.cogsPerMinute = 0;
+                } else {
+                    tempInv.counter++;
+                    tempInv.cogsPerMinute = tempInv.cogsPerMinute + difference;
+                }
             }
         }
 
@@ -194,5 +212,13 @@ public class InvasionTracker {
         }
 
         updateInvasionListGUI();
+    }
+
+    private String convertTime(long totalSecs)
+    {
+        long hours = totalSecs / 3600;
+        long minutes = (totalSecs % 3600) / 60;
+        long seconds = totalSecs % 60;
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
     }
 }
