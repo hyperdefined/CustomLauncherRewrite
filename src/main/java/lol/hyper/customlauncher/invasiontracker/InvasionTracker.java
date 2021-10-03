@@ -24,8 +24,6 @@ import org.json.JSONObject;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,8 +31,8 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -42,7 +40,7 @@ import java.util.stream.Collectors;
 
 public class InvasionTracker {
 
-    public final DefaultListModel<Invasion> model = new DefaultListModel<>();
+    public final DefaultListModel<String> model = new DefaultListModel<>();
     public final HashMap<String, Invasion> invasions = new HashMap<>();
     public final Logger logger = LogManager.getLogger(InvasionTracker.class);
     public ScheduledExecutorService scheduler;
@@ -66,34 +64,14 @@ public class InvasionTracker {
         invasionsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.add(invasionsLabel);
 
-        JList<Invasion> invasionList = new JList<>(model);
-        DefaultListCellRenderer renderer = (DefaultListCellRenderer) invasionList.getCellRenderer();
-        renderer.setHorizontalAlignment(SwingConstants.LEFT);
-        invasionList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        invasionList.setLayoutOrientation(JList.VERTICAL);
-        JScrollPane scrollBar = new JScrollPane(invasionList);
-        scrollBar.setAlignmentX(Component.CENTER_ALIGNMENT);
-        panel.add(scrollBar);
-
-        invasionList.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent evt) {
-                JList<Invasion> list = (JList<Invasion>) evt.getSource();
-                if (evt.getClickCount() == 2) {
-                    Invasion temp = list.getSelectedValue();
-                    String district = temp.getDistrict();
-                    int totalCogs = temp.getCogsTotal();
-                    int defeatedCogs = temp.getCogsDefeated();
-                    JOptionPane.showMessageDialog(
-                            frame,
-                            district + "\nCogs: " + defeatedCogs + "/" + totalCogs,
-                            "Invasion",
-                            JOptionPane.INFORMATION_MESSAGE);
-                }
-            }
-        });
+        JTextArea textArea = new JTextArea();
+        textArea.setEditable(false);
+        textArea.setHighlighter(null);
+        scheduler.scheduleAtFixedRate(() -> textArea.setText(updateInvasionListGUI()), 0, 500, TimeUnit.MILLISECONDS);
+        panel.add(textArea);
 
         frame.pack();
-        frame.setSize(300, 400);
+        frame.setSize(500, 400);
         frame.add(panel);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
@@ -102,16 +80,26 @@ public class InvasionTracker {
     /**
      * Updates the invasion list on the actual GUI.
      */
-    private void updateInvasionListGUI() {
-        model.clear(); // this sadly makes the list "flash" because it waits for the api to respond
+    private String updateInvasionListGUI() {
         List<Invasion> sortedInvasions = new ArrayList<>();
+        StringBuilder finalText = new StringBuilder();
         for (Map.Entry<String, Invasion> entry : invasions.entrySet()) {
             sortedInvasions.add(entry.getValue());
         }
         Collections.sort(sortedInvasions);
         for (Invasion invasion : sortedInvasions) {
-            model.addElement(invasion);
+            String district = invasion.getDistrict();
+            String cogType = invasion.getCogType();
+            int cogsLeft = invasion.getCogsTotal() - invasion.getCogsDefeated();
+            finalText
+                    .append(district)
+                    .append(" - ")
+                    .append(cogType)
+                    .append(" - Cogs Left: ")
+                    .append(cogsLeft)
+                    .append("\n");
         }
+        return finalText.toString();
     }
 
     /**
@@ -176,13 +164,24 @@ public class InvasionTracker {
         Iterator<String> keys = invasionsObject.keys();
         while (keys.hasNext()) {
             String key = keys.next();
-            JSONObject temp = invasionsObject.getJSONObject(key);
-            String cogType = temp.getString("type");
-            String progress = temp.getString("progress");
-            int cogsDefeated = Integer.parseInt(progress.substring(0, progress.indexOf('/')));
-            int cogsTotal = Integer.parseInt(progress.substring(progress.indexOf('/') + 1));
-            Invasion newInvasion = new Invasion(cogType, cogsDefeated, cogsTotal, key);
-            newInvasions.put(key, newInvasion);
+            if (!invasions.containsKey(key)) {
+                JSONObject temp = invasionsObject.getJSONObject(key);
+                String cogType = temp.getString("type");
+                String progress = temp.getString("progress");
+                int cogsDefeated = Integer.parseInt(progress.substring(0, progress.indexOf('/')));
+                int cogsTotal = Integer.parseInt(progress.substring(progress.indexOf('/') + 1));
+                Invasion newInvasion = new Invasion(cogType, cogsDefeated, cogsTotal, key);
+                newInvasions.put(key, newInvasion);
+            } else {
+                if (!invasions.containsKey(key)) {
+                    return; // JUST IN CASE
+                }
+                Invasion tempInv = invasions.get(key);
+                JSONObject temp = invasionsObject.getJSONObject(key);
+                String progress = temp.getString("progress");
+                int cogsDefeated = Integer.parseInt(progress.substring(0, progress.indexOf('/')));
+                tempInv.updateCogsDefeated(cogsDefeated);
+            }
         }
 
         // these 2 for loops will check for new and old invasions
@@ -197,11 +196,12 @@ public class InvasionTracker {
             }
         }
 
-        for (String districtName : invasions.keySet()) {
-            // this is an OLD invasion that is gone
-            if (!newInvasions.containsKey(districtName)) {
-                logger.info("Invasion is gone! " + districtName);
-                invasions.remove(districtName);
+        Iterator<Map.Entry<String, Invasion>> it = invasions.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<String, Invasion> pair = it.next();
+            if (!newInvasions.containsKey(pair.getKey())) {
+                logger.info("Invasion is gone! " + pair.getKey());
+                it.remove();
             }
         }
 

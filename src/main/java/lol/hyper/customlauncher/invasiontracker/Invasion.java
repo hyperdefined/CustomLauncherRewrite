@@ -20,7 +20,7 @@ package lol.hyper.customlauncher.invasiontracker;
 public class Invasion implements Comparable<Invasion> {
 
     private final String cogType;
-    private final int cogsDefeated;
+    private int cogsDefeated;
     private final int cogsTotal;
     private final String district;
 
@@ -48,11 +48,27 @@ public class Invasion implements Comparable<Invasion> {
     }
 
     /**
+     * Get the cog type.
+     * @return Cog type.
+     */
+    public String getCogType() {
+        return cogType;
+    }
+
+    /**
      * Get the district of the invasion.
      * @return The district.
      */
     public String getDistrict() {
         return district;
+    }
+
+    /**
+     * Update the amount of cogs defeated.
+     * @return New amount.
+     */
+    public int updateCogsDefeated(int newAmount) {
+        return cogsDefeated = newAmount;
     }
 
     @Override
