@@ -157,8 +157,6 @@ public class InvasionTracker {
         logger.info("Reading " + INVASION_URL + " for current invasions...");
         logger.info(invasionsObject);
 
-        HashMap<String, Invasion> newInvasions = new HashMap<>();
-
         // iterate through each of the invasions (separate JSONs)
         // and add them to the list
         Iterator<String> keys = invasionsObject.keys();
@@ -170,8 +168,9 @@ public class InvasionTracker {
                 String progress = temp.getString("progress");
                 int cogsDefeated = Integer.parseInt(progress.substring(0, progress.indexOf('/')));
                 int cogsTotal = Integer.parseInt(progress.substring(progress.indexOf('/') + 1));
+                logger.info("New invasion alert! " + key + " Cogs: " + cogsDefeated + "/" + cogsTotal);
                 Invasion newInvasion = new Invasion(cogType, cogsDefeated, cogsTotal, key);
-                newInvasions.put(key, newInvasion);
+                invasions.put(key, newInvasion);
             } else {
                 if (!invasions.containsKey(key)) {
                     return; // JUST IN CASE
@@ -180,28 +179,17 @@ public class InvasionTracker {
                 JSONObject temp = invasionsObject.getJSONObject(key);
                 String progress = temp.getString("progress");
                 int cogsDefeated = Integer.parseInt(progress.substring(0, progress.indexOf('/')));
+                logger.info(key + " " + tempInv.getCogsDefeated() + " -> " + cogsDefeated);
                 tempInv.updateCogsDefeated(cogsDefeated);
-            }
-        }
-
-        // these 2 for loops will check for new and old invasions
-        // there is probably a much better way to handle this
-        // alerts will pop up here
-        // TODO: add some type of alert here
-        for (Map.Entry<String, Invasion> entry : newInvasions.entrySet()) {
-            // this is a NEW invasion
-            if (!invasions.containsKey(entry.getKey())) {
-                invasions.put(entry.getKey(), entry.getValue());
-                logger.info("New invasion alert! " + entry.getKey());
             }
         }
 
         Iterator<Map.Entry<String, Invasion>> it = invasions.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry<String, Invasion> pair = it.next();
-            if (!newInvasions.containsKey(pair.getKey())) {
-                logger.info("Invasion is gone! " + pair.getKey());
+            if (!invasionsObject.has(pair.getKey())) {
                 it.remove();
+                logger.info("Invasion gone! " + pair.getKey());
             }
         }
 
