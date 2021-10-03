@@ -23,14 +23,12 @@ public class Invasion implements Comparable<Invasion> {
     private final int cogsDefeated;
     private final int cogsTotal;
     private final String district;
-    private final Long timeStarted;
 
     public Invasion(String cogType, int cogsDefeated, int cogsTotal, String district) {
         this.cogType = cogType;
         this.cogsDefeated = cogsDefeated;
         this.cogsTotal = cogsTotal;
         this.district = district;
-        this.timeStarted = System.currentTimeMillis();
     }
 
     /**
@@ -55,14 +53,6 @@ public class Invasion implements Comparable<Invasion> {
      */
     public String getDistrict() {
         return district;
-    }
-
-    /**
-     * Gets the start time of the invasion.
-     * @return The time formatted as a long.
-     */
-    public Long getTimeStarted() {
-        return timeStarted;
     }
 
     @Override
