@@ -18,17 +18,16 @@
 package lol.hyper.customlauncher.invasiontracker;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 
 public class Invasion implements Comparable<Invasion> {
 
     private final String cogType;
     private final int cogsTotal;
     private final String district;
-    private int cogsDefeated;
     public int cogsPerMinute = 0;
     public int counter = 0;
     public LocalDateTime endTime;
+    private int cogsDefeated;
 
     public Invasion(String cogType, int cogsDefeated, int cogsTotal, String district) {
         this.cogType = cogType;

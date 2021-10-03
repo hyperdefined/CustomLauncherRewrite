@@ -33,7 +33,6 @@ public class MainWindow extends JFrame {
 
     public static final DefaultListModel model = new DefaultListModel();
     static final HashMap<Integer, String> labelsByIndexes = new HashMap<>();
-    private final InvasionTracker invasionTracker;
 
     public MainWindow(String title, InvasionTracker invasionTracker) {
         JFrame frame = new JFrame(title);
@@ -44,8 +43,6 @@ public class MainWindow extends JFrame {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-
-        this.invasionTracker = invasionTracker;
 
         // GUI elements
         JPanel panel = new JPanel();

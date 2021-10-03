@@ -17,7 +17,6 @@
 
 package lol.hyper.customlauncher.updater;
 
-import lol.hyper.customlauncher.invasiontracker.InvasionTracker;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

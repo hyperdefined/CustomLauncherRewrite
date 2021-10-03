@@ -40,7 +40,7 @@ public class JSONManager {
             Paths.get("config" + File.separator + "accounts.json").toFile();
     public static final File configFile =
             Paths.get("config" + File.separator + "config.json").toFile();
-    public static Path configPath = Paths.get("config");
+    public static final Path configPath = Paths.get("config");
     private static SecretKeySpec secretKey;
 
     /**
