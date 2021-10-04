@@ -39,7 +39,7 @@ No problem! Create a new [issue](https://github.com/hyperdefined/CustomLauncherR
 None currently.
 
 ## Contributing
-Feel free to fork this and make any suggestions or additions.
+The code for this program could definitely be improved. Feel free to fork and make and changes/improvements to it.
 
 ## License
 This program is released under GNU General Public License v3. See [LICENSE](https://github.com/hyperdefined/CustomLauncherRewrite/blob/master/LICENSE).
