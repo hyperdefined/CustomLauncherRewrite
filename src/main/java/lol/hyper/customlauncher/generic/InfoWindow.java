@@ -21,14 +21,14 @@ import javax.swing.*;
 
 public class InfoWindow extends JFrame {
 
-    public InfoWindow(String errorMessage) {
+    public InfoWindow(String infoMessage) {
         JFrame frame = new JFrame();
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        JOptionPane.showMessageDialog(frame, errorMessage, "Info", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(frame, infoMessage, "Info", JOptionPane.INFORMATION_MESSAGE);
         frame.setLocationRelativeTo(null);
         frame.dispose();
     }
