@@ -188,7 +188,10 @@ public class InvasionTracker {
                 int cogsDefeated = Integer.parseInt(progress.substring(0, progress.indexOf('/')));
                 int difference = cogsDefeated - tempInv.getCogsDefeated();
                 tempInv.updateCogsDefeated(cogsDefeated);
-                if (tempInv.counter == 6) {
+                logger.info(tempInv.getDistrict() + " - " + tempInv.getCogsDefeated() + " cogs");
+                logger.info(tempInv.getDistrict() + " - " + difference + " new");
+                tempInv.cogsPerMinute = tempInv.cogsPerMinute + difference;
+                if (tempInv.counter > 6) {
                     long seconds = ((tempInv.getCogsTotal() - tempInv.getCogsDefeated()) / tempInv.cogsPerMinute) * 60L;
                     logger.info(tempInv.getDistrict() + " - " + seconds + " seconds");
                     logger.info(tempInv.getDistrict() + " - " + tempInv.cogsPerMinute + " per minute");
@@ -197,7 +200,6 @@ public class InvasionTracker {
                     tempInv.cogsPerMinute = 0;
                 } else {
                     tempInv.counter++;
-                    tempInv.cogsPerMinute = tempInv.cogsPerMinute + difference;
                 }
             }
         }
