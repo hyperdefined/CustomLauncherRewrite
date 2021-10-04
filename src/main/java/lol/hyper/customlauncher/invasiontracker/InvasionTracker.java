@@ -216,8 +216,7 @@ public class InvasionTracker {
         updateInvasionListGUI();
     }
 
-    private String convertTime(long totalSecs)
-    {
+    private String convertTime(long totalSecs) {
         long hours = totalSecs / 3600;
         long minutes = (totalSecs % 3600) / 60;
         long seconds = totalSecs % 60;
