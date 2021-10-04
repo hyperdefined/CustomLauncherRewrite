@@ -42,11 +42,13 @@ import java.util.stream.Collectors;
 
 public class InvasionTracker {
 
-    public final DefaultListModel<String> model = new DefaultListModel<>();
     public final HashMap<String, Invasion> invasions = new HashMap<>();
     public final Logger logger = LogManager.getLogger(InvasionTracker.class);
     public ScheduledExecutorService scheduler;
 
+    /**
+     * Open the invasion window.
+     */
     public void showWindow() {
         JFrame frame = new JFrame("Invasions");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -83,16 +85,21 @@ public class InvasionTracker {
      * Updates the invasion list on the actual GUI.
      */
     private String updateInvasionListGUI() {
+        // create a separate list of all the invasions
         List<Invasion> sortedInvasions = new ArrayList<>();
         StringBuilder finalText = new StringBuilder();
         for (Map.Entry<String, Invasion> entry : invasions.entrySet()) {
             sortedInvasions.add(entry.getValue());
         }
+        // sort this new list alphabetically
         Collections.sort(sortedInvasions);
+        // display the invasion in the text box
+        // this is just 1 long string that is put into a text field
         for (Invasion invasion : sortedInvasions) {
             String district = invasion.getDistrict();
             String cogType = invasion.getCogType();
             String timeLeft;
+            // if there is no end time calculated
             if (invasion.endTime == null) {
                 timeLeft = "Estimating...";
             } else {
@@ -137,6 +144,7 @@ public class InvasionTracker {
         String INVASION_URL = "https://www.toontownrewritten.com/api/invasions";
         String invasionJSONRaw = null;
 
+        // make the request to the API
         URL url = new URL(INVASION_URL);
         URLConnection conn = url.openConnection();
         conn.setRequestProperty(
@@ -158,6 +166,8 @@ public class InvasionTracker {
             return;
         }
 
+        // grab the invasions object in the request
+        // that hold all the invasions
         JSONObject invasionsJSON = new JSONObject(invasionJSONRaw);
         JSONObject invasionsObject = invasionsJSON.getJSONObject("invasions");
 
@@ -165,10 +175,11 @@ public class InvasionTracker {
         logger.info(invasionsObject);
 
         // iterate through each of the invasions (separate JSONs)
-        // and add them to the list
         Iterator<String> keys = invasionsObject.keys();
         while (keys.hasNext()) {
             String key = keys.next();
+            // if we do not have that invasion stored, create a new invasion object
+            // and add it to the list
             if (!invasions.containsKey(key)) {
                 JSONObject temp = invasionsObject.getJSONObject(key);
                 String cogType = temp.getString("type");
@@ -182,6 +193,8 @@ public class InvasionTracker {
                 if (!invasions.containsKey(key)) {
                     return; // JUST IN CASE
                 }
+                // if we already have it saved, update the information that we have saved already
+                // we want to update the total cogs defeated, so we can calculate the end time
                 Invasion tempInv = invasions.get(key);
                 JSONObject temp = invasionsObject.getJSONObject(key);
                 String progress = temp.getString("progress");
@@ -191,6 +204,9 @@ public class InvasionTracker {
                 logger.info(tempInv.getDistrict() + " - " + tempInv.getCogsDefeated() + " cogs");
                 logger.info(tempInv.getDistrict() + " - " + difference + " new");
                 tempInv.cogsPerMinute = tempInv.cogsPerMinute + difference;
+                // each invasion has this counter to track how many times it was already looked at
+                // we then take the total cogs defeated in 1 minute and use that to calculate
+                // the invasion end time
                 if (tempInv.counter > 6) {
                     long seconds = ((tempInv.getCogsTotal() - tempInv.getCogsDefeated()) / tempInv.cogsPerMinute) * 60L;
                     logger.info(tempInv.getDistrict() + " - " + seconds + " seconds");
@@ -204,6 +220,8 @@ public class InvasionTracker {
             }
         }
 
+        // we look at the current invasion list and see if any invasions
+        // are not on the invasion JSON (aka that invasion is gone)
         Iterator<Map.Entry<String, Invasion>> it = invasions.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry<String, Invasion> pair = it.next();
