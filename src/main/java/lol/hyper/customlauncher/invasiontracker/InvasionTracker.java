@@ -130,6 +130,11 @@ public class InvasionTracker {
                         JFrame errorWindow = new ErrorWindow(
                                 "Unable to read invasion API. Please check your log file for more information.");
                         errorWindow.dispose();
+                        // clear the invasions JUST to be safe
+                        invasions.clear();
+                        // restart the scheduler
+                        scheduler.shutdown();
+                        startInvasionRefresh();
                     }
                 },
                 0,
