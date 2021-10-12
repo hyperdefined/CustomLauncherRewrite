@@ -43,10 +43,8 @@ public class UpdateChecker {
         conn.setRequestProperty(
                 "User-Agent", "CustomLauncherRewrite https://github.com/hyperdefined/CustomLauncherRewrite");
         conn.connect();
-        BufferedReader serverResponse = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-        serverResponse.close();
 
-        try (InputStream in = url.openStream()) {
+        try (InputStream in = conn.getInputStream()) {
             BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
             remoteVersion = reader.lines().collect(Collectors.joining(System.lineSeparator()));
             reader.close();

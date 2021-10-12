@@ -27,8 +27,8 @@ import org.json.JSONObject;
 import javax.swing.*;
 import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 import java.io.*;
-import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -46,7 +46,7 @@ public class TTRUpdater extends JFrame {
     public final String PATCHES_URL_DL = "https://download.toontownrewritten.com/patches/";
     public final Logger logger = LogManager.getLogger(this);
 
-    public TTRUpdater(String title, Path installLocation) {
+    public TTRUpdater(String title, Path installLocation) throws IOException {
         JFrame frame = new JFrame(title);
         frame.setSize(370, 150);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -84,14 +84,13 @@ public class TTRUpdater extends JFrame {
 
         logger.info("We are checking for TTR updates!");
         String patchesJSONRaw = null;
-        URL patchesURL = null;
-        try {
-            patchesURL = new URL(PATCHES_URL);
-        } catch (MalformedURLException e) {
-            logger.error(e);
-        }
+        URL url = new URL(PATCHES_URL);
+        URLConnection conn = url.openConnection();
+        conn.setRequestProperty(
+                "User-Agent", "CustomLauncherRewrite https://github.com/hyperdefined/CustomLauncherRewrite");
+        conn.connect();
 
-        try (InputStream in = patchesURL.openStream()) {
+        try (InputStream in = conn.getInputStream()) {
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
             patchesJSONRaw = reader.lines().collect(Collectors.joining(System.lineSeparator()));
             reader.close();
