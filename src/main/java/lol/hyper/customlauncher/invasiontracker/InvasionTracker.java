@@ -45,11 +45,12 @@ public class InvasionTracker {
     public final HashMap<String, Invasion> invasions = new HashMap<>();
     public final Logger logger = LogManager.getLogger(InvasionTracker.class);
     public ScheduledExecutorService scheduler;
+    public boolean showDurations;
 
     /**
      * Open the invasion window.
      */
-    public void showWindow() {
+    public void showWindow(boolean showDurations) {
         JFrame frame = new JFrame("Invasions");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setResizable(false);
@@ -58,6 +59,8 @@ public class InvasionTracker {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+
+        this.showDurations = showDurations;
 
         // GUI elements
         JPanel panel = new JPanel();
@@ -98,20 +101,34 @@ public class InvasionTracker {
         for (Invasion invasion : sortedInvasions) {
             String district = invasion.getDistrict();
             String cogType = invasion.getCogType();
-            String timeLeft;
-            // if there is no end time calculated
-            if (invasion.endTime == null) {
-                timeLeft = "Estimating...";
+            if (showDurations) {
+                String timeLeft;
+                // if there is no end time calculated
+                if (invasion.endTime == null) {
+                    timeLeft = "Estimating...";
+                } else {
+                    timeLeft = convertTime(ChronoUnit.SECONDS.between(LocalDateTime.now(), invasion.endTime));
+                }
+                finalText
+                        .append(district)
+                        .append(" - ")
+                        .append(cogType)
+                        .append(" - ")
+                        .append(timeLeft)
+                        .append("\n");
             } else {
-                timeLeft = convertTime(ChronoUnit.SECONDS.between(LocalDateTime.now(), invasion.endTime));
+                finalText
+                        .append(district)
+                        .append(" - ")
+                        .append(cogType)
+                        .append(" - ")
+                        .append("(")
+                        .append(invasion.getCogsDefeated())
+                        .append("/")
+                        .append(invasion.getCogsTotal())
+                        .append(")")
+                        .append("\n");
             }
-            finalText
-                    .append(district)
-                    .append(" - ")
-                    .append(cogType)
-                    .append(" - ")
-                    .append(timeLeft)
-                    .append("\n");
         }
         return finalText.toString();
     }
@@ -204,23 +221,27 @@ public class InvasionTracker {
                 JSONObject temp = invasionsObject.getJSONObject(key);
                 String progress = temp.getString("progress");
                 int cogsDefeated = Integer.parseInt(progress.substring(0, progress.indexOf('/')));
-                int difference = cogsDefeated - tempInv.getCogsDefeated();
-                tempInv.updateCogsDefeated(cogsDefeated);
-                logger.info(tempInv.getDistrict() + " - " + tempInv.getCogsDefeated() + " cogs");
-                logger.info(tempInv.getDistrict() + " - " + difference + " new");
-                tempInv.cogsPerMinute = tempInv.cogsPerMinute + difference;
-                // each invasion has this counter to track how many times it was already looked at
-                // we then take the total cogs defeated in 1 minute and use that to calculate
-                // the invasion end time
-                if (tempInv.counter > 6) {
-                    long seconds = ((tempInv.getCogsTotal() - tempInv.getCogsDefeated()) / tempInv.cogsPerMinute) * 60L;
-                    logger.info(tempInv.getDistrict() + " - " + seconds + " seconds");
-                    logger.info(tempInv.getDistrict() + " - " + tempInv.cogsPerMinute + " per minute");
-                    tempInv.endTime = LocalDateTime.now().plusSeconds(seconds);
-                    tempInv.counter = 0;
-                    tempInv.cogsPerMinute = 0;
-                } else {
-                    tempInv.counter++;
+                // if we want to show invasions, then calculate the cogs per min
+                if (showDurations) {
+                    int difference = cogsDefeated - tempInv.getCogsDefeated();
+                    tempInv.updateCogsDefeated(cogsDefeated);
+                    logger.info(tempInv.getDistrict() + " - " + tempInv.getCogsDefeated() + " cogs");
+                    logger.info(tempInv.getDistrict() + " - " + difference + " new");
+                    tempInv.cogsPerMinute = tempInv.cogsPerMinute + difference;
+                    // each invasion has this counter to track how many times it was already looked at
+                    // we then take the total cogs defeated in 1 minute and use that to calculate
+                    // the invasion end time
+                    if (tempInv.counter > 6) {
+                        long seconds =
+                                ((tempInv.getCogsTotal() - tempInv.getCogsDefeated()) / tempInv.cogsPerMinute) * 60L;
+                        logger.info(tempInv.getDistrict() + " - " + seconds + " seconds");
+                        logger.info(tempInv.getDistrict() + " - " + tempInv.cogsPerMinute + " per minute");
+                        tempInv.endTime = LocalDateTime.now().plusSeconds(seconds);
+                        tempInv.counter = 0;
+                        tempInv.cogsPerMinute = 0;
+                    } else {
+                        tempInv.counter++;
+                    }
                 }
             }
         }

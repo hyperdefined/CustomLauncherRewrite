@@ -26,7 +26,7 @@ public class OptionsWindow extends JFrame {
 
     public OptionsWindow(String title) {
         JFrame frame = new JFrame(title);
-        frame.setSize(370, 230);
+        frame.setSize(370, 270);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setResizable(false);
         try {
@@ -43,19 +43,18 @@ public class OptionsWindow extends JFrame {
         JCheckBox autoUpdateBox = new JCheckBox();
         JLabel ttrInstall = new JLabel("<html>TTR Installation</html>");
         JTextField ttrInstallBox = new JTextField(JSONManager.config().getString("ttrInstallLocation"));
+        JLabel showInvasionDurations = new JLabel("<html>Calculate invasion durations? (NOT FINISHED)</html>");
+        JCheckBox showInvasionDurationsBox = new JCheckBox();
         JButton saveButton = new JButton("Save");
 
         ttrInstallBox.setCaretPosition(0);
-
-        if (JSONManager.config().getBoolean("autoCheckTTRUpdates")) {
-            autoUpdateBox.setSelected(true);
-        }
+        autoUpdateBox.setSelected(JSONManager.config().getBoolean("autoCheckTTRUpdates"));
+        showInvasionDurationsBox.setSelected(JSONManager.config().getBoolean("showInvasionDurations"));
 
         saveButton.addActionListener(e -> {
-            boolean checkBox = autoUpdateBox.isSelected();
-            String path = ttrInstallBox.getText();
-            JSONManager.editConfig("autoCheckTTRUpdates", checkBox);
-            JSONManager.editConfig("ttrInstallLocation", path);
+            JSONManager.editConfig("autoCheckTTRUpdates", autoUpdateBox.isSelected());
+            JSONManager.editConfig("showInvasionDurations", showInvasionDurationsBox.isSelected());
+            JSONManager.editConfig("ttrInstallLocation", ttrInstallBox.getText());
             JOptionPane.showMessageDialog(frame, "Settings saved!", "Options", JOptionPane.INFORMATION_MESSAGE);
         });
 
@@ -64,13 +63,17 @@ public class OptionsWindow extends JFrame {
         panel.add(ttrInstall);
         panel.add(ttrInstallBox);
         panel.add(saveButton);
+        panel.add(showInvasionDurations);
+        panel.add(showInvasionDurationsBox);
 
         autoUpdate.setBounds(20, 25, 100, 30);
         autoUpdateBox.setBounds(120, 25, 100, 30);
         ttrInstall.setBounds(20, 65, 100, 30);
         ttrInstallBox.setBounds(120, 65, 200, 30);
-        saveButton.setBounds(20, 120, 60, 30);
+        saveButton.setBounds(20, 170, 60, 30);
         ttrInstallBox.setMaximumSize(new Dimension(200, 25));
+        showInvasionDurations.setBounds(20, 90, 100, 80);
+        showInvasionDurationsBox.setBounds(120, 100, 100, 30);
 
         frame.setVisible(true);
         frame.add(panel);
