@@ -23,6 +23,7 @@ import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -44,8 +45,11 @@ public class InvasionTracker {
 
     public final HashMap<String, Invasion> invasions = new HashMap<>();
     public final Logger logger = LogManager.getLogger(InvasionTracker.class);
-    public ScheduledExecutorService scheduler;
+    public ScheduledExecutorService schedulerGUI;
+    public ScheduledExecutorService schedulerAPI;
     public boolean showDurations;
+    public JTable invasionTable;
+    public DefaultTableModel invasionTableModel;
 
     /**
      * Open the invasion window.
@@ -71,26 +75,53 @@ public class InvasionTracker {
         invasionsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.add(invasionsLabel);
 
-        JTextArea textArea = new JTextArea();
-        textArea.setEditable(false);
-        textArea.setHighlighter(null);
-        scheduler.scheduleAtFixedRate(() -> textArea.setText(updateInvasionListGUI()), 0, 500, TimeUnit.MILLISECONDS);
-        panel.add(textArea);
+        invasionTable = new JTable();
+
+        String[] columns;
+        if (showDurations) {
+            columns = new String[] {"District", "Cog Type", "Time Left"};
+        } else {
+            columns = new String[] {"District", "Cog Type", "Cogs"};
+        }
+
+        invasionTableModel = (DefaultTableModel) invasionTable.getModel();
+        invasionTableModel.setColumnIdentifiers(columns);
+        invasionTable.setModel(invasionTableModel);
+        invasionTable.setDefaultEditor(Object.class, null);
+        invasionTable.getTableHeader().setReorderingAllowed(false);
+        invasionTable.setFocusable(false);
+        JScrollPane scrollPane = new JScrollPane(invasionTable);
+        scrollPane.setVisible(true);
+        panel.add(scrollPane);
+
+        schedulerGUI = Executors.newScheduledThreadPool(0);
+        schedulerGUI.scheduleAtFixedRate(this::updateInvasionListGUI, 0, 500, TimeUnit.MILLISECONDS);
+
+        startInvasionRefresh();
 
         frame.pack();
         frame.setSize(500, 400);
         frame.add(panel);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+
+        frame.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                schedulerAPI.shutdown();
+                schedulerGUI.shutdown();
+            }
+        });
     }
 
     /**
      * Updates the invasion list on the actual GUI.
      */
-    private String updateInvasionListGUI() {
+    private void updateInvasionListGUI() {
+        invasionTableModel.setRowCount(0);
         // create a separate list of all the invasions
         List<Invasion> sortedInvasions = new ArrayList<>();
-        StringBuilder finalText = new StringBuilder();
+        String[] data;
         for (Map.Entry<String, Invasion> entry : invasions.entrySet()) {
             sortedInvasions.add(entry.getValue());
         }
@@ -109,36 +140,22 @@ public class InvasionTracker {
                 } else {
                     timeLeft = convertTime(ChronoUnit.SECONDS.between(LocalDateTime.now(), invasion.endTime));
                 }
-                finalText
-                        .append(district)
-                        .append(" - ")
-                        .append(cogType)
-                        .append(" - ")
-                        .append(timeLeft)
-                        .append("\n");
+
+                data = new String[] {district, cogType, timeLeft};
             } else {
-                finalText
-                        .append(district)
-                        .append(" - ")
-                        .append(cogType)
-                        .append(" - ")
-                        .append("(")
-                        .append(invasion.getCogsDefeated())
-                        .append("/")
-                        .append(invasion.getCogsTotal())
-                        .append(")")
-                        .append("\n");
+                data = new String[] {district, cogType, invasion.getCogsDefeated() + "/" + invasion.getCogsTotal()};
             }
+            invasionTableModel.addRow(data);
+            invasionTableModel.fireTableDataChanged();
         }
-        return finalText.toString();
     }
 
     /**
      * Read invasion API every 5 seconds.
      */
     public void startInvasionRefresh() {
-        scheduler = Executors.newScheduledThreadPool(0);
-        scheduler.scheduleAtFixedRate(
+        schedulerAPI = Executors.newScheduledThreadPool(0);
+        schedulerAPI.scheduleAtFixedRate(
                 () -> {
                     try {
                         readInvasionAPI();
@@ -150,7 +167,7 @@ public class InvasionTracker {
                         // clear the invasions JUST to be safe
                         invasions.clear();
                         // restart the scheduler
-                        scheduler.shutdown();
+                        schedulerAPI.shutdown();
                         startInvasionRefresh();
                     }
                 },
@@ -221,10 +238,11 @@ public class InvasionTracker {
                 JSONObject temp = invasionsObject.getJSONObject(key);
                 String progress = temp.getString("progress");
                 int cogsDefeated = Integer.parseInt(progress.substring(0, progress.indexOf('/')));
+                int oldCount = tempInv.getCogsDefeated();
+                tempInv.updateCogsDefeated(cogsDefeated);
                 // if we want to show invasions, then calculate the cogs per min
                 if (showDurations) {
-                    int difference = cogsDefeated - tempInv.getCogsDefeated();
-                    tempInv.updateCogsDefeated(cogsDefeated);
+                    int difference = cogsDefeated - oldCount;
                     logger.info(tempInv.getDistrict() + " - " + tempInv.getCogsDefeated() + " cogs");
                     logger.info(tempInv.getDistrict() + " - " + difference + " new");
                     tempInv.cogsPerMinute = tempInv.cogsPerMinute + difference;
@@ -256,8 +274,6 @@ public class InvasionTracker {
                 logger.info("Invasion gone! " + pair.getKey());
             }
         }
-
-        updateInvasionListGUI();
     }
 
     private String convertTime(long totalSecs) {

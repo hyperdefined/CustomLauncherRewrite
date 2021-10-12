@@ -109,10 +109,7 @@ public class Main {
             infoWindow.dispose();
         }
 
-        InvasionTracker invasionTracker = new InvasionTracker();
-        invasionTracker.startInvasionRefresh();
-
-        JFrame mainWindow = new MainWindow("CustomLauncherRewrite", invasionTracker);
+        JFrame mainWindow = new MainWindow("CustomLauncherRewrite", new InvasionTracker());
         mainWindow.dispose();
     }
 }
