@@ -19,7 +19,6 @@ package lol.hyper.customlauncher.accounts.windows;
 
 import lol.hyper.customlauncher.accounts.Account;
 import lol.hyper.customlauncher.accounts.JSONManager;
-import lol.hyper.customlauncher.generic.InfoWindow;
 import lol.hyper.customlauncher.invasiontracker.InvasionTracker;
 import org.json.JSONObject;
 
@@ -95,7 +94,7 @@ public class MainWindow extends JFrame {
         // invasions button
         JButton invasionsButton = new JButton("Invasions");
         invasionsButton.addActionListener(e -> {
-                invasionTracker.showWindow();
+            invasionTracker.showWindow();
         });
         invasionsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         invasionsButton.setMaximumSize(new Dimension(300, invasionsButton.getMinimumSize().height));
