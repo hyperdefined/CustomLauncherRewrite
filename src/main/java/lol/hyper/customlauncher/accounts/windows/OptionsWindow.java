@@ -56,6 +56,7 @@ public class OptionsWindow extends JFrame {
             JSONManager.editConfig("showInvasionDurations", showInvasionDurationsBox.isSelected());
             JSONManager.editConfig("ttrInstallLocation", ttrInstallBox.getText());
             JOptionPane.showMessageDialog(frame, "Settings saved!", "Options", JOptionPane.INFORMATION_MESSAGE);
+            frame.dispose();
         });
 
         panel.add(autoUpdate);
