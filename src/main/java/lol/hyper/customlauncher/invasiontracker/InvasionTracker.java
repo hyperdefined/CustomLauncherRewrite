@@ -32,7 +32,9 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.*;
@@ -47,14 +49,13 @@ public class InvasionTracker {
     public final Logger logger = LogManager.getLogger(InvasionTracker.class);
     public ScheduledExecutorService schedulerGUI;
     public ScheduledExecutorService schedulerAPI;
-    public boolean showDurations;
     public JTable invasionTable;
     public DefaultTableModel invasionTableModel;
 
     /**
      * Open the invasion window.
      */
-    public void showWindow(boolean showDurations) {
+    public void showWindow() {
         JFrame frame = new JFrame("Invasions");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setResizable(false);
@@ -63,8 +64,6 @@ public class InvasionTracker {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-
-        this.showDurations = showDurations;
 
         // GUI elements
         JPanel panel = new JPanel();
@@ -76,13 +75,7 @@ public class InvasionTracker {
         panel.add(invasionsLabel);
 
         invasionTable = new JTable();
-
-        String[] columns;
-        if (showDurations) {
-            columns = new String[] {"District", "Cog Type", "Time Left"};
-        } else {
-            columns = new String[] {"District", "Cog Type", "Cogs"};
-        }
+        String[] columns = new String[] {"District", "Cog Type", "Time Left", "Cogs"};
 
         invasionTableModel = (DefaultTableModel) invasionTable.getModel();
         invasionTableModel.setColumnIdentifiers(columns);
@@ -95,7 +88,7 @@ public class InvasionTracker {
         panel.add(scrollPane);
 
         schedulerGUI = Executors.newScheduledThreadPool(0);
-        schedulerGUI.scheduleAtFixedRate(this::updateInvasionListGUI, 0, 500, TimeUnit.MILLISECONDS);
+        schedulerGUI.scheduleAtFixedRate(this::updateInvasionListGUI, 0, 1, TimeUnit.SECONDS);
 
         startInvasionRefresh();
 
@@ -132,19 +125,10 @@ public class InvasionTracker {
         for (Invasion invasion : sortedInvasions) {
             String district = invasion.getDistrict();
             String cogType = invasion.getCogType();
-            if (showDurations) {
-                String timeLeft;
-                // if there is no end time calculated
-                if (invasion.endTime == null) {
-                    timeLeft = "Estimating...";
-                } else {
-                    timeLeft = convertTime(ChronoUnit.SECONDS.between(LocalDateTime.now(), invasion.endTime));
-                }
-
-                data = new String[] {district, cogType, timeLeft};
-            } else {
-                data = new String[] {district, cogType, invasion.getCogsDefeated() + "/" + invasion.getCogsTotal()};
-            }
+            String timeLeft;
+            timeLeft = convertTime(ChronoUnit.SECONDS.between(LocalDateTime.now(), invasion.endTime));
+            String cogs = invasion.getCogsDefeated() + "/" + invasion.getCogsTotal();
+            data = new String[] {district, cogType, timeLeft, cogs};
             invasionTableModel.addRow(data);
             invasionTableModel.fireTableDataChanged();
         }
@@ -180,7 +164,7 @@ public class InvasionTracker {
      * Read the TTR API and get the current invasions.
      */
     public void readInvasionAPI() throws IOException {
-        String INVASION_URL = "https://www.toontownrewritten.com/api/invasions";
+        String INVASION_URL = "https://api.toon.plus/invasions/";
         String invasionJSONRaw = null;
 
         // make the request to the API
@@ -188,16 +172,14 @@ public class InvasionTracker {
         URLConnection conn = url.openConnection();
         conn.setRequestProperty(
                 "User-Agent", "CustomLauncherRewrite https://github.com/hyperdefined/CustomLauncherRewrite");
-        conn.connect();
-        BufferedReader serverResponse = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-        serverResponse.close();
 
-        try (InputStream in = url.openStream()) {
+        try (InputStream in = conn.getInputStream()) {
             BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
             invasionJSONRaw = reader.lines().collect(Collectors.joining(System.lineSeparator()));
             reader.close();
         } catch (IOException e) {
             logger.error(e);
+            e.printStackTrace();
         }
 
         if (invasionJSONRaw == null) {
@@ -208,59 +190,39 @@ public class InvasionTracker {
         // grab the invasions object in the request
         // that hold all the invasions
         JSONObject invasionsJSON = new JSONObject(invasionJSONRaw);
-        JSONObject invasionsObject = invasionsJSON.getJSONObject("invasions");
 
         logger.info("Reading " + INVASION_URL + " for current invasions...");
-        logger.info(invasionsObject);
+        logger.info(invasionsJSON);
 
         // iterate through each of the invasions (separate JSONs)
-        Iterator<String> keys = invasionsObject.keys();
+        Iterator<String> keys = invasionsJSON.keys();
         while (keys.hasNext()) {
             String key = keys.next();
+            String district = key.substring(0, key.indexOf('/'));
             // if we do not have that invasion stored, create a new invasion object
             // and add it to the list
-            if (!invasions.containsKey(key)) {
-                JSONObject temp = invasionsObject.getJSONObject(key);
-                String cogType = temp.getString("type");
-                String progress = temp.getString("progress");
-                int cogsDefeated = Integer.parseInt(progress.substring(0, progress.indexOf('/')));
-                int cogsTotal = Integer.parseInt(progress.substring(progress.indexOf('/') + 1));
-                logger.info("New invasion alert! " + key + " Cogs: " + cogsDefeated + "/" + cogsTotal);
-                Invasion newInvasion = new Invasion(cogType, cogsDefeated, cogsTotal, key);
-                invasions.put(key, newInvasion);
+            if (!invasions.containsKey(district)) {
+                JSONObject temp = invasionsJSON.getJSONObject(key);
+                String cogType = temp.getString("Type");
+                int cogsDefeated = temp.getInt("CurrentProgress");
+                int cogsTotal = temp.getInt("MaxProgress");
+                logger.info("New invasion alert! " + district + " Cogs: " + cogsDefeated + "/" + cogsTotal);
+                Invasion newInvasion = new Invasion(cogType, cogsDefeated, cogsTotal, district);
+                newInvasion.endTime =
+                        Instant.parse(temp.getString("EstimatedCompletion")).atZone(ZoneId.systemDefault());
+                invasions.put(district, newInvasion);
             } else {
-                if (!invasions.containsKey(key)) {
+                if (!invasions.containsKey(district)) {
                     return; // JUST IN CASE
                 }
                 // if we already have it saved, update the information that we have saved already
-                // we want to update the total cogs defeated, so we can calculate the end time
-                Invasion tempInv = invasions.get(key);
-                JSONObject temp = invasionsObject.getJSONObject(key);
-                String progress = temp.getString("progress");
-                int cogsDefeated = Integer.parseInt(progress.substring(0, progress.indexOf('/')));
-                int oldCount = tempInv.getCogsDefeated();
+                // we want to update the total cogs defeated and the end time
+                Invasion tempInv = invasions.get(district);
+                JSONObject temp = invasionsJSON.getJSONObject(key);
+                int cogsDefeated = temp.getInt("CurrentProgress");
                 tempInv.updateCogsDefeated(cogsDefeated);
-                // if we want to show invasions, then calculate the cogs per min
-                if (showDurations) {
-                    int difference = cogsDefeated - oldCount;
-                    logger.info(tempInv.getDistrict() + " - " + tempInv.getCogsDefeated() + " cogs");
-                    logger.info(tempInv.getDistrict() + " - " + difference + " new");
-                    tempInv.cogsPerMinute = tempInv.cogsPerMinute + difference;
-                    // each invasion has this counter to track how many times it was already looked at
-                    // we then take the total cogs defeated in 1 minute and use that to calculate
-                    // the invasion end time
-                    if (tempInv.counter > 6) {
-                        long seconds =
-                                ((tempInv.getCogsTotal() - tempInv.getCogsDefeated()) / tempInv.cogsPerMinute) * 60L;
-                        logger.info(tempInv.getDistrict() + " - " + seconds + " seconds");
-                        logger.info(tempInv.getDistrict() + " - " + tempInv.cogsPerMinute + " per minute");
-                        tempInv.endTime = LocalDateTime.now().plusSeconds(seconds);
-                        tempInv.counter = 0;
-                        tempInv.cogsPerMinute = 0;
-                    } else {
-                        tempInv.counter++;
-                    }
-                }
+                tempInv.endTime =
+                        Instant.parse(temp.getString("EstimatedCompletion")).atZone(ZoneId.systemDefault());
             }
         }
 
@@ -269,9 +231,10 @@ public class InvasionTracker {
         Iterator<Map.Entry<String, Invasion>> it = invasions.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry<String, Invasion> pair = it.next();
-            if (!invasionsObject.has(pair.getKey())) {
+            String key = pair.getKey() + "/" + pair.getValue().getCogType();
+            if (!invasionsJSON.has(key)) {
                 it.remove();
-                logger.info("Invasion gone! " + pair.getKey());
+                logger.info("Invasion gone! " + pair.getValue().getDistrict());
             }
         }
     }

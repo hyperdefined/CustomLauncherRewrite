@@ -95,24 +95,7 @@ public class MainWindow extends JFrame {
         // invasions button
         JButton invasionsButton = new JButton("Invasions");
         invasionsButton.addActionListener(e -> {
-            if (!JSONManager.config().has("showInvasionDurations")) {
-                int dialogButton = JOptionPane.YES_NO_OPTION;
-                int dialogResult = JOptionPane.showConfirmDialog(
-                        frame,
-                        "Would you like to calculate invasion durations?\nThis feature is not finished and times can be wrong.\nThey are close but not 100% accurate yet!",
-                        "Question",
-                        dialogButton);
-                JSONManager.editConfig("showInvasionDurations", dialogResult == JOptionPane.YES_OPTION);
-                invasionTracker.showWindow(dialogResult == JOptionPane.YES_OPTION);
-            } else {
-                boolean showDurations = JSONManager.config().getBoolean("showInvasionDurations");
-                if (showDurations) {
-                    JFrame infoWindow = new InfoWindow(
-                            "Invasion times are going to be inaccurate. Use the times as a general guideline.\nPlease wait 1 minute for each invasion to be calculated.");
-                    infoWindow.dispose();
-                }
-                invasionTracker.showWindow(showDurations);
-            }
+                invasionTracker.showWindow();
         });
         invasionsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         invasionsButton.setMaximumSize(new Dimension(300, invasionsButton.getMinimumSize().height));
