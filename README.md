@@ -5,12 +5,12 @@
 CustomLauncherRewrite is a brand-new custom launcher for Toontown Rewritten. This launcher is based on my old one, [Multitoon Helper](https://github.com/hyperdefined/multitoon-helper). This one is built from the ground up and has many more features than the previous one. This launcher is designed for players who are annoyed of the current official launcher.
 
 ## Features
-* Ability to save logins for multiple accounts. Sick of typing it in *every* single time?
-* Add accounts right from the launcher. Don't need to mess around with files. 
+* Ability to save logins for multiple accounts. Instead of typing in a login every single time, you can save all of your accounts.
 * Encrypt login data with a passphrase. Your data is encrypted using [AES Encryption](https://searchsecurity.techtarget.com/definition/Advanced-Encryption-Standard).
+* Add accounts right from the launcher. Don't need to mess around with files.
 * Launch the game directly from the launcher, no external scripts needed. Supports 2FA and ToonGuard.
-* Update your TTR game files.
-* Built in invasion tracker.
+* Update your TTR game files automatically.
+* Built in invasion tracker. Invasion data is taken from [toon.plus](https://toon.plus/).
 
 ![Screenshot1](https://raw.githubusercontent.com/hyperdefined/CustomLauncherRewrite/master/images/image.png)
 ![Screenshot2](https://raw.githubusercontent.com/hyperdefined/CustomLauncherRewrite/master/images/image2.png)
@@ -18,7 +18,7 @@ CustomLauncherRewrite is a brand-new custom launcher for Toontown Rewritten. Thi
 ![Screenshot4](https://raw.githubusercontent.com/hyperdefined/CustomLauncherRewrite/master/images/image4.png)
 
 ## Setup
-* You need Java 8 or above installed.
+You need Java 8 or above installed.
 
 Simply download the latest [release](https://github.com/hyperdefined/CustomLauncherRewrite/releases). Throw the `exe` file into a new folder and run it. To add a new account, simply click "Add Account" and follow the steps. Double click the account to launch the game.
 
@@ -43,7 +43,7 @@ Then click the path at the top and copy it. This is what you want to put into th
 Your passphrase was typed in wrong. You either typed it incorrectly when you added an account, or you keep typing it incorrectly when you login. Remove the account and re-add it back if you can't remember it.
 
 ### I have an issue that is not listed here.
-No problem! Create a new [issue](https://github.com/hyperdefined/CustomLauncherRewrite/issues) and include as much detail as possible, so I can help you out.
+No problem! Create a new [issue](https://github.com/hyperdefined/CustomLauncherRewrite/issues) and include as much detail as possible, so I can help you out. Make sure you attach your log file that is generated alongside the program.
 
 ## Known Issues
 None currently.
