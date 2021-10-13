@@ -29,12 +29,14 @@ To update to a new release, simply [download](https://github.com/hyperdefined/Cu
 ### It says that it can't find my TTR installation.
 The program tries to search for common install locations. If it can't find yours, then you need to change the path in the options' menu.
 
-To find your current install location, search for "Toontown Rewritten" on the start menu and click "Open File Location".
+To find your current install location, search for "Toontown Rewritten" on the start menu and click "Open file location". If you have a shortcut on your desktop, you can also right click that instead.
+
 ![Help1](https://raw.githubusercontent.com/hyperdefined/CustomLauncherRewrite/master/images/findInstallLocation2.png)
 
 Then click the path at the top and copy it. This is what you want to put into the options menu of the program.
 
 ![Help2](https://raw.githubusercontent.com/hyperdefined/CustomLauncherRewrite/master/images/findInstallLocation.png)
+
 ![Help3](https://raw.githubusercontent.com/hyperdefined/CustomLauncherRewrite/master/images/findInstallLocation3.png)
 
 ### It says my passphrase is wrong.
