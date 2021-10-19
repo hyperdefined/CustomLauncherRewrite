@@ -22,6 +22,7 @@ import lol.hyper.customlauncher.accounts.JSONManager;
 import javax.swing.*;
 
 public class NewAccountWindow extends JFrame {
+
     public NewAccountWindow(String title) {
         super(title);
         JFrame frame = new JFrame(title);

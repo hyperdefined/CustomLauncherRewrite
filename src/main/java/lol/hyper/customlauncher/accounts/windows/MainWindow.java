@@ -71,25 +71,14 @@ public class MainWindow extends JFrame {
         panel.add(scrollBar);
 
         // new account button
-        JButton newAccountButton = new JButton("New Account");
-        newAccountButton.addActionListener(e -> {
-            JFrame newAccountWindow = new NewAccountWindow("New Account");
-            newAccountWindow.dispose();
+        JButton accountManagerButton = new JButton("Manage Accounts");
+        accountManagerButton.addActionListener(e -> {
+            JFrame accountManagerWindow = new AccountManagerWindow("Account Manager");
+            accountManagerWindow.dispose();
         });
-        newAccountButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        newAccountButton.setMaximumSize(new Dimension(300, newAccountButton.getMinimumSize().height));
-        panel.add(newAccountButton);
-
-        // delete account button
-        JButton deleteAccountButton = new JButton("Delete Account");
-        deleteAccountButton.addActionListener(e -> {
-            JFrame deleteAccountWindow = new DeleteAccountWindow("Delete Account");
-            deleteAccountWindow.dispose();
-        });
-
-        deleteAccountButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        deleteAccountButton.setMaximumSize(new Dimension(300, deleteAccountButton.getMinimumSize().height));
-        panel.add(deleteAccountButton);
+        accountManagerButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        accountManagerButton.setMaximumSize(new Dimension(300, accountManagerButton.getMinimumSize().height));
+        panel.add(accountManagerButton);
 
         // invasions button
         JButton invasionsButton = new JButton("Invasions");
