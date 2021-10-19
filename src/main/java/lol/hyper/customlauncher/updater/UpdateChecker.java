@@ -49,7 +49,7 @@ public class UpdateChecker {
             remoteVersion = reader.lines().collect(Collectors.joining(System.lineSeparator()));
             reader.close();
         } catch (IOException e) {
-            logger.error(e);
+            logger.error("Unable to check for updates!", e);
         }
 
         logger.info("Current version: " + currentVersion);

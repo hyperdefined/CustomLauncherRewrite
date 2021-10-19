@@ -18,11 +18,13 @@
 package lol.hyper.customlauncher.accounts;
 
 import lol.hyper.customlauncher.Main;
+import lol.hyper.customlauncher.generic.ErrorWindow;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
+import javax.swing.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -53,7 +55,10 @@ public class JSONManager {
         try {
             encoded = Files.readAllBytes(file.toPath());
         } catch (IOException e) {
-            Main.logger.error(e);
+            Main.logger.error("Unable to read file " + file, e);
+            JFrame errorWindow = new ErrorWindow(
+                    "Unable to read file " + file.getAbsolutePath() + ".\n" + e.getClass().getCanonicalName() + ": " + e.getMessage());
+            errorWindow.dispose();
         }
         return new String(encoded, StandardCharsets.UTF_8);
     }
@@ -69,7 +74,10 @@ public class JSONManager {
             writer.write(json.toString());
             writer.close();
         } catch (IOException e) {
-            Main.logger.error("Unable to write file!", e);
+            Main.logger.error("Unable to write file " + file, e);
+            JFrame errorWindow = new ErrorWindow(
+                    "Unable to write file " + file.getAbsolutePath() + ".\n" + e.getClass().getCanonicalName() + ": " + e.getMessage());
+            errorWindow.dispose();
         }
     }
 
@@ -138,7 +146,7 @@ public class JSONManager {
             key = Arrays.copyOf(key, 16);
             secretKey = new SecretKeySpec(key, "AES");
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            Main.logger.error("Error while setting key!", e);
         }
     }
 

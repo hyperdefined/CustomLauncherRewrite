@@ -31,7 +31,7 @@ import java.util.HashMap;
 
 public class MainWindow extends JFrame {
 
-    public static final DefaultListModel model = new DefaultListModel();
+    public static final DefaultListModel<String> model = new DefaultListModel<>();
     static final HashMap<Integer, String> labelsByIndexes = new HashMap<>();
 
     public MainWindow(String title, InvasionTracker invasionTracker) {
@@ -61,7 +61,7 @@ public class MainWindow extends JFrame {
             model.addElement(account.getUsername());
         }
 
-        JList accountList = new JList(model);
+        JList<String> accountList = new JList<String>(model);
         DefaultListCellRenderer renderer = (DefaultListCellRenderer) accountList.getCellRenderer();
         renderer.setHorizontalAlignment(SwingConstants.CENTER);
         accountList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -112,7 +112,7 @@ public class MainWindow extends JFrame {
 
         accountList.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent evt) {
-                JList list = (JList) evt.getSource();
+                JList<String> list = (JList<String>) evt.getSource();
                 if (evt.getClickCount() == 2) {
                     JSONObject options = new JSONObject(JSONManager.readFile(JSONManager.configFile));
                     if (!Paths.get(options.getString("ttrInstallLocation"))

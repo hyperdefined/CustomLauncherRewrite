@@ -29,6 +29,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
@@ -51,12 +52,13 @@ public class InvasionTracker {
     public ScheduledExecutorService schedulerAPI;
     public JTable invasionTable;
     public DefaultTableModel invasionTableModel;
+    public JFrame frame;
 
     /**
      * Open the invasion window.
      */
     public void showWindow() {
-        JFrame frame = new JFrame("Invasions");
+        frame = new JFrame("Invasions");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setResizable(false);
         try {
@@ -75,7 +77,7 @@ public class InvasionTracker {
         panel.add(invasionsLabel);
 
         invasionTable = new JTable();
-        String[] columns = new String[] {"District", "Cog Type", "Time Left", "Cogs"};
+        String[] columns = new String[]{"District", "Cog Type", "Time Left", "Cogs"};
 
         invasionTableModel = (DefaultTableModel) invasionTable.getModel();
         invasionTableModel.setColumnIdentifiers(columns);
@@ -128,7 +130,7 @@ public class InvasionTracker {
             String timeLeft;
             timeLeft = convertTime(ChronoUnit.SECONDS.between(LocalDateTime.now(), invasion.endTime));
             String cogs = invasion.getCogsDefeated() + "/" + invasion.getCogsTotal();
-            data = new String[] {district, cogType, timeLeft, cogs};
+            data = new String[]{district, cogType, timeLeft, cogs};
             invasionTableModel.addRow(data);
             invasionTableModel.fireTableDataChanged();
         }
@@ -139,37 +141,42 @@ public class InvasionTracker {
      */
     public void startInvasionRefresh() {
         schedulerAPI = Executors.newScheduledThreadPool(0);
-        schedulerAPI.scheduleAtFixedRate(
-                () -> {
-                    try {
-                        readInvasionAPI();
-                    } catch (IOException e) {
-                        logger.error(e);
-                        JFrame errorWindow = new ErrorWindow(
-                                "Unable to read invasion API. Please check your log file for more information.");
-                        errorWindow.dispose();
-                        // clear the invasions JUST to be safe
-                        invasions.clear();
-                        // restart the scheduler
-                        schedulerAPI.shutdown();
-                        startInvasionRefresh();
-                    }
-                },
-                0,
-                10,
-                TimeUnit.SECONDS);
+        schedulerAPI.scheduleAtFixedRate(this::readInvasionAPI, 0, 10, TimeUnit.SECONDS);
     }
 
     /**
      * Read the TTR API and get the current invasions.
      */
-    public void readInvasionAPI() throws IOException {
+    public void readInvasionAPI() {
         String INVASION_URL = "https://api.toon.plus/invasions/";
-        String invasionJSONRaw = null;
+        String invasionJSONRaw;
 
         // make the request to the API
-        URL url = new URL(INVASION_URL);
-        URLConnection conn = url.openConnection();
+        URL url;
+        try {
+            url = new URL(INVASION_URL);
+        } catch (MalformedURLException e) {
+            schedulerAPI.shutdown();
+            logger.error("Unable to read invasion API!", e);
+            JFrame errorWindow = new ErrorWindow(
+                    "There was an a problem reading invasion API!\n" + e.getClass().getCanonicalName() + ": " + e.getMessage());
+            errorWindow.dispose();
+            frame.dispose();
+            return;
+        }
+        URLConnection conn;
+        try {
+            conn = url.openConnection();
+        } catch (IOException e) {
+            schedulerAPI.shutdown();
+            logger.error("Unable to read invasion API!", e);
+            JFrame errorWindow = new ErrorWindow(
+                    "There was an a problem reading invasion API!\n" + e.getClass().getCanonicalName() + ": " + e.getMessage());
+            errorWindow.dispose();
+            frame.dispose();
+            return;
+        }
+
         conn.setRequestProperty(
                 "User-Agent", "CustomLauncherRewrite https://github.com/hyperdefined/CustomLauncherRewrite");
 
@@ -178,12 +185,12 @@ public class InvasionTracker {
             invasionJSONRaw = reader.lines().collect(Collectors.joining(System.lineSeparator()));
             reader.close();
         } catch (IOException e) {
-            logger.error(e);
-            e.printStackTrace();
-        }
-
-        if (invasionJSONRaw == null) {
-            logger.warn("invasionJSONRaw returned null. Unable to read the URL?");
+            schedulerAPI.shutdown();
+            logger.error("Unable to read invasion API!", e);
+            JFrame errorWindow = new ErrorWindow(
+                    "There was an a problem reading invasion API!\n" + e.getClass().getCanonicalName() + ": " + e.getMessage());
+            errorWindow.dispose();
+            frame.dispose();
             return;
         }
 
@@ -239,6 +246,11 @@ public class InvasionTracker {
         }
     }
 
+    /**
+     * Convert seconds to a readable format.
+     * @param totalSecs Seconds to convert.
+     * @return HH:MM:SS format string.
+     */
     private String convertTime(long totalSecs) {
         long hours = totalSecs / 3600;
         long minutes = (totalSecs % 3600) / 60;

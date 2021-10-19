@@ -57,7 +57,10 @@ public class LoginHandler {
             logger.info("Sending login request...");
             request = sendRequest(loginRequest).getRequestDetails();
         } catch (Exception e) {
-            logger.error(e);
+            logger.error("Unable to send login request to TTR!", e);
+            JFrame errorWindow = new ErrorWindow(
+                    "Unable to send login request to TTR.\n" + e.getClass().getCanonicalName() + ": " + e.getMessage());
+            errorWindow.dispose();
             return;
         }
 
@@ -110,7 +113,7 @@ public class LoginHandler {
                 logger.error("Weird login response: " + status);
                 logger.info(request);
                 JFrame errorWindow = new ErrorWindow(
-                        "TTR sent back a weird response, or we got an invalid response.\nCheck the log for more info.");
+                        "TTR sent back a weird response, or we got an invalid response.\nCheck the log for more information.");
                 errorWindow.dispose();
             }
         }

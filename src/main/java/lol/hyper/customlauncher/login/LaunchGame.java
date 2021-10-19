@@ -56,8 +56,8 @@ public class LaunchGame extends Thread {
             Process p = pb.start();
             p.getInputStream().close();
         } catch (IOException e) {
-            logger.error(e);
-            JFrame errorWindow = new ErrorWindow("Unable to launch game. Please check your log for more information.");
+            logger.error("Unable to launch game!", e);
+            JFrame errorWindow = new ErrorWindow("Unable to launch game.\n" + e.getClass().getCanonicalName() + ": " + e.getMessage());
             errorWindow.dispose();
         }
     }

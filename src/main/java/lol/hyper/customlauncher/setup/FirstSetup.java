@@ -26,8 +26,6 @@ import java.io.File;
 
 public class FirstSetup extends JFrame {
 
-    private final Logger logger = LogManager.getLogger(FirstSetup.class);
-
     public FirstSetup() {
         JFrame frame = new JFrame();
         try {
@@ -42,6 +40,7 @@ public class FirstSetup extends JFrame {
         final String installPathTest = "XX:\\Program Files (x86)\\Toontown Rewritten";
         String finalInstallPath = null;
 
+        Logger logger = LogManager.getLogger(FirstSetup.class);
         for (char alphabet = 'A'; alphabet <= 'Z'; alphabet++) {
             // we make a temp string, so we don't replace the template.
             String temp = installPathTest.replace("XX", String.valueOf(alphabet));
