@@ -20,6 +20,8 @@ CustomLauncherRewrite is a brand-new custom launcher for Toontown Rewritten. Thi
 ## Setup
 You need Java 8 or above installed.
 
+**Warning:** If you are using Temurin or AdoptOpenJDK, make sure you install `JavaSoft registry keys`. The program will not run if you don't do this. You might have to reinstall your Java version to properly set these.
+
 Simply download the latest [release](https://github.com/hyperdefined/CustomLauncherRewrite/releases). Throw the `exe` file into a new folder and run it. To add a new account, simply click "Add Account" and follow the steps. Double click the account to launch the game.
 
 ## Updating
