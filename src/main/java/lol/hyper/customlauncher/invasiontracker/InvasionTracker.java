@@ -211,6 +211,10 @@ public class InvasionTracker {
             if (!invasions.containsKey(district)) {
                 JSONObject temp = invasionsJSON.getJSONObject(key);
                 String cogType = temp.getString("Type");
+                // remove the unicode string that python puts onto some cogs
+                if (cogType.contains("\u0003")) {
+                    cogType = cogType.replace("\u0003", "");
+                }
                 int cogsDefeated = temp.getInt("CurrentProgress");
                 int cogsTotal = temp.getInt("MaxProgress");
                 logger.info("New invasion alert! " + district + " Cogs: " + cogsDefeated + "/" + cogsTotal);
