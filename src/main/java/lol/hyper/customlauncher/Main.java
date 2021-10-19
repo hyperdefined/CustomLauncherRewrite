@@ -20,7 +20,6 @@ package lol.hyper.customlauncher;
 import lol.hyper.customlauncher.accounts.JSONManager;
 import lol.hyper.customlauncher.accounts.windows.MainWindow;
 import lol.hyper.customlauncher.generic.ErrorWindow;
-import lol.hyper.customlauncher.generic.InfoWindow;
 import lol.hyper.customlauncher.invasiontracker.InvasionTracker;
 import lol.hyper.customlauncher.setup.FirstSetup;
 import lol.hyper.customlauncher.ttrupdater.TTRUpdater;
@@ -37,7 +36,7 @@ import java.nio.file.Paths;
 
 public class Main {
 
-    public static final String VERSION = "1.3.3";
+    public static final String VERSION = "1.33.3";
     public static Logger logger;
     public static String pathToUse;
 
@@ -45,6 +44,7 @@ public class Main {
         System.setProperty("log4j.configurationFile", "log4j2config.xml");
         logger = LogManager.getLogger(Main.class);
         logger.info("Program is starting.");
+        logger.info("Running version " + VERSION);
         if (!JSONManager.configPath.toFile().exists()) {
             Files.createDirectory(JSONManager.configPath);
             logger.warn("Config path was not found, creating directory...");
@@ -103,10 +103,19 @@ public class Main {
                 updater.dispose();
             }
         }
-        if (UpdateChecker.checkForUpdates(VERSION)) {
-            JFrame infoWindow =
-                    new InfoWindow("A new version is available.\nPlease download the latest version from the GitHub.");
-            infoWindow.dispose();
+
+        String latestVersion = UpdateChecker.getLatestVersion();
+        if (!latestVersion.equals(VERSION)) {
+            logger.info("A new version is available! Version: " + latestVersion);
+            int dialogResult = JOptionPane.showConfirmDialog(null, "A new update is available. Would you like to download the new version?", "New Update", JOptionPane.YES_NO_OPTION);
+            if (dialogResult == JOptionPane.YES_OPTION) {
+                UpdateChecker.downloadLatestVersion();
+                int dialogResult2 = JOptionPane.showConfirmDialog(null, "Version " + latestVersion + " was downloaded. Would you like to run this new version?", "New Update", JOptionPane.YES_NO_OPTION);
+                if (dialogResult2 == JOptionPane.YES_OPTION) {
+                    UpdateChecker.launchNewVersion(latestVersion);
+                    System.exit(0);
+                }
+            }
         }
 
         JFrame mainWindow = new MainWindow("CustomLauncherRewrite", new InvasionTracker());

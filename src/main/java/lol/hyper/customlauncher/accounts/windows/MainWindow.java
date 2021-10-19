@@ -61,7 +61,7 @@ public class MainWindow extends JFrame {
             model.addElement(account.getUsername());
         }
 
-        JList<String> accountList = new JList<String>(model);
+        JList<String> accountList = new JList<>(model);
         DefaultListCellRenderer renderer = (DefaultListCellRenderer) accountList.getCellRenderer();
         renderer.setHorizontalAlignment(SwingConstants.CENTER);
         accountList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -93,9 +93,7 @@ public class MainWindow extends JFrame {
 
         // invasions button
         JButton invasionsButton = new JButton("Invasions");
-        invasionsButton.addActionListener(e -> {
-            invasionTracker.showWindow();
-        });
+        invasionsButton.addActionListener(e -> invasionTracker.showWindow());
         invasionsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         invasionsButton.setMaximumSize(new Dimension(300, invasionsButton.getMinimumSize().height));
         panel.add(invasionsButton);
