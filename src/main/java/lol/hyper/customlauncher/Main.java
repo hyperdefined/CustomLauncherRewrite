@@ -33,15 +33,19 @@ import javax.swing.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Properties;
 
 public class Main {
 
-    public static final String VERSION = "1.33.3";
+    public static String VERSION;
     public static Logger logger;
     public static String pathToUse;
 
     public static void main(String[] args) throws IOException {
         System.setProperty("log4j.configurationFile", "log4j2config.xml");
+        final Properties properties = new Properties();
+        properties.load(Main.class.getClassLoader().getResourceAsStream("project.properties"));
+        VERSION = properties.getProperty("version");
         logger = LogManager.getLogger(Main.class);
         logger.info("Program is starting.");
         logger.info("Running version " + VERSION);
