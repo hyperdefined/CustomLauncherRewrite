@@ -109,12 +109,6 @@ public class UpdateChecker {
         Logger logger = LogManager.getLogger(UpdateChecker.class);
         String[] command = {"cmd", "/c", "CustomLauncherRewrite-" + newVersion + ".exe"};
         ProcessBuilder pb = new ProcessBuilder(command);
-
-        // dirty little trick to redirect the output
-        // the game freezes if you don't do this
-        // https://stackoverflow.com/a/58922302
-        pb.redirectOutput(ProcessBuilder.Redirect.PIPE);
-        pb.redirectErrorStream(true);
         pb.directory(new File(System.getProperty("user.dir")));
         try {
             Process p = pb.start();
