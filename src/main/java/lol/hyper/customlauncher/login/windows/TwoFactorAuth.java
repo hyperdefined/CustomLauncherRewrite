@@ -29,7 +29,7 @@ public class TwoFactorAuth extends JFrame {
 
     public TwoFactorAuth(String title, String banner, String token) {
         JFrame frame = new JFrame(title);
-        frame.setSize(370, 200);
+        frame.setSize(230, 150);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setResizable(false);
         try {
@@ -40,7 +40,10 @@ public class TwoFactorAuth extends JFrame {
 
         // GUI elements
         JPanel panel = new JPanel();
-        panel.setLayout(null);
+        panel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
         JLabel text = new JLabel("<html>" + banner + "</html>");
         JTextField userAuthCode = new JTextField();
@@ -58,14 +61,9 @@ public class TwoFactorAuth extends JFrame {
 
         JButton loginButton = new JButton("Submit");
 
-        userAuthCode.setMaximumSize(new Dimension(50, 25));
-        text.setBounds(30, 15, 300, 30);
-        userAuthCode.setBounds(30, 50, 70, 30);
-        loginButton.setBounds(30, 85, 100, 30);
-
-        panel.add(text);
-        panel.add(userAuthCode);
-        panel.add(loginButton);
+        panel.add(text, gbc);
+        panel.add(userAuthCode, gbc);
+        panel.add(loginButton, gbc);
 
         // button listeners
         loginButton.addActionListener(event -> {

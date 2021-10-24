@@ -23,12 +23,13 @@ import lol.hyper.customlauncher.login.LoginHandler;
 import lol.hyper.customlauncher.login.LoginRequest;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class SecretPrompt extends JFrame {
 
     public SecretPrompt(String title, Account account) {
         JFrame frame = new JFrame(title);
-        frame.setSize(370, 150);
+        frame.setSize(170, 120);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setResizable(false);
         try {
@@ -39,19 +40,18 @@ public class SecretPrompt extends JFrame {
 
         // GUI elements
         JPanel panel = new JPanel();
-        panel.setLayout(null);
+        panel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
         JLabel secretLabel = new JLabel("Secret Phrase");
         JPasswordField secretText = new JPasswordField();
         JButton loginButton = new JButton("Login");
 
-        secretLabel.setBounds(50, 25, 100, 30);
-        secretText.setBounds(150, 25, 100, 30);
-        loginButton.setBounds(50, 75, 100, 30);
-
-        panel.add(secretLabel);
-        panel.add(secretText);
-        panel.add(loginButton);
+        panel.add(secretLabel, gbc);
+        panel.add(secretText, gbc);
+        panel.add(loginButton, gbc);
 
         // button listeners
         loginButton.addActionListener(event -> {
