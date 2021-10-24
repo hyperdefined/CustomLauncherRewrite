@@ -114,8 +114,8 @@ public class UpdateChecker {
             Process p = pb.start();
             p.getInputStream().close();
         } catch (IOException e) {
-            logger.error("Unable to launch game!", e);
-            JFrame errorWindow = new ErrorWindow("Unable to new version!.\n" + e.getClass().getCanonicalName() + ": " + e.getMessage());
+            logger.error("Unable to launch new version!", e);
+            JFrame errorWindow = new ErrorWindow("Unable to launch new version!.\n" + e.getClass().getCanonicalName() + ": " + e.getMessage());
             errorWindow.dispose();
         }
     }
