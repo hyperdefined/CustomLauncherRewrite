@@ -86,6 +86,7 @@
                             <jar>${project.build.directory}/CustomLauncherRewrite-${project.version}.jar</jar>
                             <outfile>${project.build.directory}/CustomLauncherRewrite-${project.version}.exe</outfile>
                             <downloadUrl>https://adoptium.net/releases.html?variant=openjdk8&amp;jvmVariant=hotspot</downloadUrl>
+                            <icon>src/main/resources/icon.ico</icon>
                             <classPath>
                                 <mainClass>lol.hyper.customlauncher.Main</mainClass>
                                 <preCp>anything</preCp>
