@@ -29,8 +29,13 @@ import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.awt.*;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Properties;
@@ -40,6 +45,7 @@ public class Main {
     public static String VERSION;
     public static Logger logger;
     public static String pathToUse;
+    public static Image icon;
 
     public static void main(String[] args) throws IOException {
         System.setProperty("log4j.configurationFile", "log4j2config.xml");
@@ -54,6 +60,11 @@ public class Main {
             logger.warn("Config path was not found, creating directory...");
         }
         boolean runSetup = false;
+
+        InputStream iconStream = Main.class.getResourceAsStream("/icon.png");
+        if (iconStream != null) {
+            icon = ImageIO.read(iconStream);
+        }
 
         // create the default files
         // config.json with default values
@@ -121,7 +132,6 @@ public class Main {
                 }
             }
         }
-
         JFrame mainWindow = new MainWindow("CustomLauncherRewrite", new InvasionTracker());
         mainWindow.dispose();
     }

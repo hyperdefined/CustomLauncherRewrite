@@ -17,6 +17,7 @@
 
 package lol.hyper.customlauncher.ttrupdater;
 
+import lol.hyper.customlauncher.Main;
 import lol.hyper.customlauncher.accounts.JSONManager;
 import lol.hyper.customlauncher.generic.ErrorWindow;
 import lol.hyper.customlauncher.generic.InfoWindow;
@@ -29,6 +30,7 @@ import org.json.JSONObject;
 
 import javax.swing.*;
 import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
+import java.awt.*;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
@@ -59,6 +61,8 @@ public class TTRUpdater extends JFrame {
         } catch (Exception e) {
             logger.error(e);
         }
+
+        frame.setIconImage(Main.icon);
 
         // GUI elements
         JPanel panel = new JPanel();

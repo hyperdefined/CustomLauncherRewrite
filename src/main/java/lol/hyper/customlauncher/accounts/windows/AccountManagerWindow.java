@@ -17,6 +17,8 @@
 
 package lol.hyper.customlauncher.accounts.windows;
 
+import lol.hyper.customlauncher.Main;
+
 import javax.swing.*;
 
 public class AccountManagerWindow extends JFrame {
@@ -32,6 +34,7 @@ public class AccountManagerWindow extends JFrame {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        frame.setIconImage(Main.icon);
 
         // GUI elements
         JPanel panel = new JPanel();

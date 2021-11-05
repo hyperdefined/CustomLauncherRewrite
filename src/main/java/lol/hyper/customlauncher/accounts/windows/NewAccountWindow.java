@@ -17,6 +17,7 @@
 
 package lol.hyper.customlauncher.accounts.windows;
 
+import lol.hyper.customlauncher.Main;
 import lol.hyper.customlauncher.accounts.JSONManager;
 
 import javax.swing.*;
@@ -34,6 +35,7 @@ public class NewAccountWindow extends JFrame {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        frame.setIconImage(Main.icon);
 
         // GUI elements
         JPanel panel = new JPanel();

@@ -17,6 +17,7 @@
 
 package lol.hyper.customlauncher.accounts.windows;
 
+import lol.hyper.customlauncher.Main;
 import lol.hyper.customlauncher.accounts.Account;
 import lol.hyper.customlauncher.accounts.JSONManager;
 import lol.hyper.customlauncher.invasiontracker.InvasionTracker;
@@ -43,6 +44,7 @@ public class MainWindow extends JFrame {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        frame.setIconImage(Main.icon);
 
         // GUI elements
         JPanel panel = new JPanel();

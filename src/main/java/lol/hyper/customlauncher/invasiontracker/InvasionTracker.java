@@ -17,6 +17,7 @@
 
 package lol.hyper.customlauncher.invasiontracker;
 
+import lol.hyper.customlauncher.Main;
 import lol.hyper.customlauncher.generic.ErrorWindow;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -66,6 +67,7 @@ public class InvasionTracker {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        frame.setIconImage(Main.icon);
 
         // GUI elements
         JPanel panel = new JPanel();
