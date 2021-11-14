@@ -71,13 +71,15 @@ public class TTRUpdater extends JFrame {
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
         JLabel updateStatus = new JLabel("Checking files...");
-        JProgressBar progressBar = new JProgressBar(0, 22);
+        updateStatus.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JProgressBar progressBar = new JProgressBar(0, 0);
+        progressBar.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(Box.createRigidArea(new Dimension(0, 30)));
         panel.add(updateStatus);
         panel.add(progressBar);
 
         progressBar.setBounds(150, 100, 100, 30);
         updateStatus.setBounds(70, 25, 370, 40);
-
 
         frame.add(panel);
         frame.setVisible(true);
@@ -147,6 +149,7 @@ public class TTRUpdater extends JFrame {
             return;
         }
 
+        progressBar.setMaximum(patches.length());
         for (String key : patches.keySet()) {
             progressBar.setValue(progressBar.getValue() + 1);
             JSONObject currentFile = (JSONObject) patches.get(key);
@@ -216,12 +219,17 @@ public class TTRUpdater extends JFrame {
             logger.info(filesToDownload.size() + " file(s) are going to be downloaded.");
             logger.info(filesToDownload);
 
+            progressBar.setValue(0); //reset
+
             for (String fileToDownload : filesToDownload) {
+                progressBar.setMaximum(fileToDownload.length());
                 JSONObject file = patches.getJSONObject(fileToDownload);
                 String dl = file.getString("dl");
                 try {
                     logger.info("Downloading " + PATCHES_URL_DL + dl);
                     updateStatus.setText("Downloading " + dl);
+                    progressBar.setVisible(true);
+                    progressBar.setValue(progressBar.getValue() + 1);
                     FileUtils.copyURLToFile(
                             new URL(PATCHES_URL_DL + dl),
                             new File(tempFolder + File.separator + dl));
@@ -243,6 +251,7 @@ public class TTRUpdater extends JFrame {
                 long startTime = System.nanoTime();
                 logger.info("Extracting file " + dl);
                 updateStatus.setText("Extracting file " + dl);
+                progressBar.setVisible(false);
                 try {
                     extractFile(dl, fileToDownload);
                 } catch (IOException e) {
