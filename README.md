@@ -18,39 +18,15 @@ CustomLauncherRewrite is a brand-new custom launcher for Toontown Rewritten. Thi
 ![Screenshot4](https://raw.githubusercontent.com/hyperdefined/CustomLauncherRewrite/master/images/image4.png)
 
 ## Setup
-You need Java 8 or above installed.
-
-**Warning:** If you are using Temurin or AdoptOpenJDK, make sure you install `JavaSoft registry keys`. The program will not run if you don't do this. You might have to reinstall your Java version to properly set these.
-
-Simply download the latest [release](https://github.com/hyperdefined/CustomLauncherRewrite/releases). Throw the `exe` file into a new folder and run it. To add a new account, simply click "Add Account" and follow the steps. Double click the account to launch the game.
+See [Installation](https://github.com/hyperdefined/CustomLauncherRewrite/wiki/Installation) for setup.
 
 ## Updating
 As of the 1.4 update, it will automatically download the latest update if you want it to!
 
 To update to a new release manually, simply [download](https://github.com/hyperdefined/CustomLauncherRewrite/releases) the new release and put the new `exe` file in the same folder as the old one. Run the new `exe` file instead of the old one. You're all set.
 
-## Troubleshooting
-### It says that it can't find my TTR installation.
-The program tries to search for common install locations. If it can't find yours, then you need to change the path in the options' menu.
-
-To find your current install location, search for "Toontown Rewritten" on the start menu and click "Open file location". If you have a shortcut on your desktop, you can also right click that instead.
-
-![Help1](https://raw.githubusercontent.com/hyperdefined/CustomLauncherRewrite/master/images/findInstallLocation2.png)
-
-Then click the path at the top and copy it. This is what you want to put into the options menu of the program.
-
-![Help2](https://raw.githubusercontent.com/hyperdefined/CustomLauncherRewrite/master/images/findInstallLocation.png)
-
-![Help3](https://raw.githubusercontent.com/hyperdefined/CustomLauncherRewrite/master/images/findInstallLocation3.png)
-
-### It says my passphrase is wrong.
-Your passphrase was typed in wrong. You either typed it incorrectly when you added an account, or you keep typing it incorrectly when you login. Remove the account and re-add it back if you can't remember it.
-
-### I have an issue that is not listed here.
-No problem! Create a new [issue](https://github.com/hyperdefined/CustomLauncherRewrite/issues) and include as much detail as possible, so I can help you out. Make sure you attach your log file that is generated alongside the program.
-
-## Known Issues
-None currently.
+## Support
+If you need support, feel free to [contact me](https://hyper.lol). If you found a bug/issue, [create a new issue](https://github.com/hyperdefined/CustomLauncherRewrite/issues/new).
 
 ## Contributing
 The code for this program could definitely be improved. Feel free to fork and make and changes/improvements to it.
