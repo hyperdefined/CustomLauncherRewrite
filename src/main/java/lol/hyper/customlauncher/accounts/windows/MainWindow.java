@@ -91,27 +91,12 @@ public class MainWindow extends JFrame {
         invasionsButton.setMaximumSize(new Dimension(300, invasionsButton.getMinimumSize().height));
         panel.add(invasionsButton);
 
-        // options button
-        JButton optionsButton = new JButton("Options");
-        optionsButton.addActionListener(
-                e -> {
-                    JFrame options = new OptionsWindow("Options");
-                    options.dispose();
-                });
-        optionsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        optionsButton.setMaximumSize(new Dimension(300, optionsButton.getMinimumSize().height));
-        panel.add(optionsButton);
-
         accountList.addMouseListener(
                 new MouseAdapter() {
                     public void mouseClicked(MouseEvent evt) {
                         JList<String> list = (JList<String>) evt.getSource();
                         if (evt.getClickCount() == 2) {
-                            JSONObject options =
-                                    new JSONObject(JSONManager.readFile(JSONManager.configFile));
-                            if (!Paths.get(options.getString("ttrInstallLocation"))
-                                    .toFile()
-                                    .exists()) {
+                            if (!Main.TTR_INSTALL_DIR.exists()) {
                                 JOptionPane.showMessageDialog(
                                         frame,
                                         "Unable to launch the game. The install location cannot be found.",

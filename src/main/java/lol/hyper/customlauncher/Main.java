@@ -44,8 +44,8 @@ public class Main {
 
     public static String VERSION;
     public static Logger logger;
-    public static String pathToUse;
     public static Image icon;
+    public static final File TTR_INSTALL_DIR = new File("ttr-files");
 
     public static void main(String[] args) throws IOException {
         System.setProperty("log4j.configurationFile", "log4j2config.xml");
@@ -55,28 +55,26 @@ public class Main {
         logger = LogManager.getLogger(Main.class);
         logger.info("Program is starting.");
         logger.info("Running version " + VERSION);
-        if (!JSONManager.configPath.toFile().exists()) {
-            Files.createDirectory(JSONManager.configPath);
-            logger.warn("Config path was not found, creating directory...");
+
+
+        final File configPath = new File("confg");
+        if (!configPath.exists()) {
+            Files.createDirectory(configPath.toPath());
+            logger.info("Creating config folder at " + configPath.getAbsolutePath());
         }
-        boolean runSetup = false;
+
+        if (!TTR_INSTALL_DIR.exists()) {
+            Files.createDirectory(TTR_INSTALL_DIR.toPath());
+            logger.info("Creating TTR install folder at " + TTR_INSTALL_DIR.getAbsolutePath());
+        }
 
         InputStream iconStream = Main.class.getResourceAsStream("/icon.png");
         if (iconStream != null) {
             icon = ImageIO.read(iconStream);
         }
 
-        // create the default files
-        // config.json with default values
+        // create the default file
         // accounts.json with no accounts
-        if (!JSONManager.configFile.exists()) {
-            runSetup = true;
-            JSONObject newOptions = new JSONObject();
-            newOptions.put("ttrInstallLocation", "");
-            newOptions.put("autoCheckTTRUpdates", true);
-            JSONManager.writeFile(newOptions, JSONManager.configFile);
-            logger.info("Creating base config file...");
-        }
         if (!JSONManager.accountsFile.exists()) {
             JSONArray newAccounts = new JSONArray();
             JSONManager.writeFile(newAccounts, JSONManager.accountsFile);
@@ -88,38 +86,6 @@ public class Main {
         if (firstChar == '{') {
             JSONManager.convertToNewFormat();
             Main.logger.info("Converting account storage to JSONArray format.");
-        }
-
-        if (runSetup) {
-            // run the setup
-            logger.info("Running first time setup.");
-            JFrame firstSetup = new FirstSetup();
-            firstSetup.dispose();
-        } else {
-            // check the config installation path
-            Main.logger.info(
-                    "ttrInstallLocation = " + JSONManager.config().getString("ttrInstallLocation"));
-            if (!Paths.get(JSONManager.config().getString("ttrInstallLocation"))
-                    .toFile()
-                    .exists()) {
-                Main.logger.warn("ttrInstallLocation does not exist. Is the game installed here?");
-                JFrame errorWindow =
-                        new ErrorWindow(
-                                "Unable to find your TTR install directory. We won't be able to check for TTR updates nor run the game.");
-                errorWindow.dispose();
-                pathToUse = null;
-            } else {
-                pathToUse = JSONManager.config().getString("ttrInstallLocation");
-            }
-        }
-
-        Main.logger.info(
-                "autoCheckTTRUpdates = " + JSONManager.config().getBoolean("autoCheckTTRUpdates"));
-        if (JSONManager.config().getBoolean("autoCheckTTRUpdates")) {
-            if (pathToUse != null) {
-                JFrame updater = new TTRUpdater("Updater", Paths.get(pathToUse));
-                updater.dispose();
-            }
         }
 
         String latestVersion = UpdateChecker.getLatestVersion();
@@ -147,6 +113,10 @@ public class Main {
                 }
             }
         }
+
+        JFrame updater = new TTRUpdater("Updater", Paths.get(TTR_INSTALL_DIR.getAbsolutePath()));
+        updater.dispose();
+
         JFrame mainWindow = new MainWindow("CustomLauncherRewrite", new InvasionTracker());
         mainWindow.dispose();
     }

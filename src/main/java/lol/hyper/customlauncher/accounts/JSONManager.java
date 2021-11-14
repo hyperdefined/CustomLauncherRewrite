@@ -40,9 +40,6 @@ public class JSONManager {
 
     public static final File accountsFile =
             Paths.get("config" + File.separator + "accounts.json").toFile();
-    public static final File configFile =
-            Paths.get("config" + File.separator + "config.json").toFile();
-    public static final Path configPath = Paths.get("config");
     private static SecretKeySpec secretKey;
 
     /**
@@ -202,27 +199,6 @@ public class JSONManager {
             Main.logger.error("Error while decrypting input text!", e);
             return null;
         }
-    }
-
-    /**
-     * Add/remove a value from the config.
-     *
-     * @param key Key for the JSON.
-     * @param value Value for the key.
-     */
-    public static void editConfig(String key, Object value) {
-        JSONObject config = new JSONObject(readFile(configFile));
-        config.put(key, value);
-        writeFile(config, configFile);
-    }
-
-    /**
-     * Get the contents of the config file into a JSONObject.
-     *
-     * @return The config as a JSONObject.
-     */
-    public static JSONObject config() {
-        return new JSONObject(readFile(configFile));
     }
 
     public static void convertToNewFormat() {

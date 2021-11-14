@@ -314,10 +314,7 @@ public class TTRUpdater extends JFrame {
     private static void extractFile(String tempFile, String outputName) throws IOException {
         FileInputStream in = new FileInputStream("temp" + File.separator + tempFile);
         FileOutputStream out =
-                new FileOutputStream(
-                        JSONManager.config().getString("ttrInstallLocation")
-                                + File.separator
-                                + outputName);
+                new FileOutputStream(Main.TTR_INSTALL_DIR + File.separator + outputName);
         BZip2CompressorInputStream bzIn = new BZip2CompressorInputStream(in);
         byte[] buffer = new byte[4096];
         int n;
