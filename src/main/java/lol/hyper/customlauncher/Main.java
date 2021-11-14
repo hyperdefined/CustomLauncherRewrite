@@ -20,9 +20,9 @@ package lol.hyper.customlauncher;
 import lol.hyper.customlauncher.accounts.JSONManager;
 import lol.hyper.customlauncher.accounts.windows.MainWindow;
 import lol.hyper.customlauncher.invasiontracker.InvasionTracker;
-import lol.hyper.customlauncher.setup.FirstSetup;
 import lol.hyper.customlauncher.ttrupdater.TTRUpdater;
 import lol.hyper.customlauncher.updater.UpdateChecker;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
@@ -85,28 +85,30 @@ public class Main {
             Main.logger.info("Converting account storage to JSONArray format.");
         }
 
-        String latestVersion = UpdateChecker.getLatestVersion();
-        if (!latestVersion.equals(VERSION)) {
-            logger.info("A new version is available! Version: " + latestVersion);
-            int dialogResult =
-                    JOptionPane.showConfirmDialog(
-                            null,
-                            "A new update is available. Would you like to download the new version?",
-                            "New Update",
-                            JOptionPane.YES_NO_OPTION);
-            if (dialogResult == JOptionPane.YES_OPTION) {
-                UpdateChecker.downloadLatestVersion();
-                int dialogResult2 =
+        if (SystemUtils.IS_OS_WINDOWS) {
+            String latestVersion = UpdateChecker.getLatestVersion();
+            if (!latestVersion.equals(VERSION)) {
+                logger.info("A new version is available! Version: " + latestVersion);
+                int dialogResult =
                         JOptionPane.showConfirmDialog(
                                 null,
-                                "Version "
-                                        + latestVersion
-                                        + " was downloaded. Would you like to run this new version?",
+                                "A new update is available. Would you like to download the new version?",
                                 "New Update",
                                 JOptionPane.YES_NO_OPTION);
-                if (dialogResult2 == JOptionPane.YES_OPTION) {
-                    UpdateChecker.launchNewVersion(latestVersion);
-                    System.exit(0);
+                if (dialogResult == JOptionPane.YES_OPTION) {
+                    UpdateChecker.downloadLatestVersion();
+                    int dialogResult2 =
+                            JOptionPane.showConfirmDialog(
+                                    null,
+                                    "Version "
+                                            + latestVersion
+                                            + " was downloaded. Would you like to run this new version?",
+                                    "New Update",
+                                    JOptionPane.YES_NO_OPTION);
+                    if (dialogResult2 == JOptionPane.YES_OPTION) {
+                        UpdateChecker.launchNewVersion(latestVersion);
+                        System.exit(0);
+                    }
                 }
             }
         }
