@@ -19,22 +19,18 @@ package lol.hyper.customlauncher;
 
 import lol.hyper.customlauncher.accounts.JSONManager;
 import lol.hyper.customlauncher.accounts.windows.MainWindow;
-import lol.hyper.customlauncher.generic.ErrorWindow;
 import lol.hyper.customlauncher.invasiontracker.InvasionTracker;
 import lol.hyper.customlauncher.setup.FirstSetup;
 import lol.hyper.customlauncher.ttrupdater.TTRUpdater;
 import lol.hyper.customlauncher.updater.UpdateChecker;
-import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;

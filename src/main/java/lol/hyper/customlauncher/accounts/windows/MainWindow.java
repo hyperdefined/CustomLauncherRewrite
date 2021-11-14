@@ -21,13 +21,11 @@ import lol.hyper.customlauncher.Main;
 import lol.hyper.customlauncher.accounts.Account;
 import lol.hyper.customlauncher.accounts.JSONManager;
 import lol.hyper.customlauncher.invasiontracker.InvasionTracker;
-import org.json.JSONObject;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.nio.file.Paths;
 import java.util.HashMap;
 
 public class MainWindow extends JFrame {

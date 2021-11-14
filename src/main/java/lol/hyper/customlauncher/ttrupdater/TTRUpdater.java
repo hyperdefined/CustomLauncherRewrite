@@ -18,7 +18,6 @@
 package lol.hyper.customlauncher.ttrupdater;
 
 import lol.hyper.customlauncher.Main;
-import lol.hyper.customlauncher.accounts.JSONManager;
 import lol.hyper.customlauncher.generic.ErrorWindow;
 import lol.hyper.customlauncher.generic.InfoWindow;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
@@ -26,7 +25,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.swing.*;
