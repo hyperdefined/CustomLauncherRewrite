@@ -74,12 +74,14 @@ public class MainWindow extends JFrame {
 
         // new account button
         JButton accountManagerButton = new JButton("Manage Accounts");
-        accountManagerButton.addActionListener(e -> {
-            JFrame accountManagerWindow = new AccountManagerWindow("Account Manager");
-            accountManagerWindow.dispose();
-        });
+        accountManagerButton.addActionListener(
+                e -> {
+                    JFrame accountManagerWindow = new AccountManagerWindow("Account Manager");
+                    accountManagerWindow.dispose();
+                });
         accountManagerButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        accountManagerButton.setMaximumSize(new Dimension(300, accountManagerButton.getMinimumSize().height));
+        accountManagerButton.setMaximumSize(
+                new Dimension(300, accountManagerButton.getMinimumSize().height));
         panel.add(accountManagerButton);
 
         // invasions button
@@ -91,36 +93,40 @@ public class MainWindow extends JFrame {
 
         // options button
         JButton optionsButton = new JButton("Options");
-        optionsButton.addActionListener(e -> {
-            JFrame options = new OptionsWindow("Options");
-            options.dispose();
-        });
+        optionsButton.addActionListener(
+                e -> {
+                    JFrame options = new OptionsWindow("Options");
+                    options.dispose();
+                });
         optionsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         optionsButton.setMaximumSize(new Dimension(300, optionsButton.getMinimumSize().height));
         panel.add(optionsButton);
 
-        accountList.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent evt) {
-                JList<String> list = (JList<String>) evt.getSource();
-                if (evt.getClickCount() == 2) {
-                    JSONObject options = new JSONObject(JSONManager.readFile(JSONManager.configFile));
-                    if (!Paths.get(options.getString("ttrInstallLocation"))
-                            .toFile()
-                            .exists()) {
-                        JOptionPane.showMessageDialog(
-                                frame,
-                                "Unable to launch the game. The install location cannot be found.",
-                                "Error",
-                                JOptionPane.ERROR_MESSAGE);
-                    } else {
-                        int index = list.getSelectedIndex();
-                        Account account = JSONManager.getAccounts().get(index);
-                        SecretPrompt secretPrompt = new SecretPrompt("Enter Passphrase", account);
-                        secretPrompt.dispose();
+        accountList.addMouseListener(
+                new MouseAdapter() {
+                    public void mouseClicked(MouseEvent evt) {
+                        JList<String> list = (JList<String>) evt.getSource();
+                        if (evt.getClickCount() == 2) {
+                            JSONObject options =
+                                    new JSONObject(JSONManager.readFile(JSONManager.configFile));
+                            if (!Paths.get(options.getString("ttrInstallLocation"))
+                                    .toFile()
+                                    .exists()) {
+                                JOptionPane.showMessageDialog(
+                                        frame,
+                                        "Unable to launch the game. The install location cannot be found.",
+                                        "Error",
+                                        JOptionPane.ERROR_MESSAGE);
+                            } else {
+                                int index = list.getSelectedIndex();
+                                Account account = JSONManager.getAccounts().get(index);
+                                SecretPrompt secretPrompt =
+                                        new SecretPrompt("Enter Passphrase", account);
+                                secretPrompt.dispose();
+                            }
+                        }
                     }
-                }
-            }
-        });
+                });
 
         frame.pack();
         frame.setSize(300, 400);

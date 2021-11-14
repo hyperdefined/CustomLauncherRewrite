@@ -41,7 +41,8 @@ import java.util.concurrent.TimeUnit;
 public class LoginHandler {
 
     public static final Logger logger = LogManager.getLogger(LoginHandler.class);
-    private static final String REQUEST_URL = "https://www.toontownrewritten.com/api/login?format=json";
+    private static final String REQUEST_URL =
+            "https://www.toontownrewritten.com/api/login?format=json";
     private static final String USER_AGENT =
             "CustomLauncherRewrite https://github.com/hyperdefined/CustomLauncherRewrite";
 
@@ -58,8 +59,12 @@ public class LoginHandler {
             request = sendRequest(loginRequest).getRequestDetails();
         } catch (Exception e) {
             logger.error("Unable to send login request to TTR!", e);
-            JFrame errorWindow = new ErrorWindow(
-                    "Unable to send login request to TTR.\n" + e.getClass().getCanonicalName() + ": " + e.getMessage());
+            JFrame errorWindow =
+                    new ErrorWindow(
+                            "Unable to send login request to TTR.\n"
+                                    + e.getClass().getCanonicalName()
+                                    + ": "
+                                    + e.getMessage());
             errorWindow.dispose();
             return;
         }
@@ -71,51 +76,60 @@ public class LoginHandler {
         logger.info("status=" + status);
 
         switch (status) {
-            case "false": {
-                // handle incorrect login
-                if (banner.contains("Incorrect username")) {
-                    logger.info("Username or password is wrong.");
-                    JFrame errorWindow = new ErrorWindow("Login details are incorrect.");
+            case "false":
+                {
+                    // handle incorrect login
+                    if (banner.contains("Incorrect username")) {
+                        logger.info("Username or password is wrong.");
+                        JFrame errorWindow = new ErrorWindow("Login details are incorrect.");
+                        errorWindow.dispose();
+                    }
+                    break;
+                }
+            case "partial":
+                {
+                    // handle 2fa
+                    logger.info("Asking user for two-factor auth.");
+                    JFrame twoFactorAuth =
+                            new TwoFactorAuth("Enter Code", banner, request.get("responseToken"));
+                    break;
+                }
+            case "true":
+                {
+                    logger.info("Login successful, launching game.");
+                    String gameServer = request.get("gameserver");
+                    String cookie = request.get("cookie");
+                    LaunchGame launchGame = new LaunchGame(cookie, gameServer);
+                    launchGame.start();
+                    break;
+                }
+            case "delayed":
+                {
+                    // handle queue
+                    logger.info("Stuck in queue.");
+                    JFrame infoWindow =
+                            new InfoWindow(
+                                    "You were placed in a queue. Press OK to try again in 5 seconds.");
+                    infoWindow.dispose();
+                    try {
+                        TimeUnit.SECONDS.sleep(5);
+                    } catch (InterruptedException e) {
+                        logger.error(e);
+                    }
+                    LoginRequest newLoginRequest = new LoginRequest();
+                    newLoginRequest.addDetails("queueToken", request.get("queueToken"));
+                    LoginHandler.handleLoginRequest(newLoginRequest);
+                    break;
+                }
+            default:
+                {
+                    logger.error("Weird login response: " + status);
+                    logger.info(request);
+                    JFrame errorWindow =
+                            new ErrorWindow(
+                                    "TTR sent back a weird response, or we got an invalid response.\nCheck the log for more information.");
                     errorWindow.dispose();
                 }
-                break;
-            }
-            case "partial": {
-                // handle 2fa
-                logger.info("Asking user for two-factor auth.");
-                JFrame twoFactorAuth = new TwoFactorAuth("Enter Code", banner, request.get("responseToken"));
-                break;
-            }
-            case "true": {
-                logger.info("Login successful, launching game.");
-                String gameServer = request.get("gameserver");
-                String cookie = request.get("cookie");
-                LaunchGame launchGame = new LaunchGame(cookie, gameServer);
-                launchGame.start();
-                break;
-            }
-            case "delayed": {
-                // handle queue
-                logger.info("Stuck in queue.");
-                JFrame infoWindow = new InfoWindow("You were placed in a queue. Press OK to try again in 5 seconds.");
-                infoWindow.dispose();
-                try {
-                    TimeUnit.SECONDS.sleep(5);
-                } catch (InterruptedException e) {
-                    logger.error(e);
-                }
-                LoginRequest newLoginRequest = new LoginRequest();
-                newLoginRequest.addDetails("queueToken", request.get("queueToken"));
-                LoginHandler.handleLoginRequest(newLoginRequest);
-                break;
-            }
-            default: {
-                logger.error("Weird login response: " + status);
-                logger.info(request);
-                JFrame errorWindow = new ErrorWindow(
-                        "TTR sent back a weird response, or we got an invalid response.\nCheck the log for more information.");
-                errorWindow.dispose();
-            }
         }
     }
 
@@ -133,8 +147,7 @@ public class LoginHandler {
 
         List<NameValuePair> urlParameters = new ArrayList<>();
         for (String x : loginRequest.getRequestDetails().keySet()) {
-            urlParameters.add(
-                    new BasicNameValuePair(x, loginRequest.getRequestDetails().get(x)));
+            urlParameters.add(new BasicNameValuePair(x, loginRequest.getRequestDetails().get(x)));
         }
 
         post.setEntity(new UrlEncodedFormEntity(urlParameters));

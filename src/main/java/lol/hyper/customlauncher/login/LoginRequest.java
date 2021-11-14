@@ -29,6 +29,7 @@ public class LoginRequest {
 
     /**
      * Login requests get stored as a HashMap. This will get the details of said login request.
+     *
      * @return The HashMap request with all details, saved as key=value.
      */
     public HashMap<String, String> getRequestDetails() {
@@ -37,6 +38,7 @@ public class LoginRequest {
 
     /**
      * Add a value to the login request.
+     *
      * @param key The key to save it as.
      * @param value The value of said key.
      */

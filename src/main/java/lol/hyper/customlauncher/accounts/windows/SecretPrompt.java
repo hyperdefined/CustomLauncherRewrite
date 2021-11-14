@@ -56,27 +56,36 @@ public class SecretPrompt extends JFrame {
         panel.add(loginButton, gbc);
 
         // button listeners
-        loginButton.addActionListener(event -> {
-            if (secretText.getPassword().length != 0) {
-                String username = account.getUsername();
-                String password = account.getPassword();
-                String actualPassword = JSONManager.decrypt(password, String.valueOf(secretText.getPassword()));
+        loginButton.addActionListener(
+                event -> {
+                    if (secretText.getPassword().length != 0) {
+                        String username = account.getUsername();
+                        String password = account.getPassword();
+                        String actualPassword =
+                                JSONManager.decrypt(
+                                        password, String.valueOf(secretText.getPassword()));
 
-                if (actualPassword != null) {
-                    LoginRequest loginRequest = new LoginRequest();
-                    loginRequest.addDetails("username", username);
-                    loginRequest.addDetails("password", actualPassword);
-                    LoginHandler.handleLoginRequest(loginRequest);
-                    frame.dispose();
-                } else {
-                    JOptionPane.showMessageDialog(
-                            frame, "You entered the wrong passphrase.", "Passphrase Error", JOptionPane.ERROR_MESSAGE);
-                }
-            } else {
-                JOptionPane.showMessageDialog(
-                        frame, "You must enter the passphrase.", "Passphrase Error", JOptionPane.ERROR_MESSAGE);
-            }
-        });
+                        if (actualPassword != null) {
+                            LoginRequest loginRequest = new LoginRequest();
+                            loginRequest.addDetails("username", username);
+                            loginRequest.addDetails("password", actualPassword);
+                            LoginHandler.handleLoginRequest(loginRequest);
+                            frame.dispose();
+                        } else {
+                            JOptionPane.showMessageDialog(
+                                    frame,
+                                    "You entered the wrong passphrase.",
+                                    "Passphrase Error",
+                                    JOptionPane.ERROR_MESSAGE);
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(
+                                frame,
+                                "You must enter the passphrase.",
+                                "Passphrase Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                });
 
         frame.setVisible(true);
         frame.add(panel);

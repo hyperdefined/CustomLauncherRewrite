@@ -51,9 +51,7 @@ public class UpdateChecker {
         return latestVersionObj.getString("tag_name");
     }
 
-    /**
-     * Downloads the latest version of the launcher from GitHub.
-     */
+    /** Downloads the latest version of the launcher from GitHub. */
     public static void downloadLatestVersion() throws IOException {
         Logger logger = LogManager.getLogger(UpdateChecker.class);
         JSONArray remoteVersions = new JSONArray(readGitHubAPI());
@@ -78,15 +76,18 @@ public class UpdateChecker {
     private static JSONArray readGitHubAPI() throws IOException {
         Logger logger = LogManager.getLogger(UpdateChecker.class);
         String remoteRaw = null;
-        URL url = new URL("https://api.github.com/repos/hyperdefined/CustomLauncherRewrite/releases");
+        URL url =
+                new URL("https://api.github.com/repos/hyperdefined/CustomLauncherRewrite/releases");
         URLConnection conn = url.openConnection();
         conn.setRequestProperty(
-                "User-Agent", "CustomLauncherRewrite https://github.com/hyperdefined/CustomLauncherRewrite");
+                "User-Agent",
+                "CustomLauncherRewrite https://github.com/hyperdefined/CustomLauncherRewrite");
         conn.setRequestProperty("Accept", "application/vnd.github.v3+json");
         conn.connect();
 
         try (InputStream in = conn.getInputStream()) {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
+            BufferedReader reader =
+                    new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
             remoteRaw = reader.lines().collect(Collectors.joining(System.lineSeparator()));
             reader.close();
         } catch (IOException e) {
@@ -94,7 +95,8 @@ public class UpdateChecker {
         }
 
         if (remoteRaw == null || remoteRaw.length() == 0) {
-            logger.warn("Unable to find latest version from GitHub. The string either returned null or empty.");
+            logger.warn(
+                    "Unable to find latest version from GitHub. The string either returned null or empty.");
             return null;
         }
         return new JSONArray(remoteRaw);
@@ -115,7 +117,12 @@ public class UpdateChecker {
             p.getInputStream().close();
         } catch (IOException e) {
             logger.error("Unable to launch new version!", e);
-            JFrame errorWindow = new ErrorWindow("Unable to launch new version!.\n" + e.getClass().getCanonicalName() + ": " + e.getMessage());
+            JFrame errorWindow =
+                    new ErrorWindow(
+                            "Unable to launch new version!.\n"
+                                    + e.getClass().getCanonicalName()
+                                    + ": "
+                                    + e.getMessage());
             errorWindow.dispose();
         }
     }

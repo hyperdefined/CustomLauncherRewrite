@@ -56,8 +56,14 @@ public class JSONManager {
             encoded = Files.readAllBytes(file.toPath());
         } catch (IOException e) {
             Main.logger.error("Unable to read file " + file, e);
-            JFrame errorWindow = new ErrorWindow(
-                    "Unable to read file " + file.getAbsolutePath() + ".\n" + e.getClass().getCanonicalName() + ": " + e.getMessage());
+            JFrame errorWindow =
+                    new ErrorWindow(
+                            "Unable to read file "
+                                    + file.getAbsolutePath()
+                                    + ".\n"
+                                    + e.getClass().getCanonicalName()
+                                    + ": "
+                                    + e.getMessage());
             errorWindow.dispose();
         }
         return new String(encoded, StandardCharsets.UTF_8);
@@ -75,8 +81,14 @@ public class JSONManager {
             writer.close();
         } catch (IOException e) {
             Main.logger.error("Unable to write file " + file, e);
-            JFrame errorWindow = new ErrorWindow(
-                    "Unable to write file " + file.getAbsolutePath() + ".\n" + e.getClass().getCanonicalName() + ": " + e.getMessage());
+            JFrame errorWindow =
+                    new ErrorWindow(
+                            "Unable to write file "
+                                    + file.getAbsolutePath()
+                                    + ".\n"
+                                    + e.getClass().getCanonicalName()
+                                    + ": "
+                                    + e.getMessage());
             errorWindow.dispose();
         }
     }
@@ -101,6 +113,7 @@ public class JSONManager {
 
     /**
      * Adds a new account to the accounts file.
+     *
      * @param username Account username.
      * @param encryptedPassword Account encrypted password.
      */
@@ -162,7 +175,8 @@ public class JSONManager {
             setKey(secret);
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
             cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-            return Base64.getEncoder().encodeToString(cipher.doFinal(strToEncrypt.getBytes(StandardCharsets.UTF_8)));
+            return Base64.getEncoder()
+                    .encodeToString(cipher.doFinal(strToEncrypt.getBytes(StandardCharsets.UTF_8)));
         } catch (Exception e) {
             Main.logger.error("Error while encrypting input text!", e);
         }
@@ -181,7 +195,9 @@ public class JSONManager {
             setKey(secret);
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5PADDING");
             cipher.init(Cipher.DECRYPT_MODE, secretKey);
-            return new String(cipher.doFinal(Base64.getDecoder().decode(strToDecrypt)), StandardCharsets.UTF_8);
+            return new String(
+                    cipher.doFinal(Base64.getDecoder().decode(strToDecrypt)),
+                    StandardCharsets.UTF_8);
         } catch (Exception e) {
             Main.logger.error("Error while decrypting input text!", e);
             return null;
@@ -202,6 +218,7 @@ public class JSONManager {
 
     /**
      * Get the contents of the config file into a JSONObject.
+     *
      * @return The config as a JSONObject.
      */
     public static JSONObject config() {

@@ -97,13 +97,15 @@ public class Main {
             firstSetup.dispose();
         } else {
             // check the config installation path
-            Main.logger.info("ttrInstallLocation = " + JSONManager.config().getString("ttrInstallLocation"));
+            Main.logger.info(
+                    "ttrInstallLocation = " + JSONManager.config().getString("ttrInstallLocation"));
             if (!Paths.get(JSONManager.config().getString("ttrInstallLocation"))
                     .toFile()
                     .exists()) {
                 Main.logger.warn("ttrInstallLocation does not exist. Is the game installed here?");
-                JFrame errorWindow = new ErrorWindow(
-                        "Unable to find your TTR install directory. We won't be able to check for TTR updates nor run the game.");
+                JFrame errorWindow =
+                        new ErrorWindow(
+                                "Unable to find your TTR install directory. We won't be able to check for TTR updates nor run the game.");
                 errorWindow.dispose();
                 pathToUse = null;
             } else {
@@ -111,7 +113,8 @@ public class Main {
             }
         }
 
-        Main.logger.info("autoCheckTTRUpdates = " + JSONManager.config().getBoolean("autoCheckTTRUpdates"));
+        Main.logger.info(
+                "autoCheckTTRUpdates = " + JSONManager.config().getBoolean("autoCheckTTRUpdates"));
         if (JSONManager.config().getBoolean("autoCheckTTRUpdates")) {
             if (pathToUse != null) {
                 JFrame updater = new TTRUpdater("Updater", Paths.get(pathToUse));
@@ -122,10 +125,22 @@ public class Main {
         String latestVersion = UpdateChecker.getLatestVersion();
         if (!latestVersion.equals(VERSION)) {
             logger.info("A new version is available! Version: " + latestVersion);
-            int dialogResult = JOptionPane.showConfirmDialog(null, "A new update is available. Would you like to download the new version?", "New Update", JOptionPane.YES_NO_OPTION);
+            int dialogResult =
+                    JOptionPane.showConfirmDialog(
+                            null,
+                            "A new update is available. Would you like to download the new version?",
+                            "New Update",
+                            JOptionPane.YES_NO_OPTION);
             if (dialogResult == JOptionPane.YES_OPTION) {
                 UpdateChecker.downloadLatestVersion();
-                int dialogResult2 = JOptionPane.showConfirmDialog(null, "Version " + latestVersion + " was downloaded. Would you like to run this new version?", "New Update", JOptionPane.YES_NO_OPTION);
+                int dialogResult2 =
+                        JOptionPane.showConfirmDialog(
+                                null,
+                                "Version "
+                                        + latestVersion
+                                        + " was downloaded. Would you like to run this new version?",
+                                "New Update",
+                                JOptionPane.YES_NO_OPTION);
                 if (dialogResult2 == JOptionPane.YES_OPTION) {
                     UpdateChecker.launchNewVersion(latestVersion);
                     System.exit(0);

@@ -55,9 +55,7 @@ public class InvasionTracker {
     public DefaultTableModel invasionTableModel;
     public JFrame frame;
 
-    /**
-     * Open the invasion window.
-     */
+    /** Open the invasion window. */
     public void showWindow() {
         frame = new JFrame("Invasions");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -79,7 +77,7 @@ public class InvasionTracker {
         panel.add(invasionsLabel);
 
         invasionTable = new JTable();
-        String[] columns = new String[]{"District", "Cog Type", "Time Left", "Cogs"};
+        String[] columns = new String[] {"District", "Cog Type", "Time Left", "Cogs"};
 
         invasionTableModel = (DefaultTableModel) invasionTable.getModel();
         invasionTableModel.setColumnIdentifiers(columns);
@@ -102,18 +100,17 @@ public class InvasionTracker {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
-        frame.addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                schedulerAPI.shutdown();
-                schedulerGUI.shutdown();
-            }
-        });
+        frame.addWindowListener(
+                new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                        schedulerAPI.shutdown();
+                        schedulerGUI.shutdown();
+                    }
+                });
     }
 
-    /**
-     * Updates the invasion list on the actual GUI.
-     */
+    /** Updates the invasion list on the actual GUI. */
     private void updateInvasionListGUI() {
         invasionTableModel.setRowCount(0);
         // create a separate list of all the invasions
@@ -130,25 +127,22 @@ public class InvasionTracker {
             String district = invasion.getDistrict();
             String cogType = invasion.getCogType();
             String timeLeft;
-            timeLeft = convertTime(ChronoUnit.SECONDS.between(LocalDateTime.now(), invasion.endTime));
+            timeLeft =
+                    convertTime(ChronoUnit.SECONDS.between(LocalDateTime.now(), invasion.endTime));
             String cogs = invasion.getCogsDefeated() + "/" + invasion.getCogsTotal();
-            data = new String[]{district, cogType, timeLeft, cogs};
+            data = new String[] {district, cogType, timeLeft, cogs};
             invasionTableModel.addRow(data);
             invasionTableModel.fireTableDataChanged();
         }
     }
 
-    /**
-     * Read invasion API every 5 seconds.
-     */
+    /** Read invasion API every 5 seconds. */
     public void startInvasionRefresh() {
         schedulerAPI = Executors.newScheduledThreadPool(0);
         schedulerAPI.scheduleAtFixedRate(this::readInvasionAPI, 0, 10, TimeUnit.SECONDS);
     }
 
-    /**
-     * Read the TTR API and get the current invasions.
-     */
+    /** Read the TTR API and get the current invasions. */
     public void readInvasionAPI() {
         String INVASION_URL = "https://api.toon.plus/invasions/";
         String invasionJSONRaw;
@@ -160,8 +154,12 @@ public class InvasionTracker {
         } catch (MalformedURLException e) {
             schedulerAPI.shutdown();
             logger.error("Unable to read invasion API!", e);
-            JFrame errorWindow = new ErrorWindow(
-                    "There was an a problem reading invasion API!\n" + e.getClass().getCanonicalName() + ": " + e.getMessage());
+            JFrame errorWindow =
+                    new ErrorWindow(
+                            "There was an a problem reading invasion API!\n"
+                                    + e.getClass().getCanonicalName()
+                                    + ": "
+                                    + e.getMessage());
             errorWindow.dispose();
             frame.dispose();
             return;
@@ -172,25 +170,35 @@ public class InvasionTracker {
         } catch (IOException e) {
             schedulerAPI.shutdown();
             logger.error("Unable to read invasion API!", e);
-            JFrame errorWindow = new ErrorWindow(
-                    "There was an a problem reading invasion API!\n" + e.getClass().getCanonicalName() + ": " + e.getMessage());
+            JFrame errorWindow =
+                    new ErrorWindow(
+                            "There was an a problem reading invasion API!\n"
+                                    + e.getClass().getCanonicalName()
+                                    + ": "
+                                    + e.getMessage());
             errorWindow.dispose();
             frame.dispose();
             return;
         }
 
         conn.setRequestProperty(
-                "User-Agent", "CustomLauncherRewrite https://github.com/hyperdefined/CustomLauncherRewrite");
+                "User-Agent",
+                "CustomLauncherRewrite https://github.com/hyperdefined/CustomLauncherRewrite");
 
         try (InputStream in = conn.getInputStream()) {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
+            BufferedReader reader =
+                    new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
             invasionJSONRaw = reader.lines().collect(Collectors.joining(System.lineSeparator()));
             reader.close();
         } catch (IOException e) {
             schedulerAPI.shutdown();
             logger.error("Unable to read invasion API!", e);
-            JFrame errorWindow = new ErrorWindow(
-                    "There was an a problem reading invasion API!\n" + e.getClass().getCanonicalName() + ": " + e.getMessage());
+            JFrame errorWindow =
+                    new ErrorWindow(
+                            "There was an a problem reading invasion API!\n"
+                                    + e.getClass().getCanonicalName()
+                                    + ": "
+                                    + e.getMessage());
             errorWindow.dispose();
             frame.dispose();
             return;
@@ -219,10 +227,17 @@ public class InvasionTracker {
                 }
                 int cogsDefeated = temp.getInt("CurrentProgress");
                 int cogsTotal = temp.getInt("MaxProgress");
-                logger.info("New invasion alert! " + district + " Cogs: " + cogsDefeated + "/" + cogsTotal);
+                logger.info(
+                        "New invasion alert! "
+                                + district
+                                + " Cogs: "
+                                + cogsDefeated
+                                + "/"
+                                + cogsTotal);
                 Invasion newInvasion = new Invasion(cogType, cogsDefeated, cogsTotal, district);
                 newInvasion.endTime =
-                        Instant.parse(temp.getString("EstimatedCompletion")).atZone(ZoneId.systemDefault());
+                        Instant.parse(temp.getString("EstimatedCompletion"))
+                                .atZone(ZoneId.systemDefault());
                 invasions.put(district, newInvasion);
             } else {
                 if (!invasions.containsKey(district)) {
@@ -235,7 +250,8 @@ public class InvasionTracker {
                 int cogsDefeated = temp.getInt("CurrentProgress");
                 tempInv.updateCogsDefeated(cogsDefeated);
                 tempInv.endTime =
-                        Instant.parse(temp.getString("EstimatedCompletion")).atZone(ZoneId.systemDefault());
+                        Instant.parse(temp.getString("EstimatedCompletion"))
+                                .atZone(ZoneId.systemDefault());
             }
         }
 
@@ -254,6 +270,7 @@ public class InvasionTracker {
 
     /**
      * Convert seconds to a readable format.
+     *
      * @param totalSecs Seconds to convert.
      * @return HH:MM:SS format string.
      */

@@ -49,8 +49,9 @@ public class NewAccountWindow extends JFrame {
         JPasswordField password2Field = new JPasswordField();
         JButton loginButton = new JButton("Save");
         JButton resetButton = new JButton("Cancel");
-        JLabel warning = new JLabel(
-                "<html>Secret phrase is used to encrypt and decrypt <br>your password for security when saving your login info.<br>You must enter it every time you login.<br><br>If you don't remember this phrase, then you must<br>delete the account and re-add it.</html>");
+        JLabel warning =
+                new JLabel(
+                        "<html>Secret phrase is used to encrypt and decrypt <br>your password for security when saving your login info.<br>You must enter it every time you login.<br><br>If you don't remember this phrase, then you must<br>delete the account and re-add it.</html>");
 
         userLabel.setBounds(50, 15, 100, 30);
         passwordLabel.setBounds(50, 55, 100, 30);
@@ -75,23 +76,29 @@ public class NewAccountWindow extends JFrame {
         // button listeners
         resetButton.addActionListener(e -> frame.dispose());
 
-        loginButton.addActionListener(e -> {
-            boolean userbox = userTextField.getText().isEmpty();
-            boolean passwordBox = passwordField.getPassword().length == 0;
-            boolean password2Box = password2Field.getPassword().length == 0;
-            if (!userbox && !passwordBox && !password2Box) {
-                JSONManager.addNewAccount(
-                        userTextField.getText(),
-                        JSONManager.encrypt(
-                                String.valueOf(passwordField.getPassword()),
-                                String.valueOf(password2Field.getPassword())));
-                MainWindow.refreshAccountList();
-                JOptionPane.showMessageDialog(frame, userTextField.getText() + " was saved!");
-                frame.dispose();
-            } else {
-                JOptionPane.showMessageDialog(frame, "You must fill in all boxes.", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        });
+        loginButton.addActionListener(
+                e -> {
+                    boolean userbox = userTextField.getText().isEmpty();
+                    boolean passwordBox = passwordField.getPassword().length == 0;
+                    boolean password2Box = password2Field.getPassword().length == 0;
+                    if (!userbox && !passwordBox && !password2Box) {
+                        JSONManager.addNewAccount(
+                                userTextField.getText(),
+                                JSONManager.encrypt(
+                                        String.valueOf(passwordField.getPassword()),
+                                        String.valueOf(password2Field.getPassword())));
+                        MainWindow.refreshAccountList();
+                        JOptionPane.showMessageDialog(
+                                frame, userTextField.getText() + " was saved!");
+                        frame.dispose();
+                    } else {
+                        JOptionPane.showMessageDialog(
+                                frame,
+                                "You must fill in all boxes.",
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                });
 
         frame.setVisible(true);
         frame.add(panel);

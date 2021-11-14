@@ -69,19 +69,21 @@ public class DeleteAccountWindow extends JFrame {
         scrollBar.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.add(scrollBar);
 
-        accountList.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent evt) {
-                JList<String> list = (JList) evt.getSource();
-                if (evt.getClickCount() == 2) {
-                    int index = list.getSelectedIndex();
-                    Account account = JSONManager.getAccounts().get(index);
-                    JSONManager.deleteAccount(account);
-                    MainWindow.refreshAccountList();
-                    JOptionPane.showMessageDialog(frame, account.getUsername() + " was deleted!");
-                    frame.dispose();
-                }
-            }
-        });
+        accountList.addMouseListener(
+                new MouseAdapter() {
+                    public void mouseClicked(MouseEvent evt) {
+                        JList<String> list = (JList) evt.getSource();
+                        if (evt.getClickCount() == 2) {
+                            int index = list.getSelectedIndex();
+                            Account account = JSONManager.getAccounts().get(index);
+                            JSONManager.deleteAccount(account);
+                            MainWindow.refreshAccountList();
+                            JOptionPane.showMessageDialog(
+                                    frame, account.getUsername() + " was deleted!");
+                            frame.dispose();
+                        }
+                    }
+                });
 
         frame.pack();
         frame.setSize(300, 400);

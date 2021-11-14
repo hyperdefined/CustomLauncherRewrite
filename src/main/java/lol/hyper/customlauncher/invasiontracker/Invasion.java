@@ -36,6 +36,7 @@ public class Invasion implements Comparable<Invasion> {
 
     /**
      * Get how many cogs total the invasion has.
+     *
      * @return Total cogs for invasion.
      */
     public int getCogsTotal() {
@@ -44,6 +45,7 @@ public class Invasion implements Comparable<Invasion> {
 
     /**
      * Get how many cogs were defeated so far.
+     *
      * @return Cogs defeated.
      */
     public int getCogsDefeated() {
@@ -52,6 +54,7 @@ public class Invasion implements Comparable<Invasion> {
 
     /**
      * Get the cog type.
+     *
      * @return Cog type.
      */
     public String getCogType() {
@@ -60,15 +63,14 @@ public class Invasion implements Comparable<Invasion> {
 
     /**
      * Get the district of the invasion.
+     *
      * @return The district.
      */
     public String getDistrict() {
         return district;
     }
 
-    /**
-     * Update the amount of cogs defeated.
-     */
+    /** Update the amount of cogs defeated. */
     public void updateCogsDefeated(int newAmount) {
         cogsDefeated = newAmount;
     }
