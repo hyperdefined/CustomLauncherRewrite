@@ -45,33 +45,38 @@ public class Main {
     public static final File TTR_INSTALL_DIR = new File("ttr-files");
 
     public static void main(String[] args) throws IOException {
+        // load the log4j2config
         System.setProperty("log4j.configurationFile", "log4j2config.xml");
+        // load the version
         final Properties properties = new Properties();
         properties.load(Main.class.getClassLoader().getResourceAsStream("project.properties"));
         VERSION = properties.getProperty("version");
+        // log some basic info
         logger = LogManager.getLogger(Main.class);
         logger.info(System.getProperty("os.name"));
         logger.info("Program is starting.");
         logger.info("Running version " + VERSION);
 
+        // create the config folder
         final File configPath = new File("config");
         if (!configPath.exists()) {
             Files.createDirectory(configPath.toPath());
             logger.info("Creating config folder at " + configPath.getAbsolutePath());
         }
 
+        // create the ttr-files folder
         if (!TTR_INSTALL_DIR.exists()) {
             Files.createDirectory(TTR_INSTALL_DIR.toPath());
             logger.info("Creating TTR install folder at " + TTR_INSTALL_DIR.getAbsolutePath());
         }
 
+        // load the icon
         InputStream iconStream = Main.class.getResourceAsStream("/icon.png");
         if (iconStream != null) {
             icon = ImageIO.read(iconStream);
         }
 
-        // create the default file
-        // accounts.json with no accounts
+        // create accounts.json with no accounts
         if (!JSONManager.accountsFile.exists()) {
             JSONArray newAccounts = new JSONArray();
             JSONManager.writeFile(newAccounts, JSONManager.accountsFile);
@@ -79,12 +84,15 @@ public class Main {
         }
 
         // automatically convert the old format to the new one
+        // probably not needed anymore
         char firstChar = JSONManager.readFile(JSONManager.accountsFile).charAt(0);
         if (firstChar == '{') {
             JSONManager.convertToNewFormat();
             Main.logger.info("Converting account storage to JSONArray format.");
         }
 
+        // only run the self updater if on windows
+        // linux support will come in the future
         if (SystemUtils.IS_OS_WINDOWS) {
             String latestVersion = UpdateChecker.getLatestVersion();
             if (!latestVersion.equals(VERSION)) {
@@ -113,9 +121,11 @@ public class Main {
             }
         }
 
+        // run the TTR updater
         JFrame updater = new TTRUpdater("Updater", Paths.get(TTR_INSTALL_DIR.getAbsolutePath()));
         updater.dispose();
 
+        // run the main window
         JFrame mainWindow = new MainWindow("CustomLauncherRewrite", new InvasionTracker());
         mainWindow.dispose();
     }

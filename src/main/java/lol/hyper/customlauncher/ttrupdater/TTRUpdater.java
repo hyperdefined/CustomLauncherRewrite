@@ -52,6 +52,7 @@ public class TTRUpdater extends JFrame {
     public final Logger logger = LogManager.getLogger(this);
 
     public TTRUpdater(String title, Path installLocation) throws IOException {
+        // setup the window elements
         JFrame frame = new JFrame(title);
         frame.setSize(370, 150);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -83,6 +84,7 @@ public class TTRUpdater extends JFrame {
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
 
+        // don't run the updater if the folder doesn't exist
         if (!installLocation.toFile().exists()) {
             JOptionPane.showMessageDialog(
                     frame,
@@ -95,6 +97,7 @@ public class TTRUpdater extends JFrame {
 
         logger.info("We are checking for TTR updates!");
         String patchesJSONRaw = null;
+        // read the TTR api to get the files the game needs
         URL url = new URL(PATCHES_URL);
         URLConnection conn = url.openConnection();
         conn.setRequestProperty(
@@ -118,6 +121,7 @@ public class TTRUpdater extends JFrame {
             frame.dispose();
         }
 
+        // if the patchmanifest.txt is empty, it most likely won't be but just in case
         if (patchesJSONRaw == null) {
             JFrame errorWindow = new ErrorWindow("patchmanifest.txt returned empty.");
             logger.error(
@@ -132,6 +136,10 @@ public class TTRUpdater extends JFrame {
 
         String osType = null;
 
+        // set which OS we are using
+        // ttr labels all files for which OS they will be attached to
+        // windows = win32/win64
+        // linux = linux/linux2
         if (SystemUtils.IS_OS_WINDOWS) {
             osType = "win32";
         }
@@ -148,14 +156,19 @@ public class TTRUpdater extends JFrame {
         }
 
         progressBar.setMaximum(patches.length());
+
+        // this loops through the JSON
+        // key is the file name
         for (String key : patches.keySet()) {
             progressBar.setValue(progressBar.getValue() + 1);
             JSONObject currentFile = (JSONObject) patches.get(key);
             String onlineHash = currentFile.getString("hash");
+            // get the list of OS's the file is for
             List<String> only =
                     currentFile.getJSONArray("only").toList().stream()
                             .map(object -> Objects.toString(object, null))
                             .collect(Collectors.toList());
+            // if we are running the OS the file is for, check it
             if (only.contains(osType)) {
                 File localFile = new File(installLocation + File.separator + key);
                 updateStatus.setText("Checking file " + localFile.getName());
@@ -170,6 +183,7 @@ public class TTRUpdater extends JFrame {
                     continue;
                 }
 
+                // the file exists locally, check the SHA1 and compare it to TTR's
                 String localHash;
                 try {
                     localHash = calcSHA1(localFile);
@@ -205,6 +219,9 @@ public class TTRUpdater extends JFrame {
                         "-----------------------------------------------------------------------");
             }
         }
+
+        // we store files we need to download in filesToDownload
+        // if there are files in that list, download them
         if (filesToDownload.size() > 0) {
             File tempFolder = new File("temp");
             if (!tempFolder.exists() && !tempFolder.mkdirs()) {
@@ -219,6 +236,7 @@ public class TTRUpdater extends JFrame {
 
             progressBar.setValue(0); //reset
 
+            // download each file
             for (String fileToDownload : filesToDownload) {
                 progressBar.setMaximum(fileToDownload.length());
                 JSONObject file = patches.getJSONObject(fileToDownload);
@@ -251,7 +269,7 @@ public class TTRUpdater extends JFrame {
                 updateStatus.setText("Extracting file " + dl);
                 progressBar.setVisible(false);
                 try {
-                    extractFile(dl, fileToDownload);
+                    extractFile(dl, fileToDownload); // extract the file to the new location
                 } catch (IOException e) {
                     logger.error("Unable to extract file" + dl, e);
                     JFrame errorWindow =
@@ -272,6 +290,7 @@ public class TTRUpdater extends JFrame {
                                         System.nanoTime() - startTime, TimeUnit.NANOSECONDS)
                                 + " seconds.");
             }
+            // delete the temp folder is there are files in there
             File[] tempFolderFiles = tempFolder.listFiles();
             if (tempFolderFiles != null) {
                 for (File currentFile : tempFolderFiles) {

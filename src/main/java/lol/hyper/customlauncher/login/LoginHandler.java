@@ -56,6 +56,7 @@ public class LoginHandler {
         HashMap<String, String> request;
         try {
             logger.info("Sending login request...");
+            // send the login request to TTR
             request = sendRequest(loginRequest).getRequestDetails();
         } catch (Exception e) {
             logger.error("Unable to send login request to TTR!", e);
@@ -69,16 +70,17 @@ public class LoginHandler {
             return;
         }
 
+        // get the login status
         String status = request.get("success");
         String banner = request.get("banner");
 
         logger.info("banner=" + banner);
         logger.info("status=" + status);
 
+        // act based on the login status
         switch (status) {
-            case "false":
+            case "false": // false is invalid login details
                 {
-                    // handle incorrect login
                     if (banner.contains("Incorrect username")) {
                         logger.info("Username or password is wrong.");
                         JFrame errorWindow = new ErrorWindow("Login details are incorrect.");
@@ -86,15 +88,14 @@ public class LoginHandler {
                     }
                     break;
                 }
-            case "partial":
+            case "partial": // partial is used for 2FA or ToonGuard
                 {
-                    // handle 2fa
                     logger.info("Asking user for two-factor auth.");
                     JFrame twoFactorAuth =
                             new TwoFactorAuth("Enter Code", banner, request.get("responseToken"));
                     break;
                 }
-            case "true":
+            case "true": // login was successful
                 {
                     logger.info("Login successful, launching game.");
                     String gameServer = request.get("gameserver");
@@ -103,9 +104,8 @@ public class LoginHandler {
                     launchGame.start();
                     break;
                 }
-            case "delayed":
+            case "delayed": // login request was put into a queue
                 {
-                    // handle queue
                     logger.info("Stuck in queue.");
                     JFrame infoWindow =
                             new InfoWindow(
@@ -116,12 +116,13 @@ public class LoginHandler {
                     } catch (InterruptedException e) {
                         logger.error(e);
                     }
+                    // send the login request again after 5 seconds
                     LoginRequest newLoginRequest = new LoginRequest();
                     newLoginRequest.addDetails("queueToken", request.get("queueToken"));
                     LoginHandler.handleLoginRequest(newLoginRequest);
                     break;
                 }
-            default:
+            default: // TTR sent back a weird status that we don't know about
                 {
                     logger.error("Weird login response: " + status);
                     logger.info(request);
