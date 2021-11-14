@@ -72,12 +72,14 @@ public class TTRUpdater extends JFrame {
 
         JLabel updateStatus = new JLabel("Checking files...");
         JProgressBar progressBar = new JProgressBar(0, 22);
-        frame.add(updateStatus);
-        frame.add(progressBar);
+        panel.add(updateStatus);
+        panel.add(progressBar);
 
         progressBar.setBounds(150, 100, 100, 30);
         updateStatus.setBounds(70, 25, 370, 40);
 
+
+        frame.add(panel);
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
 
