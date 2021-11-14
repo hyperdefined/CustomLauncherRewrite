@@ -21,9 +21,7 @@ CustomLauncherRewrite is an all purpose launcher for Toontown Rewritten. This la
 See [Installation](https://github.com/hyperdefined/CustomLauncherRewrite/wiki/Installation) for setup.
 
 ## Updating
-As of the 1.4 update, it will automatically download the latest update if you want it to!
-
-To update to a new release manually, simply [download](https://github.com/hyperdefined/CustomLauncherRewrite/releases) the new release and put the new `exe` file in the same folder as the old one. Run the new `exe` file instead of the old one. You're all set.
+See [Upgrading](https://github.com/hyperdefined/CustomLauncherRewrite/wiki/Upgrading) on how to update.
 
 ## Support
 If you need support, feel free to [contact me](https://hyper.lol). If you found a bug/issue, [create a new issue](https://github.com/hyperdefined/CustomLauncherRewrite/issues/new).
