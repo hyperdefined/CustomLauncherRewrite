@@ -59,12 +59,6 @@
                                     <mainClass>lol.hyper.customlauncher.Main</mainClass>
                                 </transformer>
                             </transformers>
-                            <relocations>
-                                <relocation>
-                                    <pattern>org.json</pattern>
-                                    <shadedPattern>lol.hyper.customlauncher.json</shadedPattern>
-                                </relocation>
-                            </relocations>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                         </configuration>
                     </execution>
@@ -144,6 +138,11 @@
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
             <version>2.14.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.12.0</version>
         </dependency>
     </dependencies>
 

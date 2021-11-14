@@ -19,6 +19,7 @@ package lol.hyper.customlauncher.login;
 
 import lol.hyper.customlauncher.Main;
 import lol.hyper.customlauncher.generic.ErrorWindow;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -39,8 +40,16 @@ public class LaunchGame extends Thread {
     }
 
     public void run() {
-        String[] command = {"cmd", "/c", "TTREngine.exe"};
-        ProcessBuilder pb = new ProcessBuilder(command);
+        ProcessBuilder pb = new ProcessBuilder();
+
+        if (SystemUtils.IS_OS_WINDOWS) {
+            String[] windowsCommand = {"cmd", "/c", "TTREngine.exe"};
+            pb.command(windowsCommand);
+        }
+        if (SystemUtils.IS_OS_LINUX) {
+            String linuxCommand = "./TTREngine";
+            pb.command(linuxCommand);
+        }
 
         // dirty little trick to redirect the output
         // the game freezes if you don't do this

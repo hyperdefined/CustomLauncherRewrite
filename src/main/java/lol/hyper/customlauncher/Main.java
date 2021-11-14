@@ -24,6 +24,7 @@ import lol.hyper.customlauncher.invasiontracker.InvasionTracker;
 import lol.hyper.customlauncher.setup.FirstSetup;
 import lol.hyper.customlauncher.ttrupdater.TTRUpdater;
 import lol.hyper.customlauncher.updater.UpdateChecker;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
@@ -53,11 +54,11 @@ public class Main {
         properties.load(Main.class.getClassLoader().getResourceAsStream("project.properties"));
         VERSION = properties.getProperty("version");
         logger = LogManager.getLogger(Main.class);
+        logger.info(System.getProperty("os.name"));
         logger.info("Program is starting.");
         logger.info("Running version " + VERSION);
 
-
-        final File configPath = new File("confg");
+        final File configPath = new File("config");
         if (!configPath.exists()) {
             Files.createDirectory(configPath.toPath());
             logger.info("Creating config folder at " + configPath.getAbsolutePath());

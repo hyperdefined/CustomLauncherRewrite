@@ -23,6 +23,7 @@ import lol.hyper.customlauncher.generic.ErrorWindow;
 import lol.hyper.customlauncher.generic.InfoWindow;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
@@ -42,6 +43,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -126,18 +128,32 @@ public class TTRUpdater extends JFrame {
         JSONObject patches = new JSONObject(patchesJSONRaw);
         ArrayList<String> filesToDownload = new ArrayList<>();
 
+        String osType = null;
+
+        if (SystemUtils.IS_OS_WINDOWS) {
+            osType = "win32";
+        }
+        if (SystemUtils.IS_OS_LINUX) {
+            osType = "linux";
+        }
+
+        if (osType == null) {
+            ErrorWindow errorWindow =
+                    new ErrorWindow(
+                            "We are unable to detect your operating system. Please report this to the GitHub!");
+            errorWindow.dispose();
+            return;
+        }
+
         for (String key : patches.keySet()) {
             progressBar.setValue(progressBar.getValue() + 1);
             JSONObject currentFile = (JSONObject) patches.get(key);
             String onlineHash = currentFile.getString("hash");
-            JSONArray only = currentFile.getJSONArray("only");
-            List<String> list = new ArrayList<>();
-            for (Object value : only) {
-                list.add((String) value);
-            }
-
-            if (list.contains("win32") || list.contains("win64")) {
-                String localHash;
+            List<String> only =
+                    currentFile.getJSONArray("only").toList().stream()
+                            .map(object -> Objects.toString(object, null))
+                            .collect(Collectors.toList());
+            if (only.contains(osType)) {
                 File localFile = new File(installLocation + File.separator + key);
                 updateStatus.setText("Checking file " + localFile.getName());
                 if (!localFile.exists()) {
@@ -151,6 +167,7 @@ public class TTRUpdater extends JFrame {
                     continue;
                 }
 
+                String localHash;
                 try {
                     localHash = calcSHA1(localFile);
                 } catch (Exception e) {
@@ -174,6 +191,7 @@ public class TTRUpdater extends JFrame {
                 logger.info(installLocation + File.separator + key);
                 logger.info("Local hash: " + localHash.toLowerCase(Locale.ENGLISH));
                 logger.info("Expected hash: " + onlineHash);
+                logger.info("Type: " + osType);
                 if (localHash.equalsIgnoreCase(onlineHash)) {
                     logger.info("File is good!");
                 } else {
