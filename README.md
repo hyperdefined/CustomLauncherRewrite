@@ -19,14 +19,10 @@ CustomLauncherRewrite is an all purpose launcher for Toontown Rewritten. This la
 ![Screenshot3](https://raw.githubusercontent.com/hyperdefined/CustomLauncherRewrite/master/images/image3.png)
 ![Screenshot4](https://raw.githubusercontent.com/hyperdefined/CustomLauncherRewrite/master/images/image4.png)
 
-## Setup
-See [Installation](https://github.com/hyperdefined/CustomLauncherRewrite/wiki/Installation) for setup.
-
-## Updating
-See [Upgrading](https://github.com/hyperdefined/CustomLauncherRewrite/wiki/Upgrading) on how to update.
-
 ## Support
-If you need support, feel free to [contact me](https://hyper.lol). If you found a bug/issue, [create a new issue](https://github.com/hyperdefined/CustomLauncherRewrite/issues/new).
+First check the [wiki](https://github.com/hyperdefined/CustomLauncherRewrite/wiki) for most common questions.
+
+If you still need support, feel free to [contact me](https://hyper.lol). If you found a bug/issue, [create a new issue](https://github.com/hyperdefined/CustomLauncherRewrite/issues/new).
 
 ## Contributing
 The code for this program could definitely be improved. Feel free to fork and make and changes/improvements to it.
