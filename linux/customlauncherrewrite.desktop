@@ -2,6 +2,7 @@
 Type=Application
 Name=CustomLauncherRewrite
 Comment=An all purpose custom TTR launcher.
-Exec=/opt/CustomLauncherRewrite/run.sh
+Path=/opt/CustomLauncherRewrite
+Exec=bash run.sh
 Terminal=false
-Categories=Game;
+Categories=Games
