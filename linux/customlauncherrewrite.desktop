@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=CustomLauncherRewrite
+Comment=An all purpose custom TTR launcher.
+Exec=/opt/CustomLauncherRewrite/run.sh
+Terminal=false
+Categories=Game;
