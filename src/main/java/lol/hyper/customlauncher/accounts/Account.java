@@ -17,21 +17,7 @@
 
 package lol.hyper.customlauncher.accounts;
 
-public class Account {
-
-    private final String username;
-    private final String password;
-
-    /**
-     * Create a new account object.
-     *
-     * @param username Username of account.
-     * @param password Password of account. Must be encrypted.
-     */
-    public Account(String username, String password) {
-        this.username = username;
-        this.password = password;
-    }
+public record Account(String username, String password) {
 
     /**
      * Returns the username of an account.

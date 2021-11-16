@@ -207,8 +207,7 @@ public class JSONManager {
 
         while (keys.hasNext()) {
             String key = keys.next();
-            if (oldFile.get(key) instanceof JSONObject) {
-                JSONObject temp = (JSONObject) oldFile.get(key);
+            if (oldFile.get(key) instanceof JSONObject temp) {
                 newFile.put(temp);
             }
         }

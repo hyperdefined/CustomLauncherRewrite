@@ -79,58 +79,54 @@ public class LoginHandler {
 
         // act based on the login status
         switch (status) {
-            case "false": // false is invalid login details
-                {
-                    if (banner.contains("Incorrect username")) {
-                        logger.info("Username or password is wrong.");
-                        JFrame errorWindow = new ErrorWindow("Login details are incorrect.");
+            case "false" -> // false is invalid login details
+                    {
+                        if (banner.contains("Incorrect username")) {
+                            logger.info("Username or password is wrong.");
+                            JFrame errorWindow = new ErrorWindow("Login details are incorrect.");
+                            errorWindow.dispose();
+                        }
+                    }
+            case "partial" -> // partial is used for 2FA or ToonGuard
+                    {
+                        logger.info("Asking user for two-factor auth.");
+                        JFrame twoFactorAuth =
+                                new TwoFactorAuth("Enter Code", banner, request.get("responseToken"));
+                    }
+            case "true" -> // login was successful
+                    {
+                        logger.info("Login successful, launching game.");
+                        String gameServer = request.get("gameserver");
+                        String cookie = request.get("cookie");
+                        LaunchGame launchGame = new LaunchGame(cookie, gameServer);
+                        launchGame.start();
+                    }
+            case "delayed" -> // login request was put into a queue
+                    {
+                        logger.info("Stuck in queue.");
+                        JFrame infoWindow =
+                                new InfoWindow(
+                                        "You were placed in a queue. Press OK to try again in 5 seconds.");
+                        infoWindow.dispose();
+                        try {
+                            TimeUnit.SECONDS.sleep(5);
+                        } catch (InterruptedException e) {
+                            logger.error(e);
+                        }
+                        // send the login request again after 5 seconds
+                        LoginRequest newLoginRequest = new LoginRequest();
+                        newLoginRequest.addDetails("queueToken", request.get("queueToken"));
+                        LoginHandler.handleLoginRequest(newLoginRequest);
+                    }
+            default -> // TTR sent back a weird status that we don't know about
+                    {
+                        logger.error("Weird login response: " + status);
+                        logger.info(request);
+                        JFrame errorWindow =
+                                new ErrorWindow(
+                                        "TTR sent back a weird response, or we got an invalid response.\nCheck the log for more information.");
                         errorWindow.dispose();
                     }
-                    break;
-                }
-            case "partial": // partial is used for 2FA or ToonGuard
-                {
-                    logger.info("Asking user for two-factor auth.");
-                    JFrame twoFactorAuth =
-                            new TwoFactorAuth("Enter Code", banner, request.get("responseToken"));
-                    break;
-                }
-            case "true": // login was successful
-                {
-                    logger.info("Login successful, launching game.");
-                    String gameServer = request.get("gameserver");
-                    String cookie = request.get("cookie");
-                    LaunchGame launchGame = new LaunchGame(cookie, gameServer);
-                    launchGame.start();
-                    break;
-                }
-            case "delayed": // login request was put into a queue
-                {
-                    logger.info("Stuck in queue.");
-                    JFrame infoWindow =
-                            new InfoWindow(
-                                    "You were placed in a queue. Press OK to try again in 5 seconds.");
-                    infoWindow.dispose();
-                    try {
-                        TimeUnit.SECONDS.sleep(5);
-                    } catch (InterruptedException e) {
-                        logger.error(e);
-                    }
-                    // send the login request again after 5 seconds
-                    LoginRequest newLoginRequest = new LoginRequest();
-                    newLoginRequest.addDetails("queueToken", request.get("queueToken"));
-                    LoginHandler.handleLoginRequest(newLoginRequest);
-                    break;
-                }
-            default: // TTR sent back a weird status that we don't know about
-                {
-                    logger.error("Weird login response: " + status);
-                    logger.info(request);
-                    JFrame errorWindow =
-                            new ErrorWindow(
-                                    "TTR sent back a weird response, or we got an invalid response.\nCheck the log for more information.");
-                    errorWindow.dispose();
-                }
         }
     }
 
