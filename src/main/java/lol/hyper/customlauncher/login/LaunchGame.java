@@ -60,18 +60,20 @@ public class LaunchGame extends Thread {
         Map<String, String> env = pb.environment();
         env.put("TTR_GAMESERVER", this.gameServer);
         env.put("TTR_PLAYCOOKIE", this.cookie);
-        try {
-            Process p = pb.start();
-            p.getInputStream().close();
-        } catch (IOException e) {
-            logger.error("Unable to launch game!", e);
-            JFrame errorWindow =
-                    new ErrorWindow(
-                            "Unable to launch game.\n"
-                                    + e.getClass().getCanonicalName()
-                                    + ": "
-                                    + e.getMessage());
-            errorWindow.dispose();
-        }
+        Thread t1 = new Thread(() -> {
+            try {
+                pb.start();
+            } catch (IOException e) {
+                logger.error("Unable to launch game!", e);
+                JFrame errorWindow =
+                        new ErrorWindow(
+                                "Unable to launch game.\n"
+                                        + e.getClass().getCanonicalName()
+                                        + ": "
+                                        + e.getMessage());
+                errorWindow.dispose();
+            }
+        });
+        t1.start();
     }
 }
