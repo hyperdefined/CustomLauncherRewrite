@@ -1,2 +1,2 @@
 #!/bin/bash
-find /opt/CustomLauncherRewrite/ -name CustomLauncherRewrite*.jar | java -jar -
+find /opt/CustomLauncherRewrite/ -name CustomLauncherRewrite*.jar -exec java "-jar" {} \;
