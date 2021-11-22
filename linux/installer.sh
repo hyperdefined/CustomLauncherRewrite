@@ -1,6 +1,4 @@
 #!/bin/bash
-[ "$(whoami)" != "root" ] && exec sudo -- "$0" "$@"
-
 # taken from https://gist.github.com/steinwaywhw/a4cd19cda655b8249d908261a62687f8
 DOWNLOADURL=$(curl -s https://api.github.com/repos/hyperdefined/CustomLauncherRewrite/releases/latest | grep "browser_download_url"  | grep "tar.gz" | cut -d '"' -f 4)
 OUTPUTFILE=${DOWNLOADURL##*/}
