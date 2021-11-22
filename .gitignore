@@ -7,3 +7,4 @@ config/
 log-*.log
 ttr-files/
 hs*.log
+*.exe
