@@ -18,11 +18,12 @@
 package lol.hyper.customlauncher.updater;
 
 import lol.hyper.customlauncher.generic.ErrorWindow;
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.codehaus.plexus.archiver.tar.TarGZipUnArchiver;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -100,10 +101,7 @@ public class UpdateChecker {
         // extract the tar.gz release file into the installation dir
         if (SystemUtils.IS_OS_LINUX) {
             logger.info("Extracting " + output + " to " + System.getProperty("user.dir"));
-            final TarGZipUnArchiver ua = new TarGZipUnArchiver();
-            ua.setSourceFile(output);
-            ua.setDestDirectory(new File(System.getProperty("user.dir")));
-            ua.extract();
+            decompress(fileName, output);
             FileUtils.delete(output);
         }
     }
@@ -164,6 +162,23 @@ public class UpdateChecker {
                                     + ": "
                                     + e.getMessage());
             errorWindow.dispose();
+        }
+    }
+
+    /**
+     * Extract the compressed tar.gz to an output
+     *
+     * @param temp The temp file's name that was downloaded.
+     * @param output The output file.
+     */
+    public static void decompress(String temp, File output) throws IOException {
+        File tempFile = new File(temp);
+        TarArchiveInputStream in =
+                new TarArchiveInputStream(new BufferedInputStream(new FileInputStream(tempFile)));
+        FileOutputStream out = new FileOutputStream(output);
+        try (in;
+                out) {
+            IOUtils.copy(in, out);
         }
     }
 }
