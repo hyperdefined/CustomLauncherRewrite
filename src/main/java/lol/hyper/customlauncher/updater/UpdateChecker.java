@@ -19,8 +19,10 @@ package lol.hyper.customlauncher.updater;
 
 import lol.hyper.customlauncher.generic.ErrorWindow;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.codehaus.plexus.archiver.tar.TarGZipUnArchiver;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -29,6 +31,7 @@ import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.stream.Collectors;
 
 public class UpdateChecker {
@@ -62,10 +65,46 @@ public class UpdateChecker {
         // github will put the latest version at the 0 index
         JSONObject latestVersionObj = remoteVersions.getJSONObject(0);
         JSONArray assets = latestVersionObj.getJSONArray("assets");
-        JSONObject downloadObj = assets.getJSONObject(0);
-        URL downloadURL = new URL(downloadObj.getString("browser_download_url"));
-        logger.info("Downloading new version from " + downloadURL);
-        FileUtils.copyURLToFile(downloadURL, new File(downloadObj.getString("name")));
+        HashMap<String, URL> downloadURLs = new HashMap<>();
+        for (int i = 0; i < latestVersionObj.length(); i++) {
+            JSONObject downloadObj = assets.getJSONObject(0);
+            URL downloadURL = new URL(downloadObj.getString("browser_download_url"));
+            String downloadURLString = downloadURL.toString();
+            String extension = downloadURLString.substring(downloadURLString.lastIndexOf(".") + 1);
+            if (extension.equalsIgnoreCase("exe")) {
+                downloadURLs.put("windows", downloadURL);
+            }
+            if (extension.equalsIgnoreCase("linux")) {
+                downloadURLs.put("linux", downloadURL);
+            }
+        }
+        URL finalURL = null;
+
+        if (SystemUtils.IS_OS_WINDOWS) {
+            finalURL = downloadURLs.get("windows");
+        }
+        if (SystemUtils.IS_OS_LINUX) {
+            finalURL = downloadURLs.get("linux");
+        }
+
+        if (finalURL == null) {
+            logger.warn("Unable to detect operating system!");
+            return;
+        }
+
+        logger.info("Downloading new version from " + finalURL);
+        String fileName = finalURL.toString().substring(finalURL.toString().lastIndexOf("/") + 1);
+        File output = new File(fileName);
+        FileUtils.copyURLToFile(finalURL, output);
+
+        // extract the tar.gz release file into the installation dir
+        if (SystemUtils.IS_OS_LINUX) {
+            logger.info("Extracting " + output + " to " + System.getProperty("user.dir"));
+            final TarGZipUnArchiver ua = new TarGZipUnArchiver();
+            ua.setSourceFile(output);
+            ua.setDestDirectory(new File(System.getProperty("user.dir")));
+            ua.extract();
+        }
     }
 
     /**
