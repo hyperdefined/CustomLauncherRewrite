@@ -26,6 +26,7 @@ import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -91,32 +92,35 @@ public class Main {
             Main.logger.info("Converting account storage to JSONArray format.");
         }
 
-        // only run the self updater if on windows
-        // linux support will come in the future
-        if (SystemUtils.IS_OS_WINDOWS) {
-            String latestVersion = UpdateChecker.getLatestVersion();
-            if (!latestVersion.equals(VERSION)) {
-                logger.info("A new version is available! Version: " + latestVersion);
-                int dialogResult =
+        JSONObject latestVersionObj = UpdateChecker.getReleases().get(0);
+        String latestVersion = latestVersionObj.getString("tag_name");
+        int behind = UpdateChecker.getBuildsBehind(VERSION);
+        if (!latestVersion.equals(VERSION)) {
+            logger.info("A new version is available! Version: " + latestVersion);
+            int dialogResult =
+                    JOptionPane.showConfirmDialog(
+                            null,
+                            "You are currently "
+                                    + behind
+                                    + " versions behind. Latest version is: "
+                                    + latestVersion
+                                    + ".\nWould you like to update?\n\n"
+                                    + UpdateChecker.getReleaseNotes(),
+                            "New Update",
+                            JOptionPane.YES_NO_OPTION);
+            if (dialogResult == JOptionPane.YES_OPTION) {
+                UpdateChecker.downloadLatestVersion();
+                int dialogResult2 =
                         JOptionPane.showConfirmDialog(
                                 null,
-                                "A new update is available. Would you like to download the new version?",
+                                "Version "
+                                        + latestVersion
+                                        + " was downloaded. Would you like to run this new version?",
                                 "New Update",
                                 JOptionPane.YES_NO_OPTION);
-                if (dialogResult == JOptionPane.YES_OPTION) {
-                    UpdateChecker.downloadLatestVersion();
-                    int dialogResult2 =
-                            JOptionPane.showConfirmDialog(
-                                    null,
-                                    "Version "
-                                            + latestVersion
-                                            + " was downloaded. Would you like to run this new version?",
-                                    "New Update",
-                                    JOptionPane.YES_NO_OPTION);
-                    if (dialogResult2 == JOptionPane.YES_OPTION) {
-                        UpdateChecker.launchNewVersion(latestVersion);
-                        System.exit(0);
-                    }
+                if (dialogResult2 == JOptionPane.YES_OPTION) {
+                    UpdateChecker.launchNewVersion(latestVersion);
+                    System.exit(0);
                 }
             }
         }

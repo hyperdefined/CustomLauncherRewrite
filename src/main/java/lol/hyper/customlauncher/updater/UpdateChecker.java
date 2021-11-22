@@ -32,39 +32,34 @@ import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.stream.Collectors;
 
 public class UpdateChecker {
+    static Logger logger = LogManager.getLogger(UpdateChecker.class);
 
     /**
-     * Gets the latest version from GitHub.
-     *
-     * @return The latest version as a string.
+     * Get all the releases.
+     * @return List of all the JSONObjects.
      */
-    public static String getLatestVersion() throws IOException {
-        Logger logger = LogManager.getLogger(UpdateChecker.class);
+    public static ArrayList<JSONObject> getReleases() throws IOException {
+        ArrayList<JSONObject> releases = new ArrayList<>();
         JSONArray remoteVersions = new JSONArray(readGitHubAPI());
         if (remoteVersions.isEmpty()) {
             logger.warn("GitHub's API returned empty!");
             return null;
         }
         // github will put the latest version at the 0 index
-        JSONObject latestVersionObj = remoteVersions.getJSONObject(0);
-
-        return latestVersionObj.getString("tag_name");
+        for (int i = 0; i < remoteVersions.length(); i++) {
+            releases.add(remoteVersions.getJSONObject(i));
+        }
+        return releases;
     }
 
     /** Downloads the latest version of the launcher from GitHub. */
     public static void downloadLatestVersion() throws IOException {
-        Logger logger = LogManager.getLogger(UpdateChecker.class);
-        JSONArray remoteVersions = new JSONArray(readGitHubAPI());
-        if (remoteVersions.isEmpty()) {
-            logger.warn("GitHub's API returned empty!");
-            return;
-        }
-        // github will put the latest version at the 0 index
-        JSONObject latestVersionObj = remoteVersions.getJSONObject(0);
+        JSONObject latestVersionObj = getReleases().get(0);
         JSONArray assets = latestVersionObj.getJSONArray("assets");
         HashMap<String, URL> downloadURLs = new HashMap<>();
         for (int i = 0; i < latestVersionObj.length(); i++) {
@@ -107,12 +102,33 @@ public class UpdateChecker {
     }
 
     /**
+     * Get the latest release notes.
+     * @return String with the notes.
+     */
+    public static String getReleaseNotes() {
+        JSONArray remoteVersions;
+        try {
+            remoteVersions = new JSONArray(readGitHubAPI());
+        } catch (IOException e) {
+            logger.error("Unable to check for updates!", e);
+            return null;
+        }
+        if (remoteVersions.isEmpty()) {
+            logger.warn("GitHub's API returned empty!");
+            return null;
+        }
+        // github will put the latest version at the 0 index
+        JSONObject latestVersionObj = remoteVersions.getJSONObject(0);
+        return latestVersionObj.getString("body");
+
+    }
+
+    /**
      * Reads the GitHub API of the project.
      *
      * @return A JSONArray with all the info.
      */
     private static JSONArray readGitHubAPI() throws IOException {
-        Logger logger = LogManager.getLogger(UpdateChecker.class);
         String remoteRaw = null;
         URL url =
                 new URL("https://api.github.com/repos/hyperdefined/CustomLauncherRewrite/releases");
@@ -146,7 +162,6 @@ public class UpdateChecker {
      * @param newVersion Version to launch.
      */
     public static void launchNewVersion(String newVersion) {
-        Logger logger = LogManager.getLogger(UpdateChecker.class);
         String[] command = {"cmd", "/c", "CustomLauncherRewrite-" + newVersion + ".exe"};
         ProcessBuilder pb = new ProcessBuilder(command);
         pb.directory(new File(System.getProperty("user.dir")));
@@ -180,5 +195,22 @@ public class UpdateChecker {
                 out) {
             IOUtils.copy(in, out);
         }
+    }
+
+    /**
+     * Get how many builds behind.
+     * @param currentVersion The current version.
+     * @return How many builds behind.
+     */
+    public static int getBuildsBehind(String currentVersion) throws IOException {
+        ArrayList<JSONObject> releases = getReleases();
+        for (int i = 0; i < releases.size(); i++) {
+            JSONObject temp = releases.get(i);
+            String version = temp.getString("tag_name");
+            if (currentVersion.equalsIgnoreCase(version)) {
+                return i;
+            }
+        }
+        return -1;
     }
 }
