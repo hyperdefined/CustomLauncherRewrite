@@ -19,6 +19,7 @@ package lol.hyper.customlauncher.updater;
 
 import lol.hyper.customlauncher.generic.ErrorWindow;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.SystemUtils;
@@ -41,6 +42,7 @@ public class UpdateChecker {
 
     /**
      * Get all the releases.
+     *
      * @return List of all the JSONObjects.
      */
     public static ArrayList<JSONObject> getReleases() throws IOException {
@@ -62,15 +64,15 @@ public class UpdateChecker {
         JSONObject latestVersionObj = getReleases().get(0);
         JSONArray assets = latestVersionObj.getJSONArray("assets");
         HashMap<String, URL> downloadURLs = new HashMap<>();
-        for (int i = 0; i < latestVersionObj.length(); i++) {
-            JSONObject downloadObj = assets.getJSONObject(0);
+        for (int i = 0; i < assets.length(); i++) {
+            JSONObject downloadObj = assets.getJSONObject(i);
             URL downloadURL = new URL(downloadObj.getString("browser_download_url"));
             String downloadURLString = downloadURL.toString();
             String extension = downloadURLString.substring(downloadURLString.lastIndexOf(".") + 1);
             if (extension.equalsIgnoreCase("exe")) {
                 downloadURLs.put("windows", downloadURL);
             }
-            if (extension.equalsIgnoreCase("linux")) {
+            if (extension.equalsIgnoreCase("gz")) {
                 downloadURLs.put("linux", downloadURL);
             }
         }
@@ -90,6 +92,7 @@ public class UpdateChecker {
 
         logger.info("Downloading new version from " + finalURL);
         String fileName = finalURL.toString().substring(finalURL.toString().lastIndexOf("/") + 1);
+        logger.info(fileName);
         File output = new File(fileName);
         FileUtils.copyURLToFile(finalURL, output);
 
@@ -103,6 +106,7 @@ public class UpdateChecker {
 
     /**
      * Get the latest release notes.
+     *
      * @return String with the notes.
      */
     public static String getReleaseNotes() {
@@ -120,7 +124,6 @@ public class UpdateChecker {
         // github will put the latest version at the 0 index
         JSONObject latestVersionObj = remoteVersions.getJSONObject(0);
         return latestVersionObj.getString("body");
-
     }
 
     /**
@@ -189,7 +192,8 @@ public class UpdateChecker {
     public static void decompress(String temp, File output) throws IOException {
         File tempFile = new File(temp);
         TarArchiveInputStream in =
-                new TarArchiveInputStream(new BufferedInputStream(new FileInputStream(tempFile)));
+                new TarArchiveInputStream(
+                        new GzipCompressorInputStream(new FileInputStream(tempFile)));
         FileOutputStream out = new FileOutputStream(output);
         try (in;
                 out) {
@@ -199,6 +203,7 @@ public class UpdateChecker {
 
     /**
      * Get how many builds behind.
+     *
      * @param currentVersion The current version.
      * @return How many builds behind.
      */
