@@ -104,6 +104,7 @@ public class UpdateChecker {
             ua.setSourceFile(output);
             ua.setDestDirectory(new File(System.getProperty("user.dir")));
             ua.extract();
+            FileUtils.delete(output);
         }
     }
 
