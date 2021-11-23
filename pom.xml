@@ -104,12 +104,12 @@
                                 <jdkPreference>preferJre</jdkPreference>
                             </jre>
                             <versionInfo>
-                                <fileVersion>1.4.0.0</fileVersion>
+                                <fileVersion>1.5.3.0</fileVersion>
                                 <txtFileVersion>${project.version}</txtFileVersion>
                                 <fileDescription>A custom launcher for Toontown Rewritten.</fileDescription>
                                 <copyright>hyperdefined</copyright>
-                                <productVersion>1.4.0.0</productVersion>
-                                <txtProductVersion>1.4.0.0</txtProductVersion>
+                                <productVersion>1.5.3.0</productVersion>
+                                <txtProductVersion>1.5.3.0</txtProductVersion>
                                 <productName>${project.name}</productName>
                                 <internalName>${project.name}</internalName>
                                 <originalFilename>CustomLauncherRewrite-${project.version}.exe</originalFilename>
