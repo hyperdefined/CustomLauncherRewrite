@@ -17,8 +17,11 @@
 
 package lol.hyper.customlauncher.updater;
 
+import lol.hyper.customlauncher.Main;
 import lol.hyper.customlauncher.generic.ErrorWindow;
+import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -33,6 +36,9 @@ import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.stream.Collectors;
@@ -60,7 +66,7 @@ public class UpdateChecker {
     }
 
     /** Downloads the latest version of the launcher from GitHub. */
-    public static void downloadLatestVersion() throws IOException {
+    public static void downloadLatestVersion() throws IOException, InterruptedException {
         JSONObject latestVersionObj = getReleases().get(0);
         JSONArray assets = latestVersionObj.getJSONArray("assets");
         HashMap<String, URL> downloadURLs = new HashMap<>();
@@ -99,7 +105,7 @@ public class UpdateChecker {
         // extract the tar.gz release file into the installation dir
         if (SystemUtils.IS_OS_LINUX) {
             logger.info("Extracting " + output + " to " + System.getProperty("user.dir"));
-            decompress(fileName, output);
+            decompress(fileName);
             FileUtils.delete(output);
         }
     }
@@ -164,9 +170,21 @@ public class UpdateChecker {
      *
      * @param newVersion Version to launch.
      */
-    public static void launchNewVersion(String newVersion) {
-        String[] command = {"cmd", "/c", "CustomLauncherRewrite-" + newVersion + ".exe"};
-        ProcessBuilder pb = new ProcessBuilder(command);
+    public static void launchNewVersion(String newVersion) throws IOException {
+        String[] windowsCommand = {"cmd", "/c", "CustomLauncherRewrite-" + newVersion + ".exe"};
+        String linuxCommand = "./run.sh";
+        ProcessBuilder pb = new ProcessBuilder();
+        if (SystemUtils.IS_OS_LINUX) {
+            pb.command(linuxCommand);
+
+            // delete the old version
+            File current = new File(System.getProperty("user.dir") + File.separator + "CustomLauncherRewrite-" + Main.VERSION + ".jar");
+            Files.delete(current.toPath());
+
+        }
+        if (SystemUtils.IS_OS_WINDOWS) {
+            pb.command(windowsCommand);
+        }
         pb.directory(new File(System.getProperty("user.dir")));
         try {
             Process p = pb.start();
@@ -184,20 +202,23 @@ public class UpdateChecker {
     }
 
     /**
-     * Extract the compressed tar.gz to an output
+     * Extract the compressed tar.gz.
      *
      * @param temp The temp file's name that was downloaded.
-     * @param output The output file.
      */
-    public static void decompress(String temp, File output) throws IOException {
-        File tempFile = new File(temp);
-        TarArchiveInputStream in =
-                new TarArchiveInputStream(
-                        new GzipCompressorInputStream(new FileInputStream(tempFile)));
-        FileOutputStream out = new FileOutputStream(output);
-        try (in;
-                out) {
-            IOUtils.copy(in, out);
+    public static void decompress(String temp)
+            throws IOException, InterruptedException {
+        // TODO: Make this not use shell commands.
+        ProcessBuilder builder = new ProcessBuilder();
+        builder.command("tar", "-xvf", temp);
+        builder.directory(new File(System.getProperty("user.dir")));
+        Process process = builder.start();
+        int exitCode = process.waitFor();
+        if (exitCode == 0) {
+            logger.info("Extracted " + temp + "!");
+        } else {
+            JFrame errorWindow = new ErrorWindow("Unable to extract release file.");
+            errorWindow.dispose();
         }
     }
 
