@@ -127,9 +127,16 @@ public class InvasionTracker {
             String district = invasion.getDistrict();
             String cogType = invasion.getCogType();
             String timeLeft;
-            timeLeft =
-                    convertTime(ChronoUnit.SECONDS.between(LocalDateTime.now(), invasion.endTime));
-            String cogs = invasion.getCogsDefeated() + "/" + invasion.getCogsTotal();
+            String cogs;
+            if (invasion.megaInvasion) {
+                cogs = "Mega Invasion";
+                timeLeft = "Mega Invasion";
+            } else {
+                cogs = invasion.getCogsDefeated() + "/" + invasion.getCogsTotal();
+                timeLeft =
+                        convertTime(
+                                ChronoUnit.SECONDS.between(LocalDateTime.now(), invasion.endTime));
+            }
             data = new String[] {district, cogType, timeLeft, cogs};
             invasionTableModel.addRow(data);
             invasionTableModel.fireTableDataChanged();
@@ -188,7 +195,10 @@ public class InvasionTracker {
         try (InputStream in = conn.getInputStream()) {
             BufferedReader reader =
                     new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
-            invasionJSONRaw = reader.lines().collect(Collectors.joining(System.lineSeparator()));
+            invasionJSONRaw =
+                    reader.lines()
+                            .collect(Collectors.joining(System.lineSeparator()))
+                            .replace("\u0003", "");
             reader.close();
         } catch (IOException e) {
             schedulerAPI.shutdown();
@@ -221,12 +231,9 @@ public class InvasionTracker {
             if (!invasions.containsKey(district)) {
                 JSONObject temp = invasionsJSON.getJSONObject(key);
                 String cogType = temp.getString("Type");
-                // remove the unicode string that python puts onto some cogs
-                if (cogType.contains("\u0003")) {
-                    cogType = cogType.replace("\u0003", "");
-                }
                 int cogsDefeated = temp.getInt("CurrentProgress");
                 int cogsTotal = temp.getInt("MaxProgress");
+                boolean megaInvasion = temp.getBoolean("MegaInvasion");
                 logger.info(
                         "New invasion alert! "
                                 + district
@@ -234,7 +241,8 @@ public class InvasionTracker {
                                 + cogsDefeated
                                 + "/"
                                 + cogsTotal);
-                Invasion newInvasion = new Invasion(cogType, cogsDefeated, cogsTotal, district);
+                Invasion newInvasion =
+                        new Invasion(cogType, cogsDefeated, cogsTotal, district, megaInvasion);
                 newInvasion.endTime =
                         Instant.parse(temp.getString("EstimatedCompletion"))
                                 .atZone(ZoneId.systemDefault());
@@ -247,11 +255,14 @@ public class InvasionTracker {
                 // we want to update the total cogs defeated and the end time
                 Invasion tempInv = invasions.get(district);
                 JSONObject temp = invasionsJSON.getJSONObject(key);
-                int cogsDefeated = temp.getInt("CurrentProgress");
-                tempInv.updateCogsDefeated(cogsDefeated);
-                tempInv.endTime =
-                        Instant.parse(temp.getString("EstimatedCompletion"))
-                                .atZone(ZoneId.systemDefault());
+                // ignore mega invasion cog count
+                if (!temp.getBoolean("MegaInvasion")) {
+                    int cogsDefeated = temp.getInt("CurrentProgress");
+                    tempInv.updateCogsDefeated(cogsDefeated);
+                    tempInv.endTime =
+                            Instant.parse(temp.getString("EstimatedCompletion"))
+                                    .atZone(ZoneId.systemDefault());
+                }
             }
         }
 
