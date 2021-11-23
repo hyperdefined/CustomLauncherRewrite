@@ -24,6 +24,13 @@ import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
@@ -34,6 +41,7 @@ import java.awt.*;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -51,6 +59,7 @@ public class TTRUpdater extends JFrame {
     public final String PATCHES_URL = "https://cdn.toontownrewritten.com/content/patchmanifest.txt";
     public final String PATCHES_URL_DL = "https://download.toontownrewritten.com/patches/";
     public final Logger logger = LogManager.getLogger(this);
+    JProgressBar progressBar;
 
     public TTRUpdater(String title, Path installLocation) throws IOException {
         // setup the window elements
@@ -72,7 +81,7 @@ public class TTRUpdater extends JFrame {
 
         JLabel updateStatus = new JLabel("Checking files...");
         updateStatus.setAlignmentX(Component.CENTER_ALIGNMENT);
-        JProgressBar progressBar = new JProgressBar(0, 0);
+        progressBar = new JProgressBar(0, 0);
         progressBar.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.add(Box.createRigidArea(new Dimension(0, 30)));
         panel.add(updateStatus);
@@ -242,32 +251,26 @@ public class TTRUpdater extends JFrame {
                 progressBar.setMaximum(fileToDownload.length());
                 JSONObject file = patches.getJSONObject(fileToDownload);
                 String dl = file.getString("dl");
-                try {
-                    logger.info("Downloading " + PATCHES_URL_DL + dl);
-                    updateStatus.setText("Downloading " + dl);
-                    progressBar.setVisible(true);
-                    progressBar.setValue(progressBar.getValue() + 1);
-                    FileUtils.copyURLToFile(
-                            new URL(PATCHES_URL_DL + dl),
-                            new File(tempFolder + File.separator + dl));
-                    logger.info("Finished downloading " + dl);
-                    updateStatus.setText("Finished downloading " + dl);
-                } catch (IOException e) {
-                    logger.error("Unable to download file" + dl, e);
-                    JFrame errorWindow =
-                            new ErrorWindow(
-                                    "Unable to download file "
-                                            + dl
-                                            + ".\n"
-                                            + e.getClass().getCanonicalName()
-                                            + ": "
-                                            + e.getMessage());
+
+                logger.info("Downloading " + PATCHES_URL_DL + dl);
+                updateStatus.setText("Downloading " + dl);
+                progressBar.setVisible(true);
+                progressBar.setValue(progressBar.getValue() + 1);
+
+                URL downloadURL = new URL(PATCHES_URL_DL + dl);
+                File output = new File(tempFolder + File.separator + dl);
+                if (!saveFile(downloadURL, output)) {
+                    logger.error("Unable to download file" + dl);
+                    JFrame errorWindow = new ErrorWindow("Unable to download file " + dl + ".");
                     errorWindow.dispose();
                     frame.dispose();
                 }
+                logger.info("Finished downloading " + dl);
+                updateStatus.setText("Finished downloading " + dl);
+
                 long startTime = System.nanoTime();
-                logger.info("Extracting file " + dl);
-                updateStatus.setText("Extracting file " + dl);
+                logger.info("Extracting " + dl);
+                updateStatus.setText("Extracting " + dl);
                 progressBar.setVisible(false);
                 try {
                     decompressBz2(dl, fileToDownload); // extract the file to the new location
@@ -298,7 +301,7 @@ public class TTRUpdater extends JFrame {
                     try {
                         Files.delete(currentFile.toPath());
                     } catch (IOException e) {
-                        logger.error("Unable to delete file" + currentFile.getAbsolutePath(), e);
+                        logger.error("Unable to delete file " + currentFile.getAbsolutePath(), e);
                         JFrame errorWindow =
                                 new ErrorWindow(
                                         "Unable to delete file "
@@ -369,5 +372,47 @@ public class TTRUpdater extends JFrame {
                 out) {
             IOUtils.copy(in, out);
         }
+    }
+
+    /**
+     * Downloads TTR file and saves it to the temp folder.
+     * @param downloadURL The URL to download.
+     * @param downloadOutput The file to save to.
+     * @return True if successful, false if not.
+     */
+    public boolean saveFile(URL downloadURL, File downloadOutput) {
+        boolean isSucceed = true;
+
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+
+        HttpGet httpGet = new HttpGet(downloadURL.toString());
+        httpGet.addHeader(
+                "User-Agent",
+                "CustomLauncherRewrite https://github.com/hyperdefined/CustomLauncherRewrite");
+
+        try {
+            CloseableHttpResponse httpResponse = httpClient.execute(httpGet);
+            HttpEntity imageEntity = httpResponse.getEntity();
+            progressBar.setMaximum(100);
+            final FileOutputStream output = FileUtils.openOutputStream(downloadOutput);
+            try {
+                final byte[] buffer = new byte[4046];
+                long count = 0;
+                int n;
+                while (-1 != (n = imageEntity.getContent().read(buffer))) {
+                    output.write(buffer, 0, n);
+                    count += n;
+                    progressBar.setValue((int) (count * 100 / imageEntity.getContentLength()));
+                }
+            } catch (IOException e) {
+                isSucceed = false;
+            }
+        } catch (IOException e) {
+            isSucceed = false;
+        }
+
+        httpGet.releaseConnection();
+
+        return isSucceed;
     }
 }
