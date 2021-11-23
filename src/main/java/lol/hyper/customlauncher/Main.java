@@ -45,7 +45,7 @@ public class Main {
     public static Image icon;
     public static final File TTR_INSTALL_DIR = new File("ttr-files");
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
         // load the log4j2config
         System.setProperty("log4j.configurationFile", "log4j2config.xml");
         // load the version
