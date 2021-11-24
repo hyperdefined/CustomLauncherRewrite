@@ -130,7 +130,7 @@ public class Main {
         updater.dispose();
 
         // run the main window
-        JFrame mainWindow = new MainWindow("CustomLauncherRewrite", new InvasionTracker());
+        JFrame mainWindow = new MainWindow("CLR " + VERSION, new InvasionTracker());
         mainWindow.dispose();
     }
 }
