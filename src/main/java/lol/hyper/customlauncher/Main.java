@@ -22,11 +22,11 @@ import lol.hyper.customlauncher.accounts.windows.MainWindow;
 import lol.hyper.customlauncher.invasiontracker.InvasionTracker;
 import lol.hyper.customlauncher.ttrupdater.TTRUpdater;
 import lol.hyper.customlauncher.updater.UpdateChecker;
-import org.apache.commons.lang3.SystemUtils;
+import lol.hyper.githubreleaseapi.GitHubRelease;
+import lol.hyper.githubreleaseapi.GitHubReleaseAPI;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -92,9 +92,13 @@ public class Main {
             Main.logger.info("Converting account storage to JSONArray format.");
         }
 
-        JSONObject latestVersionObj = UpdateChecker.getReleases().get(0);
-        String latestVersion = latestVersionObj.getString("tag_name");
-        int behind = UpdateChecker.getBuildsBehind(VERSION);
+        GitHubReleaseAPI api = new GitHubReleaseAPI("CustomLauncherRewrite", "hyperdefined");
+        GitHubRelease latest = api.getLatestVersion();
+        String latestVersion = latest.getTagVersion();
+        GitHubRelease current = api.getReleaseByTag(VERSION);
+        int behind = api.getBuildsBehind(current);
+        logger.info(current);
+        UpdateChecker updateChecker = new UpdateChecker(api);
         if (!latestVersion.equals(VERSION)) {
             logger.info("A new version is available! Version: " + latestVersion);
             int dialogResult =
@@ -105,11 +109,11 @@ public class Main {
                                     + " versions behind. Latest version is: "
                                     + latestVersion
                                     + ".\nWould you like to update?\n\n"
-                                    + UpdateChecker.getReleaseNotes(),
+                                    + latest.getReleaseNotes(),
                             "New Update",
                             JOptionPane.YES_NO_OPTION);
             if (dialogResult == JOptionPane.YES_OPTION) {
-                UpdateChecker.downloadLatestVersion();
+                updateChecker.downloadLatestVersion();
                 int dialogResult2 =
                         JOptionPane.showConfirmDialog(
                                 null,
@@ -119,7 +123,7 @@ public class Main {
                                 "New Update",
                                 JOptionPane.YES_NO_OPTION);
                 if (dialogResult2 == JOptionPane.YES_OPTION) {
-                    UpdateChecker.launchNewVersion(latestVersion);
+                    updateChecker.launchNewVersion(latestVersion);
                     System.exit(0);
                 }
             }

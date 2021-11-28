@@ -93,7 +93,8 @@
                             <headerType>gui</headerType>
                             <jar>${project.build.directory}/CustomLauncherRewrite-${project.version}.jar</jar>
                             <outfile>${project.build.directory}/CustomLauncherRewrite-${project.version}.exe</outfile>
-                            <downloadUrl>https://adoptium.net/releases.html?variant=openjdk16&amp;jvmVariant=hotspot</downloadUrl>
+                            <downloadUrl>https://adoptium.net/releases.html?variant=openjdk16&amp;jvmVariant=hotspot
+                            </downloadUrl>
                             <icon>src/main/resources/icon.ico</icon>
                             <classPath>
                                 <mainClass>lol.hyper.customlauncher.Main</mainClass>
@@ -180,6 +181,11 @@
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
             <version>2.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>lol.hyper</groupId>
+            <artifactId>github-release-api</artifactId>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 

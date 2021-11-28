@@ -19,71 +19,49 @@ package lol.hyper.customlauncher.updater;
 
 import lol.hyper.customlauncher.Main;
 import lol.hyper.customlauncher.generic.ErrorWindow;
-import org.apache.commons.compress.archivers.ArchiveEntry;
-import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
-import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
-import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
+import lol.hyper.githubreleaseapi.GitHubRelease;
+import lol.hyper.githubreleaseapi.GitHubReleaseAPI;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import javax.swing.*;
 import java.io.*;
 import java.net.URL;
-import java.net.URLConnection;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.stream.Collectors;
 
 public class UpdateChecker {
-    static Logger logger = LogManager.getLogger(UpdateChecker.class);
 
-    /**
-     * Get all the releases.
-     *
-     * @return List of all the JSONObjects.
-     */
-    public static ArrayList<JSONObject> getReleases() throws IOException {
-        ArrayList<JSONObject> releases = new ArrayList<>();
-        JSONArray remoteVersions = new JSONArray(readGitHubAPI());
-        if (remoteVersions.isEmpty()) {
-            logger.warn("GitHub's API returned empty!");
-            return null;
-        }
-        // github will put the latest version at the 0 index
-        for (int i = 0; i < remoteVersions.length(); i++) {
-            releases.add(remoteVersions.getJSONObject(i));
-        }
-        return releases;
+    private final GitHubReleaseAPI api;
+    private final Logger logger = LogManager.getLogger(UpdateChecker.class);
+
+    public UpdateChecker(GitHubReleaseAPI api) {
+        this.api = api;
     }
 
     /** Downloads the latest version of the launcher from GitHub. */
-    public static void downloadLatestVersion() throws IOException, InterruptedException {
-        JSONObject latestVersionObj = getReleases().get(0);
-        JSONArray assets = latestVersionObj.getJSONArray("assets");
+    public void downloadLatestVersion() throws IOException, InterruptedException {
         HashMap<String, URL> downloadURLs = new HashMap<>();
-        for (int i = 0; i < assets.length(); i++) {
-            JSONObject downloadObj = assets.getJSONObject(i);
-            URL downloadURL = new URL(downloadObj.getString("browser_download_url"));
-            String downloadURLString = downloadURL.toString();
-            String extension = downloadURLString.substring(downloadURLString.lastIndexOf(".") + 1);
+        if (api.getAllReleases() == null || api.getAllReleases().isEmpty()) {
+            JFrame errorWindow = new ErrorWindow("Unable to look for updates!");
+            errorWindow.dispose();
+            return;
+        }
+
+        GitHubRelease release = api.getLatestVersion();
+        for (String url : release.getReleaseAssets()) {
+            String extension = url.substring(url.lastIndexOf(".") + 1);
             if (extension.equalsIgnoreCase("exe")) {
-                downloadURLs.put("windows", downloadURL);
+                downloadURLs.put("windows", new URL(url));
             }
             if (extension.equalsIgnoreCase("gz")) {
-                downloadURLs.put("linux", downloadURL);
+                downloadURLs.put("linux", new URL(url));
             }
         }
-        URL finalURL = null;
 
+        URL finalURL = null;
         if (SystemUtils.IS_OS_WINDOWS) {
             finalURL = downloadURLs.get("windows");
         }
@@ -111,66 +89,11 @@ public class UpdateChecker {
     }
 
     /**
-     * Get the latest release notes.
-     *
-     * @return String with the notes.
-     */
-    public static String getReleaseNotes() {
-        JSONArray remoteVersions;
-        try {
-            remoteVersions = new JSONArray(readGitHubAPI());
-        } catch (IOException e) {
-            logger.error("Unable to check for updates!", e);
-            return null;
-        }
-        if (remoteVersions.isEmpty()) {
-            logger.warn("GitHub's API returned empty!");
-            return null;
-        }
-        // github will put the latest version at the 0 index
-        JSONObject latestVersionObj = remoteVersions.getJSONObject(0);
-        return latestVersionObj.getString("body");
-    }
-
-    /**
-     * Reads the GitHub API of the project.
-     *
-     * @return A JSONArray with all the info.
-     */
-    private static JSONArray readGitHubAPI() throws IOException {
-        String remoteRaw = null;
-        URL url =
-                new URL("https://api.github.com/repos/hyperdefined/CustomLauncherRewrite/releases");
-        URLConnection conn = url.openConnection();
-        conn.setRequestProperty(
-                "User-Agent",
-                "CustomLauncherRewrite https://github.com/hyperdefined/CustomLauncherRewrite");
-        conn.setRequestProperty("Accept", "application/vnd.github.v3+json");
-        conn.connect();
-
-        try (InputStream in = conn.getInputStream()) {
-            BufferedReader reader =
-                    new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
-            remoteRaw = reader.lines().collect(Collectors.joining(System.lineSeparator()));
-            reader.close();
-        } catch (IOException e) {
-            logger.error("Unable to check for updates!", e);
-        }
-
-        if (remoteRaw == null || remoteRaw.length() == 0) {
-            logger.warn(
-                    "Unable to find latest version from GitHub. The string either returned null or empty.");
-            return null;
-        }
-        return new JSONArray(remoteRaw);
-    }
-
-    /**
      * Launches the new version of the launcher that was downloaded.
      *
      * @param newVersion Version to launch.
      */
-    public static void launchNewVersion(String newVersion) throws IOException {
+    public void launchNewVersion(String newVersion) throws IOException {
         String[] windowsCommand = {"cmd", "/c", "CustomLauncherRewrite-" + newVersion + ".exe"};
         String linuxCommand = "./run.sh";
         ProcessBuilder pb = new ProcessBuilder();
@@ -178,9 +101,14 @@ public class UpdateChecker {
             pb.command(linuxCommand);
 
             // delete the old version
-            File current = new File(System.getProperty("user.dir") + File.separator + "CustomLauncherRewrite-" + Main.VERSION + ".jar");
+            File current =
+                    new File(
+                            System.getProperty("user.dir")
+                                    + File.separator
+                                    + "CustomLauncherRewrite-"
+                                    + Main.VERSION
+                                    + ".jar");
             Files.delete(current.toPath());
-
         }
         if (SystemUtils.IS_OS_WINDOWS) {
             pb.command(windowsCommand);
@@ -206,8 +134,7 @@ public class UpdateChecker {
      *
      * @param temp The temp file's name that was downloaded.
      */
-    public static void decompress(String temp)
-            throws IOException, InterruptedException {
+    private void decompress(String temp) throws IOException, InterruptedException {
         // TODO: Make this not use shell commands.
         ProcessBuilder builder = new ProcessBuilder();
         builder.command("tar", "-xvf", temp);
@@ -220,23 +147,5 @@ public class UpdateChecker {
             JFrame errorWindow = new ErrorWindow("Unable to extract release file.");
             errorWindow.dispose();
         }
-    }
-
-    /**
-     * Get how many builds behind.
-     *
-     * @param currentVersion The current version.
-     * @return How many builds behind.
-     */
-    public static int getBuildsBehind(String currentVersion) throws IOException {
-        ArrayList<JSONObject> releases = getReleases();
-        for (int i = 0; i < releases.size(); i++) {
-            JSONObject temp = releases.get(i);
-            String version = temp.getString("tag_name");
-            if (currentVersion.equalsIgnoreCase(version)) {
-                return i;
-            }
-        }
-        return -1;
     }
 }
