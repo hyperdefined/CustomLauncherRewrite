@@ -119,11 +119,13 @@ public class Main {
             }
         }
 
-        String arg1 = args[0];
-        if (arg1.equalsIgnoreCase("--remove-old")) {
-            String oldVersion = args[1];
-            Files.delete(new File("CustomLauncherRewrite-" + oldVersion + ".exe").toPath());
-            logger.info("Deleting old version " + oldVersion);
+        if (args.length >= 1) {
+            String arg1 = args[0];
+            if (arg1.equalsIgnoreCase("--remove-old")) {
+                String oldVersion = args[1];
+                Files.delete(new File("CustomLauncherRewrite-" + oldVersion + ".exe").toPath());
+                logger.info("Deleting old version " + oldVersion);
+            }
         }
 
         // run the TTR updater
