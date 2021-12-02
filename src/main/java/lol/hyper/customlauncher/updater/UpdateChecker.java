@@ -94,7 +94,7 @@ public class UpdateChecker {
      * @param newVersion Version to launch.
      */
     public void launchNewVersion(String newVersion) throws IOException {
-        String[] windowsCommand = {"cmd", "/c", "CustomLauncherRewrite-" + newVersion + ".exe"};
+        String[] windowsCommand = {"cmd", "/c", "CustomLauncherRewrite-" + newVersion + ".exe", "--remove-old", Main.VERSION};
         String linuxCommand = "./run.sh";
         ProcessBuilder pb = new ProcessBuilder();
         if (SystemUtils.IS_OS_LINUX) {

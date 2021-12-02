@@ -114,19 +114,16 @@ public class Main {
                             JOptionPane.YES_NO_OPTION);
             if (dialogResult == JOptionPane.YES_OPTION) {
                 updateChecker.downloadLatestVersion();
-                int dialogResult2 =
-                        JOptionPane.showConfirmDialog(
-                                null,
-                                "Version "
-                                        + latestVersion
-                                        + " was downloaded. Would you like to run this new version?",
-                                "New Update",
-                                JOptionPane.YES_NO_OPTION);
-                if (dialogResult2 == JOptionPane.YES_OPTION) {
-                    updateChecker.launchNewVersion(latestVersion);
-                    System.exit(0);
-                }
+                updateChecker.launchNewVersion(latestVersion);
+                System.exit(0);
             }
+        }
+
+        String arg1 = args[0];
+        if (arg1.equalsIgnoreCase("--remove-old")) {
+            String oldVersion = args[1];
+            Files.delete(new File("CustomLauncherRewrite-" + oldVersion + ".exe").toPath());
+            logger.info("Deleting old version " + oldVersion);
         }
 
         // run the TTR updater
