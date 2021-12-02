@@ -62,8 +62,10 @@ public class LaunchGame extends Thread {
         env.put("TTR_PLAYCOOKIE", this.cookie);
         Thread t1 = new Thread(() -> {
             try {
-                pb.start();
-            } catch (IOException e) {
+                Process process = pb.start();
+                process.getInputStream().close();
+                process.waitFor();
+            } catch (IOException | InterruptedException e) {
                 logger.error("Unable to launch game!", e);
                 JFrame errorWindow =
                         new ErrorWindow(
