@@ -97,7 +97,6 @@ public class Main {
         String latestVersion = latest.getTagVersion();
         GitHubRelease current = api.getReleaseByTag(VERSION);
         int behind = api.getBuildsBehind(current);
-        logger.info(current);
         UpdateChecker updateChecker = new UpdateChecker(api);
         if (!latestVersion.equals(VERSION)) {
             logger.info("A new version is available! Version: " + latestVersion);
