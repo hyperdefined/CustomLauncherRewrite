@@ -79,13 +79,11 @@ public class LoginHandler {
 
         // act based on the login status
         switch (status) {
-            case "false" -> // false is invalid login details
+            case "false" -> // false is invalid login details / maintenance
                     {
-                        if (banner.contains("Incorrect username")) {
-                            logger.info("Username or password is wrong.");
-                            JFrame errorWindow = new ErrorWindow("Login details are incorrect.");
-                            errorWindow.dispose();
-                        }
+                        logger.info("Returned false: " + banner);
+                        JFrame errorWindow = new ErrorWindow(banner);
+                        errorWindow.dispose();
                     }
             case "partial" -> // partial is used for 2FA or ToonGuard
                     {
