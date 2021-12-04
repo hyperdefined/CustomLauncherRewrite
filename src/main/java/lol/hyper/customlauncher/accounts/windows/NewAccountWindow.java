@@ -54,7 +54,7 @@ public class NewAccountWindow extends JFrame {
         JButton resetButton = new JButton("Cancel");
         JLabel warning =
                 new JLabel(
-                        "<html>Secret phrase is used to encrypt and decrypt <br>your password for security when saving your login info.<br>You must enter it every time you login.<br><br>If you don't remember this phrase, then you must<br>delete the account and re-add it.</html>");
+                        "<html>Secret phrase is used to encrypt and decrypt <br>your password for security when saving your login info.<br>You must enter it every time you login.<br>This phrase can be anything.<br><br>If you don't remember this phrase, then you must<br>delete the account and re-add it.</html>");
 
         userLabel.setBounds(50, 15, 100, 30);
         passwordLabel.setBounds(50, 55, 100, 30);
