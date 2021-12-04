@@ -22,6 +22,8 @@ import lol.hyper.customlauncher.accounts.Account;
 import lol.hyper.customlauncher.accounts.JSONManager;
 
 import javax.swing.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class NewAccountWindow extends JFrame {
 
@@ -82,35 +84,33 @@ public class NewAccountWindow extends JFrame {
                     boolean userBox = userTextField.getText().isEmpty();
                     boolean passwordBox = passwordField.getPassword().length == 0;
                     boolean password2Box = password2Field.getPassword().length == 0;
-                    boolean canAdd = true;
-                    for (Account account : JSONManager.getAccounts()) {
-                        if (account.getUsername().equalsIgnoreCase(userTextField.getText())) {
-                            JOptionPane.showMessageDialog(
-                                    frame,
-                                    "You cannot add an account with the same username.",
-                                    "Error",
-                                    JOptionPane.ERROR_MESSAGE);
-                            canAdd = false;
-                            return;
-                        }
-                    }
-                    if (!userBox && !passwordBox && !password2Box && canAdd) {
-                        JSONManager.addNewAccount(
-                                userTextField.getText(),
-                                JSONManager.encrypt(
-                                        String.valueOf(passwordField.getPassword()),
-                                        String.valueOf(password2Field.getPassword())));
-                        MainWindow.refreshAccountList();
+                    List<String> usernames = new ArrayList<>();
+                    JSONManager.getAccounts()
+                            .forEach(account -> usernames.add(account.getUsername()));
+                    if (usernames.contains(userTextField.getText())) {
                         JOptionPane.showMessageDialog(
-                                frame, userTextField.getText() + " was saved!");
-                        frame.dispose();
-                    } else {
+                                frame,
+                                "You cannot add an account with the same username.",
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    if (userBox && passwordBox && password2Box) {
                         JOptionPane.showMessageDialog(
                                 frame,
                                 "You must fill in all boxes.",
                                 "Error",
                                 JOptionPane.ERROR_MESSAGE);
+                        return;
                     }
+                    JSONManager.addNewAccount(
+                            userTextField.getText(),
+                            JSONManager.encrypt(
+                                    String.valueOf(passwordField.getPassword()),
+                                    String.valueOf(password2Field.getPassword())));
+                    MainWindow.refreshAccountList();
+                    JOptionPane.showMessageDialog(frame, userTextField.getText() + " was saved!");
+                    frame.dispose();
                 });
 
         frame.setVisible(true);
