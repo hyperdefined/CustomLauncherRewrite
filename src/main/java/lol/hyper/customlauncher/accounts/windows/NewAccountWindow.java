@@ -18,6 +18,7 @@
 package lol.hyper.customlauncher.accounts.windows;
 
 import lol.hyper.customlauncher.Main;
+import lol.hyper.customlauncher.accounts.Account;
 import lol.hyper.customlauncher.accounts.JSONManager;
 
 import javax.swing.*;
@@ -78,10 +79,22 @@ public class NewAccountWindow extends JFrame {
 
         loginButton.addActionListener(
                 e -> {
-                    boolean userbox = userTextField.getText().isEmpty();
+                    boolean userBox = userTextField.getText().isEmpty();
                     boolean passwordBox = passwordField.getPassword().length == 0;
                     boolean password2Box = password2Field.getPassword().length == 0;
-                    if (!userbox && !passwordBox && !password2Box) {
+                    boolean canAdd = true;
+                    for (Account account : JSONManager.getAccounts()) {
+                        if (account.getUsername().equalsIgnoreCase(userTextField.getText())) {
+                            JOptionPane.showMessageDialog(
+                                    frame,
+                                    "You cannot add an account with the same username.",
+                                    "Error",
+                                    JOptionPane.ERROR_MESSAGE);
+                            canAdd = false;
+                            return;
+                        }
+                    }
+                    if (!userBox && !passwordBox && !password2Box && canAdd) {
                         JSONManager.addNewAccount(
                                 userTextField.getText(),
                                 JSONManager.encrypt(
