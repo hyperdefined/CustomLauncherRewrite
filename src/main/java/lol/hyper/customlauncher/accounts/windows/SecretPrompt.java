@@ -55,6 +55,9 @@ public class SecretPrompt extends JFrame {
         panel.add(secretText, gbc);
         panel.add(loginButton, gbc);
 
+        // allow pressing enter
+        frame.getRootPane().setDefaultButton(loginButton);
+
         // button listeners
         loginButton.addActionListener(
                 event -> {

@@ -68,6 +68,9 @@ public class TwoFactorAuth extends JFrame {
         panel.add(userAuthCode, gbc);
         panel.add(loginButton, gbc);
 
+        // allow pressing enter
+        frame.getRootPane().setDefaultButton(loginButton);
+
         // button listeners
         loginButton.addActionListener(
                 event -> {

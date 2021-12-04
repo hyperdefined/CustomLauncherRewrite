@@ -79,6 +79,9 @@ public class NewAccountWindow extends JFrame {
         // button listeners
         resetButton.addActionListener(e -> frame.dispose());
 
+        // allow pressing enter
+        frame.getRootPane().setDefaultButton(loginButton);
+
         loginButton.addActionListener(
                 e -> {
                     boolean userBox = userTextField.getText().isEmpty();
