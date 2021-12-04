@@ -60,7 +60,9 @@ public class DeleteAccountWindow extends JFrame {
             accounts.add(account.getUsername());
             labelsByIndexes.put(i, account.getUsername());
         }
-        JList<String> accountList = new JList(accounts.toArray());
+        DefaultListModel<String> model = new DefaultListModel<>();
+        JList<String> accountList = new JList<>(model);
+        model.addAll(accounts);
         DefaultListCellRenderer renderer = (DefaultListCellRenderer) accountList.getCellRenderer();
         renderer.setHorizontalAlignment(SwingConstants.CENTER);
         accountList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -72,7 +74,7 @@ public class DeleteAccountWindow extends JFrame {
         accountList.addMouseListener(
                 new MouseAdapter() {
                     public void mouseClicked(MouseEvent evt) {
-                        JList<String> list = (JList) evt.getSource();
+                        JList<String> list = (JList<String>) evt.getSource();
                         if (evt.getClickCount() == 2) {
                             int index = list.getSelectedIndex();
                             Account account = JSONManager.getAccounts().get(index);

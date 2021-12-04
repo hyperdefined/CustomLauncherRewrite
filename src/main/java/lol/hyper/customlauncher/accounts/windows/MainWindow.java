@@ -115,7 +115,7 @@ public class MainWindow extends JFrame {
         frame.setVisible(true);
         frame.add(panel);
         frame.setLocationRelativeTo(null);
-        //frame.pack();
+        // frame.pack();
     }
 
     /**

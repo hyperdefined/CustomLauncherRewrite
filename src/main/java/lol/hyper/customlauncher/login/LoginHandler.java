@@ -87,13 +87,12 @@ public class LoginHandler {
                     }
             case "partial" -> // partial is used for 2FA or ToonGuard
                     {
-                        logger.info("Asking user for two-factor auth.");
-                        JFrame twoFactorAuth =
-                                new TwoFactorAuth("Enter Code", banner, request.get("responseToken"));
+                        logger.info("Returned partial: " + banner);
+                        new TwoFactorAuth("Enter Code", banner, request.get("responseToken"));
                     }
             case "true" -> // login was successful
                     {
-                        logger.info("Login successful, launching game.");
+                        logger.info("Returned true: " + banner);
                         String gameServer = request.get("gameserver");
                         String cookie = request.get("cookie");
                         LaunchGame launchGame = new LaunchGame(cookie, gameServer);
@@ -101,7 +100,7 @@ public class LoginHandler {
                     }
             case "delayed" -> // login request was put into a queue
                     {
-                        logger.info("Stuck in queue.");
+                        logger.info("Returned delayed: " + banner);
                         JFrame infoWindow =
                                 new InfoWindow(
                                         "You were placed in a queue. Press OK to try again in 5 seconds.");

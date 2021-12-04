@@ -56,7 +56,7 @@ public class TTRUpdater extends JFrame {
     public final String PATCHES_URL = "https://cdn.toontownrewritten.com/content/patchmanifest.txt";
     public final String PATCHES_URL_DL = "https://download.toontownrewritten.com/patches/";
     public final Logger logger = LogManager.getLogger(this);
-    JProgressBar progressBar;
+    final JProgressBar progressBar;
 
     public TTRUpdater(String title, Path installLocation) throws IOException {
         // setup the window elements
