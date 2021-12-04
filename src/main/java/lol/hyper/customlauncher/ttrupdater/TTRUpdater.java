@@ -295,7 +295,7 @@ public class TTRUpdater extends JFrame {
                                         System.nanoTime() - startTime, TimeUnit.NANOSECONDS)
                                 + " seconds.");
             }
-            // delete the temp folder is there are files in there
+            // delete all files in the temp folder
             File[] tempFolderFiles = tempFolder.listFiles();
             if (tempFolderFiles != null) {
                 for (File currentFile : tempFolderFiles) {
@@ -316,6 +316,7 @@ public class TTRUpdater extends JFrame {
                     }
                 }
             }
+            // delete the actual temp folder
             try {
                 Files.delete(Paths.get(System.getProperty("user.dir") + File.separator + "temp"));
             } catch (IOException e) {
@@ -373,10 +374,13 @@ public class TTRUpdater extends JFrame {
                 out) {
             IOUtils.copy(in, out);
         }
+        in.close();
+        out.close();
     }
 
     /**
      * Downloads TTR file and saves it to the temp folder.
+     *
      * @param downloadURL The URL to download.
      * @param downloadOutput The file to save to.
      * @return True if successful, false if not.
@@ -405,6 +409,7 @@ public class TTRUpdater extends JFrame {
                     count += n;
                     progressBar.setValue((int) (count * 100 / imageEntity.getContentLength()));
                 }
+                output.close();
             } catch (IOException e) {
                 isSucceed = false;
             }
