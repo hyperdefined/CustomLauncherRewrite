@@ -148,7 +148,11 @@ public class TTRUpdater extends JFrame {
         // windows = win32/win64
         // linux = linux/linux2
         if (SystemUtils.IS_OS_WINDOWS) {
-            osType = "win32";
+            if (System.getProperty("sun.arch.data.model").equalsIgnoreCase("64")) {
+                osType = "win64";
+            } else {
+                osType = "win32";
+            }
         }
         if (SystemUtils.IS_OS_LINUX) {
             osType = "linux";

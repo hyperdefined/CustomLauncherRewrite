@@ -54,7 +54,7 @@ public class Main {
         VERSION = properties.getProperty("version");
         // log some basic info
         logger = LogManager.getLogger(Main.class);
-        logger.info(System.getProperty("os.name"));
+        logger.info(System.getProperty("os.name") + " " + System.getProperty("sun.arch.data.model") + "bit");
         logger.info("Program is starting.");
         logger.info("Running version " + VERSION);
 

@@ -42,7 +42,12 @@ public class LaunchGame extends Thread {
         ProcessBuilder pb = new ProcessBuilder();
 
         if (SystemUtils.IS_OS_WINDOWS) {
-            String[] windowsCommand = {"cmd", "/c", "TTREngine.exe"};
+            String[] windowsCommand;
+            if (System.getProperty("sun.arch.data.model").equalsIgnoreCase("64")) {
+                windowsCommand = new String[]{"cmd", "/c", "TTREngine64.exe"};
+            } else {
+                windowsCommand = new String[]{"cmd", "/c", "TTREngine.exe"};
+            }
             pb.command(windowsCommand);
         }
         if (SystemUtils.IS_OS_LINUX) {
