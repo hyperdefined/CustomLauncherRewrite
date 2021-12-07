@@ -20,6 +20,7 @@ package lol.hyper.customlauncher.accounts.windows;
 import lol.hyper.customlauncher.Main;
 import lol.hyper.customlauncher.accounts.Account;
 import lol.hyper.customlauncher.accounts.JSONManager;
+import lol.hyper.customlauncher.fieldofficetracker.FieldOfficeTracker;
 import lol.hyper.customlauncher.invasiontracker.InvasionTracker;
 
 import javax.swing.*;
@@ -88,6 +89,16 @@ public class MainWindow extends JFrame {
         invasionsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         invasionsButton.setMaximumSize(new Dimension(300, invasionsButton.getMinimumSize().height));
         panel.add(invasionsButton);
+
+        // field office button
+        JButton fieldOfficesButton = new JButton("Field Offices");
+        fieldOfficesButton.addActionListener(e -> {
+            FieldOfficeTracker fieldOfficeTracker = new FieldOfficeTracker();
+            fieldOfficeTracker.showWindow();
+        });
+        fieldOfficesButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        fieldOfficesButton.setMaximumSize(new Dimension(300, fieldOfficesButton.getMinimumSize().height));
+        panel.add(fieldOfficesButton);
 
         accountList.addMouseListener(
                 new MouseAdapter() {
