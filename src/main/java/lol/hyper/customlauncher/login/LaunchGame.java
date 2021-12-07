@@ -26,6 +26,7 @@ import org.apache.logging.log4j.Logger;
 import javax.swing.*;
 import java.io.IOException;
 import java.util.Map;
+import java.io.File;
 
 public class LaunchGame extends Thread {
 
@@ -52,6 +53,10 @@ public class LaunchGame extends Thread {
         }
         if (SystemUtils.IS_OS_LINUX) {
             String linuxCommand = "./TTREngine";
+
+            // Make sure it's executable before running
+            new File("ttr-files/" + linuxCommand).setExecutable(true);
+
             pb.command(linuxCommand);
         }
 
