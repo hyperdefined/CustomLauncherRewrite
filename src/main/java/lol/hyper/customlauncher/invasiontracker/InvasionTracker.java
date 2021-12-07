@@ -121,8 +121,7 @@ public class InvasionTracker {
         }
         // sort this new list alphabetically
         Collections.sort(sortedInvasions);
-        // display the invasion in the text box
-        // this is just 1 long string that is put into a text field
+        // add the invasions to the table
         for (Invasion invasion : sortedInvasions) {
             String district = invasion.getDistrict();
             String cogType = invasion.getCogType();
