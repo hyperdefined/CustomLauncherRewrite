@@ -97,10 +97,10 @@ public class NewAccountWindow extends JFrame {
                                 JOptionPane.ERROR_MESSAGE);
                         return;
                     }
-                    if (userBox && passwordBox && password2Box) {
+                    if (userBox || passwordBox || password2Box) {
                         JOptionPane.showMessageDialog(
                                 frame,
-                                "You must fill in all boxes.",
+                                "You must fill in all text boxes.",
                                 "Error",
                                 JOptionPane.ERROR_MESSAGE);
                         return;
