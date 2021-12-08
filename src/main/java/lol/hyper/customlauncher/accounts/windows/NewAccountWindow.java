@@ -21,6 +21,7 @@ import lol.hyper.customlauncher.Main;
 import lol.hyper.customlauncher.accounts.JSONManager;
 
 import javax.swing.*;
+import java.awt.event.ItemEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,34 +47,50 @@ public class NewAccountWindow extends JFrame {
         JLabel userLabel = new JLabel("Username");
         JLabel passwordLabel = new JLabel("Password");
         JLabel password2Label = new JLabel("Secret Phrase");
-        JTextField userTextField = new JTextField();
+        JLabel encryptedLabel = new JLabel("Encrypt Login");
+        JTextField usernameTextField = new JTextField();
         JPasswordField passwordField = new JPasswordField();
-        JPasswordField password2Field = new JPasswordField();
+        JPasswordField secretPhraseField = new JPasswordField();
         JButton loginButton = new JButton("Save");
         JButton resetButton = new JButton("Cancel");
-        JLabel warning =
+        JCheckBox encryptedCheck = new JCheckBox();
+        encryptedCheck.setSelected(false);
+        JLabel plaintext =
                 new JLabel(
-                        "<html>Secret phrase is used to encrypt and decrypt <br>your password for security when saving your login info.<br>You must enter it every time you login.<br>This phrase can be anything.<br><br>If you don't remember this phrase, then you must<br>delete the account and re-add it.</html>");
+                        "<html>You are currently saving the account in plaintext.<br>If you wish to encrypt this, select the checkbox.</html>");
+        JLabel encrypted =
+                new JLabel(
+                        "<html>You are encrypting the account. The passphrase is used to<br> encrypt it.<br>This passphrase can be anything. You will need to enter it<br>anytime you login.</html>");
 
         userLabel.setBounds(50, 15, 100, 30);
         passwordLabel.setBounds(50, 55, 100, 30);
-        password2Label.setBounds(50, 105, 100, 30);
-        userTextField.setBounds(150, 15, 150, 30);
+        password2Label.setBounds(50, 135, 100, 30);
+        usernameTextField.setBounds(150, 15, 150, 30);
         passwordField.setBounds(150, 55, 150, 30);
-        password2Field.setBounds(150, 105, 150, 30);
-        loginButton.setBounds(50, 165, 100, 30);
-        resetButton.setBounds(200, 165, 100, 30);
-        warning.setBounds(50, 215, 370, 100);
+        encryptedCheck.setBounds(150, 95, 30, 30);
+        encryptedLabel.setBounds(50, 95, 100, 30);
+        secretPhraseField.setBounds(150, 135, 150, 30);
+        loginButton.setBounds(50, 195, 100, 30);
+        resetButton.setBounds(200, 195, 100, 30);
+        plaintext.setBounds(50, 235, 370, 100);
+        encrypted.setBounds(50, 235, 370, 100);
 
         panel.add(userLabel);
         panel.add(passwordLabel);
         panel.add(password2Label);
-        panel.add(userTextField);
+        panel.add(usernameTextField);
         panel.add(passwordField);
-        panel.add(password2Field);
+        panel.add(secretPhraseField);
         panel.add(loginButton);
         panel.add(resetButton);
-        panel.add(warning);
+        panel.add(plaintext);
+        panel.add(encrypted);
+        panel.add(encryptedCheck);
+        panel.add(encryptedLabel);
+
+        encrypted.setVisible(false);
+        secretPhraseField.setVisible(false);
+        password2Label.setVisible(false);
 
         // button listeners
         resetButton.addActionListener(e -> frame.dispose());
@@ -81,15 +98,32 @@ public class NewAccountWindow extends JFrame {
         // allow pressing enter
         frame.getRootPane().setDefaultButton(loginButton);
 
+        encryptedCheck.addItemListener(
+                e -> {
+                    if (e.getStateChange() == ItemEvent.SELECTED) {
+                        encrypted.setVisible(true);
+                        plaintext.setVisible(false);
+                        secretPhraseField.setVisible(true);
+                        password2Label.setVisible(true);
+                    }
+                    if (e.getStateChange() == ItemEvent.DESELECTED) {
+                        encrypted.setVisible(false);
+                        plaintext.setVisible(true);
+                        secretPhraseField.setVisible(false);
+                        password2Label.setVisible(false);
+                    }
+                });
+
         loginButton.addActionListener(
                 e -> {
-                    boolean userBox = userTextField.getText().isEmpty();
+                    boolean userBox = usernameTextField.getText().isEmpty();
                     boolean passwordBox = passwordField.getPassword().length == 0;
-                    boolean password2Box = password2Field.getPassword().length == 0;
+                    boolean password2Box = secretPhraseField.getPassword().length == 0;
+                    boolean encrypt = encryptedCheck.isSelected();
                     List<String> usernames = new ArrayList<>();
                     JSONManager.getAccounts()
                             .forEach(account -> usernames.add(account.getUsername()));
-                    if (usernames.contains(userTextField.getText())) {
+                    if (usernames.contains(usernameTextField.getText())) {
                         JOptionPane.showMessageDialog(
                                 frame,
                                 "You cannot add an account with the same username.",
@@ -97,7 +131,7 @@ public class NewAccountWindow extends JFrame {
                                 JOptionPane.ERROR_MESSAGE);
                         return;
                     }
-                    if (userBox || passwordBox || password2Box) {
+                    if (userBox || passwordBox) {
                         JOptionPane.showMessageDialog(
                                 frame,
                                 "You must fill in all text boxes.",
@@ -105,13 +139,25 @@ public class NewAccountWindow extends JFrame {
                                 JOptionPane.ERROR_MESSAGE);
                         return;
                     }
+                    if (encrypt) {
+                        if (password2Box) {
+                            JOptionPane.showMessageDialog(
+                                    frame,
+                                    "You must enter a passphrase.",
+                                    "Error",
+                                    JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+                    }
                     JSONManager.addNewAccount(
-                            userTextField.getText(),
+                            usernameTextField.getText(),
                             JSONManager.encrypt(
                                     String.valueOf(passwordField.getPassword()),
-                                    String.valueOf(password2Field.getPassword())));
+                                    String.valueOf(secretPhraseField.getPassword())),
+                            encrypt);
                     MainWindow.refreshAccountList();
-                    JOptionPane.showMessageDialog(frame, userTextField.getText() + " was saved!");
+                    JOptionPane.showMessageDialog(
+                            frame, usernameTextField.getText() + " was saved!");
                     frame.dispose();
                 });
 

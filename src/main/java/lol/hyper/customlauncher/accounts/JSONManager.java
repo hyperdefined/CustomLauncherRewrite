@@ -101,7 +101,13 @@ public class JSONManager {
             JSONObject currentAccount = accountsJSON.getJSONObject(i);
             String username = (String) currentAccount.get("username");
             String password = (String) currentAccount.get("password");
-            Account account = new Account(username, password);
+            boolean encrypted;
+            if (!currentAccount.has("encrypted")) {
+                encrypted = true;
+            } else {
+                encrypted = currentAccount.getBoolean("encrypted");
+            }
+            Account account = new Account(username, password, encrypted);
             accounts.add(account);
         }
         return accounts;
@@ -111,13 +117,15 @@ public class JSONManager {
      * Adds a new account to the accounts file.
      *
      * @param username Account username.
-     * @param encryptedPassword Account encrypted password.
+     * @param password Account's password or encrypted password.
+     * @param encrypted Is the account's password encrypted?
      */
-    public static void addNewAccount(String username, String encryptedPassword) {
+    public static void addNewAccount(String username, String password, boolean encrypted) {
         JSONArray accountsJSON = new JSONArray(readFile(accountsFile));
         JSONObject newAccount = new JSONObject();
         newAccount.put("username", username);
-        newAccount.put("password", encryptedPassword);
+        newAccount.put("password", password);
+        newAccount.put("encrypted", encrypted);
         accountsJSON.put(newAccount);
         writeFile(accountsJSON, accountsFile);
     }
