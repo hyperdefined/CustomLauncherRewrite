@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
 import javax.swing.*;
+import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.io.BufferedReader;
@@ -28,12 +29,12 @@ public class FieldOfficeTracker {
 
     public final HashMap<Integer, FieldOffice> fieldOffices = new HashMap<>();
     public final Logger logger = LogManager.getLogger(FieldOfficeTracker.class);
-    public ScheduledExecutorService schedulerGUI;
     public ScheduledExecutorService schedulerAPI;
     public JTable fieldOfficeTable;
     public DefaultTableModel fieldOfficeTableModel;
     public JFrame frame;
     public static final HashMap<Integer, String> zonesToStreets = new HashMap<>();
+    public Timer timer;
 
     /** Open the field office window. */
     public void showWindow() {
@@ -70,11 +71,10 @@ public class FieldOfficeTracker {
         panel.add(fieldOfficeLabel);
 
         fieldOfficeTable = new JTable();
-        String[] columns = new String[] {"Street", "Difficulty", "Total Annexes", "Open"};
+        String[] columns = new String[] {"Street", "Difficulty", "Total Annexes", "Status"};
 
         fieldOfficeTableModel = (DefaultTableModel) fieldOfficeTable.getModel();
         fieldOfficeTableModel.setColumnIdentifiers(columns);
-        fieldOfficeTable.setModel(fieldOfficeTableModel);
         fieldOfficeTable.setDefaultEditor(Object.class, null);
         fieldOfficeTable.getTableHeader().setReorderingAllowed(false);
         fieldOfficeTable.setFocusable(false);
@@ -83,8 +83,10 @@ public class FieldOfficeTracker {
         panel.add(scrollPane);
 
         // start the table update scheduler
-        schedulerGUI = Executors.newScheduledThreadPool(0);
-        schedulerGUI.scheduleAtFixedRate(this::updateFieldOfficeList, 0, 1, TimeUnit.SECONDS);
+        timer = new Timer(1000, e -> updateFieldOfficeList());
+        timer.setRepeats(true);
+        timer.setInitialDelay(0);
+        timer.start();
 
         startFieldOfficeRefresh();
 
@@ -94,13 +96,13 @@ public class FieldOfficeTracker {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
-        // stop the schedules here so they don't run while the window is closed
+        // stop the schedules here, so they don't run while the window is closed
         frame.addWindowListener(
                 new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent windowEvent) {
                         schedulerAPI.shutdown();
-                        schedulerGUI.shutdown();
+                        timer.stop();
                     }
                 });
     }
@@ -130,7 +132,7 @@ public class FieldOfficeTracker {
                         String.valueOf(open)
                     };
             fieldOfficeTableModel.addRow(data);
-            fieldOfficeTableModel.fireTableDataChanged();
+            fieldOfficeTable.setModel(fieldOfficeTableModel);
         }
     }
 

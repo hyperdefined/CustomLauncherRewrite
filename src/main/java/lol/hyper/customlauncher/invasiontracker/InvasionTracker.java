@@ -24,8 +24,11 @@ import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
 import javax.swing.*;
+import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,11 +52,11 @@ public class InvasionTracker {
 
     public final HashMap<String, Invasion> invasions = new HashMap<>();
     public final Logger logger = LogManager.getLogger(InvasionTracker.class);
-    public ScheduledExecutorService schedulerGUI;
     public ScheduledExecutorService schedulerAPI;
     public JTable invasionTable;
     public DefaultTableModel invasionTableModel;
     public JFrame frame;
+    public Timer timer;
 
     /** Open the invasion window. */
     public void showWindow() {
@@ -81,7 +84,6 @@ public class InvasionTracker {
 
         invasionTableModel = (DefaultTableModel) invasionTable.getModel();
         invasionTableModel.setColumnIdentifiers(columns);
-        invasionTable.setModel(invasionTableModel);
         invasionTable.setDefaultEditor(Object.class, null);
         invasionTable.getTableHeader().setReorderingAllowed(false);
         invasionTable.setFocusable(false);
@@ -89,8 +91,10 @@ public class InvasionTracker {
         scrollPane.setVisible(true);
         panel.add(scrollPane);
 
-        schedulerGUI = Executors.newScheduledThreadPool(0);
-        schedulerGUI.scheduleAtFixedRate(this::updateInvasionListGUI, 0, 1, TimeUnit.SECONDS);
+        timer = new Timer(1000, e -> updateInvasionListGUI());
+        timer.setRepeats(true);
+        timer.setInitialDelay(0);
+        timer.start();
 
         startInvasionRefresh();
 
@@ -105,7 +109,7 @@ public class InvasionTracker {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent windowEvent) {
                         schedulerAPI.shutdown();
-                        schedulerGUI.shutdown();
+                        timer.stop();
                     }
                 });
     }
@@ -138,7 +142,7 @@ public class InvasionTracker {
             }
             data = new String[] {district, cogType, timeLeft, cogs};
             invasionTableModel.addRow(data);
-            invasionTableModel.fireTableDataChanged();
+            invasionTable.setModel(invasionTableModel);
         }
     }
 
