@@ -84,14 +84,6 @@ public class Main {
             logger.info("Creating base accounts file...");
         }
 
-        // automatically convert the old format to the new one
-        // probably not needed anymore
-        char firstChar = JSONManager.readFile(JSONManager.accountsFile).charAt(0);
-        if (firstChar == '{') {
-            JSONManager.convertToNewFormat();
-            Main.logger.info("Converting account storage to JSONArray format.");
-        }
-
         // check for updates using my own api
         GitHubReleaseAPI api = new GitHubReleaseAPI("CustomLauncherRewrite", "hyperdefined");
         GitHubRelease latest = api.getLatestVersion();
