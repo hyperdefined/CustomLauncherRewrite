@@ -92,13 +92,15 @@ public class Main {
             Main.logger.info("Converting account storage to JSONArray format.");
         }
 
+        // check for updates using my own api
         GitHubReleaseAPI api = new GitHubReleaseAPI("CustomLauncherRewrite", "hyperdefined");
         GitHubRelease latest = api.getLatestVersion();
         String latestVersion = latest.getTagVersion();
         GitHubRelease current = api.getReleaseByTag(VERSION);
         int behind = api.getBuildsBehind(current);
         UpdateChecker updateChecker = new UpdateChecker(api);
-        if (!latestVersion.equals(VERSION)) {
+        // if the user is 1 or more build behind, ask to update
+        if (behind >= 1) {
             logger.info("A new version is available! Version: " + latestVersion);
             int dialogResult =
                     JOptionPane.showConfirmDialog(
@@ -112,12 +114,16 @@ public class Main {
                             "New Update",
                             JOptionPane.YES_NO_OPTION);
             if (dialogResult == JOptionPane.YES_OPTION) {
+                // download the latest version and run it
                 updateChecker.downloadLatestVersion();
                 updateChecker.launchNewVersion(latestVersion);
                 System.exit(0);
             }
         }
 
+        // this is used for removing old versions on windows
+        // passing "--remove-old <version> will delete that version's exe
+        // mainly for cleanup so there aren't 100 exes in the folder
         if (args.length >= 1) {
             String arg1 = args[0];
             if (arg1.equalsIgnoreCase("--remove-old")) {

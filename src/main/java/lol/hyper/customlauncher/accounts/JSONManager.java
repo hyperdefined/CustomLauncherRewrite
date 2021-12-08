@@ -101,6 +101,8 @@ public class JSONManager {
             JSONObject currentAccount = accountsJSON.getJSONObject(i);
             String username = (String) currentAccount.get("username");
             String password = (String) currentAccount.get("password");
+            // if the account doesn't have this tag, it's using the old system
+            // the old system encrypts them
             boolean encrypted;
             if (!currentAccount.has("encrypted")) {
                 encrypted = true;
@@ -206,19 +208,5 @@ public class JSONManager {
             Main.logger.error("Error while decrypting input text!", e);
             return null;
         }
-    }
-
-    public static void convertToNewFormat() {
-        JSONObject oldFile = new JSONObject(readFile(accountsFile));
-        JSONArray newFile = new JSONArray();
-        Iterator<String> keys = oldFile.keys();
-
-        while (keys.hasNext()) {
-            String key = keys.next();
-            if (oldFile.get(key) instanceof JSONObject temp) {
-                newFile.put(temp);
-            }
-        }
-        writeFile(newFile, accountsFile);
     }
 }

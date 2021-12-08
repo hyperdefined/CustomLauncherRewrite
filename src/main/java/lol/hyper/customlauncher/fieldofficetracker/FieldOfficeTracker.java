@@ -37,6 +37,7 @@ public class FieldOfficeTracker {
 
     /** Open the field office window. */
     public void showWindow() {
+        // zone IDs to street names
         zonesToStreets.put(3100, "Walrus Way");
         zonesToStreets.put(3200, "Sleet Street");
         zonesToStreets.put(3300, "Polar Place");
@@ -81,6 +82,7 @@ public class FieldOfficeTracker {
         scrollPane.setVisible(true);
         panel.add(scrollPane);
 
+        // start the table update scheduler
         schedulerGUI = Executors.newScheduledThreadPool(0);
         schedulerGUI.scheduleAtFixedRate(this::updateFieldOfficeList, 0, 1, TimeUnit.SECONDS);
 
@@ -92,6 +94,7 @@ public class FieldOfficeTracker {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
+        // stop the schedules here so they don't run while the window is closed
         frame.addWindowListener(
                 new java.awt.event.WindowAdapter() {
                     @Override
@@ -204,14 +207,17 @@ public class FieldOfficeTracker {
 
         // grab the field offices object in the request
         JSONObject fieldOfficeRoot = new JSONObject(fieldOfficeSJONRaw);
+        // each field office is stored under the JSONObject "fieldOffices"
         JSONObject fieldOfficeJSON = fieldOfficeRoot.getJSONObject("fieldOffices");
 
         logger.info("Reading " + FIELD_OFFICE_URL + " for current field offices...");
         logger.info(fieldOfficeJSON);
 
+        // go through all the field offices from the API
         Iterator<String> keys = fieldOfficeJSON.keys();
         while (keys.hasNext()) {
             String key = keys.next();
+            // each field office json is named the zone ID
             JSONObject zoneJSON = fieldOfficeJSON.getJSONObject(key);
             logger.info(key + zoneJSON);
             // update field office data
@@ -228,6 +234,7 @@ public class FieldOfficeTracker {
                 boolean open = zoneJSON.getBoolean("open");
                 FieldOffice office =
                         new FieldOffice(Integer.parseInt(key), difficulty, open, totalAnnexes);
+                // add it to our master list
                 fieldOffices.put(Integer.parseInt(key), office);
             }
         }
