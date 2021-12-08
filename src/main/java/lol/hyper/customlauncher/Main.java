@@ -91,20 +91,25 @@ public class Main {
         GitHubRelease current = api.getReleaseByTag(VERSION);
         int behind = api.getBuildsBehind(current);
         UpdateChecker updateChecker = new UpdateChecker(api);
+        StringBuilder updates = new StringBuilder();
         // if the user is 1 or more build behind, ask to update
-        if (behind >= 1) {
+        if (behind > 0) {
+            JTextArea textArea = new JTextArea();
+            JScrollPane scrollPane = new JScrollPane(textArea);
+            textArea.setLineWrap(true);
+            textArea.setWrapStyleWord(true);
+            scrollPane.setPreferredSize( new Dimension( 500, 500 ) );
+            updates.append("You are running an outdated version! You are running ").append(VERSION).append(" currently.");
+            updates.append("Would you like to update?\n\n");
+            for (int i = behind - 1; i >= 0; i--) {
+                String tag = api.getAllReleases().get(i).getTagVersion();
+                updates.append("----------------------------------------\nVersion: ").append(tag).append("\n").append(api.getReleaseByTag(tag).getReleaseNotes()).append("\n");
+            }
+            textArea.setText(updates.toString());
             logger.info("A new version is available! Version: " + latestVersion);
-            int dialogResult =
-                    JOptionPane.showConfirmDialog(
-                            null,
-                            "You are currently "
-                                    + behind
-                                    + " versions behind. Latest version is: "
-                                    + latestVersion
-                                    + ".\nWould you like to update?\n\n"
-                                    + latest.getReleaseNotes(),
-                            "New Update",
-                            JOptionPane.YES_NO_OPTION);
+
+            int dialogResult = JOptionPane.showConfirmDialog(null, scrollPane, "Updates",
+                    JOptionPane.YES_NO_OPTION);
             if (dialogResult == JOptionPane.YES_OPTION) {
                 // download the latest version and run it
                 updateChecker.downloadLatestVersion();
