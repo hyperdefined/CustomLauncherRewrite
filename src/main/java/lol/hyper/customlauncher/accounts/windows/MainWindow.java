@@ -22,6 +22,8 @@ import lol.hyper.customlauncher.accounts.Account;
 import lol.hyper.customlauncher.accounts.JSONManager;
 import lol.hyper.customlauncher.fieldofficetracker.FieldOfficeTracker;
 import lol.hyper.customlauncher.invasiontracker.InvasionTracker;
+import lol.hyper.customlauncher.login.LoginHandler;
+import lol.hyper.customlauncher.login.LoginRequest;
 
 import javax.swing.*;
 import java.awt.*;
@@ -92,12 +94,14 @@ public class MainWindow extends JFrame {
 
         // field office button
         JButton fieldOfficesButton = new JButton("Field Offices");
-        fieldOfficesButton.addActionListener(e -> {
-            FieldOfficeTracker fieldOfficeTracker = new FieldOfficeTracker();
-            fieldOfficeTracker.showWindow();
-        });
+        fieldOfficesButton.addActionListener(
+                e -> {
+                    FieldOfficeTracker fieldOfficeTracker = new FieldOfficeTracker();
+                    fieldOfficeTracker.showWindow();
+                });
         fieldOfficesButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        fieldOfficesButton.setMaximumSize(new Dimension(300, fieldOfficesButton.getMinimumSize().height));
+        fieldOfficesButton.setMaximumSize(
+                new Dimension(300, fieldOfficesButton.getMinimumSize().height));
         panel.add(fieldOfficesButton);
 
         accountList.addMouseListener(
@@ -114,9 +118,18 @@ public class MainWindow extends JFrame {
                             } else {
                                 int index = list.getSelectedIndex();
                                 Account account = JSONManager.getAccounts().get(index);
-                                SecretPrompt secretPrompt =
-                                        new SecretPrompt("Enter Passphrase", account);
-                                secretPrompt.dispose();
+                                if (!account.encrypted()) {
+                                    String username = account.getUsername();
+                                    String password = account.getPassword();
+                                    LoginRequest loginRequest = new LoginRequest();
+                                    loginRequest.addDetails("username", username);
+                                    loginRequest.addDetails("password", password);
+                                    LoginHandler.handleLoginRequest(loginRequest);
+                                } else {
+                                    SecretPrompt secretPrompt =
+                                            new SecretPrompt("Enter Passphrase", account);
+                                    secretPrompt.dispose();
+                                }
                             }
                         }
                     }

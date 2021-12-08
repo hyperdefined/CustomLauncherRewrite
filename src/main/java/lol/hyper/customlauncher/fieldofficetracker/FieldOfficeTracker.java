@@ -33,7 +33,7 @@ public class FieldOfficeTracker {
     public JTable fieldOfficeTable;
     public DefaultTableModel fieldOfficeTableModel;
     public JFrame frame;
-    public static HashMap<Integer, String> zonesToStreets = new HashMap<>();
+    public static final HashMap<Integer, String> zonesToStreets = new HashMap<>();
 
     /** Open the field office window. */
     public void showWindow() {

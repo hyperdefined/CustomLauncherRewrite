@@ -17,7 +17,7 @@
 
 package lol.hyper.customlauncher.accounts;
 
-public record Account(String username, String password) {
+public record Account(String username, String password, boolean encrypted) {
 
     /**
      * Returns the username of an account.
@@ -35,5 +35,13 @@ public record Account(String username, String password) {
      */
     public String getPassword() {
         return password;
+    }
+
+    /**
+     * Is the account login encrypted?
+     * @return The account's encryption status.
+     */
+    public boolean encrypted() {
+        return encrypted;
     }
 }
