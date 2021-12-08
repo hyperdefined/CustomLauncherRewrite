@@ -15,7 +15,7 @@ echo "Extracting ""$OUTPUTFILE""..."
 sudo tar -xf /tmp/"$OUTPUTFILE" -C $INSTALLDIR
 
 echo "Downloading desktop entry..."
-wget -q -O ~/.local/share/icons/custom-rewrite-launcher.png https://github.com/hyperdefined/CustomLauncherRewrite/blob/master/src/main/resources/icon.png
+wget -q -O ~/.local/share/icons/custom-rewrite-launcher.png https://raw.githubusercontent.com/hyperdefined/CustomLauncherRewrite/master/src/main/resources/icon.png
 sudo wget -q -P /usr/share/applications https://raw.githubusercontent.com/hyperdefined/CustomLauncherRewrite/master/linux/customlauncherrewrite.desktop
 
 # Symlink on desktop (e.g. desktop shortcut)
