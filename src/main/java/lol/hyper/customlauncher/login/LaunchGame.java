@@ -45,9 +45,9 @@ public class LaunchGame extends Thread {
         if (SystemUtils.IS_OS_WINDOWS) {
             String[] windowsCommand;
             if (System.getProperty("sun.arch.data.model").equalsIgnoreCase("64")) {
-                windowsCommand = new String[]{"cmd", "/c", "TTREngine64.exe"};
+                windowsCommand = new String[] {"cmd", "/c", "TTREngine64.exe"};
             } else {
-                windowsCommand = new String[]{"cmd", "/c", "TTREngine.exe"};
+                windowsCommand = new String[] {"cmd", "/c", "TTREngine.exe"};
             }
             pb.command(windowsCommand);
         }
@@ -70,22 +70,19 @@ public class LaunchGame extends Thread {
         Map<String, String> env = pb.environment();
         env.put("TTR_GAMESERVER", this.gameServer);
         env.put("TTR_PLAYCOOKIE", this.cookie);
-        Thread t1 = new Thread(() -> {
-            try {
-                Process process = pb.start();
-                process.getInputStream().close();
-                process.waitFor();
-            } catch (IOException | InterruptedException e) {
-                logger.error("Unable to launch game!", e);
-                JFrame errorWindow =
-                        new ErrorWindow(
-                                "Unable to launch game.\n"
-                                        + e.getClass().getCanonicalName()
-                                        + ": "
-                                        + e.getMessage());
-                errorWindow.dispose();
-            }
-        });
+        Thread t1 =
+                new Thread(
+                        () -> {
+                            try {
+                                Process process = pb.start();
+                                process.getInputStream().close();
+                                process.waitFor();
+                            } catch (IOException | InterruptedException e) {
+                                logger.error("Unable to launch game!", e);
+                                JFrame errorWindow = new ErrorWindow(null, e);
+                                errorWindow.dispose();
+                            }
+                        });
         t1.start();
     }
 }

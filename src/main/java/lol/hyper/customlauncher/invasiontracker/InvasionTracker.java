@@ -155,13 +155,13 @@ public class InvasionTracker {
 
     /** Read the TTR API and get the current invasions. */
     public void readInvasionAPI() {
-        String INVASION_URL = "https://api.toon.plus/invasions/";
+        String INVASION_URL = "https://api.toon.plus/invasionse/";
 
         // grab the invasions object in the request
         // that hold all the invasions
         JSONObject invasionsJSON = JSONManager.requestJSON(INVASION_URL);
         if (invasionsJSON == null) {
-            ErrorWindow errorWindow = new ErrorWindow("Unable to read invasion API!");
+            ErrorWindow errorWindow = new ErrorWindow("Unable to read invasion API!", null);
             errorWindow.dispose();
             return;
         }

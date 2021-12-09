@@ -131,7 +131,8 @@ public class TTRUpdater extends JFrame {
         if (osType == null) {
             ErrorWindow errorWindow =
                     new ErrorWindow(
-                            "We are unable to detect your operating system. Please report this to the GitHub!");
+                            "We are unable to detect your operating system. Please report this to the GitHub!",
+                            null);
             errorWindow.dispose();
             return;
         }
@@ -172,14 +173,7 @@ public class TTRUpdater extends JFrame {
                     logger.error(
                             "Unable to calculate SHA1 hash for file " + localFile.getAbsolutePath(),
                             e);
-                    JFrame errorWindow =
-                            new ErrorWindow(
-                                    "Unable to calculate SHA1 hash for file "
-                                            + localFile.getAbsolutePath()
-                                            + ".\n"
-                                            + e.getClass().getCanonicalName()
-                                            + ": "
-                                            + e.getMessage());
+                    JFrame errorWindow = new ErrorWindow(null, e);
                     errorWindow.dispose();
                     frame.dispose();
                     return;
@@ -207,7 +201,7 @@ public class TTRUpdater extends JFrame {
             File tempFolder = new File("temp");
             if (!tempFolder.exists() && !tempFolder.mkdirs()) {
                 logger.error("Unable to create temp folder!");
-                JFrame errorWindow = new ErrorWindow("Unable to create temp folder!");
+                JFrame errorWindow = new ErrorWindow("Unable to create temp folder!", null);
                 errorWindow.dispose();
                 frame.dispose();
             }
@@ -232,7 +226,7 @@ public class TTRUpdater extends JFrame {
                 File output = new File(tempFolder + File.separator + dl);
                 if (!saveFile(downloadURL, output)) {
                     logger.error("Unable to download file" + dl);
-                    JFrame errorWindow = new ErrorWindow("Unable to download file " + dl + ".");
+                    JFrame errorWindow = new ErrorWindow("Unable to download file " + dl + ".", null);
                     errorWindow.dispose();
                     frame.dispose();
                 }
@@ -247,14 +241,7 @@ public class TTRUpdater extends JFrame {
                     decompressBz2(dl, fileToDownload); // extract the file to the new location
                 } catch (IOException e) {
                     logger.error("Unable to extract file" + dl, e);
-                    JFrame errorWindow =
-                            new ErrorWindow(
-                                    "Unable to extract file "
-                                            + dl
-                                            + ".\n"
-                                            + e.getClass().getCanonicalName()
-                                            + ": "
-                                            + e.getMessage());
+                    JFrame errorWindow = new ErrorWindow(null, e);
                     errorWindow.dispose();
                     frame.dispose();
                 }
@@ -273,14 +260,7 @@ public class TTRUpdater extends JFrame {
                         Files.delete(currentFile.toPath());
                     } catch (IOException e) {
                         logger.error("Unable to delete file " + currentFile.getAbsolutePath(), e);
-                        JFrame errorWindow =
-                                new ErrorWindow(
-                                        "Unable to delete file "
-                                                + currentFile.getAbsolutePath()
-                                                + ".\n"
-                                                + e.getClass().getCanonicalName()
-                                                + ": "
-                                                + e.getMessage());
+                        JFrame errorWindow = new ErrorWindow(null, e);
                         errorWindow.dispose();
                         frame.dispose();
                     }
@@ -291,12 +271,7 @@ public class TTRUpdater extends JFrame {
                 Files.delete(Paths.get(System.getProperty("user.dir") + File.separator + "temp"));
             } catch (IOException e) {
                 logger.error("Unable to delete temp folder!", e);
-                JFrame errorWindow =
-                        new ErrorWindow(
-                                "Unable to delete temp folder!\n"
-                                        + e.getClass().getCanonicalName()
-                                        + ": "
-                                        + e.getMessage());
+                JFrame errorWindow = new ErrorWindow(null, e);
                 errorWindow.dispose();
                 frame.dispose();
             }

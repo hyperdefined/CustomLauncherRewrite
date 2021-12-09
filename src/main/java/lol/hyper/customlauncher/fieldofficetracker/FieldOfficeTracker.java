@@ -151,7 +151,7 @@ public class FieldOfficeTracker {
         // each field office is stored under the JSONObject "fieldOffices"
         JSONObject fieldOfficeRoot = JSONManager.requestJSON(FIELD_OFFICE_URL);
         if (fieldOfficeRoot == null) {
-            ErrorWindow errorWindow = new ErrorWindow("Unable to read field office API!");
+            ErrorWindow errorWindow = new ErrorWindow("Unable to read field office API!", null);
             errorWindow.dispose();
             return;
         }

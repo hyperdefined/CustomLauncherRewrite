@@ -67,12 +67,7 @@ public class LoginHandler {
             attempts += 1;
         } catch (Exception e) {
             logger.error("Unable to send login request to TTR!", e);
-            JFrame errorWindow =
-                    new ErrorWindow(
-                            "Unable to send login request to TTR.\n"
-                                    + e.getClass().getCanonicalName()
-                                    + ": "
-                                    + e.getMessage());
+            JFrame errorWindow = new ErrorWindow(null, e);
             errorWindow.dispose();
             return;
         }
@@ -90,7 +85,7 @@ public class LoginHandler {
             case "false" -> // false is invalid login details / maintenance
                     {
                         logger.info("Returned false: " + banner);
-                        JFrame errorWindow = new ErrorWindow(banner);
+                        JFrame errorWindow = new ErrorWindow(banner, null);
                         errorWindow.dispose();
                     }
             case "partial" -> // partial is used for 2FA or ToonGuard
@@ -144,7 +139,7 @@ public class LoginHandler {
                         logger.info(request);
                         JFrame errorWindow =
                                 new ErrorWindow(
-                                        "TTR sent back a weird response, or we got an invalid response.\nCheck the log for more information.");
+                                        "TTR sent back a weird response, or we got an invalid response.\nCheck the log for more information.", null);
                         errorWindow.dispose();
                     }
         }

@@ -53,14 +53,7 @@ public class JSONManager {
             encoded = Files.readAllBytes(file.toPath());
         } catch (IOException e) {
             Main.logger.error("Unable to read file " + file, e);
-            JFrame errorWindow =
-                    new ErrorWindow(
-                            "Unable to read file "
-                                    + file.getAbsolutePath()
-                                    + ".\n"
-                                    + e.getClass().getCanonicalName()
-                                    + ": "
-                                    + e.getMessage());
+            JFrame errorWindow = new ErrorWindow(null, e);
             errorWindow.dispose();
         }
         return new String(encoded, StandardCharsets.UTF_8);
@@ -78,14 +71,7 @@ public class JSONManager {
             writer.close();
         } catch (IOException e) {
             Main.logger.error("Unable to write file " + file, e);
-            JFrame errorWindow =
-                    new ErrorWindow(
-                            "Unable to write file "
-                                    + file.getAbsolutePath()
-                                    + ".\n"
-                                    + e.getClass().getCanonicalName()
-                                    + ": "
-                                    + e.getMessage());
+            JFrame errorWindow = new ErrorWindow(null, e);
             errorWindow.dispose();
         }
     }
@@ -234,13 +220,7 @@ public class JSONManager {
         } catch (IOException e) {
             Main.logger.error("Unable to read URL " + url, e);
             JFrame errorWindow =
-                    new ErrorWindow(
-                            "Unable to read URL "
-                                    + url
-                                    + "\n"
-                                    + e.getClass().getCanonicalName()
-                                    + ": "
-                                    + e.getMessage());
+                    new ErrorWindow(null, e);
             errorWindow.dispose();
             return null;
         }

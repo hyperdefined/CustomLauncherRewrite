@@ -45,7 +45,7 @@ public class UpdateChecker {
     public void downloadLatestVersion() throws IOException, InterruptedException {
         HashMap<String, URL> downloadURLs = new HashMap<>();
         if (api.getAllReleases() == null || api.getAllReleases().isEmpty()) {
-            JFrame errorWindow = new ErrorWindow("Unable to look for updates!");
+            JFrame errorWindow = new ErrorWindow("Unable to look for updates!", null);
             errorWindow.dispose();
             return;
         }
@@ -94,7 +94,13 @@ public class UpdateChecker {
      * @param newVersion Version to launch.
      */
     public void launchNewVersion(String newVersion) throws IOException {
-        String[] windowsCommand = {"cmd", "/c", "CustomLauncherRewrite-" + newVersion + ".exe", "--remove-old", Main.VERSION};
+        String[] windowsCommand = {
+            "cmd",
+            "/c",
+            "CustomLauncherRewrite-" + newVersion + ".exe",
+            "--remove-old",
+            Main.VERSION
+        };
         String linuxCommand = "./run.sh";
         ProcessBuilder pb = new ProcessBuilder();
         if (SystemUtils.IS_OS_LINUX) {
@@ -119,12 +125,7 @@ public class UpdateChecker {
             p.getInputStream().close();
         } catch (IOException e) {
             logger.error("Unable to launch new version!", e);
-            JFrame errorWindow =
-                    new ErrorWindow(
-                            "Unable to launch new version!.\n"
-                                    + e.getClass().getCanonicalName()
-                                    + ": "
-                                    + e.getMessage());
+            JFrame errorWindow = new ErrorWindow(null, e);
             errorWindow.dispose();
         }
     }
@@ -144,7 +145,7 @@ public class UpdateChecker {
         if (exitCode == 0) {
             logger.info("Extracted " + temp + "!");
         } else {
-            JFrame errorWindow = new ErrorWindow("Unable to extract release file.");
+            JFrame errorWindow = new ErrorWindow("Unable to extract release file.", null);
             errorWindow.dispose();
         }
     }

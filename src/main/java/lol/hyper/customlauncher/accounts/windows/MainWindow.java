@@ -177,7 +177,7 @@ public class MainWindow extends JFrame {
     private void updateTTRStatus() {
         JSONObject ttrStatusJSON = JSONManager.requestJSON("https://www.toontownrewritten.com/api/status");
         if (ttrStatusJSON == null) {
-            ErrorWindow errorWindow = new ErrorWindow("Unable to check TTR's game status!");
+            ErrorWindow errorWindow = new ErrorWindow("Unable to check TTR's game status!", null);
             errorWindow.dispose();
             timer.stop();
             return;

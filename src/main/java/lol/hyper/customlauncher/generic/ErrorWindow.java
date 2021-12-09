@@ -18,17 +18,40 @@
 package lol.hyper.customlauncher.generic;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class ErrorWindow extends JFrame {
 
-    public ErrorWindow(String errorMessage) {
+    public ErrorWindow(String errorMessage, Exception exception) {
         JFrame frame = new JFrame();
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        JOptionPane.showMessageDialog(frame, errorMessage, "Error", JOptionPane.ERROR_MESSAGE);
+        if (exception == null) {
+            JOptionPane.showMessageDialog(frame, errorMessage, "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            // taken from https://stackoverflow.com/a/14011536
+            StringBuilder sb = new StringBuilder(exception.getClass().getCanonicalName());
+            sb.append(": ");
+            sb.append(exception.getMessage());
+            sb.append("\n");
+            for (StackTraceElement ste : exception.getStackTrace()) {
+                sb.append(ste.toString());
+                sb.append("\n");
+            }
+            JTextArea jta = new JTextArea(sb.toString());
+            jta.setEditable(false);
+            JScrollPane jsp =
+                    new JScrollPane(jta) {
+                        @Override
+                        public Dimension getPreferredSize() {
+                            return new Dimension(480, 320);
+                        }
+                    };
+            JOptionPane.showMessageDialog(null, jsp, "Error", JOptionPane.ERROR_MESSAGE);
+        }
         frame.setLocationRelativeTo(null);
         frame.dispose();
     }
