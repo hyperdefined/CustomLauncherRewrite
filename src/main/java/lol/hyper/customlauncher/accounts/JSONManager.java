@@ -25,15 +25,16 @@ import org.json.JSONObject;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import javax.swing.*;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.net.URL;
+import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class JSONManager {
 
@@ -208,5 +209,46 @@ public class JSONManager {
             Main.logger.error("Error while decrypting input text!", e);
             return null;
         }
+    }
+
+    /**
+     * Get a JSONObject from a URL.
+     *
+     * @param url The URL to get JSON from.
+     * @return The URL's JSON.
+     */
+    public static JSONObject requestJSON(String url) {
+        String rawJSON;
+        try {
+            URLConnection conn = new URL(url).openConnection();
+            conn.setRequestProperty(
+                    "User-Agent",
+                    "CustomLauncherRewrite https://github.com/hyperdefined/CustomLauncherRewrite");
+            conn.connect();
+
+            InputStream in = conn.getInputStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+            rawJSON = reader.lines().collect(Collectors.joining(System.lineSeparator()));
+            reader.close();
+
+        } catch (IOException e) {
+            Main.logger.error("Unable to read URL " + url, e);
+            JFrame errorWindow =
+                    new ErrorWindow(
+                            "Unable to read URL "
+                                    + url
+                                    + "\n"
+                                    + e.getClass().getCanonicalName()
+                                    + ": "
+                                    + e.getMessage());
+            errorWindow.dispose();
+            return null;
+        }
+
+        if (rawJSON.isEmpty()) {
+            Main.logger.error("Read JSON from " + url + " returned an empty string!");
+            return null;
+        }
+        return new JSONObject(rawJSON);
     }
 }

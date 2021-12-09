@@ -18,6 +18,7 @@
 package lol.hyper.customlauncher.invasiontracker;
 
 import lol.hyper.customlauncher.Main;
+import lol.hyper.customlauncher.accounts.JSONManager;
 import lol.hyper.customlauncher.generic.ErrorWindow;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -128,7 +129,7 @@ public class InvasionTracker {
         // add the invasions to the table
         for (Invasion invasion : sortedInvasions) {
             String district = invasion.getDistrict();
-            String cogType = invasion.getCogType();
+            String cogType = invasion.getCogType().replace("\u0003", ""); // remove the python char
             String timeLeft;
             String cogs;
             if (invasion.megaInvasion) {
@@ -155,71 +156,15 @@ public class InvasionTracker {
     /** Read the TTR API and get the current invasions. */
     public void readInvasionAPI() {
         String INVASION_URL = "https://api.toon.plus/invasions/";
-        String invasionJSONRaw;
-
-        // make the request to the API
-        URL url;
-        try {
-            url = new URL(INVASION_URL);
-        } catch (MalformedURLException e) {
-            schedulerAPI.shutdown();
-            logger.error("Unable to read invasion API!", e);
-            JFrame errorWindow =
-                    new ErrorWindow(
-                            "There was an a problem reading invasion API!\n"
-                                    + e.getClass().getCanonicalName()
-                                    + ": "
-                                    + e.getMessage());
-            errorWindow.dispose();
-            frame.dispose();
-            return;
-        }
-        URLConnection conn;
-        try {
-            conn = url.openConnection();
-        } catch (IOException e) {
-            schedulerAPI.shutdown();
-            logger.error("Unable to read invasion API!", e);
-            JFrame errorWindow =
-                    new ErrorWindow(
-                            "There was an a problem reading invasion API!\n"
-                                    + e.getClass().getCanonicalName()
-                                    + ": "
-                                    + e.getMessage());
-            errorWindow.dispose();
-            frame.dispose();
-            return;
-        }
-
-        conn.setRequestProperty(
-                "User-Agent",
-                "CustomLauncherRewrite https://github.com/hyperdefined/CustomLauncherRewrite");
-
-        try (InputStream in = conn.getInputStream()) {
-            BufferedReader reader =
-                    new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
-            invasionJSONRaw =
-                    reader.lines()
-                            .collect(Collectors.joining(System.lineSeparator()))
-                            .replace("\u0003", "");
-            reader.close();
-        } catch (IOException e) {
-            schedulerAPI.shutdown();
-            logger.error("Unable to read invasion API!", e);
-            JFrame errorWindow =
-                    new ErrorWindow(
-                            "There was an a problem reading invasion API!\n"
-                                    + e.getClass().getCanonicalName()
-                                    + ": "
-                                    + e.getMessage());
-            errorWindow.dispose();
-            frame.dispose();
-            return;
-        }
 
         // grab the invasions object in the request
         // that hold all the invasions
-        JSONObject invasionsJSON = new JSONObject(invasionJSONRaw);
+        JSONObject invasionsJSON = JSONManager.requestJSON(INVASION_URL);
+        if (invasionsJSON == null) {
+            ErrorWindow errorWindow = new ErrorWindow("Unable to read invasion API!");
+            errorWindow.dispose();
+            return;
+        }
 
         logger.info("Reading " + INVASION_URL + " for current invasions...");
         logger.info(invasionsJSON);

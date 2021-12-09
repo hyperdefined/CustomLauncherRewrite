@@ -1,6 +1,7 @@
 package lol.hyper.customlauncher.fieldofficetracker;
 
 import lol.hyper.customlauncher.Main;
+import lol.hyper.customlauncher.accounts.JSONManager;
 import lol.hyper.customlauncher.generic.ErrorWindow;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -145,71 +146,15 @@ public class FieldOfficeTracker {
     /** Read the TTR API and get the current field offices. */
     public void readFieldOfficeAPI() {
         String FIELD_OFFICE_URL = "https://www.toontownrewritten.com/api/fieldoffices";
-        String fieldOfficeSJONRaw;
-
-        // make the request to the API
-        URL url;
-        try {
-            url = new URL(FIELD_OFFICE_URL);
-        } catch (MalformedURLException e) {
-            schedulerAPI.shutdown();
-            logger.error("Unable to read field office API!", e);
-            JFrame errorWindow =
-                    new ErrorWindow(
-                            "There was an a problem reading field office API!\n"
-                                    + e.getClass().getCanonicalName()
-                                    + ": "
-                                    + e.getMessage());
-            errorWindow.dispose();
-            frame.dispose();
-            return;
-        }
-        URLConnection conn;
-        try {
-            conn = url.openConnection();
-        } catch (IOException e) {
-            schedulerAPI.shutdown();
-            logger.error("Unable to read field office API!", e);
-            JFrame errorWindow =
-                    new ErrorWindow(
-                            "There was an a problem reading field office API!\n"
-                                    + e.getClass().getCanonicalName()
-                                    + ": "
-                                    + e.getMessage());
-            errorWindow.dispose();
-            frame.dispose();
-            return;
-        }
-
-        conn.setRequestProperty(
-                "User-Agent",
-                "CustomLauncherRewrite https://github.com/hyperdefined/CustomLauncherRewrite");
-
-        try (InputStream in = conn.getInputStream()) {
-            BufferedReader reader =
-                    new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
-            fieldOfficeSJONRaw =
-                    reader.lines()
-                            .collect(Collectors.joining(System.lineSeparator()))
-                            .replace("\u0003", "");
-            reader.close();
-        } catch (IOException e) {
-            schedulerAPI.shutdown();
-            logger.error("Unable to read field office API!", e);
-            JFrame errorWindow =
-                    new ErrorWindow(
-                            "There was an a problem reading field office API!\n"
-                                    + e.getClass().getCanonicalName()
-                                    + ": "
-                                    + e.getMessage());
-            errorWindow.dispose();
-            frame.dispose();
-            return;
-        }
 
         // grab the field offices object in the request
-        JSONObject fieldOfficeRoot = new JSONObject(fieldOfficeSJONRaw);
         // each field office is stored under the JSONObject "fieldOffices"
+        JSONObject fieldOfficeRoot = JSONManager.requestJSON(FIELD_OFFICE_URL);
+        if (fieldOfficeRoot == null) {
+            ErrorWindow errorWindow = new ErrorWindow("Unable to read field office API!");
+            errorWindow.dispose();
+            return;
+        }
         JSONObject fieldOfficeJSON = fieldOfficeRoot.getJSONObject("fieldOffices");
 
         logger.info("Reading " + FIELD_OFFICE_URL + " for current field offices...");

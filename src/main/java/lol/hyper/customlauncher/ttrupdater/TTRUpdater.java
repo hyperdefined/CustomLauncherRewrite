@@ -18,6 +18,7 @@
 package lol.hyper.customlauncher.ttrupdater;
 
 import lol.hyper.customlauncher.Main;
+import lol.hyper.customlauncher.accounts.JSONManager;
 import lol.hyper.customlauncher.generic.ErrorWindow;
 import lol.hyper.customlauncher.generic.InfoWindow;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
@@ -103,42 +104,11 @@ public class TTRUpdater extends JFrame {
         }
 
         logger.info("We are checking for TTR updates!");
-        String patchesJSONRaw = null;
-        // read the TTR api to get the files the game needs
-        URL url = new URL(PATCHES_URL);
-        URLConnection conn = url.openConnection();
-        conn.setRequestProperty(
-                "User-Agent",
-                "CustomLauncherRewrite https://github.com/hyperdefined/CustomLauncherRewrite");
-        conn.connect();
-
-        try (InputStream in = conn.getInputStream()) {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-            patchesJSONRaw = reader.lines().collect(Collectors.joining(System.lineSeparator()));
-            reader.close();
-        } catch (IOException e) {
-            logger.error("Unable to read patchesmanifest.txt!", e);
-            JFrame errorWindow =
-                    new ErrorWindow(
-                            "Unable to read patchesmanifest.txt!\n"
-                                    + e.getClass().getCanonicalName()
-                                    + ": "
-                                    + e.getMessage());
-            errorWindow.dispose();
-            frame.dispose();
-        }
-
-        // if the patchmanifest.txt is empty, it most likely won't be but just in case
-        if (patchesJSONRaw == null) {
-            JFrame errorWindow = new ErrorWindow("patchmanifest.txt returned empty.");
-            logger.error(
-                    "patchesJSONRaw returned null. We weren't able to read the contents of the patches list.");
-            errorWindow.dispose();
-            frame.dispose();
+        JSONObject patches = JSONManager.requestJSON(PATCHES_URL);
+        if (patches == null) {
+            logger.error("patchesmanifest.txt returned null!");
             return;
         }
-
-        JSONObject patches = new JSONObject(patchesJSONRaw);
         ArrayList<String> filesToDownload = new ArrayList<>();
 
         String osType = null;
