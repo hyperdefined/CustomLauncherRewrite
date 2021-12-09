@@ -15,7 +15,7 @@ echo "Extracting ""$OUTPUTFILE""..."
 sudo tar -xf /tmp/"$OUTPUTFILE" -C $INSTALLDIR
 
 echo "Downloading desktop entry..."
-wget -q -O ~/.local/share/icons/custom-rewrite-launcher.png https://github.com/hyperdefined/CustomLauncherRewrite/blob/master/src/main/resources/icon.png
+wget -q -O ~/.local/share/icons/custom-rewrite-launcher.png https://raw.githubusercontent.com/hyperdefined/CustomLauncherRewrite/master/src/main/resources/icon.png
 sudo wget -q -P /usr/share/applications https://raw.githubusercontent.com/hyperdefined/CustomLauncherRewrite/master/linux/customlauncherrewrite.desktop
 
 # Symlink on desktop (e.g. desktop shortcut)
@@ -26,11 +26,6 @@ sudo chown "$USER":"$USER" ~/Desktop/customlauncherrewrite.desktop
 echo "Setting correct perms to install location..."
 sudo chown -R "$USER":"$USER" $INSTALLDIR
 sudo chmod -R 755 $INSTALLDIR
-
-echo "Patching transparent window bug..."
-mkdir $INSTALLDIR/ttr-files
-wget -q -O $INSTALLDIR/ttr-files/settings.json https://raw.githubusercontent.com/hyperdefined/CustomLauncherRewrite/master/linux/hotfix/settings.json
-chmod 644 $INSTALLDIR/ttr-files/settings.json # Copies a safe settings.json that TTR will use
 
 rm -rf /tmp/CustomLauncherRewrite*
 
