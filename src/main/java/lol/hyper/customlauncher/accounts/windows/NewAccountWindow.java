@@ -151,9 +151,10 @@ public class NewAccountWindow extends JFrame {
                     }
                     JSONManager.addNewAccount(
                             usernameTextField.getText(),
-                            JSONManager.encrypt(
-                                    String.valueOf(passwordField.getPassword()),
-                                    String.valueOf(secretPhraseField.getPassword())),
+                            (encrypt ? JSONManager.encrypt(
+                                        String.valueOf(passwordField.getPassword()),
+                                        String.valueOf(secretPhraseField.getPassword()))
+                                    : String.valueOf(passwordField.getPassword())), // If encryption is disabled, just save the password directly in plaintext
                             encrypt);
                     MainWindow.refreshAccountList();
                     JOptionPane.showMessageDialog(

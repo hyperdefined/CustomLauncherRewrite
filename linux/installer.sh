@@ -27,11 +27,6 @@ echo "Setting correct perms to install location..."
 sudo chown -R "$USER":"$USER" $INSTALLDIR
 sudo chmod -R 755 $INSTALLDIR
 
-echo "Patching transparent window bug..."
-mkdir $INSTALLDIR/ttr-files
-wget -q -O $INSTALLDIR/ttr-files/settings.json https://raw.githubusercontent.com/hyperdefined/CustomLauncherRewrite/master/linux/hotfix/settings.json
-chmod 644 $INSTALLDIR/ttr-files/settings.json # Copies a safe settings.json that TTR will use
-
 rm -rf /tmp/CustomLauncherRewrite*
 
 echo "CustomLauncherRewrite has been installed!"
