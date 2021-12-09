@@ -21,9 +21,11 @@ import lol.hyper.customlauncher.Main;
 import lol.hyper.customlauncher.accounts.Account;
 import lol.hyper.customlauncher.accounts.JSONManager;
 import lol.hyper.customlauncher.fieldofficetracker.FieldOfficeTracker;
+import lol.hyper.customlauncher.generic.ErrorWindow;
 import lol.hyper.customlauncher.invasiontracker.InvasionTracker;
 import lol.hyper.customlauncher.login.LoginHandler;
 import lol.hyper.customlauncher.login.LoginRequest;
+import org.json.JSONObject;
 
 import javax.swing.*;
 import java.awt.*;
@@ -35,6 +37,8 @@ public class MainWindow extends JFrame {
 
     public static final DefaultListModel<String> model = new DefaultListModel<>();
     static final HashMap<Integer, String> labelsByIndexes = new HashMap<>();
+    JLabel ttrStatus;
+    Timer timer;
 
     public MainWindow(String title, InvasionTracker invasionTracker) {
         JFrame frame = new JFrame(title);
@@ -104,6 +108,20 @@ public class MainWindow extends JFrame {
                 new Dimension(300, fieldOfficesButton.getMinimumSize().height));
         panel.add(fieldOfficesButton);
 
+
+        // game status
+        ttrStatus = new JLabel("Fetching Status...");
+        ttrStatus.setAlignmentX(Component.CENTER_ALIGNMENT);
+        // add some space between the last button and the text
+        panel.add(Box.createRigidArea(new Dimension(0, 5)));
+        panel.add(ttrStatus);
+
+        // update every 30 seconds
+        timer = new Timer(30000, e -> updateTTRStatus());
+        timer.setRepeats(true);
+        timer.setInitialDelay(0);
+        timer.start();
+
         accountList.addMouseListener(
                 new MouseAdapter() {
                     public void mouseClicked(MouseEvent evt) {
@@ -154,5 +172,18 @@ public class MainWindow extends JFrame {
             labelsByIndexes.put(i, account.getUsername());
             model.addElement(account.getUsername());
         }
+    }
+
+    private void updateTTRStatus() {
+        JSONObject ttrStatusJSON = JSONManager.requestJSON("https://www.toontownrewritten.com/api/status");
+        if (ttrStatusJSON == null) {
+            ErrorWindow errorWindow = new ErrorWindow("Unable to check TTR's game status!");
+            errorWindow.dispose();
+            timer.stop();
+            return;
+        }
+        boolean isOpen = ttrStatusJSON.getBoolean("open");
+        String status = isOpen ? "online" : "offline";
+        ttrStatus.setText("TTR is currently " + status + ".");
     }
 }
