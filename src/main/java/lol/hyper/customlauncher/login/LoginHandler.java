@@ -45,6 +45,12 @@ public class LoginHandler {
             "https://www.toontownrewritten.com/api/login?format=json";
     private static final String USER_AGENT =
             "CustomLauncherRewrite https://github.com/hyperdefined/CustomLauncherRewrite";
+    int attempts = 0;
+
+    public LoginHandler(LoginRequest loginRequest) {
+        handleLoginRequest(loginRequest);
+        attempts++;
+    }
 
     /**
      * Handle the result of the login request. This will take a login request and act based on that
@@ -52,8 +58,7 @@ public class LoginHandler {
      *
      * @param loginRequest The login request to process.
      */
-    public static void handleLoginRequest(LoginRequest loginRequest) {
-        int attempts = 0;
+    private void handleLoginRequest(LoginRequest loginRequest) {
         HashMap<String, String> request;
         try {
             logger.info("Sending login request...");
@@ -103,6 +108,7 @@ public class LoginHandler {
                     }
             case "delayed" -> // login request was put into a queue
                     {
+                        attempts += 1;
                         logger.info("Returned delayed: " + banner);
                         if (Integer.parseInt(eta) >= 5 || attempts >= 5) {
                             JFrame infoWindow =
@@ -118,10 +124,8 @@ public class LoginHandler {
                             }
                             LoginRequest newLoginRequest = new LoginRequest();
                             newLoginRequest.addDetails("queueToken", request.get("queueToken"));
-                            LoginHandler.handleLoginRequest(newLoginRequest);
-                            attempts += 1;
-                        }
-                        else {
+                            handleLoginRequest(newLoginRequest);
+                        } else {
                             try {
                                 //Try again every second.
                                 //If we go over 5 attempts, wait 5 seconds and notify the user
@@ -131,8 +135,7 @@ public class LoginHandler {
                             }
                             LoginRequest newLoginRequest = new LoginRequest();
                             newLoginRequest.addDetails("queueToken", request.get("queueToken"));
-                            LoginHandler.handleLoginRequest(newLoginRequest);
-                            attempts += 1;
+                            handleLoginRequest(newLoginRequest);
                         }
                     }
             default -> // TTR sent back a weird status that we don't know about
@@ -154,7 +157,7 @@ public class LoginHandler {
      * @return The login request that is sent back.
      * @throws Exception Throws any errors about reading/sending data.
      */
-    private static LoginRequest sendRequest(LoginRequest loginRequest) throws Exception {
+    private LoginRequest sendRequest(LoginRequest loginRequest) throws Exception {
         HttpPost post = new HttpPost(REQUEST_URL);
         post.setHeader("User-Agent", USER_AGENT);
         post.setHeader("Content-type", "application/x-www-form-urlencoded");

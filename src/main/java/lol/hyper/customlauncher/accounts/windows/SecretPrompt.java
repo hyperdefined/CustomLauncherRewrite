@@ -72,7 +72,7 @@ public class SecretPrompt extends JFrame {
                             LoginRequest loginRequest = new LoginRequest();
                             loginRequest.addDetails("username", username);
                             loginRequest.addDetails("password", actualPassword);
-                            LoginHandler.handleLoginRequest(loginRequest);
+                            new LoginHandler(loginRequest);
                             frame.dispose();
                         } else {
                             JOptionPane.showMessageDialog(

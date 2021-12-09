@@ -78,7 +78,7 @@ public class TwoFactorAuth extends JFrame {
                         LoginRequest newLoginRequest = new LoginRequest();
                         newLoginRequest.addDetails("authToken", token);
                         newLoginRequest.addDetails("appToken", userAuthCode.getText());
-                        LoginHandler.handleLoginRequest(newLoginRequest);
+                        new LoginHandler(newLoginRequest);
                         frame.dispose();
                     } else {
                         JOptionPane.showMessageDialog(

@@ -124,7 +124,7 @@ public class MainWindow extends JFrame {
                                     LoginRequest loginRequest = new LoginRequest();
                                     loginRequest.addDetails("username", username);
                                     loginRequest.addDetails("password", password);
-                                    LoginHandler.handleLoginRequest(loginRequest);
+                                    new LoginHandler(loginRequest);
                                 } else {
                                     SecretPrompt secretPrompt =
                                             new SecretPrompt("Enter Passphrase", account);
