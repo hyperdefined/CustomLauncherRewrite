@@ -24,9 +24,11 @@ import lol.hyper.customlauncher.ttrupdater.TTRUpdater;
 import lol.hyper.customlauncher.updater.UpdateChecker;
 import lol.hyper.githubreleaseapi.GitHubRelease;
 import lol.hyper.githubreleaseapi.GitHubReleaseAPI;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -73,6 +75,21 @@ public class Main {
         if (!TTR_INSTALL_DIR.exists()) {
             Files.createDirectory(TTR_INSTALL_DIR.toPath());
             logger.info("Creating TTR install folder at " + TTR_INSTALL_DIR.getAbsolutePath());
+            JSONObject options = new JSONObject();
+            // TTR on linux has a bug with fullscreen mode
+            // we set TTR to be windowed mode on first launch
+            // the user can always change this
+            if (SystemUtils.IS_OS_LINUX) {
+                JSONObject videoSettings = new JSONObject();
+                videoSettings.put("display-mode", "window");
+                options.put("video", videoSettings);
+            }
+            // lower the game audio so the user doesn't die when it launches
+            JSONObject audioSettings = new JSONObject();
+            audioSettings.put("music-volume", 10);
+            audioSettings.put("sfx-volume", 10);
+            options.put("audio", audioSettings);
+            JSONManager.writeFile(options, new File("ttr-files/settings.json"));
         }
 
         // load the icon
