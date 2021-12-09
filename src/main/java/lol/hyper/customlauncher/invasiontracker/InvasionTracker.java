@@ -155,7 +155,7 @@ public class InvasionTracker {
 
     /** Read the TTR API and get the current invasions. */
     public void readInvasionAPI() {
-        String INVASION_URL = "https://api.toon.plus/invasionse/";
+        String INVASION_URL = "https://api.toon.plus/invasions/";
 
         // grab the invasions object in the request
         // that hold all the invasions
