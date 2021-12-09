@@ -37,8 +37,8 @@ public class MainWindow extends JFrame {
 
     public static final DefaultListModel<String> model = new DefaultListModel<>();
     static final HashMap<Integer, String> labelsByIndexes = new HashMap<>();
-    JLabel ttrStatus;
-    Timer timer;
+    final JLabel ttrStatus;
+    final Timer timer;
 
     public MainWindow(String title, InvasionTracker invasionTracker) {
         JFrame frame = new JFrame(title);
