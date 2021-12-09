@@ -53,11 +53,13 @@ public class LoginHandler {
      * @param loginRequest The login request to process.
      */
     public static void handleLoginRequest(LoginRequest loginRequest) {
+        int attempts = 0;
         HashMap<String, String> request;
         try {
             logger.info("Sending login request...");
             // send the login request to TTR
             request = sendRequest(loginRequest).getRequestDetails();
+            attempts += 1;
         } catch (Exception e) {
             logger.error("Unable to send login request to TTR!", e);
             JFrame errorWindow =
@@ -73,6 +75,7 @@ public class LoginHandler {
         // get the login status
         String status = request.get("success");
         String banner = request.get("banner");
+        String eta = request.get("eta");
 
         logger.info("banner=" + banner);
         logger.info("status=" + status);
@@ -101,19 +104,36 @@ public class LoginHandler {
             case "delayed" -> // login request was put into a queue
                     {
                         logger.info("Returned delayed: " + banner);
-                        JFrame infoWindow =
-                                new InfoWindow(
-                                        "You were placed in a queue. Press OK to try again in 5 seconds.");
-                        infoWindow.dispose();
-                        try {
-                            TimeUnit.SECONDS.sleep(5);
-                        } catch (InterruptedException e) {
-                            logger.error(e);
+                        if (Integer.parseInt(eta) >= 5 || attempts >= 5) {
+                            JFrame infoWindow =
+                                    new InfoWindow(
+                                            "You were placed in a queue. Press OK to try again in 5 seconds.");
+                            infoWindow.dispose();
+
+                            // send the login request again after 5 seconds
+                            try {
+                                TimeUnit.SECONDS.sleep(5);
+                            } catch (InterruptedException e) {
+                                logger.error(e);
+                            }
+                            LoginRequest newLoginRequest = new LoginRequest();
+                            newLoginRequest.addDetails("queueToken", request.get("queueToken"));
+                            LoginHandler.handleLoginRequest(newLoginRequest);
+                            attempts += 1;
                         }
-                        // send the login request again after 5 seconds
-                        LoginRequest newLoginRequest = new LoginRequest();
-                        newLoginRequest.addDetails("queueToken", request.get("queueToken"));
-                        LoginHandler.handleLoginRequest(newLoginRequest);
+                        else {
+                            try {
+                                //Try again every second.
+                                //If we go over 5 attempts, wait 5 seconds and notify the user
+                                TimeUnit.SECONDS.sleep(1);
+                            } catch (InterruptedException e) {
+                                logger.error(e);
+                            }
+                            LoginRequest newLoginRequest = new LoginRequest();
+                            newLoginRequest.addDetails("queueToken", request.get("queueToken"));
+                            LoginHandler.handleLoginRequest(newLoginRequest);
+                            attempts += 1;
+                        }
                     }
             default -> // TTR sent back a weird status that we don't know about
                     {
