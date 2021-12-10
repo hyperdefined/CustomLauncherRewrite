@@ -55,7 +55,15 @@ public class LaunchGame extends Thread {
             String linuxCommand = "./TTREngine";
 
             // Make sure it's executable before running
-            new File("ttr-files/" + linuxCommand).setExecutable(true);
+            boolean result = new File("ttr-files/" + linuxCommand).setExecutable(true);
+            if (!result) {
+                ErrorWindow errorWindow =
+                        new ErrorWindow(
+                                "Unable to set /ttr-files/TTREngine as executable. Please make sure this file has the correct permissions!",
+                                null);
+                errorWindow.dispose();
+                return;
+            }
 
             pb.command(linuxCommand);
         }
