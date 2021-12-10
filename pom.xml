@@ -93,7 +93,7 @@
                             <headerType>gui</headerType>
                             <jar>${project.build.directory}/CustomLauncherRewrite-${project.version}.jar</jar>
                             <outfile>${project.build.directory}/CustomLauncherRewrite-${project.version}.exe</outfile>
-                            <downloadUrl>https://adoptium.net/releases.html?variant=openjdk16&amp;jvmVariant=hotspot
+                            <downloadUrl>https://adoptium.net/releases.html?variant=openjdk17&amp;jvmVariant=hotspot
                             </downloadUrl>
                             <icon>src/main/resources/icon.ico</icon>
                             <classPath>
