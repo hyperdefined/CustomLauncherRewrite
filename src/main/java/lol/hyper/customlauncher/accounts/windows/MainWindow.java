@@ -40,8 +40,8 @@ public class MainWindow extends JFrame {
     final JLabel ttrStatus;
     final Timer timer;
 
-    public MainWindow(String title, InvasionTracker invasionTracker) {
-        JFrame frame = new JFrame(title);
+    public MainWindow() {
+        JFrame frame = new JFrame("CLR " + Main.VERSION);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
         try {
@@ -91,7 +91,11 @@ public class MainWindow extends JFrame {
 
         // invasions button
         JButton invasionsButton = new JButton("Invasions");
-        invasionsButton.addActionListener(e -> invasionTracker.showWindow());
+        invasionsButton.addActionListener(
+                e -> {
+                    InvasionTracker invasionTracker = new InvasionTracker();
+                    invasionTracker.showWindow();
+                });
         invasionsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         invasionsButton.setMaximumSize(new Dimension(300, invasionsButton.getMinimumSize().height));
         panel.add(invasionsButton);

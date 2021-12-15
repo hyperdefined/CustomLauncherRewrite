@@ -159,11 +159,10 @@ public class Main {
         }
 
         // run the TTR updater
-        JFrame updater = new TTRUpdater("Updater", Paths.get(TTR_INSTALL_DIR.getAbsolutePath()));
-        updater.dispose();
+        new TTRUpdater("Updater", Paths.get(TTR_INSTALL_DIR.getAbsolutePath()));
 
         // run the main window
-        JFrame mainWindow = new MainWindow("CLR " + VERSION, new InvasionTracker());
+        JFrame mainWindow = new MainWindow();
         mainWindow.dispose();
     }
 }
