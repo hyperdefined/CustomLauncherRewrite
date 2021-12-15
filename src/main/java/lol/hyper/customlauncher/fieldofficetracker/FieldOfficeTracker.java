@@ -115,7 +115,7 @@ public class FieldOfficeTracker {
             String street = zonesToStreets.get(fieldOffice.getArea());
             int difficulty = fieldOffice.getDifficulty();
             int totalAnnexes = fieldOffice.getTotalAnnexes();
-            String open = fieldOffice.isOpen();
+            String open = fieldOffice.status();
             data =
                     new String[] {
                         street,

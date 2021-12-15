@@ -27,7 +27,7 @@ public class FieldOffice implements Comparable<FieldOffice> {
      * Is the field office open or closed?
      * @return "Open" if open, "Closed" if closed.
      */
-    public String isOpen() {
+    public String status() {
         return open ? "Open" : "Closed";
     }
 
