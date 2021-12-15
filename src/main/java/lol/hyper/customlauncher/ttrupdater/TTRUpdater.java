@@ -38,6 +38,7 @@ import javax.swing.*;
 import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 import java.awt.*;
 import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -51,14 +52,14 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-public class TTRUpdater extends JFrame {
+public class TTRUpdater {
 
     public final String PATCHES_URL = "https://cdn.toontownrewritten.com/content/patchmanifest.txt";
     public final String PATCHES_URL_DL = "https://download.toontownrewritten.com/patches/";
     public final Logger logger = LogManager.getLogger(this);
     final JProgressBar progressBar;
 
-    public TTRUpdater(String title, Path installLocation) throws IOException {
+    public TTRUpdater(String title, Path installLocation) {
         // setup the window elements
         JFrame frame = new JFrame(title);
         frame.setSize(370, 150);
@@ -221,7 +222,16 @@ public class TTRUpdater extends JFrame {
                 progressBar.setVisible(true);
                 progressBar.setValue(progressBar.getValue() + 1);
 
-                URL downloadURL = new URL(PATCHES_URL_DL + dl);
+                URL downloadURL;
+                try {
+                    downloadURL = new URL(PATCHES_URL_DL + dl);
+                } catch (MalformedURLException e) {
+                    logger.error("Invalid URL" + PATCHES_URL_DL + dl);
+                    JFrame errorWindow = new ErrorWindow(null, e);
+                    errorWindow.dispose();
+                    frame.dispose();
+                    return;
+                }
                 File output = new File(tempFolder + File.separator + dl);
                 if (!saveFile(downloadURL, output)) {
                     logger.error("Unable to download file" + dl);
