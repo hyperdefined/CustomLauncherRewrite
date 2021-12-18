@@ -25,12 +25,14 @@ import lol.hyper.customlauncher.generic.ErrorWindow;
 import lol.hyper.customlauncher.invasiontracker.InvasionTracker;
 import lol.hyper.customlauncher.login.LoginHandler;
 import lol.hyper.customlauncher.login.LoginRequest;
+import lol.hyper.customlauncher.ttrupdater.TTRUpdater;
 import org.json.JSONObject;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.nio.file.Paths;
 import java.util.HashMap;
 
 public class MainWindow extends JFrame {
@@ -111,6 +113,19 @@ public class MainWindow extends JFrame {
         fieldOfficesButton.setMaximumSize(
                 new Dimension(300, fieldOfficesButton.getMinimumSize().height));
         panel.add(fieldOfficesButton);
+
+        // check for updates button
+        JButton ttrUpdateButton = new JButton("Check TTR Updates");
+        ttrUpdateButton.addActionListener(
+                e -> {
+                    // we do this on another thread since it won't properly update the gui
+                    Thread t1 = new Thread(() -> new TTRUpdater("Updater", Paths.get(Main.TTR_INSTALL_DIR.getAbsolutePath())));
+                    t1.start();
+                });
+        ttrUpdateButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        ttrUpdateButton.setMaximumSize(
+                new Dimension(300, ttrUpdateButton.getMinimumSize().height));
+        panel.add(ttrUpdateButton);
 
 
         // game status
