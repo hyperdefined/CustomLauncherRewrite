@@ -129,13 +129,13 @@ public class FieldOfficeTracker {
     }
 
     /** Read field office API every 5 seconds. */
-    public void startFieldOfficeRefresh() {
+    private void startFieldOfficeRefresh() {
         schedulerAPI = Executors.newScheduledThreadPool(0);
         schedulerAPI.scheduleAtFixedRate(this::readFieldOfficeAPI, 0, 10, TimeUnit.SECONDS);
     }
 
     /** Read the TTR API and get the current field offices. */
-    public void readFieldOfficeAPI() {
+    private void readFieldOfficeAPI() {
         String FIELD_OFFICE_URL = "https://www.toontownrewritten.com/api/fieldoffices";
 
         // grab the field offices object in the request

@@ -138,13 +138,13 @@ public class InvasionTracker {
     }
 
     /** Read invasion API every 5 seconds. */
-    public void startInvasionRefresh() {
+    private void startInvasionRefresh() {
         schedulerAPI = Executors.newScheduledThreadPool(0);
         schedulerAPI.scheduleAtFixedRate(this::readInvasionAPI, 0, 10, TimeUnit.SECONDS);
     }
 
     /** Read the TTR API and get the current invasions. */
-    public void readInvasionAPI() {
+    private void readInvasionAPI() {
         String INVASION_URL = "https://api.toon.plus/invasions/";
 
         // grab the invasions object in the request

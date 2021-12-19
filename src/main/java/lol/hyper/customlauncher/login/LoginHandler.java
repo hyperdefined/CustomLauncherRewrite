@@ -49,7 +49,6 @@ public class LoginHandler {
 
     public LoginHandler(LoginRequest loginRequest) {
         handleLoginRequest(loginRequest);
-        attempts++;
     }
 
     /**

@@ -146,7 +146,7 @@ public class Main {
         }
 
         // this is used for removing old versions on windows
-        // passing "--remove-old <version> will delete that version's exe
+        // passing "--remove-old <version>" will delete that version's exe
         // mainly for cleanup so there aren't 100 exes in the folder
         if (args.length >= 1) {
             String arg1 = args[0];
