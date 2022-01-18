@@ -138,9 +138,31 @@ public class FieldOfficeTracker {
         }
         Notify notify;
         if (newFieldOffice) {
-            notify = Notify.create().title("New Field Office!").text(zonesToStreets.get(fieldOffice.getArea()) + " - " + fieldOffice.getDifficulty() + " star").darkStyle().position(Pos.BOTTOM_RIGHT).hideAfter(5000).image(Main.icon);
+            notify =
+                    Notify.create()
+                            .title("New Field Office!")
+                            .text(
+                                    zonesToStreets.get(fieldOffice.getArea())
+                                            + " - "
+                                            + fieldOffice.getDifficulty()
+                                            + " star")
+                            .darkStyle()
+                            .position(Pos.BOTTOM_RIGHT)
+                            .hideAfter(5000)
+                            .image(Main.icon);
         } else {
-            notify = Notify.create().title("Field Office Gone!").text(zonesToStreets.get(fieldOffice.getArea()) + " - " + fieldOffice.getDifficulty() + " star").darkStyle().position(Pos.BOTTOM_RIGHT).hideAfter(5000).image(Main.icon);
+            notify =
+                    Notify.create()
+                            .title("Field Office Gone!")
+                            .text(
+                                    zonesToStreets.get(fieldOffice.getArea())
+                                            + " - "
+                                            + fieldOffice.getDifficulty()
+                                            + " star")
+                            .darkStyle()
+                            .position(Pos.BOTTOM_RIGHT)
+                            .hideAfter(5000)
+                            .image(Main.icon);
         }
         notify.showInformation();
     }

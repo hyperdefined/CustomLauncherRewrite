@@ -31,7 +31,8 @@ public class FieldOfficeTask implements ActionListener {
         }
         JSONObject fieldOfficeJSON = fieldOfficeRoot.getJSONObject("fieldOffices");
 
-        fieldOfficeTracker.logger.info("Reading " + FIELD_OFFICE_URL + " for current field offices...");
+        fieldOfficeTracker.logger.info(
+                "Reading " + FIELD_OFFICE_URL + " for current field offices...");
 
         // go through all the field offices from the API
         Iterator<String> keys = fieldOfficeJSON.keys();
@@ -59,7 +60,8 @@ public class FieldOfficeTask implements ActionListener {
 
         // we look at the current field office list and see if any of them
         // are not on the field office JSON (aka that field office is gone)
-        Iterator<Map.Entry<Integer, FieldOffice>> it = fieldOfficeTracker.fieldOffices.entrySet().iterator();
+        Iterator<Map.Entry<Integer, FieldOffice>> it =
+                fieldOfficeTracker.fieldOffices.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry<Integer, FieldOffice> pair = it.next();
             String key = String.valueOf(pair.getKey());

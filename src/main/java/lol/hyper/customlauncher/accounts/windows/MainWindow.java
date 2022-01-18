@@ -94,9 +94,7 @@ public class MainWindow extends JFrame {
         // invasions button
         JButton invasionsButton = new JButton("Invasions");
         invasionsButton.addActionListener(
-                e -> {
-                    invasionTracker.showWindow();
-                });
+                e -> invasionTracker.showWindow());
         invasionsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         invasionsButton.setMaximumSize(new Dimension(300, invasionsButton.getMinimumSize().height));
         panel.add(invasionsButton);
@@ -104,9 +102,7 @@ public class MainWindow extends JFrame {
         // field office button
         JButton fieldOfficesButton = new JButton("Field Offices");
         fieldOfficesButton.addActionListener(
-                e -> {
-                    fieldOfficeTracker.showWindow();
-                });
+                e -> fieldOfficeTracker.showWindow());
         fieldOfficesButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         fieldOfficesButton.setMaximumSize(
                 new Dimension(300, fieldOfficesButton.getMinimumSize().height));

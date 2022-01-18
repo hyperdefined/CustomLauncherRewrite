@@ -159,9 +159,29 @@ public class InvasionTracker {
         }
         Notify notify;
         if (newInvasion) {
-            notify = Notify.create().title("New Invasion!").text(invasion.getDistrict() + " - " + invasion.getCogType().replace("\u0003", "")).darkStyle().position(Pos.BOTTOM_RIGHT).hideAfter(5000).image(Main.icon);
+            notify =
+                    Notify.create()
+                            .title("New Invasion!")
+                            .text(
+                                    invasion.getDistrict()
+                                            + " - "
+                                            + invasion.getCogType().replace("\u0003", ""))
+                            .darkStyle()
+                            .position(Pos.BOTTOM_RIGHT)
+                            .hideAfter(5000)
+                            .image(Main.icon);
         } else {
-            notify = Notify.create().title("Invasion Gone!").text(invasion.getDistrict() + " - " + invasion.getCogType().replace("\u0003", "")).darkStyle().position(Pos.BOTTOM_RIGHT).hideAfter(5000).image(Main.icon);
+            notify =
+                    Notify.create()
+                            .title("Invasion Gone!")
+                            .text(
+                                    invasion.getDistrict()
+                                            + " - "
+                                            + invasion.getCogType().replace("\u0003", ""))
+                            .darkStyle()
+                            .position(Pos.BOTTOM_RIGHT)
+                            .hideAfter(5000)
+                            .image(Main.icon);
         }
         notify.showInformation();
     }
