@@ -95,8 +95,7 @@ public class MainWindow extends JFrame {
         JButton invasionsButton = new JButton("Invasions");
         invasionsButton.addActionListener(
                 e -> {
-                    Thread t1 = new Thread(invasionTracker::showWindow);
-                    t1.start();
+                    invasionTracker.showWindow();
                 });
         invasionsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         invasionsButton.setMaximumSize(new Dimension(300, invasionsButton.getMinimumSize().height));
@@ -106,8 +105,7 @@ public class MainWindow extends JFrame {
         JButton fieldOfficesButton = new JButton("Field Offices");
         fieldOfficesButton.addActionListener(
                 e -> {
-                    Thread t1 = new Thread(fieldOfficeTracker::showWindow);
-                    t1.start();
+                    fieldOfficeTracker.showWindow();
                 });
         fieldOfficesButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         fieldOfficesButton.setMaximumSize(
