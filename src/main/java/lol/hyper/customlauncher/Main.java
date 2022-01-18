@@ -124,7 +124,7 @@ public class Main {
             updates.append("You are running an outdated version! You are running ")
                     .append(VERSION)
                     .append(" currently.");
-            updates.append("Would you like to update?\n\n");
+            updates.append(" Would you like to update?\n\n");
             for (int i = behind - 1; i >= 0; i--) {
                 String tag = api.getAllReleases().get(i).getTagVersion();
                 updates.append("----------------------------------------\nVersion: ")
