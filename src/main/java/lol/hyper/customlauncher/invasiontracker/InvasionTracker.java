@@ -17,6 +17,8 @@
 
 package lol.hyper.customlauncher.invasiontracker;
 
+import dorkbox.notify.Notify;
+import dorkbox.notify.Pos;
 import lol.hyper.customlauncher.Main;
 import lol.hyper.customlauncher.accounts.JSONManager;
 import lol.hyper.customlauncher.generic.ErrorWindow;
@@ -47,6 +49,7 @@ public class InvasionTracker {
     public DefaultTableModel invasionTableModel;
     public JFrame frame;
     public Timer timer;
+    int calls = 0;
 
     /** Open the invasion window. */
     public void showWindow() {
@@ -87,8 +90,6 @@ public class InvasionTracker {
         timer.setInitialDelay(0);
         timer.start();
 
-        startInvasionRefresh();
-
         frame.pack();
         frame.setSize(500, 400);
         frame.add(panel);
@@ -99,7 +100,6 @@ public class InvasionTracker {
                 new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                        schedulerAPI.shutdown();
                         timer.stop();
                     }
                 });
@@ -138,7 +138,7 @@ public class InvasionTracker {
     }
 
     /** Read invasion API every 5 seconds. */
-    private void startInvasionRefresh() {
+    public void startInvasionRefresh() {
         schedulerAPI = Executors.newScheduledThreadPool(0);
         schedulerAPI.scheduleAtFixedRate(this::readInvasionAPI, 0, 10, TimeUnit.SECONDS);
     }
@@ -157,7 +157,6 @@ public class InvasionTracker {
         }
 
         logger.info("Reading " + INVASION_URL + " for current invasions...");
-        logger.info(invasionsJSON);
 
         // iterate through each of the invasions (separate JSONs)
         Iterator<String> keys = invasionsJSON.keys();
@@ -172,19 +171,13 @@ public class InvasionTracker {
                 int cogsDefeated = temp.getInt("CurrentProgress");
                 int cogsTotal = temp.getInt("MaxProgress");
                 boolean megaInvasion = temp.getBoolean("MegaInvasion");
-                logger.info(
-                        "New invasion alert! "
-                                + district
-                                + " Cogs: "
-                                + cogsDefeated
-                                + "/"
-                                + cogsTotal);
                 Invasion newInvasion =
                         new Invasion(cogType, cogsDefeated, cogsTotal, district, megaInvasion);
                 newInvasion.endTime =
                         Instant.parse(temp.getString("EstimatedCompletion"))
                                 .atZone(ZoneId.systemDefault());
                 invasions.put(district, newInvasion);
+                showNotification(newInvasion, true);
             } else {
                 if (!invasions.containsKey(district)) {
                     return; // JUST IN CASE
@@ -211,10 +204,12 @@ public class InvasionTracker {
             Map.Entry<String, Invasion> pair = it.next();
             String key = pair.getKey() + "/" + pair.getValue().getCogType();
             if (!invasionsJSON.has(key)) {
+                showNotification(pair.getValue(), false);
                 it.remove();
-                logger.info("Invasion gone! " + pair.getValue().getDistrict());
             }
         }
+
+        calls++;
     }
 
     /**
@@ -228,5 +223,19 @@ public class InvasionTracker {
         long minutes = (totalSecs % 3600) / 60;
         long seconds = totalSecs % 60;
         return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+    }
+
+    private void showNotification(Invasion invasion, boolean newInvasion) {
+        // don't spam the user with a bunch of notifications at once when we first launch
+        if (calls == 0) {
+            return;
+        }
+        Notify notify;
+        if (newInvasion) {
+            notify = Notify.create().title("New Invasion!").text(invasion.getDistrict() + " - " + invasion.getCogType().replace("\u0003", "")).darkStyle().position(Pos.BOTTOM_RIGHT).hideAfter(5000);
+        } else {
+            notify = Notify.create().title("Invasion Gone!").text(invasion.getDistrict() + " - " + invasion.getCogType().replace("\u0003", "")).darkStyle().position(Pos.BOTTOM_RIGHT).hideAfter(5000);
+        }
+        notify.showInformation();
     }
 }

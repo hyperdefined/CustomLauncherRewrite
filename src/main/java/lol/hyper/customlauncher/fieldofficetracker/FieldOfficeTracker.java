@@ -1,5 +1,7 @@
 package lol.hyper.customlauncher.fieldofficetracker;
 
+import dorkbox.notify.Notify;
+import dorkbox.notify.Pos;
 import lol.hyper.customlauncher.Main;
 import lol.hyper.customlauncher.accounts.JSONManager;
 import lol.hyper.customlauncher.generic.ErrorWindow;
@@ -27,22 +29,25 @@ public class FieldOfficeTracker {
     public JFrame frame;
     public static final HashMap<Integer, String> zonesToStreets = new HashMap<>();
     public Timer timer;
+    int calls = 0;
 
-    /** Open the field office window. */
-    public void showWindow() {
+    public FieldOfficeTracker() {
         // zone IDs to street names
         zonesToStreets.put(3100, "Walrus Way");
         zonesToStreets.put(3200, "Sleet Street");
         zonesToStreets.put(3300, "Polar Place");
         zonesToStreets.put(4100, "Alto Avenue");
-        zonesToStreets.put(4200, "Alto Avenue");
+        zonesToStreets.put(4200, "Baritone Boulevard");
         zonesToStreets.put(4300, "Tenor Terrace");
         zonesToStreets.put(5100, "Elm Street");
         zonesToStreets.put(5200, "Maple Street");
         zonesToStreets.put(5300, "Oak Street");
         zonesToStreets.put(9100, "Lullaby Lane");
         zonesToStreets.put(9200, "Pajama Place");
+    }
 
+    /** Open the field office window. */
+    public void showWindow() {
         frame = new JFrame("Field Offices");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setResizable(false);
@@ -93,7 +98,6 @@ public class FieldOfficeTracker {
                 new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                        schedulerAPI.shutdown();
                         timer.stop();
                     }
                 });
@@ -129,7 +133,7 @@ public class FieldOfficeTracker {
     }
 
     /** Read field office API every 5 seconds. */
-    private void startFieldOfficeRefresh() {
+    public void startFieldOfficeRefresh() {
         schedulerAPI = Executors.newScheduledThreadPool(0);
         schedulerAPI.scheduleAtFixedRate(this::readFieldOfficeAPI, 0, 10, TimeUnit.SECONDS);
     }
@@ -149,7 +153,6 @@ public class FieldOfficeTracker {
         JSONObject fieldOfficeJSON = fieldOfficeRoot.getJSONObject("fieldOffices");
 
         logger.info("Reading " + FIELD_OFFICE_URL + " for current field offices...");
-        logger.info(fieldOfficeJSON);
 
         // go through all the field offices from the API
         Iterator<String> keys = fieldOfficeJSON.keys();
@@ -157,16 +160,13 @@ public class FieldOfficeTracker {
             String key = keys.next();
             // each field office json is named the zone ID
             JSONObject zoneJSON = fieldOfficeJSON.getJSONObject(key);
-            logger.info(key + zoneJSON);
             // update field office data
             if (fieldOffices.containsKey(Integer.valueOf(key))) {
-                logger.info("Updating field office data for " + key);
                 FieldOffice office = fieldOffices.get(Integer.parseInt(key));
                 office.setOpen(zoneJSON.getBoolean("open"));
                 office.setTotalAnnexes(zoneJSON.getInt("annexes"));
             } else {
                 // new field office
-                logger.info("New field office at " + key);
                 int difficulty = zoneJSON.getInt("difficulty") + 1; // they zero index this
                 int totalAnnexes = zoneJSON.getInt("annexes");
                 boolean open = zoneJSON.getBoolean("open");
@@ -174,6 +174,7 @@ public class FieldOfficeTracker {
                         new FieldOffice(Integer.parseInt(key), difficulty, open, totalAnnexes);
                 // add it to our master list
                 fieldOffices.put(Integer.parseInt(key), office);
+                showNotification(office, true);
             }
         }
 
@@ -184,9 +185,25 @@ public class FieldOfficeTracker {
             Map.Entry<Integer, FieldOffice> pair = it.next();
             String key = String.valueOf(pair.getKey());
             if (!fieldOfficeJSON.has(key)) {
+                showNotification(pair.getValue(), false);
                 it.remove();
-                logger.info("Field office gone! " + pair.getValue().getArea());
             }
         }
+
+        calls++;
+    }
+
+    private void showNotification(FieldOffice fieldOffice, boolean newFieldOffice) {
+        // don't spam the user with a bunch of notifications at once when we first launch
+        if (calls == 0) {
+            return;
+        }
+        Notify notify;
+        if (newFieldOffice) {
+            notify = Notify.create().title("New Field Office!").text(zonesToStreets.get(fieldOffice.getArea()) + " - " + fieldOffice.getDifficulty() + " star").darkStyle().position(Pos.BOTTOM_RIGHT).hideAfter(5000);
+        } else {
+            notify = Notify.create().title("Field Office Gone!").text(zonesToStreets.get(fieldOffice.getArea()) + " - " + fieldOffice.getDifficulty() + " star").darkStyle().position(Pos.BOTTOM_RIGHT).hideAfter(5000);
+        }
+        notify.showInformation();
     }
 }

@@ -42,7 +42,7 @@ public class MainWindow extends JFrame {
     final JLabel ttrStatus;
     final Timer timer;
 
-    public MainWindow() {
+    public MainWindow(InvasionTracker invasionTracker, FieldOfficeTracker fieldOfficeTracker) {
         JFrame frame = new JFrame("CLR " + Main.VERSION);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
@@ -95,7 +95,6 @@ public class MainWindow extends JFrame {
         JButton invasionsButton = new JButton("Invasions");
         invasionsButton.addActionListener(
                 e -> {
-                    InvasionTracker invasionTracker = new InvasionTracker();
                     invasionTracker.showWindow();
                 });
         invasionsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -106,7 +105,6 @@ public class MainWindow extends JFrame {
         JButton fieldOfficesButton = new JButton("Field Offices");
         fieldOfficesButton.addActionListener(
                 e -> {
-                    FieldOfficeTracker fieldOfficeTracker = new FieldOfficeTracker();
                     fieldOfficeTracker.showWindow();
                 });
         fieldOfficesButton.setAlignmentX(Component.CENTER_ALIGNMENT);

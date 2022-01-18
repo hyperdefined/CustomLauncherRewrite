@@ -19,6 +19,8 @@ package lol.hyper.customlauncher;
 
 import lol.hyper.customlauncher.accounts.JSONManager;
 import lol.hyper.customlauncher.accounts.windows.MainWindow;
+import lol.hyper.customlauncher.fieldofficetracker.FieldOfficeTracker;
+import lol.hyper.customlauncher.invasiontracker.InvasionTracker;
 import lol.hyper.customlauncher.ttrupdater.TTRUpdater;
 import lol.hyper.customlauncher.updater.UpdateChecker;
 import lol.hyper.githubreleaseapi.GitHubRelease;
@@ -160,8 +162,19 @@ public class Main {
         // run the TTR updater
         new TTRUpdater("Updater", Paths.get(TTR_INSTALL_DIR.getAbsolutePath()));
 
+        // start reading invasions in the background
+        InvasionTracker invasionTracker = new InvasionTracker();
+        Thread t1 = new Thread(invasionTracker::startInvasionRefresh);
+
+        FieldOfficeTracker fieldOfficeTracker = new FieldOfficeTracker();
+        fieldOfficeTracker.startFieldOfficeRefresh();
+        Thread t2 = new Thread(fieldOfficeTracker::startFieldOfficeRefresh);
+
+        t1.start();
+        t2.start();
+
         // run the main window
-        JFrame mainWindow = new MainWindow();
+        JFrame mainWindow = new MainWindow(invasionTracker, fieldOfficeTracker);
         mainWindow.dispose();
     }
 }
