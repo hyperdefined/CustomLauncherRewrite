@@ -164,6 +164,6 @@ public class FieldOfficeTracker {
                             .hideAfter(5000)
                             .image(Main.icon);
         }
-        notify.showInformation();
+        notify.show();
     }
 }
