@@ -20,40 +20,34 @@ package lol.hyper.customlauncher.invasiontracker;
 import dorkbox.notify.Notify;
 import dorkbox.notify.Pos;
 import lol.hyper.customlauncher.Main;
-import lol.hyper.customlauncher.accounts.JSONManager;
-import lol.hyper.customlauncher.generic.ErrorWindow;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.json.JSONObject;
 
 import javax.swing.*;
 import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.time.Instant;
+import java.awt.event.ActionListener;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class InvasionTracker {
 
     public final HashMap<String, Invasion> invasions = new HashMap<>();
     public final Logger logger = LogManager.getLogger(InvasionTracker.class);
-    public ScheduledExecutorService schedulerAPI;
     public JTable invasionTable;
     public DefaultTableModel invasionTableModel;
     public JFrame frame;
-    public Timer timer;
     int calls = 0;
+
+    public InvasionTracker() {
+        startInvasionRefresh();
+    }
 
     /** Open the invasion window. */
     public void showWindow() {
-        invasions.clear();
         frame = new JFrame("Invasions");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setResizable(false);
@@ -85,9 +79,9 @@ public class InvasionTracker {
         scrollPane.setVisible(true);
         panel.add(scrollPane);
 
-        timer = new Timer(1000, e -> updateInvasionListGUI());
-        timer.setRepeats(true);
-        timer.setInitialDelay(0);
+        ActionListener actionListener = e -> updateInvasionListGUI();
+        Timer timer = new javax.swing.Timer(0, actionListener);
+        timer.setDelay(500);
         timer.start();
 
         frame.pack();
@@ -139,77 +133,10 @@ public class InvasionTracker {
 
     /** Read invasion API every 5 seconds. */
     public void startInvasionRefresh() {
-        schedulerAPI = Executors.newScheduledThreadPool(0);
-        schedulerAPI.scheduleAtFixedRate(this::readInvasionAPI, 0, 10, TimeUnit.SECONDS);
-    }
-
-    /** Read the TTR API and get the current invasions. */
-    private void readInvasionAPI() {
-        String INVASION_URL = "https://api.toon.plus/invasions/";
-
-        // grab the invasions object in the request
-        // that hold all the invasions
-        JSONObject invasionsJSON = JSONManager.requestJSON(INVASION_URL);
-        if (invasionsJSON == null) {
-            ErrorWindow errorWindow = new ErrorWindow("Unable to read invasion API!", null);
-            errorWindow.dispose();
-            return;
-        }
-
-        logger.info("Reading " + INVASION_URL + " for current invasions...");
-
-        // iterate through each of the invasions (separate JSONs)
-        Iterator<String> keys = invasionsJSON.keys();
-        while (keys.hasNext()) {
-            String key = keys.next();
-            String district = key.substring(0, key.indexOf('/'));
-            // if we do not have that invasion stored, create a new invasion object
-            // and add it to the list
-            if (!invasions.containsKey(district)) {
-                JSONObject temp = invasionsJSON.getJSONObject(key);
-                String cogType = temp.getString("Type");
-                int cogsDefeated = temp.getInt("CurrentProgress");
-                int cogsTotal = temp.getInt("MaxProgress");
-                boolean megaInvasion = temp.getBoolean("MegaInvasion");
-                Invasion newInvasion =
-                        new Invasion(cogType, cogsDefeated, cogsTotal, district, megaInvasion);
-                newInvasion.endTime =
-                        Instant.parse(temp.getString("EstimatedCompletion"))
-                                .atZone(ZoneId.systemDefault());
-                invasions.put(district, newInvasion);
-                showNotification(newInvasion, true);
-            } else {
-                if (!invasions.containsKey(district)) {
-                    return; // JUST IN CASE
-                }
-                // if we already have it saved, update the information that we have saved already
-                // we want to update the total cogs defeated and the end time
-                Invasion tempInv = invasions.get(district);
-                JSONObject temp = invasionsJSON.getJSONObject(key);
-                // ignore mega invasion cog count
-                if (!temp.getBoolean("MegaInvasion")) {
-                    int cogsDefeated = temp.getInt("CurrentProgress");
-                    tempInv.updateCogsDefeated(cogsDefeated);
-                    tempInv.endTime =
-                            Instant.parse(temp.getString("EstimatedCompletion"))
-                                    .atZone(ZoneId.systemDefault());
-                }
-            }
-        }
-
-        // we look at the current invasion list and see if any invasions
-        // are not on the invasion JSON (aka that invasion is gone)
-        Iterator<Map.Entry<String, Invasion>> it = invasions.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry<String, Invasion> pair = it.next();
-            String key = pair.getKey() + "/" + pair.getValue().getCogType();
-            if (!invasionsJSON.has(key)) {
-                showNotification(pair.getValue(), false);
-                it.remove();
-            }
-        }
-
-        calls++;
+        ActionListener actionListener = new InvasionTask(this);
+        Timer timer = new Timer(0, actionListener);
+        timer.setDelay(5000);
+        timer.start();
     }
 
     /**
@@ -225,16 +152,16 @@ public class InvasionTracker {
         return String.format("%02d:%02d:%02d", hours, minutes, seconds);
     }
 
-    private void showNotification(Invasion invasion, boolean newInvasion) {
+    public void showNotification(Invasion invasion, boolean newInvasion) {
         // don't spam the user with a bunch of notifications at once when we first launch
         if (calls == 0) {
             return;
         }
         Notify notify;
         if (newInvasion) {
-            notify = Notify.create().title("New Invasion!").text(invasion.getDistrict() + " - " + invasion.getCogType().replace("\u0003", "")).darkStyle().position(Pos.BOTTOM_RIGHT).hideAfter(5000);
+            notify = Notify.create().title("New Invasion!").text(invasion.getDistrict() + " - " + invasion.getCogType().replace("\u0003", "")).darkStyle().position(Pos.BOTTOM_RIGHT).hideAfter(5000).image(Main.icon);
         } else {
-            notify = Notify.create().title("Invasion Gone!").text(invasion.getDistrict() + " - " + invasion.getCogType().replace("\u0003", "")).darkStyle().position(Pos.BOTTOM_RIGHT).hideAfter(5000);
+            notify = Notify.create().title("Invasion Gone!").text(invasion.getDistrict() + " - " + invasion.getCogType().replace("\u0003", "")).darkStyle().position(Pos.BOTTOM_RIGHT).hideAfter(5000).image(Main.icon);
         }
         notify.showInformation();
     }

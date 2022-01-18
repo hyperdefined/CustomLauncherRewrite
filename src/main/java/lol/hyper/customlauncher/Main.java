@@ -164,14 +164,8 @@ public class Main {
 
         // start reading invasions in the background
         InvasionTracker invasionTracker = new InvasionTracker();
-        Thread t1 = new Thread(invasionTracker::startInvasionRefresh);
 
         FieldOfficeTracker fieldOfficeTracker = new FieldOfficeTracker();
-        fieldOfficeTracker.startFieldOfficeRefresh();
-        Thread t2 = new Thread(fieldOfficeTracker::startFieldOfficeRefresh);
-
-        t1.start();
-        t2.start();
 
         // run the main window
         JFrame mainWindow = new MainWindow(invasionTracker, fieldOfficeTracker);
