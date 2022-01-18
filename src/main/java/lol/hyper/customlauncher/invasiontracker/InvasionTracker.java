@@ -115,15 +115,19 @@ public class InvasionTracker {
             String district = invasion.getDistrict();
             String cogType = invasion.getCogType().replace("\u0003", ""); // remove the python char
             String timeLeft;
+            long timeLeftSeconds;
             String cogs;
             if (invasion.megaInvasion) {
                 cogs = "Mega Invasion";
                 timeLeft = "Mega Invasion";
             } else {
                 cogs = invasion.getCogsDefeated() + "/" + invasion.getCogsTotal();
-                timeLeft =
-                        convertTime(
-                                ChronoUnit.SECONDS.between(LocalDateTime.now(), invasion.endTime));
+                timeLeftSeconds = ChronoUnit.SECONDS.between(LocalDateTime.now(), invasion.endTime);
+                if (timeLeftSeconds <= 0) {
+                    timeLeft = "Ending soon...";
+                } else {
+                    timeLeft = convertTime(timeLeftSeconds);
+                }
             }
             data = new String[] {district, cogType, timeLeft, cogs};
             invasionTableModel.addRow(data);
