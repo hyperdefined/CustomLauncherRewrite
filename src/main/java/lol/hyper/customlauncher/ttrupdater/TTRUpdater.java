@@ -107,6 +107,7 @@ public class TTRUpdater {
         JSONObject patches = JSONManager.requestJSON(PATCHES_URL);
         if (patches == null) {
             logger.error("patchesmanifest.txt returned null!");
+            frame.dispose();
             return;
         }
         ArrayList<String> filesToDownload = new ArrayList<>();
@@ -134,6 +135,7 @@ public class TTRUpdater {
                             "We are unable to detect your operating system. Please report this to the GitHub!",
                             null);
             errorWindow.dispose();
+            frame.dispose();
             return;
         }
 
