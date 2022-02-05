@@ -20,6 +20,7 @@ package lol.hyper.customlauncher;
 import lol.hyper.customlauncher.accounts.JSONManager;
 import lol.hyper.customlauncher.accounts.windows.MainWindow;
 import lol.hyper.customlauncher.fieldofficetracker.FieldOfficeTracker;
+import lol.hyper.customlauncher.generic.ErrorWindow;
 import lol.hyper.customlauncher.invasiontracker.InvasionTracker;
 import lol.hyper.customlauncher.ttrupdater.TTRUpdater;
 import lol.hyper.customlauncher.updater.UpdateChecker;
@@ -107,43 +108,52 @@ public class Main {
         }
 
         // check for updates using my own api
-        GitHubReleaseAPI api = new GitHubReleaseAPI("CustomLauncherRewrite", "hyperdefined");
-        GitHubRelease latest = api.getLatestVersion();
-        String latestVersion = latest.getTagVersion();
-        GitHubRelease current = api.getReleaseByTag(VERSION);
-        int behind = api.getBuildsBehind(current);
-        UpdateChecker updateChecker = new UpdateChecker(api);
-        StringBuilder updates = new StringBuilder();
-        // if the user is 1 or more build behind, ask to update
-        if (behind > 0) {
-            JTextArea textArea = new JTextArea();
-            JScrollPane scrollPane = new JScrollPane(textArea);
-            textArea.setLineWrap(true);
-            textArea.setWrapStyleWord(true);
-            scrollPane.setPreferredSize(new Dimension(500, 500));
-            updates.append("You are running an outdated version! You are running ")
-                    .append(VERSION)
-                    .append(" currently.");
-            updates.append(" Would you like to update?\n\n");
-            for (int i = behind - 1; i >= 0; i--) {
-                String tag = api.getAllReleases().get(i).getTagVersion();
-                updates.append("----------------------------------------\nVersion: ")
-                        .append(tag)
-                        .append("\n")
-                        .append(api.getReleaseByTag(tag).getReleaseNotes())
-                        .append("\n");
-            }
-            textArea.setText(updates.toString());
-            logger.info("A new version is available! Version: " + latestVersion);
+        GitHubReleaseAPI api;
+        try {
+            api = new GitHubReleaseAPI("CustomLauncherRewrite", "hyperdefined");
+        } catch (IOException e) {
+            api = null;
+            ErrorWindow errorWindow = new ErrorWindow(null, e);
+            errorWindow.dispose();
+        }
+        if (api != null) {
+            GitHubRelease latest = api.getLatestVersion();
+            String latestVersion = latest.getTagVersion();
+            GitHubRelease current = api.getReleaseByTag(VERSION);
+            int behind = api.getBuildsBehind(current);
+            UpdateChecker updateChecker = new UpdateChecker(api);
+            StringBuilder updates = new StringBuilder();
+            // if the user is 1 or more build behind, ask to update
+            if (behind > 0) {
+                JTextArea textArea = new JTextArea();
+                JScrollPane scrollPane = new JScrollPane(textArea);
+                textArea.setLineWrap(true);
+                textArea.setWrapStyleWord(true);
+                scrollPane.setPreferredSize(new Dimension(500, 500));
+                updates.append("You are running an outdated version! You are running ")
+                        .append(VERSION)
+                        .append(" currently.");
+                updates.append(" Would you like to update?\n\n");
+                for (int i = behind - 1; i >= 0; i--) {
+                    String tag = api.getAllReleases().get(i).getTagVersion();
+                    updates.append("----------------------------------------\nVersion: ")
+                            .append(tag)
+                            .append("\n")
+                            .append(api.getReleaseByTag(tag).getReleaseNotes())
+                            .append("\n");
+                }
+                textArea.setText(updates.toString());
+                logger.info("A new version is available! Version: " + latestVersion);
 
-            int dialogResult =
-                    JOptionPane.showConfirmDialog(
-                            null, scrollPane, "Updates", JOptionPane.YES_NO_OPTION);
-            if (dialogResult == JOptionPane.YES_OPTION) {
-                // download the latest version and run it
-                updateChecker.downloadLatestVersion();
-                updateChecker.launchNewVersion(latestVersion);
-                System.exit(0);
+                int dialogResult =
+                        JOptionPane.showConfirmDialog(
+                                null, scrollPane, "Updates", JOptionPane.YES_NO_OPTION);
+                if (dialogResult == JOptionPane.YES_OPTION) {
+                    // download the latest version and run it
+                    updateChecker.downloadLatestVersion();
+                    updateChecker.launchNewVersion(latestVersion);
+                    System.exit(0);
+                }
             }
         }
 
