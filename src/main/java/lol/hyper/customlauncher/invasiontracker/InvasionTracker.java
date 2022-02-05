@@ -41,6 +41,8 @@ public class InvasionTracker {
     public DefaultTableModel invasionTableModel;
     public JFrame frame;
     int calls = 0;
+    public boolean isDown = false;
+    public Timer invasionTaskTimer;
 
     public InvasionTracker() {
         startInvasionRefresh();
@@ -138,9 +140,9 @@ public class InvasionTracker {
     /** Read invasion API every 5 seconds. */
     public void startInvasionRefresh() {
         ActionListener actionListener = new InvasionTask(this);
-        Timer timer = new Timer(0, actionListener);
-        timer.setDelay(5000);
-        timer.start();
+        invasionTaskTimer = new Timer(0, actionListener);
+        invasionTaskTimer.setDelay(5000);
+        invasionTaskTimer.start();
     }
 
     /**

@@ -1,7 +1,6 @@
 package lol.hyper.customlauncher.invasiontracker;
 
 import lol.hyper.customlauncher.accounts.JSONManager;
-import lol.hyper.customlauncher.generic.ErrorWindow;
 import org.json.JSONObject;
 
 import java.awt.event.ActionEvent;
@@ -27,10 +26,12 @@ public class InvasionTask implements ActionListener {
         // that hold all the invasions
         JSONObject invasionsJSON = JSONManager.requestJSON(INVASION_URL);
         if (invasionsJSON == null) {
-            ErrorWindow errorWindow = new ErrorWindow("Unable to read invasion API!", null);
-            errorWindow.dispose();
+            invasionTracker.isDown = true;
+            invasionTracker.invasionTaskTimer.stop();
             return;
         }
+
+        invasionTracker.isDown = false;
 
         invasionTracker.logger.info("Reading " + INVASION_URL + " for current invasions...");
 

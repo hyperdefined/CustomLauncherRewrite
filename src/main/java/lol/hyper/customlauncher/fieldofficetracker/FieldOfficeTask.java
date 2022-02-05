@@ -1,7 +1,6 @@
 package lol.hyper.customlauncher.fieldofficetracker;
 
 import lol.hyper.customlauncher.accounts.JSONManager;
-import lol.hyper.customlauncher.generic.ErrorWindow;
 import org.json.JSONObject;
 
 import java.awt.event.ActionEvent;
@@ -25,10 +24,13 @@ public class FieldOfficeTask implements ActionListener {
         // each field office is stored under the JSONObject "fieldOffices"
         JSONObject fieldOfficeRoot = JSONManager.requestJSON(FIELD_OFFICE_URL);
         if (fieldOfficeRoot == null) {
-            ErrorWindow errorWindow = new ErrorWindow("Unable to read field office API!", null);
-            errorWindow.dispose();
+            fieldOfficeTracker.isDown = true;
+            fieldOfficeTracker.fieldOfficeTaskTimer.stop();
             return;
         }
+
+        fieldOfficeTracker.isDown = false;
+
         JSONObject fieldOfficeJSON = fieldOfficeRoot.getJSONObject("fieldOffices");
 
         fieldOfficeTracker.logger.info(

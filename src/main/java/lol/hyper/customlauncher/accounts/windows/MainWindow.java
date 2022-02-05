@@ -21,7 +21,6 @@ import lol.hyper.customlauncher.Main;
 import lol.hyper.customlauncher.accounts.Account;
 import lol.hyper.customlauncher.accounts.JSONManager;
 import lol.hyper.customlauncher.fieldofficetracker.FieldOfficeTracker;
-import lol.hyper.customlauncher.generic.ErrorWindow;
 import lol.hyper.customlauncher.invasiontracker.InvasionTracker;
 import lol.hyper.customlauncher.login.LoginHandler;
 import lol.hyper.customlauncher.login.LoginRequest;
@@ -93,16 +92,34 @@ public class MainWindow extends JFrame {
 
         // invasions button
         JButton invasionsButton = new JButton("Invasions");
-        invasionsButton.addActionListener(
-                e -> invasionTracker.showWindow());
+        invasionsButton.addActionListener(e -> {
+            if (invasionTracker.isDown) {
+                int dialogButton = JOptionPane.YES_NO_OPTION;
+                int dialogResult = JOptionPane.showConfirmDialog (null, "It looks like the invasion API is currently offline. Would you like to try checking it again?","Error",dialogButton);
+                if (dialogResult == JOptionPane.YES_OPTION){
+                    invasionTracker.invasionTaskTimer.start();
+                }
+            } else {
+                invasionTracker.showWindow();
+            }
+        });
         invasionsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         invasionsButton.setMaximumSize(new Dimension(300, invasionsButton.getMinimumSize().height));
         panel.add(invasionsButton);
 
         // field office button
         JButton fieldOfficesButton = new JButton("Field Offices");
-        fieldOfficesButton.addActionListener(
-                e -> fieldOfficeTracker.showWindow());
+        fieldOfficesButton.addActionListener(e -> {
+            if (fieldOfficeTracker.isDown) {
+                int dialogButton = JOptionPane.YES_NO_OPTION;
+                int dialogResult = JOptionPane.showConfirmDialog (null, "It looks like the field office API is currently offline. Would you like to try checking it again?","Error",dialogButton);
+                if (dialogResult == JOptionPane.YES_OPTION){
+                    fieldOfficeTracker.fieldOfficeTaskTimer.start();
+                }
+            } else {
+                fieldOfficeTracker.showWindow();
+            }
+        });
         fieldOfficesButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         fieldOfficesButton.setMaximumSize(
                 new Dimension(300, fieldOfficesButton.getMinimumSize().height));
@@ -190,9 +207,6 @@ public class MainWindow extends JFrame {
     private void updateTTRStatus() {
         JSONObject ttrStatusJSON = JSONManager.requestJSON("https://www.toontownrewritten.com/api/status");
         if (ttrStatusJSON == null) {
-            ErrorWindow errorWindow = new ErrorWindow("Unable to check TTR's game status!", null);
-            errorWindow.dispose();
-            timer.stop();
             return;
         }
         boolean isOpen = ttrStatusJSON.getBoolean("open");

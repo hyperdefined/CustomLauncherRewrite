@@ -23,6 +23,8 @@ public class FieldOfficeTracker {
     public JFrame frame;
     public static final HashMap<Integer, String> zonesToStreets = new HashMap<>();
     int calls = 0;
+    public boolean isDown = false;
+    public Timer fieldOfficeTaskTimer;
 
     public FieldOfficeTracker() {
         // zone IDs to street names
@@ -126,9 +128,9 @@ public class FieldOfficeTracker {
     /** Read field office API every 5 seconds. */
     private void startFieldOfficeRefresh() {
         ActionListener actionListener = new FieldOfficeTask(this);
-        Timer timer = new Timer(0, actionListener);
-        timer.setDelay(5000);
-        timer.start();
+        fieldOfficeTaskTimer = new Timer(0, actionListener);
+        fieldOfficeTaskTimer.setDelay(5000);
+        fieldOfficeTaskTimer.start();
     }
 
     public void showNotification(FieldOffice fieldOffice, boolean newFieldOffice) {
