@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class InvasionTask implements ActionListener {
 
-    final String INVASION_URL = "https://api.toon.plus/invasions/";
+    final String INVASION_URL = "https://api.toon.plus/invasions";
 
     private final InvasionTracker invasionTracker;
 
