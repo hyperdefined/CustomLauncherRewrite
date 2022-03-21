@@ -19,6 +19,7 @@ package lol.hyper.customlauncher.invasiontracker;
 
 import dorkbox.notify.Notify;
 import dorkbox.notify.Pos;
+import lol.hyper.customlauncher.ConfigHandler;
 import lol.hyper.customlauncher.Main;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -43,8 +44,10 @@ public class InvasionTracker {
     int calls = 0;
     public boolean isDown = false;
     public Timer invasionTaskTimer;
+    ConfigHandler configHandler;
 
-    public InvasionTracker() {
+    public InvasionTracker(ConfigHandler configHandler) {
+        this.configHandler = configHandler;
         startInvasionRefresh();
     }
 
@@ -159,6 +162,10 @@ public class InvasionTracker {
     }
 
     public void showNotification(Invasion invasion, boolean newInvasion) {
+        // do we show notifications?
+        if (!configHandler.showCogInvasionNotifications()) {
+            return;
+        }
         // don't spam the user with a bunch of notifications at once when we first launch
         if (calls == 0) {
             return;

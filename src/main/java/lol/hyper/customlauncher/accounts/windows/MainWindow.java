@@ -17,6 +17,7 @@
 
 package lol.hyper.customlauncher.accounts.windows;
 
+import lol.hyper.customlauncher.ConfigHandler;
 import lol.hyper.customlauncher.Main;
 import lol.hyper.customlauncher.accounts.Account;
 import lol.hyper.customlauncher.accounts.JSONManager;
@@ -41,7 +42,7 @@ public class MainWindow extends JFrame {
     final JLabel ttrStatus;
     final Timer timer;
 
-    public MainWindow(InvasionTracker invasionTracker, FieldOfficeTracker fieldOfficeTracker) {
+    public MainWindow(ConfigHandler configHandler, InvasionTracker invasionTracker, FieldOfficeTracker fieldOfficeTracker) {
         JFrame frame = new JFrame("CLR " + Main.VERSION);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
@@ -130,7 +131,7 @@ public class MainWindow extends JFrame {
         ttrUpdateButton.addActionListener(
                 e -> {
                     // we do this on another thread since it won't properly update the gui
-                    Thread t1 = new Thread(() -> new TTRUpdater("Updater", Paths.get(Main.TTR_INSTALL_DIR.getAbsolutePath())));
+                    Thread t1 = new Thread(() -> new TTRUpdater("Updater"));
                     t1.start();
                 });
         ttrUpdateButton.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -146,18 +147,12 @@ public class MainWindow extends JFrame {
         panel.add(Box.createRigidArea(new Dimension(0, 5)));
         panel.add(ttrStatus);
 
-        // update every 30 seconds
-        timer = new Timer(30000, e -> updateTTRStatus());
-        timer.setRepeats(true);
-        timer.setInitialDelay(0);
-        timer.start();
-
         accountList.addMouseListener(
                 new MouseAdapter() {
                     public void mouseClicked(MouseEvent evt) {
                         JList<String> list = (JList<String>) evt.getSource();
                         if (evt.getClickCount() == 2) {
-                            if (!Main.TTR_INSTALL_DIR.exists()) {
+                            if (!ConfigHandler.INSTALL_LOCATION.exists()) {
                                 JOptionPane.showMessageDialog(
                                         frame,
                                         "Unable to launch the game. The install location cannot be found.",
@@ -188,6 +183,12 @@ public class MainWindow extends JFrame {
         frame.add(panel);
         frame.setLocationRelativeTo(null);
         // frame.pack();
+
+        // update every 30 seconds
+        timer = new Timer(30000, e -> updateTTRStatus());
+        timer.setRepeats(true);
+        timer.setInitialDelay(0);
+        timer.start();
     }
 
     /**

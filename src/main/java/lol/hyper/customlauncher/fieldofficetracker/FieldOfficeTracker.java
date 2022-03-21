@@ -2,6 +2,7 @@ package lol.hyper.customlauncher.fieldofficetracker;
 
 import dorkbox.notify.Notify;
 import dorkbox.notify.Pos;
+import lol.hyper.customlauncher.ConfigHandler;
 import lol.hyper.customlauncher.Main;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,8 +26,9 @@ public class FieldOfficeTracker {
     int calls = 0;
     public boolean isDown = false;
     public Timer fieldOfficeTaskTimer;
+    ConfigHandler configHandler;
 
-    public FieldOfficeTracker() {
+    public FieldOfficeTracker(ConfigHandler configHandler) {
         // zone IDs to street names
         zonesToStreets.put(3100, "Walrus Way");
         zonesToStreets.put(3200, "Sleet Street");
@@ -39,6 +41,7 @@ public class FieldOfficeTracker {
         zonesToStreets.put(5300, "Oak Street");
         zonesToStreets.put(9100, "Lullaby Lane");
         zonesToStreets.put(9200, "Pajama Place");
+        this.configHandler = configHandler;
         startFieldOfficeRefresh();
     }
 
@@ -134,6 +137,10 @@ public class FieldOfficeTracker {
     }
 
     public void showNotification(FieldOffice fieldOffice, boolean newFieldOffice) {
+        // do we show notifications?
+        if (!configHandler.showFieldOfficeNotifications()) {
+            return;
+        }
         // don't spam the user with a bunch of notifications at once when we first launch
         if (calls == 0) {
             return;

@@ -17,6 +17,7 @@
 
 package lol.hyper.customlauncher.login;
 
+import lol.hyper.customlauncher.ConfigHandler;
 import lol.hyper.customlauncher.Main;
 import lol.hyper.customlauncher.generic.ErrorWindow;
 import org.apache.commons.lang3.SystemUtils;
@@ -55,11 +56,11 @@ public class LaunchGame extends Thread {
             String linuxCommand = "./TTREngine";
 
             // Make sure it's executable before running
-            boolean result = new File("ttr-files/" + linuxCommand).setExecutable(true);
+            boolean result = new File(ConfigHandler.installLocation + linuxCommand).setExecutable(true);
             if (!result) {
                 ErrorWindow errorWindow =
                         new ErrorWindow(
-                                "Unable to set /ttr-files/TTREngine as executable. Please make sure this file has the correct permissions!",
+                                "Unable to set" + ConfigHandler.installLocation + "TTREngine as executable. Please make sure this file has the correct permissions!",
                                 null);
                 errorWindow.dispose();
                 return;
@@ -73,7 +74,7 @@ public class LaunchGame extends Thread {
         // https://stackoverflow.com/a/58922302
         pb.redirectOutput(ProcessBuilder.Redirect.PIPE);
         pb.redirectErrorStream(true);
-        pb.directory(Main.TTR_INSTALL_DIR);
+        pb.directory(ConfigHandler.INSTALL_LOCATION);
 
         Map<String, String> env = pb.environment();
         env.put("TTR_GAMESERVER", this.gameServer);

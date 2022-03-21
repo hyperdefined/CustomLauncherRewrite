@@ -39,7 +39,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Properties;
 
 public class Main {
@@ -47,7 +46,6 @@ public class Main {
     public static String VERSION;
     public static Logger logger;
     public static Image icon;
-    public static final File TTR_INSTALL_DIR = new File("ttr-files");
 
     public static void main(String[] args) throws IOException, InterruptedException {
         // load the log4j2config
@@ -66,6 +64,9 @@ public class Main {
         logger.info("Program is starting.");
         logger.info("Running version " + VERSION);
 
+
+        ConfigHandler configHandler = new ConfigHandler();
+
         // create the config folder
         final File configPath = new File("config");
         if (!configPath.exists()) {
@@ -74,9 +75,9 @@ public class Main {
         }
 
         // create the ttr-files folder
-        if (!TTR_INSTALL_DIR.exists()) {
-            Files.createDirectory(TTR_INSTALL_DIR.toPath());
-            logger.info("Creating TTR install folder at " + TTR_INSTALL_DIR.getAbsolutePath());
+        if (!ConfigHandler.INSTALL_LOCATION.exists()) {
+            Files.createDirectory(ConfigHandler.INSTALL_LOCATION.toPath());
+            logger.info("Creating TTR install folder at " + ConfigHandler.INSTALL_LOCATION.getAbsolutePath());
             JSONObject options = new JSONObject();
             // TTR on linux has a bug with fullscreen mode
             // we set TTR to be windowed mode on first launch
@@ -170,15 +171,15 @@ public class Main {
         }
 
         // run the TTR updater
-        new TTRUpdater("Updater", Paths.get(TTR_INSTALL_DIR.getAbsolutePath()));
+        new TTRUpdater("Updater");
 
         // start reading invasions in the background
-        InvasionTracker invasionTracker = new InvasionTracker();
+        InvasionTracker invasionTracker = new InvasionTracker(configHandler);
 
-        FieldOfficeTracker fieldOfficeTracker = new FieldOfficeTracker();
+        FieldOfficeTracker fieldOfficeTracker = new FieldOfficeTracker(configHandler);
 
         // run the main window
-        JFrame mainWindow = new MainWindow(invasionTracker, fieldOfficeTracker);
+        JFrame mainWindow = new MainWindow(configHandler, invasionTracker, fieldOfficeTracker);
         mainWindow.dispose();
     }
 }

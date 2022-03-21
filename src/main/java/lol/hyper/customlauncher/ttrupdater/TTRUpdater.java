@@ -17,6 +17,7 @@
 
 package lol.hyper.customlauncher.ttrupdater;
 
+import lol.hyper.customlauncher.ConfigHandler;
 import lol.hyper.customlauncher.Main;
 import lol.hyper.customlauncher.accounts.JSONManager;
 import lol.hyper.customlauncher.generic.ErrorWindow;
@@ -59,7 +60,7 @@ public class TTRUpdater {
     public final Logger logger = LogManager.getLogger(this);
     final JProgressBar progressBar;
 
-    public TTRUpdater(String title, Path installLocation) {
+    public TTRUpdater(String title) {
         // setup the window elements
         JFrame frame = new JFrame(title);
         frame.setSize(370, 150);
@@ -93,7 +94,7 @@ public class TTRUpdater {
         frame.setLocationRelativeTo(null);
 
         // don't run the updater if the folder doesn't exist
-        if (!installLocation.toFile().exists()) {
+        if (!ConfigHandler.INSTALL_LOCATION.exists()) {
             JOptionPane.showMessageDialog(
                     frame,
                     "Unable to check for TTR updates. We are unable to find your TTR install directory.",
@@ -154,12 +155,12 @@ public class TTRUpdater {
                             .collect(Collectors.toList());
             // if we are running the OS the file is for, check it
             if (only.contains(osType)) {
-                File localFile = new File(installLocation + File.separator + key);
+                File localFile = new File(ConfigHandler.INSTALL_LOCATION, key);
                 updateStatus.setText("Checking file " + localFile.getName());
                 if (!localFile.exists()) {
                     logger.info(
                             "-----------------------------------------------------------------------");
-                    logger.info(installLocation + File.separator + key);
+                    logger.info(ConfigHandler.installLocation + File.separator + key);
                     logger.info("This file is missing and will be downloaded.");
                     logger.info(
                             "-----------------------------------------------------------------------");
@@ -182,7 +183,7 @@ public class TTRUpdater {
                 }
                 logger.info(
                         "-----------------------------------------------------------------------");
-                logger.info(installLocation + File.separator + key);
+                logger.info(ConfigHandler.installLocation + File.separator + key);
                 logger.info("Local hash: " + localHash.toLowerCase(Locale.ENGLISH));
                 logger.info("Expected hash: " + onlineHash);
                 logger.info("Type: " + osType);
@@ -241,12 +242,12 @@ public class TTRUpdater {
                     errorWindow.dispose();
                     frame.dispose();
                 }
-                logger.info("Finished downloading " + dl);
+                logger.info("Finished downloading " + output.getAbsolutePath());
                 updateStatus.setText("Finished downloading " + dl);
 
                 long startTime = System.nanoTime();
-                logger.info("Extracting " + dl);
-                updateStatus.setText("Extracting " + dl);
+                logger.info("Extracting " + output.getAbsolutePath());
+                updateStatus.setText("Extracting " + output);
                 progressBar.setVisible(false);
                 try {
                     decompressBz2(dl, fileToDownload); // extract the file to the new location
@@ -257,6 +258,7 @@ public class TTRUpdater {
                     frame.dispose();
                 }
                 updateStatus.setText("Finished extracting file " + dl);
+                logger.info("Finished extracting file " + dl);
                 logger.info(
                         "Done, took "
                                 + TimeUnit.SECONDS.convert(
@@ -321,7 +323,7 @@ public class TTRUpdater {
      */
     public void decompressBz2(String temp, String outputName) throws IOException {
         File tempFile = new File("temp" + File.separator + temp);
-        File output = new File(Main.TTR_INSTALL_DIR + File.separator + outputName);
+        File output = new File(ConfigHandler.INSTALL_LOCATION, outputName);
         BZip2CompressorInputStream in =
                 new BZip2CompressorInputStream(
                         new BufferedInputStream(new FileInputStream(tempFile)));
