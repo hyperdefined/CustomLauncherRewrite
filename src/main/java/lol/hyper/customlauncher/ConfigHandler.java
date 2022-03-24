@@ -31,20 +31,7 @@ public class ConfigHandler {
     private JSONObject jsonObject;
 
     public ConfigHandler() {
-        if (!CONFIG_FILE.exists()) {
-            jsonObject = new JSONObject();
-            jsonObject.put("showInvasionNotifications", true);
-            jsonObject.put("showFieldOfficeNotifications", true);
-            jsonObject.put("ttrInstallLocation", System.getProperty("user.dir") + File.separator + "ttr-files");
-            jsonObject.put("version", CONFIG_VERSION);
-        } else {
-            jsonObject = new JSONObject(JSONManager.readFile(CONFIG_FILE));
-            if (jsonObject.getInt("version") != CONFIG_VERSION) {
-                Main.logger.warn("Config version is not correct! Somethings will not work correctly. Version should be " + CONFIG_VERSION + " but read " + jsonObject.getInt("version"));
-            }
-        }
-        installLocation = jsonObject.getString("ttrInstallLocation");
-        INSTALL_LOCATION = new File(installLocation);
+        loadConfig();
         Main.logger.info("Config version: " + jsonObject.getInt("version"));
         Main.logger.info(jsonObject.toString());
     }
@@ -57,7 +44,50 @@ public class ConfigHandler {
         return jsonObject.getBoolean("showFieldOfficeNotifications");
     }
 
-    public JSONObject getJsonObject() {
-        return jsonObject;
+    public void editConfig(String key, Object value) {
+        if (jsonObject.has(key)) {
+            jsonObject.put(key, value);
+            JSONManager.writeFile(jsonObject, CONFIG_FILE);
+        }
+    }
+
+    /**
+     * Sets the default config values. If anything is missing it will update the config.
+     */
+    private void setDefaults() {
+        boolean changed = false;
+        if (!jsonObject.has("showInvasionNotifications")) {
+            jsonObject.put("showInvasionNotifications", true);
+            changed = true;
+        }
+        if (!jsonObject.has("showFieldOfficeNotifications")) {
+            jsonObject.put("showFieldOfficeNotifications", true);
+            changed = true;
+        }
+        if (!jsonObject.has("ttrInstallLocation")) {
+            jsonObject.put("ttrInstallLocation", System.getProperty("user.dir") + File.separator + "ttr-files");
+            changed = true;
+        }
+        if (changed) {
+            jsonObject.put("version", CONFIG_VERSION);
+        }
+        JSONManager.writeFile(jsonObject, CONFIG_FILE);
+    }
+
+    /**
+     * Load the config from disk into the JSON object.
+     */
+    public void loadConfig() {
+        if (!CONFIG_FILE.exists()) {
+            jsonObject = new JSONObject();
+        } else {
+            jsonObject = new JSONObject(JSONManager.readFile(CONFIG_FILE));
+            if (jsonObject.getInt("version") != CONFIG_VERSION) {
+                Main.logger.warn("Config version is not correct! Somethings will not work correctly. Version should be " + CONFIG_VERSION + " but read " + jsonObject.getInt("version"));
+            }
+        }
+        setDefaults();
+        installLocation = jsonObject.getString("ttrInstallLocation");
+        INSTALL_LOCATION = new File(installLocation);
     }
 }

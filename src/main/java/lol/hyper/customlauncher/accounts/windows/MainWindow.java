@@ -139,6 +139,18 @@ public class MainWindow extends JFrame {
                 new Dimension(300, ttrUpdateButton.getMinimumSize().height));
         panel.add(ttrUpdateButton);
 
+        // check for updates button
+        JButton configButton = new JButton("Configuration");
+        configButton.addActionListener(
+                e -> {
+                    ConfigWindow configWindow = new ConfigWindow(configHandler);
+                    configWindow.dispose();
+                });
+        configButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        configButton.setMaximumSize(
+                new Dimension(300, configButton.getMinimumSize().height));
+        panel.add(configButton);
+
 
         // game status
         ttrStatus = new JLabel("Fetching Status...");
