@@ -219,8 +219,7 @@ public class JSONManager {
 
         } catch (IOException e) {
             Main.logger.error("Unable to read URL " + url, e);
-            JFrame errorWindow =
-                    new ErrorWindow(null, e);
+            JFrame errorWindow = new ErrorWindow(null, e);
             errorWindow.dispose();
             return null;
         }

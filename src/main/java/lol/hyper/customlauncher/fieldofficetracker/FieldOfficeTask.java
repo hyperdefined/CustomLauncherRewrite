@@ -52,8 +52,8 @@ public class FieldOfficeTask implements ActionListener {
                 int difficulty = zoneJSON.getInt("difficulty") + 1; // they zero index this
                 int totalAnnexes = zoneJSON.getInt("annexes");
                 boolean open = zoneJSON.getBoolean("open");
-                FieldOffice office =
-                        new FieldOffice(Integer.parseInt(key), difficulty, open, totalAnnexes);
+                FieldOffice office = new FieldOffice(Integer.parseInt(key), difficulty, totalAnnexes);
+                office.setOpen(open);
                 // add it to our master list
                 fieldOfficeTracker.fieldOffices.put(Integer.parseInt(key), office);
                 fieldOfficeTracker.showNotification(office, true);

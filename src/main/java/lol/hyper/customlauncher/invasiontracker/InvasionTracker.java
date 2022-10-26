@@ -85,7 +85,7 @@ public class InvasionTracker {
         panel.add(scrollPane);
 
         ActionListener actionListener = e -> updateInvasionListGUI();
-        Timer timer = new javax.swing.Timer(0, actionListener);
+        Timer timer = new Timer(0, actionListener);
         timer.setDelay(500);
         timer.start();
 

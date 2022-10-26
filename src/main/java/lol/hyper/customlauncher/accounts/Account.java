@@ -39,6 +39,7 @@ public record Account(String username, String password, boolean encrypted) {
 
     /**
      * Is the account login encrypted?
+     *
      * @return The account's encryption status.
      */
     public boolean encrypted() {

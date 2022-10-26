@@ -48,8 +48,8 @@ public class InvasionTask implements ActionListener {
                 int cogsDefeated = temp.getInt("CurrentProgress");
                 int cogsTotal = temp.getInt("MaxProgress");
                 boolean megaInvasion = temp.getBoolean("MegaInvasion");
-                Invasion newInvasion =
-                        new Invasion(cogType, cogsDefeated, cogsTotal, district, megaInvasion);
+                Invasion newInvasion = new Invasion(district, cogType, cogsTotal, megaInvasion);
+                newInvasion.updateCogsDefeated(cogsDefeated);
                 newInvasion.endTime =
                         Instant.parse(temp.getString("EstimatedCompletion"))
                                 .atZone(ZoneId.systemDefault());

@@ -28,7 +28,8 @@ public class ConfigWindow extends JFrame {
         JTextField ttrInstallBox = new JTextField(ConfigHandler.installLocation);
         JLabel showInvasionNotifications = new JLabel("<html>Show invasion notifications?</html>");
         JCheckBox showInvasionNotificationsBox = new JCheckBox();
-        JLabel showFieldOfficeNotifications = new JLabel("<html>Show field office notifications?</html>");
+        JLabel showFieldOfficeNotifications =
+                new JLabel("<html>Show field office notifications?</html>");
         JCheckBox showFieldOfficeNotificationsBox = new JCheckBox();
         JButton saveButton = new JButton("Save");
 
@@ -36,18 +37,31 @@ public class ConfigWindow extends JFrame {
         showInvasionNotificationsBox.setSelected(configHandler.showCogInvasionNotifications());
         showFieldOfficeNotificationsBox.setSelected(configHandler.showFieldOfficeNotifications());
 
-        saveButton.addActionListener(e -> {
-            File testPath = new File(ttrInstallBox.getText());
-            if (!(testPath.exists()) && !(testPath.isDirectory())) {
-                JOptionPane.showMessageDialog(frame, ttrInstallBox.getText() + " is not a valid path!", "Error", JOptionPane.ERROR_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(frame, "Settings saved!", "Options", JOptionPane.INFORMATION_MESSAGE);
-                this.dispose();
-                configHandler.editConfig("showInvasionNotifications", showInvasionNotificationsBox.isSelected());
-                configHandler.editConfig("showFieldOfficeNotifications", showFieldOfficeNotificationsBox.isSelected());
-                configHandler.editConfig("ttrInstallLocation", ttrInstallBox.getText());
-            }
-        });
+        saveButton.addActionListener(
+                e -> {
+                    File testPath = new File(ttrInstallBox.getText());
+                    if (!(testPath.exists()) && !(testPath.isDirectory())) {
+                        JOptionPane.showMessageDialog(
+                                frame,
+                                ttrInstallBox.getText() + " is not a valid path!",
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        JOptionPane.showMessageDialog(
+                                frame,
+                                "Settings saved!",
+                                "Options",
+                                JOptionPane.INFORMATION_MESSAGE);
+                        this.dispose();
+                        configHandler.editConfig(
+                                "showInvasionNotifications",
+                                showInvasionNotificationsBox.isSelected());
+                        configHandler.editConfig(
+                                "showFieldOfficeNotifications",
+                                showFieldOfficeNotificationsBox.isSelected());
+                        configHandler.editConfig("ttrInstallLocation", ttrInstallBox.getText());
+                    }
+                });
 
         panel.add(ttrInstall);
         panel.add(ttrInstallBox);

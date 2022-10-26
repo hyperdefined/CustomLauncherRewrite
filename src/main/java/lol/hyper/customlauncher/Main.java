@@ -173,13 +173,8 @@ public class Main {
         // run the TTR updater
         new TTRUpdater("Updater");
 
-        // start reading invasions in the background
-        InvasionTracker invasionTracker = new InvasionTracker(configHandler);
-
-        FieldOfficeTracker fieldOfficeTracker = new FieldOfficeTracker(configHandler);
-
         // run the main window
-        JFrame mainWindow = new MainWindow(configHandler, invasionTracker, fieldOfficeTracker);
+        JFrame mainWindow = new MainWindow(configHandler);
         mainWindow.dispose();
     }
 }

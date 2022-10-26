@@ -32,7 +32,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.nio.file.Paths;
 import java.util.HashMap;
 
 public class MainWindow extends JFrame {
@@ -40,9 +39,10 @@ public class MainWindow extends JFrame {
     public static final DefaultListModel<String> model = new DefaultListModel<>();
     static final HashMap<Integer, String> labelsByIndexes = new HashMap<>();
     final JLabel ttrStatus;
-    final Timer timer;
+    private final InvasionTracker invasionTracker;
+    private final FieldOfficeTracker fieldOfficeTracker;
 
-    public MainWindow(ConfigHandler configHandler, InvasionTracker invasionTracker, FieldOfficeTracker fieldOfficeTracker) {
+    public MainWindow(ConfigHandler configHandler) {
         JFrame frame = new JFrame("CLR " + Main.VERSION);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
@@ -93,6 +93,7 @@ public class MainWindow extends JFrame {
 
         // invasions button
         JButton invasionsButton = new JButton("Invasions");
+        invasionTracker = new InvasionTracker(configHandler);
         invasionsButton.addActionListener(e -> {
             if (invasionTracker.isDown) {
                 int dialogButton = JOptionPane.YES_NO_OPTION;
@@ -110,6 +111,7 @@ public class MainWindow extends JFrame {
 
         // field office button
         JButton fieldOfficesButton = new JButton("Field Offices");
+        fieldOfficeTracker = new FieldOfficeTracker(configHandler);
         fieldOfficesButton.addActionListener(e -> {
             if (fieldOfficeTracker.isDown) {
                 int dialogButton = JOptionPane.YES_NO_OPTION;
@@ -194,12 +196,11 @@ public class MainWindow extends JFrame {
         frame.setVisible(true);
         frame.add(panel);
         frame.setLocationRelativeTo(null);
-        // frame.pack();
 
         // update every 30 seconds
-        timer = new Timer(30000, e -> updateTTRStatus());
+        Timer timer = new Timer(0, e -> updateTTRStatus());
         timer.setRepeats(true);
-        timer.setInitialDelay(0);
+        timer.setDelay(30000);
         timer.start();
     }
 

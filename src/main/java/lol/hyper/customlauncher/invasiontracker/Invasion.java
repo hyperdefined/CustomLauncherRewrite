@@ -28,11 +28,10 @@ public class Invasion implements Comparable<Invasion> {
     private int cogsDefeated;
     public final boolean megaInvasion;
 
-    public Invasion(String cogType, int cogsDefeated, int cogsTotal, String district, boolean megaInvasion) {
+    public Invasion(String district, String cogType, int cogsTotal, boolean megaInvasion) {
         this.cogType = cogType;
-        this.cogsDefeated = cogsDefeated;
-        this.cogsTotal = cogsTotal;
         this.district = district;
+        this.cogsTotal = cogsTotal;
         this.megaInvasion = megaInvasion;
     }
 
