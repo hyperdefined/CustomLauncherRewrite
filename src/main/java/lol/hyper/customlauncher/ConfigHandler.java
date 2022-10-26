@@ -33,7 +33,9 @@ public class ConfigHandler {
     public ConfigHandler() {
         loadConfig();
         Main.logger.info("Config version: " + jsonObject.getInt("version"));
-        Main.logger.info(jsonObject.toString());
+        Main.logger.info("showInvasionNotifications: " + showCogInvasionNotifications());
+        Main.logger.info("showFieldOfficeNotifications: " + showFieldOfficeNotifications());
+        Main.logger.info("ttrInstallLocation: " + installLocation);
     }
 
     public boolean showCogInvasionNotifications() {

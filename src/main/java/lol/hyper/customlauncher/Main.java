@@ -63,7 +63,7 @@ public class Main {
                         + "bit");
         logger.info("Program is starting.");
         logger.info("Running version " + VERSION);
-
+        logger.info("Current directory " + System.getProperty("user.dir"));
 
         ConfigHandler configHandler = new ConfigHandler();
 

@@ -1,6 +1,7 @@
 package lol.hyper.customlauncher.accounts.windows;
 
 import lol.hyper.customlauncher.ConfigHandler;
+import lol.hyper.customlauncher.Main;
 
 import javax.swing.*;
 import java.awt.*;
@@ -60,6 +61,11 @@ public class ConfigWindow extends JFrame {
                                 "showFieldOfficeNotifications",
                                 showFieldOfficeNotificationsBox.isSelected());
                         configHandler.editConfig("ttrInstallLocation", ttrInstallBox.getText());
+
+                        Main.logger.info("Saving new config to " + configHandler.CONFIG_FILE.getAbsolutePath());
+                        Main.logger.info("ttrInstallLocation: " + ttrInstallBox.getText());
+                        Main.logger.info("showFieldOfficeNotifications: " + showFieldOfficeNotificationsBox.isSelected());
+                        Main.logger.info("showInvasionNotifications: " + showInvasionNotificationsBox.isSelected());
                     }
                 });
 

@@ -78,6 +78,9 @@ public class LaunchGame extends Thread {
         Map<String, String> env = pb.environment();
         env.put("TTR_GAMESERVER", this.gameServer);
         env.put("TTR_PLAYCOOKIE", this.cookie);
+
+        logger.info("Launching game from " + ConfigHandler.installLocation);
+
         Thread t1 =
                 new Thread(
                         () -> {
