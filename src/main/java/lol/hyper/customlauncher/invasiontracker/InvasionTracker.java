@@ -41,7 +41,6 @@ public class InvasionTracker {
     public JTable invasionTable;
     public DefaultTableModel invasionTableModel;
     public JFrame frame;
-    int calls = 0;
     public boolean isDown = false;
     public Timer invasionTaskTimer;
     ConfigHandler configHandler;
@@ -140,11 +139,11 @@ public class InvasionTracker {
         }
     }
 
-    /** Read invasion API every 5 seconds. */
+    /** Read invasion API every 10 seconds. */
     public void startInvasionRefresh() {
         ActionListener actionListener = new InvasionTask(this);
         invasionTaskTimer = new Timer(0, actionListener);
-        invasionTaskTimer.setDelay(5000);
+        invasionTaskTimer.setDelay(10000);
         invasionTaskTimer.start();
     }
 
@@ -166,36 +165,26 @@ public class InvasionTracker {
         if (!configHandler.showCogInvasionNotifications()) {
             return;
         }
-        // don't spam the user with a bunch of notifications at once when we first launch
-        if (calls == 0) {
-            return;
-        }
-        Notify notify;
+
+        String messageTitle;
         if (newInvasion) {
-            notify =
-                    Notify.create()
-                            .title("New Invasion!")
-                            .text(
-                                    invasion.getDistrict()
-                                            + " - "
-                                            + invasion.getCogType().replace("\u0003", ""))
-                            .darkStyle()
-                            .position(Pos.BOTTOM_RIGHT)
-                            .hideAfter(5000)
-                            .image(Main.icon);
+            messageTitle = "New Invasion!";
         } else {
-            notify =
-                    Notify.create()
-                            .title("Invasion Gone!")
-                            .text(
-                                    invasion.getDistrict()
-                                            + " - "
-                                            + invasion.getCogType().replace("\u0003", ""))
-                            .darkStyle()
-                            .position(Pos.BOTTOM_RIGHT)
-                            .hideAfter(5000)
-                            .image(Main.icon);
+            messageTitle = "Invasion Gone!";
         }
+
+        Notify notify =
+                Notify.create()
+                        .title(messageTitle)
+                        .text(
+                                invasion.getDistrict()
+                                        + " - "
+                                        + invasion.getCogType().replace("\u0003", ""))
+                        .darkStyle()
+                        .position(Pos.BOTTOM_RIGHT)
+                        .hideAfter(5000)
+                        .image(Main.icon);
+
         notify.show();
     }
 }

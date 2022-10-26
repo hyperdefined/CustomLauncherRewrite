@@ -72,7 +72,5 @@ public class FieldOfficeTask implements ActionListener {
                 it.remove();
             }
         }
-
-        fieldOfficeTracker.calls++;
     }
 }

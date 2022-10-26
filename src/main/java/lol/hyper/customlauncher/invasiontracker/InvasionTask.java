@@ -43,6 +43,7 @@ public class InvasionTask implements ActionListener {
             // if we do not have that invasion stored, create a new invasion object
             // and add it to the list
             if (!invasionTracker.invasions.containsKey(district)) {
+                invasionTracker.logger.info("New invasion: " + district);
                 JSONObject temp = invasionsJSON.getJSONObject(key);
                 String cogType = temp.getString("Type");
                 int cogsDefeated = temp.getInt("CurrentProgress");
@@ -63,6 +64,7 @@ public class InvasionTask implements ActionListener {
                 // we want to update the total cogs defeated and the end time
                 Invasion tempInv = invasionTracker.invasions.get(district);
                 JSONObject temp = invasionsJSON.getJSONObject(key);
+                invasionTracker.logger.info("Updating invasion: " + district);
                 // ignore mega invasion cog count
                 if (!temp.getBoolean("MegaInvasion")) {
                     int cogsDefeated = temp.getInt("CurrentProgress");
@@ -79,13 +81,12 @@ public class InvasionTask implements ActionListener {
         Iterator<Map.Entry<String, Invasion>> it = invasionTracker.invasions.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry<String, Invasion> pair = it.next();
-            String key = pair.getKey() + "/" + pair.getValue().getCogType();
+            String key = pair.getKey() + "/" + pair.getValue().getCogType(); // this is the district
             if (!invasionsJSON.has(key)) {
                 invasionTracker.showNotification(pair.getValue(), false);
                 it.remove();
+                invasionTracker.logger.info("Remove invasion: " + key);
             }
         }
-
-        invasionTracker.calls++;
     }
 }

@@ -23,7 +23,6 @@ public class FieldOfficeTracker {
     public DefaultTableModel fieldOfficeTableModel;
     public JFrame frame;
     public static final HashMap<Integer, String> zonesToStreets = new HashMap<>();
-    int calls = 0;
     public boolean isDown = false;
     public Timer fieldOfficeTaskTimer;
     ConfigHandler configHandler;
@@ -128,11 +127,11 @@ public class FieldOfficeTracker {
         }
     }
 
-    /** Read field office API every 5 seconds. */
+    /** Read field office API every 10 seconds. */
     private void startFieldOfficeRefresh() {
         ActionListener actionListener = new FieldOfficeTask(this);
         fieldOfficeTaskTimer = new Timer(0, actionListener);
-        fieldOfficeTaskTimer.setDelay(5000);
+        fieldOfficeTaskTimer.setDelay(10000);
         fieldOfficeTaskTimer.start();
     }
 
@@ -141,38 +140,27 @@ public class FieldOfficeTracker {
         if (!configHandler.showFieldOfficeNotifications()) {
             return;
         }
-        // don't spam the user with a bunch of notifications at once when we first launch
-        if (calls == 0) {
-            return;
-        }
-        Notify notify;
+
+        String messageTitle;
         if (newFieldOffice) {
-            notify =
-                    Notify.create()
-                            .title("New Field Office!")
-                            .text(
-                                    zonesToStreets.get(fieldOffice.getArea())
-                                            + " - "
-                                            + fieldOffice.getDifficulty()
-                                            + " star")
-                            .darkStyle()
-                            .position(Pos.BOTTOM_RIGHT)
-                            .hideAfter(5000)
-                            .image(Main.icon);
+            messageTitle = "New Field Office!";
         } else {
-            notify =
-                    Notify.create()
-                            .title("Field Office Gone!")
-                            .text(
-                                    zonesToStreets.get(fieldOffice.getArea())
-                                            + " - "
-                                            + fieldOffice.getDifficulty()
-                                            + " star")
-                            .darkStyle()
-                            .position(Pos.BOTTOM_RIGHT)
-                            .hideAfter(5000)
-                            .image(Main.icon);
+            messageTitle = "Field Office Gone!";
         }
+
+        Notify notify =
+                Notify.create()
+                        .title(messageTitle)
+                        .text(
+                                zonesToStreets.get(fieldOffice.getArea())
+                                        + " - "
+                                        + fieldOffice.getDifficulty()
+                                        + " star")
+                        .darkStyle()
+                        .position(Pos.BOTTOM_RIGHT)
+                        .hideAfter(5000)
+                        .image(Main.icon);
+
         notify.show();
     }
 }
