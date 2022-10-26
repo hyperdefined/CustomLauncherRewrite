@@ -9,3 +9,4 @@ ttr-files/
 hs*.log
 *.exe
 *~
+logs/
