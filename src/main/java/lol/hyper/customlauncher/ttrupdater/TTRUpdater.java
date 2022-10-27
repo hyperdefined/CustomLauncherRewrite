@@ -42,7 +42,6 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -151,8 +150,7 @@ public class TTRUpdater {
             // get the list of OS's the file is for
             List<String> only =
                     currentFile.getJSONArray("only").toList().stream()
-                            .map(object -> Objects.toString(object, null))
-                            .collect(Collectors.toList());
+                            .map(object -> Objects.toString(object, null)).toList();
             // if we are running the OS the file is for, check it
             if (only.contains(osType)) {
                 File localFile = new File(ConfigHandler.INSTALL_LOCATION, key);

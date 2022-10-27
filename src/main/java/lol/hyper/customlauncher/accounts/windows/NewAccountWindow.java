@@ -19,6 +19,8 @@ package lol.hyper.customlauncher.accounts.windows;
 
 import lol.hyper.customlauncher.Main;
 import lol.hyper.customlauncher.accounts.JSONManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.event.ItemEvent;
@@ -27,6 +29,7 @@ import java.util.List;
 
 public class NewAccountWindow extends JFrame {
 
+    private final Logger logger = LogManager.getLogger(this);
     public NewAccountWindow(String title) {
         super(title);
         JFrame frame = new JFrame(title);
@@ -165,6 +168,9 @@ public class NewAccountWindow extends JFrame {
                     JOptionPane.showMessageDialog(
                             frame, usernameTextField.getText() + " was saved!");
                     frame.dispose();
+                    logger.info("Saved new account!");
+                    logger.info("Username: " + usernameTextField.getText());
+                    logger.info("Encrypted: " + encrypt);
                 });
 
         frame.setVisible(true);

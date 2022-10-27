@@ -32,7 +32,7 @@ public class District implements Comparable<District> {
 
     /**
      * Get the district name.
-     * @return
+     * @return The district name.
      */
     public String getDistrictName() {
         return districtName;

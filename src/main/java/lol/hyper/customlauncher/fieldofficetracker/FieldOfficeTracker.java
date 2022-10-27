@@ -36,18 +36,17 @@ import java.util.List;
 public class FieldOfficeTracker {
 
     public final HashMap<Integer, FieldOffice> fieldOffices = new HashMap<>();
-    public final Logger logger = LogManager.getLogger(FieldOfficeTracker.class);
     public JTable fieldOfficeTable;
     public DefaultTableModel fieldOfficeTableModel;
     public JFrame frame;
 
     public JLabel lastFetchedLabel;
-    public SimpleDateFormat lastFetchedFormat = new SimpleDateFormat("hh:mm:ss a");
+    public final SimpleDateFormat lastFetchedFormat = new SimpleDateFormat("hh:mm:ss a");
     public long lastFetched = 0;
     public static final HashMap<Integer, String> zonesToStreets = new HashMap<>();
     public boolean isDown = false;
     public Timer fieldOfficeTaskTimer;
-    ConfigHandler configHandler;
+    final ConfigHandler configHandler;
 
     public FieldOfficeTracker(ConfigHandler configHandler) {
         // zone IDs to street names

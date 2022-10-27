@@ -20,6 +20,8 @@ package lol.hyper.customlauncher.accounts.windows;
 import lol.hyper.customlauncher.Main;
 import lol.hyper.customlauncher.accounts.Account;
 import lol.hyper.customlauncher.accounts.JSONManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,6 +32,7 @@ import java.util.HashMap;
 
 public class DeleteAccountWindow extends JFrame {
 
+    private final Logger logger = LogManager.getLogger(this);
     final HashMap<Integer, String> labelsByIndexes = new HashMap<>();
 
     public DeleteAccountWindow(String title) {
@@ -83,6 +86,7 @@ public class DeleteAccountWindow extends JFrame {
                             JOptionPane.showMessageDialog(
                                     frame, account.getUsername() + " was deleted!");
                             frame.dispose();
+                            logger.info("Deleting account " + account.getUsername());
                         }
                     }
                 });

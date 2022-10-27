@@ -19,6 +19,8 @@ package lol.hyper.customlauncher.accounts;
 
 import lol.hyper.customlauncher.Main;
 import lol.hyper.customlauncher.generic.ErrorWindow;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -41,6 +43,7 @@ public class JSONManager {
     public static final File accountsFile =
             Paths.get("config" + File.separator + "accounts.json").toFile();
     private static SecretKeySpec secretKey;
+    private static final Logger logger = LogManager.getLogger(JSONManager.class);
 
     /**
      * Read contents of a file.
@@ -52,7 +55,7 @@ public class JSONManager {
         try {
             encoded = Files.readAllBytes(file.toPath());
         } catch (IOException e) {
-            Main.logger.error("Unable to read file " + file, e);
+            logger.error("Unable to read file " + file, e);
             JFrame errorWindow = new ErrorWindow(null, e);
             errorWindow.dispose();
         }
@@ -70,7 +73,7 @@ public class JSONManager {
             writer.write(json.toString());
             writer.close();
         } catch (IOException e) {
-            Main.logger.error("Unable to write file " + file, e);
+            logger.error("Unable to write file " + file, e);
             JFrame errorWindow = new ErrorWindow(null, e);
             errorWindow.dispose();
         }
@@ -152,7 +155,7 @@ public class JSONManager {
             key = Arrays.copyOf(key, 16);
             secretKey = new SecretKeySpec(key, "AES");
         } catch (NoSuchAlgorithmException e) {
-            Main.logger.error("Error while setting key!", e);
+            logger.error("Error while setting key!", e);
         }
     }
 
@@ -171,7 +174,7 @@ public class JSONManager {
             return Base64.getEncoder()
                     .encodeToString(cipher.doFinal(strToEncrypt.getBytes(StandardCharsets.UTF_8)));
         } catch (Exception e) {
-            Main.logger.error("Error while encrypting input text!", e);
+            logger.error("Error while encrypting input text!", e);
         }
         return null;
     }
@@ -192,7 +195,7 @@ public class JSONManager {
                     cipher.doFinal(Base64.getDecoder().decode(strToDecrypt)),
                     StandardCharsets.UTF_8);
         } catch (Exception e) {
-            Main.logger.error("Error while decrypting input text!", e);
+            logger.error("Error while decrypting input text!", e);
             return null;
         }
     }
@@ -218,14 +221,14 @@ public class JSONManager {
             reader.close();
 
         } catch (IOException e) {
-            Main.logger.error("Unable to read URL " + url, e);
+            logger.error("Unable to read URL " + url, e);
             JFrame errorWindow = new ErrorWindow(null, e);
             errorWindow.dispose();
             return null;
         }
 
         if (rawJSON.isEmpty()) {
-            Main.logger.error("Read JSON from " + url + " returned an empty string!");
+            logger.error("Read JSON from " + url + " returned an empty string!");
             return null;
         }
         return new JSONObject(rawJSON);

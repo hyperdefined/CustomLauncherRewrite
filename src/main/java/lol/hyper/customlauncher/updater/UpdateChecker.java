@@ -35,7 +35,7 @@ import java.util.HashMap;
 public class UpdateChecker {
 
     private final GitHubReleaseAPI api;
-    private final Logger logger = LogManager.getLogger(UpdateChecker.class);
+    private final Logger logger = LogManager.getLogger(this);
 
     public UpdateChecker(GitHubReleaseAPI api) {
         this.api = api;

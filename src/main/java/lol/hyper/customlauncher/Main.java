@@ -19,9 +19,7 @@ package lol.hyper.customlauncher;
 
 import lol.hyper.customlauncher.accounts.JSONManager;
 import lol.hyper.customlauncher.accounts.windows.MainWindow;
-import lol.hyper.customlauncher.fieldofficetracker.FieldOfficeTracker;
 import lol.hyper.customlauncher.generic.ErrorWindow;
-import lol.hyper.customlauncher.invasiontracker.InvasionTracker;
 import lol.hyper.customlauncher.ttrupdater.TTRUpdater;
 import lol.hyper.customlauncher.updater.UpdateChecker;
 import lol.hyper.githubreleaseapi.GitHubRelease;

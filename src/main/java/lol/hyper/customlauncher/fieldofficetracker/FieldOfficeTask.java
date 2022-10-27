@@ -18,6 +18,8 @@
 package lol.hyper.customlauncher.fieldofficetracker;
 
 import lol.hyper.customlauncher.accounts.JSONManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
 import java.awt.event.ActionEvent;
@@ -29,6 +31,7 @@ public class FieldOfficeTask implements ActionListener {
 
     final String FIELD_OFFICE_URL = "https://www.toontownrewritten.com/api/fieldoffices";
     private final FieldOfficeTracker fieldOfficeTracker;
+    private final Logger logger = LogManager.getLogger(this);
 
     public FieldOfficeTask(FieldOfficeTracker fieldOfficeTracker) {
         this.fieldOfficeTracker = fieldOfficeTracker;
@@ -49,7 +52,7 @@ public class FieldOfficeTask implements ActionListener {
 
         JSONObject fieldOfficeJSON = fieldOfficeRoot.getJSONObject("fieldOffices");
 
-        fieldOfficeTracker.logger.info(
+        logger.info(
                 "Reading " + FIELD_OFFICE_URL + " for current field offices...");
 
         // go through all the field offices from the API

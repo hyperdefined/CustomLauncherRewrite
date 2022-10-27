@@ -33,14 +33,13 @@ import java.util.List;
 public class DistrictTracker {
 
     public final HashMap<String, District> districts = new HashMap<>();
-    public final Logger logger = LogManager.getLogger(this);
     public JTable districtTable;
     public JLabel totalPopulationLabel;
     public DefaultTableModel districtsTableModel;
     public JFrame frame;
 
     public JLabel lastFetchedLabel;
-    public SimpleDateFormat lastFetchedFormat = new SimpleDateFormat("hh:mm:ss a");
+    public final SimpleDateFormat lastFetchedFormat = new SimpleDateFormat("hh:mm:ss a");
     public long lastFetched = 0;
     public boolean isDown = false;
     public Timer districtTaskTimer;

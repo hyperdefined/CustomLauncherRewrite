@@ -18,6 +18,8 @@
 package lol.hyper.customlauncher.invasiontracker;
 
 import lol.hyper.customlauncher.accounts.JSONManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
 import java.awt.event.ActionEvent;
@@ -31,6 +33,7 @@ public class InvasionTask implements ActionListener {
 
     final String INVASION_URL = "https://api.toon.plus/invasions";
     private final InvasionTracker invasionTracker;
+    private final Logger logger = LogManager.getLogger(this);
 
     public InvasionTask(InvasionTracker invasionTracker) {
         this.invasionTracker = invasionTracker;
@@ -48,7 +51,7 @@ public class InvasionTask implements ActionListener {
         }
         invasionTracker.isDown = false;
 
-        invasionTracker.logger.info("Reading " + INVASION_URL + " for current invasions...");
+        logger.info("Reading " + INVASION_URL + " for current invasions...");
 
         // iterate through each of the invasions (separate JSONs)
         Iterator<String> keys = invasionsJSON.keys();
@@ -58,7 +61,7 @@ public class InvasionTask implements ActionListener {
             // if we do not have that invasion stored, create a new invasion object
             // and add it to the list
             if (!invasionTracker.invasions.containsKey(district)) {
-                invasionTracker.logger.info("New invasion: " + district);
+                logger.info("New invasion: " + district);
                 JSONObject temp = invasionsJSON.getJSONObject(key);
                 String cogType = temp.getString("Type");
                 int cogsDefeated = temp.getInt("CurrentProgress");
@@ -79,7 +82,7 @@ public class InvasionTask implements ActionListener {
                 // we want to update the total cogs defeated and the end time
                 Invasion tempInv = invasionTracker.invasions.get(district);
                 JSONObject temp = invasionsJSON.getJSONObject(key);
-                invasionTracker.logger.info("Updating invasion: " + district);
+                logger.info("Updating invasion: " + district);
                 // ignore mega invasion cog count
                 if (!temp.getBoolean("MegaInvasion")) {
                     int cogsDefeated = temp.getInt("CurrentProgress");
@@ -100,7 +103,7 @@ public class InvasionTask implements ActionListener {
             if (!invasionsJSON.has(key)) {
                 invasionTracker.showNotification(pair.getValue(), false);
                 it.remove();
-                invasionTracker.logger.info("Remove invasion: " + key);
+                logger.info("Remove invasion: " + key);
             }
         }
         invasionTracker.lastFetched = System.currentTimeMillis();

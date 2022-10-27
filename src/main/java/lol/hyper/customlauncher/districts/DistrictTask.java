@@ -18,6 +18,8 @@
 package lol.hyper.customlauncher.districts;
 
 import lol.hyper.customlauncher.accounts.JSONManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
 import java.awt.event.ActionEvent;
@@ -29,6 +31,7 @@ public class DistrictTask implements ActionListener {
 
     final String DISTRICT_URL = "https://www.toontownrewritten.com/api/population";
     private final DistrictTracker districtTracker;
+    private final Logger logger = LogManager.getLogger(this);
 
     public DistrictTask(DistrictTracker districtTracker) {
         this.districtTracker = districtTracker;
@@ -47,7 +50,7 @@ public class DistrictTask implements ActionListener {
 
         districtTracker.isDown = false;
 
-        districtTracker.logger.info("Reading " + DISTRICT_URL + " for current districts...");
+        logger.info("Reading " + DISTRICT_URL + " for current districts...");
 
         JSONObject districts = districtsJSON.getJSONObject("populationByDistrict");
         // iterate through each district

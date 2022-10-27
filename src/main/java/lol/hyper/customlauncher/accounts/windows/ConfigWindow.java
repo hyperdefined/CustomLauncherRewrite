@@ -19,12 +19,16 @@ package lol.hyper.customlauncher.accounts.windows;
 
 import lol.hyper.customlauncher.ConfigHandler;
 import lol.hyper.customlauncher.Main;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 
 public class ConfigWindow extends JFrame {
+
+    private final Logger logger = LogManager.getLogger(this);
 
     public ConfigWindow(ConfigHandler configHandler) {
         configHandler.loadConfig();
@@ -79,10 +83,16 @@ public class ConfigWindow extends JFrame {
                                 showFieldOfficeNotificationsBox.isSelected());
                         configHandler.editConfig("ttrInstallLocation", ttrInstallBox.getText());
 
-                        Main.logger.info("Saving new config to " + configHandler.CONFIG_FILE.getAbsolutePath());
-                        Main.logger.info("ttrInstallLocation: " + ttrInstallBox.getText());
-                        Main.logger.info("showFieldOfficeNotifications: " + showFieldOfficeNotificationsBox.isSelected());
-                        Main.logger.info("showInvasionNotifications: " + showInvasionNotificationsBox.isSelected());
+                        logger.info(
+                                "Saving new config to "
+                                        + configHandler.CONFIG_FILE.getAbsolutePath());
+                        logger.info("ttrInstallLocation: " + ttrInstallBox.getText());
+                        logger.info(
+                                "showFieldOfficeNotifications: "
+                                        + showFieldOfficeNotificationsBox.isSelected());
+                        logger.info(
+                                "showInvasionNotifications: "
+                                        + showInvasionNotificationsBox.isSelected());
                     }
                 });
 

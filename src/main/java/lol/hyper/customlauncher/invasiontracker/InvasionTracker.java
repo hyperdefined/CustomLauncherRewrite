@@ -30,7 +30,6 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -39,16 +38,15 @@ import java.util.*;
 public class InvasionTracker {
 
     public final HashMap<String, Invasion> invasions = new HashMap<>();
-    public final Logger logger = LogManager.getLogger(InvasionTracker.class);
     public JTable invasionTable;
     public DefaultTableModel invasionTableModel;
     public JFrame frame;
     public JLabel lastFetchedLabel;
-    public SimpleDateFormat lastFetchedFormat = new SimpleDateFormat("hh:mm:ss a");
+    public final SimpleDateFormat lastFetchedFormat = new SimpleDateFormat("hh:mm:ss a");
     public long lastFetched = 0;
     public boolean isDown = false;
     public Timer invasionTaskTimer;
-    ConfigHandler configHandler;
+    final ConfigHandler configHandler;
 
     public InvasionTracker(ConfigHandler configHandler) {
         this.configHandler = configHandler;

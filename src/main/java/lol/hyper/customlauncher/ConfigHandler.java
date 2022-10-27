@@ -18,6 +18,8 @@
 package lol.hyper.customlauncher;
 
 import lol.hyper.customlauncher.accounts.JSONManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -29,13 +31,14 @@ public class ConfigHandler {
     public static File INSTALL_LOCATION;
     public static String installLocation;
     private JSONObject jsonObject;
+    private final Logger logger = LogManager.getLogger(this);
 
     public ConfigHandler() {
         loadConfig();
-        Main.logger.info("Config version: " + jsonObject.getInt("version"));
-        Main.logger.info("showInvasionNotifications: " + showCogInvasionNotifications());
-        Main.logger.info("showFieldOfficeNotifications: " + showFieldOfficeNotifications());
-        Main.logger.info("ttrInstallLocation: " + installLocation);
+        logger.info("Config version: " + jsonObject.getInt("version"));
+        logger.info("showInvasionNotifications: " + showCogInvasionNotifications());
+        logger.info("showFieldOfficeNotifications: " + showFieldOfficeNotifications());
+        logger.info("ttrInstallLocation: " + installLocation);
     }
 
     public boolean showCogInvasionNotifications() {
@@ -85,7 +88,7 @@ public class ConfigHandler {
         } else {
             jsonObject = new JSONObject(JSONManager.readFile(CONFIG_FILE));
             if (jsonObject.getInt("version") != CONFIG_VERSION) {
-                Main.logger.warn("Config version is not correct! Somethings will not work correctly. Version should be " + CONFIG_VERSION + " but read " + jsonObject.getInt("version"));
+                logger.warn("Config version is not correct! Somethings will not work correctly. Version should be " + CONFIG_VERSION + " but read " + jsonObject.getInt("version"));
             }
         }
         setDefaults();
