@@ -99,13 +99,16 @@ public class InvasionTask implements ActionListener {
         Iterator<Map.Entry<String, Invasion>> it = invasionTracker.invasions.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry<String, Invasion> pair = it.next();
-            String key = pair.getKey() + "/" + pair.getValue().getCogType(); // this is the district
+            // this is the district
+            // <district>/<cog name>
+            String key = pair.getKey() + "/" + pair.getValue().getCogType();
             if (!invasionsJSON.has(key)) {
                 invasionTracker.showNotification(pair.getValue(), false);
                 it.remove();
                 logger.info("Remove invasion: " + key);
             }
         }
+        invasionTracker.runs++;
         invasionTracker.lastFetched = System.currentTimeMillis();
     }
 }

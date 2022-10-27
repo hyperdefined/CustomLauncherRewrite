@@ -43,6 +43,7 @@ public class FieldOfficeTracker {
     public JLabel lastFetchedLabel;
     public final SimpleDateFormat lastFetchedFormat = new SimpleDateFormat("hh:mm:ss a");
     public long lastFetched = 0;
+    public int runs = 0;
     public static final HashMap<Integer, String> zonesToStreets = new HashMap<>();
     public boolean isDown = false;
     public Timer fieldOfficeTaskTimer;
@@ -163,6 +164,10 @@ public class FieldOfficeTracker {
     }
 
     public void showNotification(FieldOffice fieldOffice, boolean newFieldOffice) {
+        // do not spam the user with all notifications at once
+        if (runs == 0) {
+            return;
+        }
         // do we show notifications?
         if (!configHandler.showFieldOfficeNotifications()) {
             return;

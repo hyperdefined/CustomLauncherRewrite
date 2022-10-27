@@ -44,6 +44,7 @@ public class InvasionTracker {
     public JLabel lastFetchedLabel;
     public final SimpleDateFormat lastFetchedFormat = new SimpleDateFormat("hh:mm:ss a");
     public long lastFetched = 0;
+    public int runs = 0;
     public boolean isDown = false;
     public Timer invasionTaskTimer;
     final ConfigHandler configHandler;
@@ -170,6 +171,11 @@ public class InvasionTracker {
     }
 
     public void showNotification(Invasion invasion, boolean newInvasion) {
+        // do not spam the user with all notifications at once
+        if (runs == 0) {
+            return;
+        }
+
         // do we show notifications?
         if (!configHandler.showCogInvasionNotifications()) {
             return;
