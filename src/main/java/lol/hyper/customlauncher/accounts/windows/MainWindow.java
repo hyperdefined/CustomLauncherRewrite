@@ -45,7 +45,7 @@ public class MainWindow extends JFrame {
     private final DistrictTracker districtTracker;
 
     public MainWindow(ConfigHandler configHandler) {
-        JFrame frame = new JFrame("CLR " + Main.VERSION);
+        JFrame frame = new JFrame("CLR " + Main.version);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
         try {

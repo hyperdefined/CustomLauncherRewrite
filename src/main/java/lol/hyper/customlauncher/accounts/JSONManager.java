@@ -54,9 +54,9 @@ public class JSONManager {
         byte[] encoded = new byte[0];
         try {
             encoded = Files.readAllBytes(file.toPath());
-        } catch (IOException e) {
-            logger.error("Unable to read file " + file, e);
-            JFrame errorWindow = new ErrorWindow(null, e);
+        } catch (IOException exception) {
+            logger.error("Unable to read file " + file, exception);
+            JFrame errorWindow = new ErrorWindow(null, exception);
             errorWindow.dispose();
         }
         return new String(encoded, StandardCharsets.UTF_8);
@@ -72,9 +72,9 @@ public class JSONManager {
             FileWriter writer = new FileWriter(file);
             writer.write(json.toString());
             writer.close();
-        } catch (IOException e) {
-            logger.error("Unable to write file " + file, e);
-            JFrame errorWindow = new ErrorWindow(null, e);
+        } catch (IOException exception) {
+            logger.error("Unable to write file " + file, exception);
+            JFrame errorWindow = new ErrorWindow(null, exception);
             errorWindow.dispose();
         }
     }
@@ -154,8 +154,8 @@ public class JSONManager {
             key = sha.digest(key);
             key = Arrays.copyOf(key, 16);
             secretKey = new SecretKeySpec(key, "AES");
-        } catch (NoSuchAlgorithmException e) {
-            logger.error("Error while setting key!", e);
+        } catch (NoSuchAlgorithmException exception) {
+            logger.error("Error while setting key!", exception);
         }
     }
 
@@ -173,8 +173,8 @@ public class JSONManager {
             cipher.init(Cipher.ENCRYPT_MODE, secretKey);
             return Base64.getEncoder()
                     .encodeToString(cipher.doFinal(strToEncrypt.getBytes(StandardCharsets.UTF_8)));
-        } catch (Exception e) {
-            logger.error("Error while encrypting input text!", e);
+        } catch (Exception exception) {
+            logger.error("Error while encrypting input text!", exception);
         }
         return null;
     }
@@ -194,8 +194,8 @@ public class JSONManager {
             return new String(
                     cipher.doFinal(Base64.getDecoder().decode(strToDecrypt)),
                     StandardCharsets.UTF_8);
-        } catch (Exception e) {
-            logger.error("Error while decrypting input text!", e);
+        } catch (Exception exception) {
+            logger.error("Error while decrypting input text!", exception);
             return null;
         }
     }
@@ -210,9 +210,7 @@ public class JSONManager {
         String rawJSON;
         try {
             URLConnection conn = new URL(url).openConnection();
-            conn.setRequestProperty(
-                    "User-Agent",
-                    "CustomLauncherRewrite https://github.com/hyperdefined/CustomLauncherRewrite");
+            conn.setRequestProperty("User-Agent", Main.userAgent);
             conn.connect();
 
             InputStream in = conn.getInputStream();
@@ -220,9 +218,9 @@ public class JSONManager {
             rawJSON = reader.lines().collect(Collectors.joining(System.lineSeparator()));
             reader.close();
 
-        } catch (IOException e) {
-            logger.error("Unable to read URL " + url, e);
-            JFrame errorWindow = new ErrorWindow(null, e);
+        } catch (IOException exception) {
+            logger.error("Unable to read URL " + url, exception);
+            JFrame errorWindow = new ErrorWindow(null, exception);
             errorWindow.dispose();
             return null;
         }

@@ -19,11 +19,8 @@ package lol.hyper.customlauncher;
 
 import lol.hyper.customlauncher.accounts.JSONManager;
 import lol.hyper.customlauncher.accounts.windows.MainWindow;
-import lol.hyper.customlauncher.generic.ErrorWindow;
 import lol.hyper.customlauncher.ttrupdater.TTRUpdater;
 import lol.hyper.customlauncher.updater.UpdateChecker;
-import lol.hyper.githubreleaseapi.GitHubRelease;
-import lol.hyper.githubreleaseapi.GitHubReleaseAPI;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -41,9 +38,10 @@ import java.util.Properties;
 
 public class Main {
 
-    public static String VERSION;
+    public static String version;
     public static Logger logger;
     public static Image icon;
+    public static String userAgent;
 
     public static void main(String[] args) throws IOException, InterruptedException {
         // load the log4j2config
@@ -51,7 +49,7 @@ public class Main {
         // load the version
         final Properties properties = new Properties();
         properties.load(Main.class.getClassLoader().getResourceAsStream("project.properties"));
-        VERSION = properties.getProperty("version");
+        version = properties.getProperty("version");
         // log some basic info
         logger = LogManager.getLogger(Main.class);
         logger.info(
@@ -60,8 +58,10 @@ public class Main {
                         + System.getProperty("sun.arch.data.model")
                         + "bit");
         logger.info("Program is starting.");
-        logger.info("Running version " + VERSION);
+        logger.info("Running version " + version);
         logger.info("Current directory " + System.getProperty("user.dir"));
+
+        userAgent = "CustomLauncherRewrite https://github.com/hyperdefined/CustomLauncherRewrite " + version;
 
         ConfigHandler configHandler = new ConfigHandler();
 
@@ -106,56 +106,6 @@ public class Main {
             logger.info("Creating base accounts file...");
         }
 
-        // check for updates using my own api
-        GitHubReleaseAPI api;
-        try {
-            api = new GitHubReleaseAPI("CustomLauncherRewrite", "hyperdefined");
-        } catch (IOException e) {
-            api = null;
-            ErrorWindow errorWindow = new ErrorWindow(null, e);
-            errorWindow.dispose();
-        }
-        if (api != null) {
-            GitHubRelease latest = api.getLatestVersion();
-            String latestVersion = latest.getTagVersion();
-            GitHubRelease current = api.getReleaseByTag(VERSION);
-            int behind = api.getBuildsBehind(current);
-            UpdateChecker updateChecker = new UpdateChecker(api);
-            StringBuilder updates = new StringBuilder();
-            // if the user is 1 or more build behind, ask to update
-            if (behind > 0) {
-                JTextArea textArea = new JTextArea();
-                JScrollPane scrollPane = new JScrollPane(textArea);
-                textArea.setLineWrap(true);
-                textArea.setWrapStyleWord(true);
-                scrollPane.setPreferredSize(new Dimension(500, 500));
-                updates.append("You are running an outdated version! You are running ")
-                        .append(VERSION)
-                        .append(" currently.");
-                updates.append(" Would you like to update?\n\n");
-                for (int i = behind - 1; i >= 0; i--) {
-                    String tag = api.getAllReleases().get(i).getTagVersion();
-                    updates.append("----------------------------------------\nVersion: ")
-                            .append(tag)
-                            .append("\n")
-                            .append(api.getReleaseByTag(tag).getReleaseNotes())
-                            .append("\n");
-                }
-                textArea.setText(updates.toString());
-                logger.info("A new version is available! Version: " + latestVersion);
-
-                int dialogResult =
-                        JOptionPane.showConfirmDialog(
-                                null, scrollPane, "Updates", JOptionPane.YES_NO_OPTION);
-                if (dialogResult == JOptionPane.YES_OPTION) {
-                    // download the latest version and run it
-                    updateChecker.downloadLatestVersion();
-                    updateChecker.launchNewVersion(latestVersion);
-                    System.exit(0);
-                }
-            }
-        }
-
         // this is used for removing old versions on windows
         // passing "--remove-old <version>" will delete that version's exe
         // mainly for cleanup so there aren't 100 exes in the folder
@@ -167,6 +117,8 @@ public class Main {
                 logger.info("Deleting old version " + oldVersion);
             }
         }
+
+        new UpdateChecker(version);
 
         // run the TTR updater
         new TTRUpdater("Updater");

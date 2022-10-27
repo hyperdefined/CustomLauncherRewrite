@@ -55,11 +55,14 @@ public class LaunchGame extends Thread {
             String linuxCommand = "./TTREngine";
 
             // Make sure it's executable before running
-            boolean result = new File(ConfigHandler.installLocation + linuxCommand).setExecutable(true);
+            boolean result =
+                    new File(ConfigHandler.installLocation + linuxCommand).setExecutable(true);
             if (!result) {
                 ErrorWindow errorWindow =
                         new ErrorWindow(
-                                "Unable to set" + ConfigHandler.installLocation + "TTREngine as executable. Please make sure this file has the correct permissions!",
+                                "Unable to set "
+                                        + ConfigHandler.installLocation
+                                        + "TTREngine as executable. Please make sure this file has the correct permissions!",
                                 null);
                 errorWindow.dispose();
                 return;
@@ -88,9 +91,9 @@ public class LaunchGame extends Thread {
                                 Process process = pb.start();
                                 process.getInputStream().close();
                                 process.waitFor();
-                            } catch (IOException | InterruptedException e) {
-                                logger.error("Unable to launch game!", e);
-                                JFrame errorWindow = new ErrorWindow(null, e);
+                            } catch (IOException | InterruptedException exception) {
+                                logger.error("Unable to launch game!", exception);
+                                JFrame errorWindow = new ErrorWindow(null, exception);
                                 errorWindow.dispose();
                             }
                         });

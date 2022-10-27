@@ -27,25 +27,81 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.util.HashMap;
 
 public class UpdateChecker {
 
-    private final GitHubReleaseAPI api;
+    private GitHubReleaseAPI api;
     private final Logger logger = LogManager.getLogger(this);
 
-    public UpdateChecker(GitHubReleaseAPI api) {
-        this.api = api;
+    public UpdateChecker(String currentVersion) {
+        try {
+            this.api = new GitHubReleaseAPI("CustomLauncherRewrite", "hyperdefined");
+        } catch (IOException exception) {
+            api = null;
+            logger.error("Unable to look for updates! ", exception);
+            ErrorWindow errorWindow = new ErrorWindow(null, exception);
+            errorWindow.dispose();
+        }
+        checkForUpdate(currentVersion);
+    }
+
+    private void checkForUpdate(String currentVersion) {
+        // if the api is broken, don't even bother
+        if (api == null) {
+            return;
+        }
+        String latestVersion = api.getLatestVersion().getTagVersion();
+        GitHubRelease current = api.getReleaseByTag(currentVersion);
+        int behind = api.getBuildsBehind(current);
+        StringBuilder updates = new StringBuilder();
+        // if the user is 1 or more build behind, ask to update
+        if (behind > 0) {
+            JTextArea textArea = new JTextArea();
+            JScrollPane scrollPane = new JScrollPane(textArea);
+            textArea.setLineWrap(true);
+            textArea.setWrapStyleWord(true);
+            scrollPane.setPreferredSize(new Dimension(500, 500));
+            updates.append("You are running an outdated version! You are running ")
+                    .append(currentVersion)
+                    .append(" currently.");
+            updates.append(" Would you like to update?\n\n");
+            for (int i = behind - 1; i >= 0; i--) {
+                String tag = api.getAllReleases().get(i).getTagVersion();
+                updates.append("----------------------------------------\nVersion: ")
+                        .append(tag)
+                        .append("\n")
+                        .append(api.getReleaseByTag(tag).getReleaseNotes())
+                        .append("\n");
+            }
+            textArea.setText(updates.toString());
+            logger.info("A new version is available! Version: " + latestVersion);
+
+            int dialogResult =
+                    JOptionPane.showConfirmDialog(
+                            null, scrollPane, "Updates", JOptionPane.YES_NO_OPTION);
+            if (dialogResult == JOptionPane.YES_OPTION) {
+                // download the latest version and run it
+                downloadLatestVersion();
+                launchNewVersion(latestVersion);
+                System.exit(0);
+            }
+        }
     }
 
     /** Downloads the latest version of the launcher from GitHub. */
-    public void downloadLatestVersion() throws IOException, InterruptedException {
+    private void downloadLatestVersion() {
         HashMap<String, URL> downloadURLs = new HashMap<>();
         if (api.getAllReleases() == null || api.getAllReleases().isEmpty()) {
-            JFrame errorWindow = new ErrorWindow("Unable to look for updates!", null);
+            logger.error("Unable to look for updates!");
+            logger.error("getAllReleases() is null" + (api.getAllReleases() == null));
+            logger.error("getAllReleases() is empty" + (api.getAllReleases().isEmpty()));
+            ErrorWindow errorWindow = new ErrorWindow("Unable to look for updates!", null);
             errorWindow.dispose();
             return;
         }
@@ -53,11 +109,20 @@ public class UpdateChecker {
         GitHubRelease release = api.getLatestVersion();
         for (String url : release.getReleaseAssets()) {
             String extension = url.substring(url.lastIndexOf(".") + 1);
+            URL downloadURL;
+            try {
+                downloadURL = new URL(url);
+            } catch (MalformedURLException exception) {
+                logger.error("Unable to look for updates! ", exception);
+                ErrorWindow errorWindow = new ErrorWindow("Unable to look for updates!", exception);
+                errorWindow.dispose();
+                return;
+            }
             if (extension.equalsIgnoreCase("exe")) {
-                downloadURLs.put("windows", new URL(url));
+                downloadURLs.put("windows", downloadURL);
             }
             if (extension.equalsIgnoreCase("gz")) {
-                downloadURLs.put("linux", new URL(url));
+                downloadURLs.put("linux", downloadURL);
             }
         }
 
@@ -78,13 +143,26 @@ public class UpdateChecker {
         String fileName = finalURL.toString().substring(finalURL.toString().lastIndexOf("/") + 1);
         logger.info(fileName);
         File output = new File(fileName);
-        FileUtils.copyURLToFile(finalURL, output);
+        try {
+            FileUtils.copyURLToFile(finalURL, output);
+        } catch (IOException exception) {
+            logger.error("Unable to download file from " + finalURL, exception);
+            ErrorWindow errorWindow = new ErrorWindow(null, exception);
+            errorWindow.dispose();
+            return;
+        }
 
         // extract the tar.gz release file into the installation dir
         if (SystemUtils.IS_OS_LINUX) {
             logger.info("Extracting " + output + " to " + System.getProperty("user.dir"));
             decompress(fileName);
-            FileUtils.delete(output);
+            try {
+                FileUtils.delete(output);
+            } catch (IOException exception) {
+                logger.error("Unable to delete file " + output, exception);
+                ErrorWindow errorWindow = new ErrorWindow(null, exception);
+                errorWindow.dispose();
+            }
         }
     }
 
@@ -93,13 +171,13 @@ public class UpdateChecker {
      *
      * @param newVersion Version to launch.
      */
-    public void launchNewVersion(String newVersion) throws IOException {
+    private void launchNewVersion(String newVersion) {
         String[] windowsCommand = {
             "cmd",
             "/c",
             "CustomLauncherRewrite-" + newVersion + ".exe",
             "--remove-old",
-            Main.VERSION
+            Main.version
         };
         String linuxCommand = "./run.sh";
         ProcessBuilder pb = new ProcessBuilder();
@@ -112,9 +190,15 @@ public class UpdateChecker {
                             System.getProperty("user.dir")
                                     + File.separator
                                     + "CustomLauncherRewrite-"
-                                    + Main.VERSION
+                                    + Main.version
                                     + ".jar");
-            Files.delete(current.toPath());
+            try {
+                Files.delete(current.toPath());
+            } catch (IOException exception) {
+                logger.error("Unable to launch new version!", exception);
+                ErrorWindow errorWindow = new ErrorWindow(null, exception);
+                errorWindow.dispose();
+            }
         }
         if (SystemUtils.IS_OS_WINDOWS) {
             pb.command(windowsCommand);
@@ -123,9 +207,9 @@ public class UpdateChecker {
         try {
             Process p = pb.start();
             p.getInputStream().close();
-        } catch (IOException e) {
-            logger.error("Unable to launch new version!", e);
-            JFrame errorWindow = new ErrorWindow(null, e);
+        } catch (IOException exception) {
+            logger.error("Unable to launch new version!", exception);
+            ErrorWindow errorWindow = new ErrorWindow(null, exception);
             errorWindow.dispose();
         }
     }
@@ -135,17 +219,33 @@ public class UpdateChecker {
      *
      * @param temp The temp file's name that was downloaded.
      */
-    private void decompress(String temp) throws IOException, InterruptedException {
+    private void decompress(String temp) {
         // TODO: Make this not use shell commands.
         ProcessBuilder builder = new ProcessBuilder();
         builder.command("tar", "-xvf", temp);
         builder.directory(new File(System.getProperty("user.dir")));
-        Process process = builder.start();
-        int exitCode = process.waitFor();
+        Process process;
+        try {
+            process = builder.start();
+        } catch (IOException exception) {
+            logger.error("Unable to launch new version!", exception);
+            ErrorWindow errorWindow = new ErrorWindow(null, exception);
+            errorWindow.dispose();
+            return;
+        }
+        int exitCode = 0;
+        try {
+            exitCode = process.waitFor();
+        } catch (InterruptedException exception) {
+            logger.error("Unable to launch new version!", exception);
+            ErrorWindow errorWindow = new ErrorWindow(null, exception);
+            errorWindow.dispose();
+        }
         if (exitCode == 0) {
             logger.info("Extracted " + temp + "!");
         } else {
-            JFrame errorWindow = new ErrorWindow("Unable to extract release file.", null);
+            logger.error("Unable to extract release file! Returned exit code " + exitCode);
+            ErrorWindow errorWindow = new ErrorWindow("Unable to extract release file!", null);
             errorWindow.dispose();
         }
     }

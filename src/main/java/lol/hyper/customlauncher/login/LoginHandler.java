@@ -17,6 +17,7 @@
 
 package lol.hyper.customlauncher.login;
 
+import lol.hyper.customlauncher.Main;
 import lol.hyper.customlauncher.generic.ErrorWindow;
 import lol.hyper.customlauncher.generic.InfoWindow;
 import lol.hyper.customlauncher.login.windows.TwoFactorAuth;
@@ -43,8 +44,6 @@ public class LoginHandler {
     public static final Logger logger = LogManager.getLogger(LoginHandler.class);
     private static final String REQUEST_URL =
             "https://www.toontownrewritten.com/api/login?format=json";
-    private static final String USER_AGENT =
-            "CustomLauncherRewrite https://github.com/hyperdefined/CustomLauncherRewrite";
     int attempts = 0;
 
     public LoginHandler(LoginRequest loginRequest) {
@@ -64,9 +63,9 @@ public class LoginHandler {
             // send the login request to TTR
             request = sendRequest(loginRequest).getRequestDetails();
             attempts += 1;
-        } catch (Exception e) {
-            logger.error("Unable to send login request to TTR!", e);
-            JFrame errorWindow = new ErrorWindow(null, e);
+        } catch (Exception exception) {
+            logger.error("Unable to send login request to TTR!", exception);
+            JFrame errorWindow = new ErrorWindow(null, exception);
             errorWindow.dispose();
             return;
         }
@@ -82,65 +81,66 @@ public class LoginHandler {
         // act based on the login status
         switch (status) {
             case "false" -> // false is invalid login details / maintenance
-                    {
-                        logger.info("Returned false: " + banner);
-                        JFrame errorWindow = new ErrorWindow(banner, null);
-                        errorWindow.dispose();
-                    }
+            {
+                logger.info("Returned false: " + banner);
+                JFrame errorWindow = new ErrorWindow(banner, null);
+                errorWindow.dispose();
+            }
             case "partial" -> // partial is used for 2FA or ToonGuard
-                    {
-                        logger.info("Returned partial: " + banner);
-                        new TwoFactorAuth("Enter Code", banner, request.get("responseToken"));
-                    }
+            {
+                logger.info("Returned partial: " + banner);
+                new TwoFactorAuth("Enter Code", banner, request.get("responseToken"));
+            }
             case "true" -> // login was successful
-                    {
-                        logger.info("Returned true: " + banner);
-                        String gameServer = request.get("gameserver");
-                        String cookie = request.get("cookie");
-                        LaunchGame launchGame = new LaunchGame(cookie, gameServer);
-                        launchGame.start();
-                    }
+            {
+                logger.info("Returned true: " + banner);
+                String gameServer = request.get("gameserver");
+                String cookie = request.get("cookie");
+                LaunchGame launchGame = new LaunchGame(cookie, gameServer);
+                launchGame.start();
+            }
             case "delayed" -> // login request was put into a queue
-                    {
-                        attempts += 1;
-                        logger.info("Returned delayed: " + banner);
-                        if (Integer.parseInt(eta) >= 5 || attempts >= 5) {
-                            JFrame infoWindow =
-                                    new InfoWindow(
-                                            "You were placed in a queue. Press OK to try again in 5 seconds.");
-                            infoWindow.dispose();
+            {
+                attempts += 1;
+                logger.info("Returned delayed: " + banner);
+                if (Integer.parseInt(eta) >= 5 || attempts >= 5) {
+                    JFrame infoWindow =
+                            new InfoWindow(
+                                    "You were placed in a queue. Press OK to try again in 5 seconds.");
+                    infoWindow.dispose();
 
-                            // send the login request again after 5 seconds
-                            try {
-                                TimeUnit.SECONDS.sleep(5);
-                            } catch (InterruptedException e) {
-                                logger.error(e);
-                            }
-                            LoginRequest newLoginRequest = new LoginRequest();
-                            newLoginRequest.addDetails("queueToken", request.get("queueToken"));
-                            handleLoginRequest(newLoginRequest);
-                        } else {
-                            try {
-                                //Try again every second.
-                                //If we go over 5 attempts, wait 5 seconds and notify the user
-                                TimeUnit.SECONDS.sleep(1);
-                            } catch (InterruptedException e) {
-                                logger.error(e);
-                            }
-                            LoginRequest newLoginRequest = new LoginRequest();
-                            newLoginRequest.addDetails("queueToken", request.get("queueToken"));
-                            handleLoginRequest(newLoginRequest);
-                        }
+                    // send the login request again after 5 seconds
+                    try {
+                        TimeUnit.SECONDS.sleep(5);
+                    } catch (InterruptedException e) {
+                        logger.error(e);
                     }
+                    LoginRequest newLoginRequest = new LoginRequest();
+                    newLoginRequest.addDetails("queueToken", request.get("queueToken"));
+                    handleLoginRequest(newLoginRequest);
+                } else {
+                    try {
+                        // Try again every second.
+                        // If we go over 5 attempts, wait 5 seconds and notify the user
+                        TimeUnit.SECONDS.sleep(1);
+                    } catch (InterruptedException exception) {
+                        logger.error(exception);
+                    }
+                    LoginRequest newLoginRequest = new LoginRequest();
+                    newLoginRequest.addDetails("queueToken", request.get("queueToken"));
+                    handleLoginRequest(newLoginRequest);
+                }
+            }
             default -> // TTR sent back a weird status that we don't know about
-                    {
-                        logger.error("Weird login response: " + status);
-                        logger.info(request);
-                        JFrame errorWindow =
-                                new ErrorWindow(
-                                        "TTR sent back a weird response, or we got an invalid response.\nCheck the log for more information.", null);
-                        errorWindow.dispose();
-                    }
+            {
+                logger.error("Weird login response: " + status);
+                logger.info(request);
+                JFrame errorWindow =
+                        new ErrorWindow(
+                                "TTR sent back a weird response, or we got an invalid response.\nCheck the log for more information.",
+                                null);
+                errorWindow.dispose();
+            }
         }
     }
 
@@ -153,7 +153,7 @@ public class LoginHandler {
      */
     private LoginRequest sendRequest(LoginRequest loginRequest) throws Exception {
         HttpPost post = new HttpPost(REQUEST_URL);
-        post.setHeader("User-Agent", USER_AGENT);
+        post.setHeader("User-Agent", Main.userAgent);
         post.setHeader("Content-type", "application/x-www-form-urlencoded");
 
         List<NameValuePair> urlParameters = new ArrayList<>();
