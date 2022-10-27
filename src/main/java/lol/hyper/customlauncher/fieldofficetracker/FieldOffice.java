@@ -17,6 +17,7 @@
 
 package lol.hyper.customlauncher.fieldofficetracker;
 
+import lol.hyper.customlauncher.invasiontracker.Invasion;
 import org.jetbrains.annotations.NotNull;
 
 public class FieldOffice implements Comparable<FieldOffice> {
@@ -95,13 +96,24 @@ public class FieldOffice implements Comparable<FieldOffice> {
 
     @Override
     public int compareTo(@NotNull FieldOffice fieldOffice) {
-        return (FieldOfficeTracker.zonesToStreets
-                .get(area)
-                .compareTo(FieldOfficeTracker.zonesToStreets.get(fieldOffice.getArea())));
+        return Integer.compare(this.area, fieldOffice.area);
     }
 
     @Override
     public String toString() {
         return FieldOfficeTracker.zonesToStreets.get(area);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+
+        if (!(o instanceof FieldOffice fieldOffice)) {
+            return false;
+        }
+
+        return fieldOffice.getArea() == this.getArea();
     }
 }

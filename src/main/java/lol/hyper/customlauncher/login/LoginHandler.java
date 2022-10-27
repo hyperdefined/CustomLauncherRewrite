@@ -34,9 +34,12 @@ import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
 import javax.swing.*;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class LoginHandler {
@@ -149,26 +152,47 @@ public class LoginHandler {
      *
      * @param loginRequest The login request to process.
      * @return The login request that is sent back.
-     * @throws Exception Throws any errors about reading/sending data.
      */
-    private LoginRequest sendRequest(LoginRequest loginRequest) throws Exception {
+    private LoginRequest sendRequest(LoginRequest loginRequest) {
         HttpPost post = new HttpPost(REQUEST_URL);
         post.setHeader("User-Agent", Main.userAgent);
         post.setHeader("Content-type", "application/x-www-form-urlencoded");
 
         List<NameValuePair> urlParameters = new ArrayList<>();
-        for (String x : loginRequest.getRequestDetails().keySet()) {
-            urlParameters.add(new BasicNameValuePair(x, loginRequest.getRequestDetails().get(x)));
+        logger.info(loginRequest.getRequestDetails());
+        for (Map.Entry<String, String> entry : loginRequest.getRequestDetails().entrySet()) {
+            urlParameters.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
         }
 
-        post.setEntity(new UrlEncodedFormEntity(urlParameters));
+        try {
+            post.setEntity(new UrlEncodedFormEntity(urlParameters));
+        } catch (UnsupportedEncodingException exception) {
+            logger.error("Unable to send login request!", exception);
+            JFrame errorWindow = new ErrorWindow(null, exception);
+            errorWindow.dispose();
+            return null;
+        }
 
         String responseData;
 
-        try (CloseableHttpClient httpClient = HttpClients.createDefault();
-                CloseableHttpResponse response = httpClient.execute(post)) {
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        CloseableHttpResponse response = null;
+        try {
+            response = httpClient.execute(post);
+        } catch (IOException exception) {
+            logger.error("Unable to send login request!", exception);
+            JFrame errorWindow = new ErrorWindow(null, exception);
+            errorWindow.dispose();
+            return null;
+        }
 
+        try {
             responseData = EntityUtils.toString(response.getEntity());
+        } catch (IOException exception) {
+            logger.error("Unable to send login request!", exception);
+            JFrame errorWindow = new ErrorWindow(null, exception);
+            errorWindow.dispose();
+            return null;
         }
         JSONObject responseJSON = new JSONObject(responseData);
         LoginRequest newLogin = new LoginRequest();

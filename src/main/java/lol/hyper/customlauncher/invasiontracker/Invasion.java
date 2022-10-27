@@ -85,4 +85,17 @@ public class Invasion implements Comparable<Invasion> {
     public int compareTo(Invasion invasion) {
         return (this.getDistrict().compareTo(invasion.getDistrict()));
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+
+        if (!(o instanceof Invasion invasion)) {
+            return false;
+        }
+
+        return invasion.getDistrict().equals(this.getDistrict());
+    }
 }
