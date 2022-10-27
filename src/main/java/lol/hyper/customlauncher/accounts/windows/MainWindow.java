@@ -21,6 +21,7 @@ import lol.hyper.customlauncher.ConfigHandler;
 import lol.hyper.customlauncher.Main;
 import lol.hyper.customlauncher.accounts.Account;
 import lol.hyper.customlauncher.accounts.JSONManager;
+import lol.hyper.customlauncher.districts.DistrictTracker;
 import lol.hyper.customlauncher.fieldofficetracker.FieldOfficeTracker;
 import lol.hyper.customlauncher.invasiontracker.InvasionTracker;
 import lol.hyper.customlauncher.login.LoginHandler;
@@ -41,6 +42,7 @@ public class MainWindow extends JFrame {
     final JLabel ttrStatus;
     private final InvasionTracker invasionTracker;
     private final FieldOfficeTracker fieldOfficeTracker;
+    private final DistrictTracker districtTracker;
 
     public MainWindow(ConfigHandler configHandler) {
         JFrame frame = new JFrame("CLR " + Main.VERSION);
@@ -127,6 +129,24 @@ public class MainWindow extends JFrame {
         fieldOfficesButton.setMaximumSize(
                 new Dimension(300, fieldOfficesButton.getMinimumSize().height));
         panel.add(fieldOfficesButton);
+
+        // population button
+        JButton districtsButton = new JButton("Population");
+        districtTracker = new DistrictTracker();
+        districtsButton.addActionListener(e -> {
+            if (districtTracker.isDown) {
+                int dialogButton = JOptionPane.YES_NO_OPTION;
+                int dialogResult = JOptionPane.showConfirmDialog (null, "It looks like the population API is currently offline. Would you like to try checking it again?","Error",dialogButton);
+                if (dialogResult == JOptionPane.YES_OPTION){
+                    districtTracker.districtTaskTimer.start();
+                }
+            } else {
+                districtTracker.showWindow();
+            }
+        });
+        districtsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        districtsButton.setMaximumSize(new Dimension(300, invasionsButton.getMinimumSize().height));
+        panel.add(districtsButton);
 
         // check for updates button
         JButton ttrUpdateButton = new JButton("Check TTR Updates");
