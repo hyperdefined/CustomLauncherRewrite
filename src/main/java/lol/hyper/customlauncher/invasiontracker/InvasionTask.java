@@ -30,7 +30,6 @@ import java.util.Map;
 public class InvasionTask implements ActionListener {
 
     final String INVASION_URL = "https://api.toon.plus/invasions";
-
     private final InvasionTracker invasionTracker;
 
     public InvasionTask(InvasionTracker invasionTracker) {
@@ -47,7 +46,6 @@ public class InvasionTask implements ActionListener {
             invasionTracker.invasionTaskTimer.stop();
             return;
         }
-
         invasionTracker.isDown = false;
 
         invasionTracker.logger.info("Reading " + INVASION_URL + " for current invasions...");
@@ -105,5 +103,6 @@ public class InvasionTask implements ActionListener {
                 invasionTracker.logger.info("Remove invasion: " + key);
             }
         }
+        invasionTracker.lastFetched = System.currentTimeMillis();
     }
 }

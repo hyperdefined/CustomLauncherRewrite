@@ -28,7 +28,6 @@ import java.util.Map;
 public class FieldOfficeTask implements ActionListener {
 
     final String FIELD_OFFICE_URL = "https://www.toontownrewritten.com/api/fieldoffices";
-
     private final FieldOfficeTracker fieldOfficeTracker;
 
     public FieldOfficeTask(FieldOfficeTracker fieldOfficeTracker) {
@@ -69,7 +68,8 @@ public class FieldOfficeTask implements ActionListener {
                 int difficulty = zoneJSON.getInt("difficulty") + 1; // they zero index this
                 int totalAnnexes = zoneJSON.getInt("annexes");
                 boolean open = zoneJSON.getBoolean("open");
-                FieldOffice office = new FieldOffice(Integer.parseInt(key), difficulty, totalAnnexes);
+                int zone = Integer.parseInt(key);
+                FieldOffice office = new FieldOffice(zone, difficulty, totalAnnexes);
                 office.setOpen(open);
                 // add it to our master list
                 fieldOfficeTracker.fieldOffices.put(Integer.parseInt(key), office);
@@ -89,5 +89,7 @@ public class FieldOfficeTask implements ActionListener {
                 it.remove();
             }
         }
+
+        fieldOfficeTracker.lastFetched = System.currentTimeMillis();
     }
 }

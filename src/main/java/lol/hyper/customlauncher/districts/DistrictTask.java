@@ -28,7 +28,6 @@ import java.util.Map;
 public class DistrictTask implements ActionListener {
 
     final String DISTRICT_URL = "https://www.toontownrewritten.com/api/population";
-
     private final DistrictTracker districtTracker;
 
     public DistrictTask(DistrictTracker districtTracker) {
@@ -84,5 +83,6 @@ public class DistrictTask implements ActionListener {
                 it.remove();
             }
         }
+        districtTracker.lastFetched = System.currentTimeMillis();
     }
 }

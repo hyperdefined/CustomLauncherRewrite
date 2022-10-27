@@ -29,6 +29,7 @@ import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 
@@ -39,6 +40,10 @@ public class FieldOfficeTracker {
     public JTable fieldOfficeTable;
     public DefaultTableModel fieldOfficeTableModel;
     public JFrame frame;
+
+    public JLabel lastFetchedLabel;
+    public SimpleDateFormat lastFetchedFormat = new SimpleDateFormat("hh:mm:ss a");
+    public long lastFetched = 0;
     public static final HashMap<Integer, String> zonesToStreets = new HashMap<>();
     public boolean isDown = false;
     public Timer fieldOfficeTaskTimer;
@@ -94,6 +99,10 @@ public class FieldOfficeTracker {
         scrollPane.setVisible(true);
         panel.add(scrollPane);
 
+        lastFetchedLabel = new JLabel("Waiting to update...");
+        lastFetchedLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(lastFetchedLabel);
+
         ActionListener actionListener = e -> updateFieldOfficeList();
         Timer timer = new Timer(0, actionListener);
         timer.setDelay(500);
@@ -142,6 +151,8 @@ public class FieldOfficeTracker {
             fieldOfficeTableModel.addRow(data);
             fieldOfficeTable.setModel(fieldOfficeTableModel);
         }
+        Date currentTime = new Date(lastFetched);
+        lastFetchedLabel.setText("Last updated: " + lastFetchedFormat.format(currentTime));
     }
 
     /** Read field office API every 10 seconds. */

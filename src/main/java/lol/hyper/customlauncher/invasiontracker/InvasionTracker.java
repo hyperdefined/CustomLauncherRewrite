@@ -29,6 +29,8 @@ import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -41,6 +43,9 @@ public class InvasionTracker {
     public JTable invasionTable;
     public DefaultTableModel invasionTableModel;
     public JFrame frame;
+    public JLabel lastFetchedLabel;
+    public SimpleDateFormat lastFetchedFormat = new SimpleDateFormat("hh:mm:ss a");
+    public long lastFetched = 0;
     public boolean isDown = false;
     public Timer invasionTaskTimer;
     ConfigHandler configHandler;
@@ -82,6 +87,10 @@ public class InvasionTracker {
         JScrollPane scrollPane = new JScrollPane(invasionTable);
         scrollPane.setVisible(true);
         panel.add(scrollPane);
+
+        lastFetchedLabel = new JLabel("Waiting to update...");
+        lastFetchedLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(lastFetchedLabel);
 
         ActionListener actionListener = e -> updateInvasionListGUI();
         Timer timer = new Timer(0, actionListener);
@@ -137,6 +146,8 @@ public class InvasionTracker {
             invasionTableModel.addRow(data);
             invasionTable.setModel(invasionTableModel);
         }
+        Date currentTime = new Date(lastFetched);
+        lastFetchedLabel.setText("Last updated: " + lastFetchedFormat.format(currentTime));
     }
 
     /** Read invasion API every 10 seconds. */
