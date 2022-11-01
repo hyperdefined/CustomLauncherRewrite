@@ -87,6 +87,10 @@ public class ConfigHandler {
             jsonObject = new JSONObject();
         } else {
             jsonObject = new JSONObject(JSONManager.readFile(CONFIG_FILE));
+            if (!jsonObject.has("version")) {
+                jsonObject.put("version", CONFIG_VERSION);
+                JSONManager.writeFile(jsonObject, CONFIG_FILE);
+            }
             if (jsonObject.getInt("version") != CONFIG_VERSION) {
                 logger.warn("Config version is not correct! Somethings will not work correctly. Version should be " + CONFIG_VERSION + " but read " + jsonObject.getInt("version"));
             }

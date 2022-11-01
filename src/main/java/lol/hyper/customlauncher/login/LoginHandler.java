@@ -159,7 +159,6 @@ public class LoginHandler {
         post.setHeader("Content-type", "application/x-www-form-urlencoded");
 
         List<NameValuePair> urlParameters = new ArrayList<>();
-        logger.info(loginRequest.getRequestDetails());
         for (Map.Entry<String, String> entry : loginRequest.getRequestDetails().entrySet()) {
             urlParameters.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
         }

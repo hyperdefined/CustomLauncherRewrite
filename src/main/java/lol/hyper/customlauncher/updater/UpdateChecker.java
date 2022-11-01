@@ -21,6 +21,7 @@ import lol.hyper.customlauncher.Main;
 import lol.hyper.customlauncher.generic.ErrorWindow;
 import lol.hyper.githubreleaseapi.GitHubRelease;
 import lol.hyper.githubreleaseapi.GitHubReleaseAPI;
+import lol.hyper.githubreleaseapi.ReleaseNotFoundException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
@@ -44,7 +45,7 @@ public class UpdateChecker {
             this.api = new GitHubReleaseAPI("CustomLauncherRewrite", "hyperdefined");
         } catch (IOException exception) {
             api = null;
-            logger.error("Unable to look for updates! ", exception);
+            logger.error("Unable to look for updates!", exception);
             ErrorWindow errorWindow = new ErrorWindow(null, exception);
             errorWindow.dispose();
         }
@@ -57,7 +58,15 @@ public class UpdateChecker {
             return;
         }
         String latestVersion = api.getLatestVersion().getTagVersion();
-        GitHubRelease current = api.getReleaseByTag(currentVersion);
+        GitHubRelease current;
+        try {
+            current = api.getReleaseByTag(currentVersion);
+        } catch (ReleaseNotFoundException exception) {
+            logger.error("Current version does not exist on GitHub!");
+            ErrorWindow errorWindow = new ErrorWindow("It looks like you're running a version not present on GitHub.\nThis is the case if you're running in a dev environment!", null);
+            errorWindow.dispose();
+            return;
+        }
         int behind = api.getBuildsBehind(current);
         StringBuilder updates = new StringBuilder();
         // if the user is 1 or more build behind, ask to update
