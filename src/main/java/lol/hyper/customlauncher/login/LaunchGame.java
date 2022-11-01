@@ -42,18 +42,18 @@ public class LaunchGame extends Thread {
     public void run() {
         ProcessBuilder pb = new ProcessBuilder();
 
+        String[] launchCommand = null;
+
         if (SystemUtils.IS_OS_WINDOWS) {
-            String[] windowsCommand;
             if (System.getProperty("sun.arch.data.model").equalsIgnoreCase("64")) {
-                windowsCommand = new String[] {"cmd", "/c", "TTREngine64.exe"};
+                launchCommand = new String[] {"cmd", "/c", "TTREngine64.exe"};
             } else {
-                windowsCommand = new String[] {"cmd", "/c", "TTREngine.exe"};
+                launchCommand = new String[] {"cmd", "/c", "TTREngine.exe"};
             }
-            pb.command(windowsCommand);
             logger.info("Launching game from " + ConfigHandler.INSTALL_LOCATION);
         }
         if (SystemUtils.IS_OS_LINUX) {
-            String linuxCommand = "./TTREngine";
+            launchCommand = new String[] {"./TTREngine"};
 
             // Make sure it's executable before running
             boolean result;
@@ -80,8 +80,14 @@ public class LaunchGame extends Thread {
                 errorWindow.dispose();
                 return;
             }
-            pb.command(linuxCommand);
-            logger.info("Launching game from " + fullPath.getAbsolutePath());
+        }
+
+        if (launchCommand == null) {
+            logger.error("Unable to determine operating system!");
+            ErrorWindow errorWindow =
+                    new ErrorWindow("Unable to determine operating system!", null);
+            errorWindow.dispose();
+            return;
         }
 
         // dirty little trick to redirect the output
@@ -90,6 +96,7 @@ public class LaunchGame extends Thread {
         pb.redirectOutput(ProcessBuilder.Redirect.PIPE);
         pb.redirectErrorStream(true);
         pb.directory(ConfigHandler.INSTALL_LOCATION);
+        pb.command(launchCommand);
 
         Map<String, String> env = pb.environment();
         env.put("TTR_GAMESERVER", this.gameServer);
