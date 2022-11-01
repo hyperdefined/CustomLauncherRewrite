@@ -27,12 +27,14 @@ public class Invasion implements Comparable<Invasion> {
     public ZonedDateTime endTime;
     private int cogsDefeated;
     public final boolean megaInvasion;
+    private final long cacheStartTime;
 
     public Invasion(String district, String cogType, int cogsTotal, boolean megaInvasion) {
         this.cogType = cogType;
         this.district = district;
         this.cogsTotal = cogsTotal;
         this.megaInvasion = megaInvasion;
+        this.cacheStartTime = System.nanoTime();
     }
 
     /**
@@ -97,5 +99,9 @@ public class Invasion implements Comparable<Invasion> {
         }
 
         return invasion.getDistrict().equals(this.getDistrict());
+    }
+
+    public long getCacheStartTime() {
+        return cacheStartTime;
     }
 }

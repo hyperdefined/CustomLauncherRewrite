@@ -61,7 +61,6 @@ public class InvasionTask implements ActionListener {
             // if we do not have that invasion stored, create a new invasion object
             // and add it to the list
             if (!invasionTracker.invasions.containsKey(district)) {
-                logger.info("New invasion: " + district);
                 JSONObject temp = invasionsJSON.getJSONObject(key);
                 String cogType = temp.getString("Type");
                 int cogsDefeated = temp.getInt("CurrentProgress");
@@ -74,6 +73,15 @@ public class InvasionTask implements ActionListener {
                                 .atZone(ZoneId.systemDefault());
                 invasionTracker.invasions.put(district, newInvasion);
                 invasionTracker.showNotification(newInvasion, true);
+                logger.info(
+                        "Tracking new invasion for "
+                                + district
+                                + ". Cogs: "
+                                + cogsDefeated
+                                + "/"
+                                + cogsTotal
+                                + ". ETA: "
+                                + newInvasion.endTime);
             } else {
                 if (!invasionTracker.invasions.containsKey(district)) {
                     return; // JUST IN CASE
@@ -82,10 +90,18 @@ public class InvasionTask implements ActionListener {
                 // we want to update the total cogs defeated and the end time
                 Invasion tempInv = invasionTracker.invasions.get(district);
                 JSONObject temp = invasionsJSON.getJSONObject(key);
-                logger.info("Updating invasion: " + district);
                 // ignore mega invasion cog count
                 if (!temp.getBoolean("MegaInvasion")) {
                     int cogsDefeated = temp.getInt("CurrentProgress");
+                    logger.info(
+                            "Updating invasion details for "
+                                    + district
+                                    + ". Cogs: "
+                                    + tempInv.getCogsDefeated()
+                                    + " -> "
+                                    + cogsDefeated
+                                    + ". ETA: "
+                                    + tempInv.endTime);
                     tempInv.updateCogsDefeated(cogsDefeated);
                     tempInv.endTime =
                             Instant.parse(temp.getString("EstimatedCompletion"))
@@ -99,13 +115,15 @@ public class InvasionTask implements ActionListener {
         Iterator<Map.Entry<String, Invasion>> it = invasionTracker.invasions.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry<String, Invasion> pair = it.next();
-            // this is the district
+            String cogType = pair.getValue().getCogType();
+            String district = pair.getKey();
             // <district>/<cog name>
-            String key = pair.getKey() + "/" + pair.getValue().getCogType();
+            String key = district + "/" + cogType;
             if (!invasionsJSON.has(key)) {
                 invasionTracker.showNotification(pair.getValue(), false);
+                String savedDuration = (System.nanoTime() - pair.getValue().getCacheStartTime())/ 1000000000 + " seconds.";
                 it.remove();
-                logger.info("Remove invasion: " + key);
+                logger.info("Removing saved invasion for " + district + ". Tracked for " + savedDuration);
             }
         }
         invasionTracker.runs++;
