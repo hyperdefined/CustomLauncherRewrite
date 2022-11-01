@@ -47,7 +47,7 @@ public class ConfigWindow extends JFrame {
         panel.setLayout(null);
 
         JLabel ttrInstall = new JLabel("<html>TTR Installation</html>");
-        JTextField ttrInstallBox = new JTextField(ConfigHandler.installLocation);
+        JTextField ttrInstallBox = new JTextField(ConfigHandler.INSTALL_LOCATION.getAbsolutePath());
         JLabel showInvasionNotifications = new JLabel("<html>Show invasion notifications?</html>");
         JCheckBox showInvasionNotificationsBox = new JCheckBox();
         JLabel showFieldOfficeNotifications =

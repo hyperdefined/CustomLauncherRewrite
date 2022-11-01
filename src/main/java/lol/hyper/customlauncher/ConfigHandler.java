@@ -29,7 +29,6 @@ public class ConfigHandler {
     public final File CONFIG_FILE = new File("config", "config.json");
     public final int CONFIG_VERSION = 1;
     public static File INSTALL_LOCATION;
-    public static String installLocation;
     private JSONObject jsonObject;
     private final Logger logger = LogManager.getLogger(this);
 
@@ -38,7 +37,7 @@ public class ConfigHandler {
         logger.info("Config version: " + jsonObject.getInt("version"));
         logger.info("showInvasionNotifications: " + showCogInvasionNotifications());
         logger.info("showFieldOfficeNotifications: " + showFieldOfficeNotifications());
-        logger.info("ttrInstallLocation: " + installLocation);
+        logger.info("ttrInstallLocation: " + INSTALL_LOCATION.getAbsolutePath());
     }
 
     public boolean showCogInvasionNotifications() {
@@ -96,7 +95,6 @@ public class ConfigHandler {
             }
         }
         setDefaults();
-        installLocation = jsonObject.getString("ttrInstallLocation");
-        INSTALL_LOCATION = new File(installLocation);
+        INSTALL_LOCATION = new File(jsonObject.getString("ttrInstallLocation"));
     }
 }

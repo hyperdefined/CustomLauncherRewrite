@@ -157,7 +157,7 @@ public class TTRUpdater {
                 if (!localFile.exists()) {
                     logger.info(
                             "-----------------------------------------------------------------------");
-                    logger.info(ConfigHandler.installLocation + File.separator + key);
+                    logger.info(ConfigHandler.INSTALL_LOCATION.getAbsolutePath() + File.separator + key);
                     logger.info("This file is missing and will be downloaded.");
                     logger.info(
                             "-----------------------------------------------------------------------");
@@ -180,7 +180,7 @@ public class TTRUpdater {
                 }
                 logger.info(
                         "-----------------------------------------------------------------------");
-                logger.info(ConfigHandler.installLocation + File.separator + key);
+                logger.info(ConfigHandler.INSTALL_LOCATION.getAbsolutePath() + File.separator + key);
                 logger.info("Local hash: " + localHash.toLowerCase(Locale.ENGLISH));
                 logger.info("Expected hash: " + onlineHash);
                 logger.info("Type: " + osType);

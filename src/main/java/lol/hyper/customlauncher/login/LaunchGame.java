@@ -50,25 +50,38 @@ public class LaunchGame extends Thread {
                 windowsCommand = new String[] {"cmd", "/c", "TTREngine.exe"};
             }
             pb.command(windowsCommand);
+            logger.info("Launching game from " + ConfigHandler.INSTALL_LOCATION);
         }
         if (SystemUtils.IS_OS_LINUX) {
             String linuxCommand = "./TTREngine";
 
             // Make sure it's executable before running
-            boolean result =
-                    new File(ConfigHandler.installLocation + linuxCommand).setExecutable(true);
-            if (!result) {
-                ErrorWindow errorWindow =
-                        new ErrorWindow(
-                                "Unable to set "
-                                        + ConfigHandler.installLocation
-                                        + "TTREngine as executable. Please make sure this file has the correct permissions!",
-                                null);
+            boolean result;
+            File fullPath = new File(ConfigHandler.INSTALL_LOCATION, "TTREngine");
+            try {
+                result = fullPath.setExecutable(true);
+            } catch (SecurityException exception) {
+                logger.error(
+                        "Unable to set " + fullPath.getAbsolutePath() + " as an executable!",
+                        exception);
+                ErrorWindow errorWindow = new ErrorWindow(null, exception);
                 errorWindow.dispose();
                 return;
             }
 
+            if (!result) {
+                logger.error("Unable to set " + fullPath.getAbsolutePath() + " as an executable!");
+                ErrorWindow errorWindow =
+                        new ErrorWindow(
+                                "Unable to set "
+                                        + fullPath.getAbsolutePath()
+                                        + " as an executable!\nMake sure this file is executable!",
+                                null);
+                errorWindow.dispose();
+                return;
+            }
             pb.command(linuxCommand);
+            logger.info("Launching game from " + fullPath.getAbsolutePath());
         }
 
         // dirty little trick to redirect the output
@@ -81,8 +94,6 @@ public class LaunchGame extends Thread {
         Map<String, String> env = pb.environment();
         env.put("TTR_GAMESERVER", this.gameServer);
         env.put("TTR_PLAYCOOKIE", this.cookie);
-
-        logger.info("Launching game from " + ConfigHandler.installLocation);
 
         Thread t1 =
                 new Thread(
