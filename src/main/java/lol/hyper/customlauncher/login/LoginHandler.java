@@ -73,6 +73,7 @@ public class LoginHandler {
             return;
         }
 
+        logger.info("Received login response:");
         // get the login status
         String status = request.get("success");
         String banner = request.get("banner");
@@ -85,18 +86,17 @@ public class LoginHandler {
         switch (status) {
             case "false" -> // false is invalid login details / maintenance
             {
-                logger.info("Returned false: " + banner);
                 JFrame errorWindow = new ErrorWindow(banner, null);
                 errorWindow.dispose();
             }
             case "partial" -> // partial is used for 2FA or ToonGuard
             {
-                logger.info("Returned partial: " + banner);
                 new TwoFactorAuth("Enter Code", banner, request.get("responseToken"));
             }
             case "true" -> // login was successful
             {
-                logger.info("Returned true: " + banner);
+                logger.info("Login was successful, launching game...");
+                logger.info("Took " + attempts + " attempts");
                 String gameServer = request.get("gameserver");
                 String cookie = request.get("cookie");
                 LaunchGame launchGame = new LaunchGame(cookie, gameServer);
@@ -105,7 +105,6 @@ public class LoginHandler {
             case "delayed" -> // login request was put into a queue
             {
                 attempts += 1;
-                logger.info("Returned delayed: " + banner);
                 if (Integer.parseInt(eta) >= 5 || attempts >= 5) {
                     JFrame infoWindow =
                             new InfoWindow(
