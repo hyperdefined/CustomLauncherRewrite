@@ -60,11 +60,11 @@ public class LoginHandler {
      * @param loginRequest The login request to process.
      */
     private void handleLoginRequest(LoginRequest loginRequest) {
-        HashMap<String, String> request;
+        HashMap<String, String> receivedRequest;
         try {
             logger.info("Sending login request...");
             // send the login request to TTR
-            request = sendRequest(loginRequest).getRequestDetails();
+            receivedRequest = sendRequest(loginRequest);
             attempts += 1;
         } catch (Exception exception) {
             logger.error("Unable to send login request to TTR!", exception);
@@ -73,11 +73,17 @@ public class LoginHandler {
             return;
         }
 
+        // if the login failed, don't continue
+        // sendRequest() will display & log errors for us
+        if (receivedRequest == null) {
+            return;
+        }
+
         logger.info("Received login response:");
         // get the login status
-        String status = request.get("success");
-        String banner = request.get("banner");
-        String eta = request.get("eta");
+        String status = receivedRequest.get("success");
+        String banner = receivedRequest.get("banner");
+        String eta = receivedRequest.get("eta");
 
         logger.info("banner=" + banner);
         logger.info("status=" + status);
@@ -91,14 +97,13 @@ public class LoginHandler {
             }
             case "partial" -> // partial is used for 2FA or ToonGuard
             {
-                new TwoFactorAuth("Enter Code", banner, request.get("responseToken"));
+                new TwoFactorAuth(banner, receivedRequest.get("responseToken"));
             }
             case "true" -> // login was successful
             {
                 logger.info("Login was successful, launching game...");
-                logger.info("Took " + attempts + " attempts");
-                String gameServer = request.get("gameserver");
-                String cookie = request.get("cookie");
+                String gameServer = receivedRequest.get("gameserver");
+                String cookie = receivedRequest.get("cookie");
                 LaunchGame launchGame = new LaunchGame(cookie, gameServer);
                 launchGame.start();
             }
@@ -118,7 +123,7 @@ public class LoginHandler {
                         logger.error(e);
                     }
                     LoginRequest newLoginRequest = new LoginRequest();
-                    newLoginRequest.addDetails("queueToken", request.get("queueToken"));
+                    newLoginRequest.addDetails("queueToken", receivedRequest.get("queueToken"));
                     handleLoginRequest(newLoginRequest);
                 } else {
                     try {
@@ -129,14 +134,14 @@ public class LoginHandler {
                         logger.error(exception);
                     }
                     LoginRequest newLoginRequest = new LoginRequest();
-                    newLoginRequest.addDetails("queueToken", request.get("queueToken"));
+                    newLoginRequest.addDetails("queueToken", receivedRequest.get("queueToken"));
                     handleLoginRequest(newLoginRequest);
                 }
             }
             default -> // TTR sent back a weird status that we don't know about
             {
                 logger.error("Weird login response: " + status);
-                logger.info(request);
+                logger.info(receivedRequest);
                 JFrame errorWindow =
                         new ErrorWindow(
                                 "TTR sent back a weird response, or we got an invalid response.\nCheck the log for more information.",
@@ -152,7 +157,7 @@ public class LoginHandler {
      * @param loginRequest The login request to process.
      * @return The login request that is sent back.
      */
-    private LoginRequest sendRequest(LoginRequest loginRequest) {
+    private HashMap<String, String> sendRequest(LoginRequest loginRequest) {
         HttpPost post = new HttpPost(REQUEST_URL);
         post.setHeader("User-Agent", Main.userAgent);
         post.setHeader("Content-type", "application/x-www-form-urlencoded");
@@ -174,7 +179,7 @@ public class LoginHandler {
         String responseData;
 
         CloseableHttpClient httpClient = HttpClients.createDefault();
-        CloseableHttpResponse response = null;
+        CloseableHttpResponse response;
         try {
             response = httpClient.execute(post);
         } catch (IOException exception) {
@@ -193,12 +198,12 @@ public class LoginHandler {
             return null;
         }
         JSONObject responseJSON = new JSONObject(responseData);
-        LoginRequest newLogin = new LoginRequest();
+        HashMap<String, String> receivedDetails = new HashMap<>();
 
         for (String x : responseJSON.keySet()) {
-            newLogin.addDetails(x, responseJSON.getString(x));
+            receivedDetails.put(x, responseJSON.getString(x));
         }
 
-        return newLogin;
+        return receivedDetails;
     }
 }
