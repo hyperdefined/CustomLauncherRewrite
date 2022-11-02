@@ -21,10 +21,10 @@ import lol.hyper.customlauncher.Main;
 import lol.hyper.customlauncher.accounts.Account;
 import lol.hyper.customlauncher.accounts.JSONManager;
 import lol.hyper.customlauncher.login.LoginHandler;
-import lol.hyper.customlauncher.login.LoginRequest;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.HashMap;
 
 public class SecretPrompt extends JFrame {
 
@@ -69,10 +69,10 @@ public class SecretPrompt extends JFrame {
                                         password, String.valueOf(secretText.getPassword()));
 
                         if (actualPassword != null) {
-                            LoginRequest loginRequest = new LoginRequest();
-                            loginRequest.addDetails("username", username);
-                            loginRequest.addDetails("password", actualPassword);
-                            new LoginHandler(loginRequest);
+                            HashMap<String, String> newLoginRequest = new HashMap<>();
+                            newLoginRequest.put("username", username);
+                            newLoginRequest.put("password", actualPassword);
+                            new LoginHandler(newLoginRequest);
                             frame.dispose();
                         } else {
                             JOptionPane.showMessageDialog(

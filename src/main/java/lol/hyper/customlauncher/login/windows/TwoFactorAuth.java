@@ -19,12 +19,12 @@ package lol.hyper.customlauncher.login.windows;
 
 import lol.hyper.customlauncher.Main;
 import lol.hyper.customlauncher.login.LoginHandler;
-import lol.hyper.customlauncher.login.LoginRequest;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.HashMap;
 
 public class TwoFactorAuth extends JFrame {
 
@@ -75,9 +75,9 @@ public class TwoFactorAuth extends JFrame {
         loginButton.addActionListener(
                 event -> {
                     if (!userAuthCode.getText().isEmpty()) {
-                        LoginRequest newLoginRequest = new LoginRequest();
-                        newLoginRequest.addDetails("authToken", token);
-                        newLoginRequest.addDetails("appToken", userAuthCode.getText());
+                        HashMap<String, String> newLoginRequest = new HashMap<>();
+                        newLoginRequest.put("authToken", token);
+                        newLoginRequest.put("appToken", userAuthCode.getText());
                         new LoginHandler(newLoginRequest);
                         frame.dispose();
                     } else {

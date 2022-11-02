@@ -25,7 +25,6 @@ import lol.hyper.customlauncher.districts.DistrictTracker;
 import lol.hyper.customlauncher.fieldofficetracker.FieldOfficeTracker;
 import lol.hyper.customlauncher.invasiontracker.InvasionTracker;
 import lol.hyper.customlauncher.login.LoginHandler;
-import lol.hyper.customlauncher.login.LoginRequest;
 import lol.hyper.customlauncher.ttrupdater.TTRUpdater;
 import org.json.JSONObject;
 
@@ -198,10 +197,10 @@ public class MainWindow extends JFrame {
                                 if (!account.encrypted()) {
                                     String username = account.getUsername();
                                     String password = account.getPassword();
-                                    LoginRequest loginRequest = new LoginRequest();
-                                    loginRequest.addDetails("username", username);
-                                    loginRequest.addDetails("password", password);
-                                    new LoginHandler(loginRequest);
+                                    HashMap<String, String> newLoginRequest = new HashMap<>();
+                                    newLoginRequest.put("username", username);
+                                    newLoginRequest.put("password", password);
+                                    new LoginHandler(newLoginRequest);
                                 } else {
                                     SecretPrompt secretPrompt =
                                             new SecretPrompt("Enter Passphrase", account);

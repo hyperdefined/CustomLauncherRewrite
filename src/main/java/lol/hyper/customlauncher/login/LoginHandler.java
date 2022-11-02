@@ -49,7 +49,7 @@ public class LoginHandler {
             "https://www.toontownrewritten.com/api/login?format=json";
     int attempts = 0;
 
-    public LoginHandler(LoginRequest loginRequest) {
+    public LoginHandler(HashMap<String, String> loginRequest) {
         handleLoginRequest(loginRequest);
     }
 
@@ -57,14 +57,14 @@ public class LoginHandler {
      * Handle the result of the login request. This will take a login request and act based on that
      * login request. This lets us send the login request back to this method over and over again.
      *
-     * @param loginRequest The login request to process.
+     * @param loginToProcess The login request to process.
      */
-    private void handleLoginRequest(LoginRequest loginRequest) {
+    private void handleLoginRequest(HashMap<String, String> loginToProcess) {
         HashMap<String, String> receivedRequest;
         try {
             logger.info("Sending login request...");
             // send the login request to TTR
-            receivedRequest = sendRequest(loginRequest);
+            receivedRequest = sendRequest(loginToProcess);
             attempts += 1;
         } catch (Exception exception) {
             logger.error("Unable to send login request to TTR!", exception);
@@ -122,8 +122,8 @@ public class LoginHandler {
                     } catch (InterruptedException e) {
                         logger.error(e);
                     }
-                    LoginRequest newLoginRequest = new LoginRequest();
-                    newLoginRequest.addDetails("queueToken", receivedRequest.get("queueToken"));
+                    HashMap<String, String> newLoginRequest = new HashMap<>();
+                    newLoginRequest.put("queueToken", receivedRequest.get("queueToken"));
                     handleLoginRequest(newLoginRequest);
                 } else {
                     try {
@@ -133,8 +133,8 @@ public class LoginHandler {
                     } catch (InterruptedException exception) {
                         logger.error(exception);
                     }
-                    LoginRequest newLoginRequest = new LoginRequest();
-                    newLoginRequest.addDetails("queueToken", receivedRequest.get("queueToken"));
+                    HashMap<String, String> newLoginRequest = new HashMap<>();
+                    newLoginRequest.put("queueToken", receivedRequest.get("queueToken"));
                     handleLoginRequest(newLoginRequest);
                 }
             }
@@ -157,13 +157,13 @@ public class LoginHandler {
      * @param loginRequest The login request to process.
      * @return The login request that is sent back.
      */
-    private HashMap<String, String> sendRequest(LoginRequest loginRequest) {
+    private HashMap<String, String> sendRequest(HashMap<String, String> loginRequest) {
         HttpPost post = new HttpPost(REQUEST_URL);
         post.setHeader("User-Agent", Main.userAgent);
         post.setHeader("Content-type", "application/x-www-form-urlencoded");
 
         List<NameValuePair> urlParameters = new ArrayList<>();
-        for (Map.Entry<String, String> entry : loginRequest.getRequestDetails().entrySet()) {
+        for (Map.Entry<String, String> entry : loginRequest.entrySet()) {
             urlParameters.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
         }
 
