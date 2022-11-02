@@ -49,6 +49,10 @@ public class InvasionTracker {
     public Timer invasionTaskTimer;
     final ConfigHandler configHandler;
 
+    /**
+     * This tracker will process & display the InvasionTask. It handles the window and tracking
+     * of each invasion.
+     */
     public InvasionTracker(ConfigHandler configHandler) {
         this.configHandler = configHandler;
         startInvasionRefresh();

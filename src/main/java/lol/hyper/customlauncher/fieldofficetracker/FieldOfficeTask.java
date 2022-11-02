@@ -36,14 +36,19 @@ public class FieldOfficeTask implements ActionListener {
     private final FieldOfficeTracker fieldOfficeTracker;
     private final Logger logger = LogManager.getLogger(this);
 
+    /**
+     * Start tracking field offices. This will read the API, store any new ones, and update any
+     * saved ones.
+     *
+     * @param fieldOfficeTracker The tracker that will process this task.
+     */
     public FieldOfficeTask(FieldOfficeTracker fieldOfficeTracker) {
         this.fieldOfficeTracker = fieldOfficeTracker;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        // grab the field offices object in the request
-        // each field office is stored under the JSONObject "fieldOffices"
+        // Read the API and store whatever JSON is received
         JSONObject fieldOfficeRoot = JSONManager.requestJSON(FIELD_OFFICE_URL);
         if (fieldOfficeRoot == null) {
             fieldOfficeTracker.isDown = true;
@@ -53,32 +58,32 @@ public class FieldOfficeTask implements ActionListener {
 
         fieldOfficeTracker.isDown = false;
 
+        // each field office is under the fieldOffices JSON
         JSONObject fieldOfficeJSON = fieldOfficeRoot.getJSONObject("fieldOffices");
 
-        logger.info(
-                "Reading " + FIELD_OFFICE_URL + " for current field offices...");
+        logger.info("Reading " + FIELD_OFFICE_URL + " for current field offices...");
 
         // go through all the field offices from the API
         Iterator<String> keys = fieldOfficeJSON.keys();
         while (keys.hasNext()) {
-            String key = keys.next();
             // each field office json is named the zone ID
-            JSONObject zoneJSON = fieldOfficeJSON.getJSONObject(key);
-            // update field office data
-            if (fieldOfficeTracker.fieldOffices.containsKey(Integer.valueOf(key))) {
-                FieldOffice office = fieldOfficeTracker.fieldOffices.get(Integer.parseInt(key));
+            // so use this to identify the field office
+            int fieldOfficeZone = Integer.parseInt(keys.next());
+            JSONObject zoneJSON = fieldOfficeJSON.getJSONObject(String.valueOf(fieldOfficeZone));
+            // update field office data if we already have it
+            if (fieldOfficeTracker.fieldOffices.containsKey(fieldOfficeZone)) {
+                FieldOffice office = fieldOfficeTracker.fieldOffices.get(fieldOfficeZone);
                 office.setOpen(zoneJSON.getBoolean("open"));
                 office.setTotalAnnexes(zoneJSON.getInt("annexes"));
             } else {
-                // new field office
+                // save the new field office
                 int difficulty = zoneJSON.getInt("difficulty") + 1; // they zero index this
                 int totalAnnexes = zoneJSON.getInt("annexes");
                 boolean open = zoneJSON.getBoolean("open");
-                int zone = Integer.parseInt(key);
-                FieldOffice office = new FieldOffice(zone, difficulty, totalAnnexes);
+                FieldOffice office = new FieldOffice(fieldOfficeZone, difficulty, totalAnnexes);
                 office.setOpen(open);
-                // add it to our master list
-                fieldOfficeTracker.fieldOffices.put(Integer.parseInt(key), office);
+                // add it to our list
+                fieldOfficeTracker.fieldOffices.put(fieldOfficeZone, office);
                 fieldOfficeTracker.showNotification(office, true);
             }
         }
@@ -89,8 +94,8 @@ public class FieldOfficeTask implements ActionListener {
                 fieldOfficeTracker.fieldOffices.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry<Integer, FieldOffice> pair = it.next();
-            String key = String.valueOf(pair.getKey());
-            if (!fieldOfficeJSON.has(key)) {
+            int key = pair.getKey();
+            if (!fieldOfficeJSON.has(String.valueOf(key))) {
                 fieldOfficeTracker.showNotification(pair.getValue(), false);
                 it.remove();
             }

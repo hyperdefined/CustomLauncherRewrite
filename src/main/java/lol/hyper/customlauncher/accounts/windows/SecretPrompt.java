@@ -61,14 +61,19 @@ public class SecretPrompt extends JFrame {
         // button listeners
         loginButton.addActionListener(
                 event -> {
+                    // if the text box is empty
                     if (secretText.getPassword().length != 0) {
+                        // grab the username and password
                         String username = account.getUsername();
                         String password = account.getPassword();
                         String actualPassword =
                                 JSONManager.decrypt(
                                         password, String.valueOf(secretText.getPassword()));
 
+                        // actualPassword will return null if any exception is thrown
+                        // most likely the user entered the wrong passphrase
                         if (actualPassword != null) {
+                            // send the request to login
                             HashMap<String, String> newLoginRequest = new HashMap<>();
                             newLoginRequest.put("username", username);
                             newLoginRequest.put("password", actualPassword);

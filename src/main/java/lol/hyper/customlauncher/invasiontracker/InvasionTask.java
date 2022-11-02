@@ -35,21 +35,27 @@ public class InvasionTask implements ActionListener {
     private final InvasionTracker invasionTracker;
     private final Logger logger = LogManager.getLogger(this);
 
+    /**
+     * Start tracking invasions. This will read the API, store any new ones, and update any saved
+     * ones.
+     *
+     * @param invasionTracker The tracker that will process this task.
+     */
     public InvasionTask(InvasionTracker invasionTracker) {
         this.invasionTracker = invasionTracker;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        // grab the invasions object in the request
-        // that hold all the invasions
+        // Read the API and store whatever JSON is received
         JSONObject invasionsJSON = JSONManager.requestJSON(INVASION_URL);
+        // if reading the JSON failed, stop the task
         if (invasionsJSON == null) {
             invasionTracker.isDown = true;
             invasionTracker.invasionTaskTimer.stop();
             return;
         }
-        invasionTracker.isDown = false;
+        invasionTracker.isDown = false; // make sure to set this to false since we can read the API
 
         logger.info("Reading " + INVASION_URL + " for current invasions...");
 
@@ -57,6 +63,7 @@ public class InvasionTask implements ActionListener {
         Iterator<String> keys = invasionsJSON.keys();
         while (keys.hasNext()) {
             String key = keys.next();
+            // each key is stored as district/cogType
             String district = key.substring(0, key.indexOf('/'));
             // if we do not have that invasion stored, create a new invasion object
             // and add it to the list
@@ -117,13 +124,20 @@ public class InvasionTask implements ActionListener {
             Map.Entry<String, Invasion> pair = it.next();
             String cogType = pair.getValue().getCogType();
             String district = pair.getKey();
-            // <district>/<cog name>
+            // district/cog name
             String key = district + "/" + cogType;
+            // if the invasion no longer exists on the API, remove it from our list
             if (!invasionsJSON.has(key)) {
                 invasionTracker.showNotification(pair.getValue(), false);
-                String savedDuration = (System.nanoTime() - pair.getValue().getCacheStartTime())/ 1000000000 + " seconds.";
+                String savedDuration =
+                        (System.nanoTime() - pair.getValue().getCacheStartTime()) / 1000000000
+                                + " seconds.";
                 it.remove();
-                logger.info("Removing saved invasion for " + district + ". Tracked for " + savedDuration);
+                logger.info(
+                        "Removing saved invasion for "
+                                + district
+                                + ". Tracked for "
+                                + savedDuration);
             }
         }
         invasionTracker.runs++;

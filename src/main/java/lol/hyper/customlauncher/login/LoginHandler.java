@@ -54,10 +54,9 @@ public class LoginHandler {
     }
 
     /**
-     * Handle the result of the login request. This will take a login request and act based on that
-     * login request. This lets us send the login request back to this method over and over again.
+     * Handle a login request. This will act based on whatever was received in the request.
      *
-     * @param loginToProcess The login request to process.
+     * @param loginToProcess The request response.
      */
     private void handleLoginRequest(HashMap<String, String> loginToProcess) {
         HashMap<String, String> receivedRequest;
@@ -85,10 +84,13 @@ public class LoginHandler {
         String banner = receivedRequest.get("banner");
         String eta = receivedRequest.get("eta");
 
+        // log the request details
         logger.info("banner=" + banner);
         logger.info("status=" + status);
+        logger.info("eta=" + eta);
 
         // act based on the login status
+        // TTR has different statuses for login responses
         switch (status) {
             case "false" -> // false is invalid login details / maintenance
             {
@@ -109,6 +111,10 @@ public class LoginHandler {
             }
             case "delayed" -> // login request was put into a queue
             {
+                // if the queue is over 5, tell the user
+                // the queue is almost always 0
+                // TTR saves your request to queueToken, so just send that back
+                // to get an update response
                 attempts += 1;
                 if (Integer.parseInt(eta) >= 5 || attempts >= 5) {
                     JFrame infoWindow =
@@ -122,6 +128,7 @@ public class LoginHandler {
                     } catch (InterruptedException e) {
                         logger.error(e);
                     }
+                    // send the request with the queueToken
                     HashMap<String, String> newLoginRequest = new HashMap<>();
                     newLoginRequest.put("queueToken", receivedRequest.get("queueToken"));
                     handleLoginRequest(newLoginRequest);
@@ -133,6 +140,7 @@ public class LoginHandler {
                     } catch (InterruptedException exception) {
                         logger.error(exception);
                     }
+                    // send the request with the queueToken
                     HashMap<String, String> newLoginRequest = new HashMap<>();
                     newLoginRequest.put("queueToken", receivedRequest.get("queueToken"));
                     handleLoginRequest(newLoginRequest);

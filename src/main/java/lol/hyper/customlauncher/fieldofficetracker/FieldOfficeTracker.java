@@ -49,6 +49,10 @@ public class FieldOfficeTracker {
     public Timer fieldOfficeTaskTimer;
     final ConfigHandler configHandler;
 
+    /**
+     * This tracker will process & display the FieldOfficeTask. It handles the window and tracking
+     * of each field office.
+     */
     public FieldOfficeTracker(ConfigHandler configHandler) {
         // zone IDs to street names
         zonesToStreets.put(3100, "Walrus Way");

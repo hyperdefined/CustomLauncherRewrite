@@ -33,22 +33,27 @@ public class DistrictTask implements ActionListener {
     private final DistrictTracker districtTracker;
     private final Logger logger = LogManager.getLogger(this);
 
+    /**
+     * Start tracking districts. This will read the API and update each population of all districts.
+     *
+     * @param districtTracker The tracker that will process this task.
+     */
     public DistrictTask(DistrictTracker districtTracker) {
         this.districtTracker = districtTracker;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        // grab the invasions object in the request
-        // that hold all the invasions
+        // Read the API and store whatever JSON is received
         JSONObject districtsJSON = JSONManager.requestJSON(DISTRICT_URL);
+        // if reading the JSON failed, stop the task
         if (districtsJSON == null) {
             districtTracker.isDown = true;
             districtTracker.districtTaskTimer.stop();
             return;
         }
 
-        districtTracker.isDown = false;
+        districtTracker.isDown = false; // make sure to set this to false since we can read the API
 
         logger.info("Reading " + DISTRICT_URL + " for current districts...");
 
@@ -68,22 +73,10 @@ public class DistrictTask implements ActionListener {
                 if (!districtTracker.districts.containsKey(districtFromJSON)) {
                     return; // JUST IN CASE
                 }
-                // if we already have it saved, update the information that we have saved already
-                // we want to update the total cogs defeated and the end time
+                // if we already have it saved, update the population
                 District tempDistrict = districtTracker.districts.get(districtFromJSON);
                 int population = districts.getInt(districtFromJSON);
                 tempDistrict.setPopulation(population);
-            }
-        }
-
-        // we look at the current districts list and see if any districts
-        // are not on the districts JSON (aka that district is gone)
-        Iterator<Map.Entry<String, District>> it = districtTracker.districts.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry<String, District> pair = it.next();
-            String key = pair.getKey();
-            if (!districts.has(key)) {
-                it.remove();
             }
         }
         districtTracker.lastFetched = System.currentTimeMillis();

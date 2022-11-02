@@ -37,13 +37,16 @@ public class DistrictTracker {
     public JLabel totalPopulationLabel;
     public DefaultTableModel districtsTableModel;
     public JFrame frame;
-
     public JLabel lastFetchedLabel;
     public final SimpleDateFormat lastFetchedFormat = new SimpleDateFormat("hh:mm:ss a");
     public long lastFetched = 0;
     public boolean isDown = false;
     public Timer districtTaskTimer;
 
+    /**
+     * This tracker will process & display the DistrictTask. It handles the window and tracking of
+     * each district.
+     */
     public DistrictTracker() {
         startDistrictRefresh();
     }
