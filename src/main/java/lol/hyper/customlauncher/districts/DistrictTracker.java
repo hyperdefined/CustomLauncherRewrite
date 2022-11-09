@@ -18,8 +18,6 @@
 package lol.hyper.customlauncher.districts;
 
 import lol.hyper.customlauncher.Main;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.Timer;

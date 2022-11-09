@@ -28,7 +28,7 @@ import java.util.HashMap;
 
 public class SecretPrompt extends JFrame {
 
-    public SecretPrompt(MainWindow mainWindow, Account account) {
+    public SecretPrompt(Account account) {
         JFrame frame = new JFrame("Enter Passphrase");
         frame.setSize(170, 120);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

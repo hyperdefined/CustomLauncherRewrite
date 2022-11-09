@@ -21,7 +21,6 @@ import lol.hyper.customlauncher.Main;
 import lol.hyper.customlauncher.generic.ErrorWindow;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.crypto.Cipher;
@@ -137,7 +136,7 @@ public class JSONManager {
      * Get a JSONObject from a URL.
      *
      * @param url The URL to get JSON from.
-     * @return The URL's JSON.
+     * @return The response JSONObject.
      */
     public static JSONObject requestJSON(String url) {
         String rawJSON;

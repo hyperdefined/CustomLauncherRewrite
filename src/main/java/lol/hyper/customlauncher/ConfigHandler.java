@@ -55,9 +55,7 @@ public class ConfigHandler {
         }
     }
 
-    /**
-     * Sets the default config values. If anything is missing it will update the config.
-     */
+    /** Sets the default config values. If anything is missing it will update the config. */
     private void setDefaults() {
         boolean changed = false;
         if (!jsonObject.has("showInvasionNotifications")) {
@@ -69,7 +67,9 @@ public class ConfigHandler {
             changed = true;
         }
         if (!jsonObject.has("ttrInstallLocation")) {
-            jsonObject.put("ttrInstallLocation", System.getProperty("user.dir") + File.separator + "ttr-files");
+            jsonObject.put(
+                    "ttrInstallLocation",
+                    System.getProperty("user.dir") + File.separator + "ttr-files");
             changed = true;
         }
         if (changed) {
@@ -78,9 +78,7 @@ public class ConfigHandler {
         JSONManager.writeFile(jsonObject, CONFIG_FILE);
     }
 
-    /**
-     * Load the config from disk into the JSON object.
-     */
+    /** Load the config from disk into the JSON object. */
     public void loadConfig() {
         if (!CONFIG_FILE.exists()) {
             jsonObject = new JSONObject();
@@ -91,7 +89,11 @@ public class ConfigHandler {
                 JSONManager.writeFile(jsonObject, CONFIG_FILE);
             }
             if (jsonObject.getInt("version") != CONFIG_VERSION) {
-                logger.warn("Config version is not correct! Somethings will not work correctly. Version should be " + CONFIG_VERSION + " but read " + jsonObject.getInt("version"));
+                logger.warn(
+                        "Config version is not correct! Somethings will not work correctly. Version should be "
+                                + CONFIG_VERSION
+                                + " but read "
+                                + jsonObject.getInt("version"));
             }
         }
         setDefaults();

@@ -26,7 +26,6 @@ import org.apache.logging.log4j.Logger;
 import javax.swing.*;
 import java.awt.event.ItemEvent;
 import java.util.ArrayList;
-import java.util.List;
 
 public class NewAccountWindow extends JFrame {
 

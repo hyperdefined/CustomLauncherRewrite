@@ -36,7 +36,6 @@ import org.json.JSONObject;
 
 import javax.swing.*;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

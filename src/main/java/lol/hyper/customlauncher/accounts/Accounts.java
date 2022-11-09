@@ -34,6 +34,7 @@ public class Accounts {
 
     /**
      * Get an updated list of accounts
+     *
      * @return The accounts.
      */
     public ArrayList<Account> getAccounts() {
@@ -43,6 +44,7 @@ public class Accounts {
 
     /**
      * Create a new account and save it.
+     *
      * @param username The username.
      * @param password The password.
      * @param encrypted If the account password is encrypted.
@@ -53,9 +55,7 @@ public class Accounts {
         writeAccounts();
     }
 
-    /**
-     * Loads accounts saved in the accounts.json file.
-     */
+    /** Loads accounts saved in the accounts.json file. */
     private void loadAccountsFromFile() {
         accounts.clear();
         JSONArray accountsJSON = new JSONArray(JSONManager.readFile(ACCOUNTS_FILE));
@@ -78,6 +78,7 @@ public class Accounts {
 
     /**
      * Delete an account from the file.
+     *
      * @param accountToRemove Account that should be deleted.
      */
     public void removeAccount(Account accountToRemove) {
@@ -86,9 +87,7 @@ public class Accounts {
         writeAccounts();
     }
 
-    /**
-     * Save all accounts to the accounts file.
-     */
+    /** Save all accounts to the accounts file. */
     private void writeAccounts() {
         JSONArray accountsArray = new JSONArray();
         for (Account account : accounts) {

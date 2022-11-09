@@ -222,8 +222,7 @@ public class MainWindow extends JFrame {
                                 newLoginRequest.put("password", password);
                                 new LoginHandler(newLoginRequest);
                             } else {
-                                SecretPrompt secretPrompt =
-                                        new SecretPrompt(MainWindow.this, selectedAccount);
+                                SecretPrompt secretPrompt = new SecretPrompt(selectedAccount);
                                 secretPrompt.dispose();
                             }
                         }

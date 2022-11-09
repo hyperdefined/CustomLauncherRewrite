@@ -24,6 +24,7 @@ public class District implements Comparable<District> {
 
     /**
      * Create a district.
+     *
      * @param name The district name.
      */
     public District(String name) {
@@ -32,6 +33,7 @@ public class District implements Comparable<District> {
 
     /**
      * Get the district name.
+     *
      * @return The district name.
      */
     public String getDistrictName() {
@@ -40,6 +42,7 @@ public class District implements Comparable<District> {
 
     /**
      * Set the population of this district.
+     *
      * @param population The number of toons.
      */
     public void setPopulation(int population) {
@@ -48,6 +51,7 @@ public class District implements Comparable<District> {
 
     /**
      * Get the current population stored locally.
+     *
      * @return The number of toons.
      */
     public int getPopulation() {

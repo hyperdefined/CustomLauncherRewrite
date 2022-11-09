@@ -17,9 +17,6 @@
 
 package lol.hyper.customlauncher.fieldofficetracker;
 
-import dorkbox.notify.Notify;
-import dorkbox.notify.Pos;
-import lol.hyper.customlauncher.Main;
 import lol.hyper.customlauncher.accounts.JSONManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

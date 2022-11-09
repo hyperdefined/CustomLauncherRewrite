@@ -61,7 +61,9 @@ public class Main {
         logger.info("Running version " + version);
         logger.info("Current directory " + System.getProperty("user.dir"));
 
-        userAgent = "CustomLauncherRewrite https://github.com/hyperdefined/CustomLauncherRewrite " + version;
+        userAgent =
+                "CustomLauncherRewrite https://github.com/hyperdefined/CustomLauncherRewrite "
+                        + version;
 
         ConfigHandler configHandler = new ConfigHandler();
 
@@ -75,7 +77,9 @@ public class Main {
         // create the ttr-files folder
         if (!ConfigHandler.INSTALL_LOCATION.exists()) {
             Files.createDirectory(ConfigHandler.INSTALL_LOCATION.toPath());
-            logger.info("Creating TTR install folder at " + ConfigHandler.INSTALL_LOCATION.getAbsolutePath());
+            logger.info(
+                    "Creating TTR install folder at "
+                            + ConfigHandler.INSTALL_LOCATION.getAbsolutePath());
             JSONObject options = new JSONObject();
             // TTR on linux has a bug with fullscreen mode
             // we set TTR to be windowed mode on first launch
@@ -106,7 +110,7 @@ public class Main {
             logger.info("Creating base accounts file...");
         }
 
-        // this is used for removing old versions on windows
+        // this is used for removing old versions on Windows
         // passing "--remove-old <version>" will delete that version's exe
         // mainly for cleanup so there aren't 100 exes in the folder
         if (args.length >= 1) {

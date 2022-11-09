@@ -48,7 +48,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 public class TTRUpdater {
 
@@ -58,7 +57,7 @@ public class TTRUpdater {
     final JProgressBar progressBar;
 
     public TTRUpdater(String title) {
-        // setup the window elements
+        // set up the window elements
         JFrame frame = new JFrame(title);
         frame.setSize(370, 150);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -157,7 +156,10 @@ public class TTRUpdater {
                 if (!localFile.exists()) {
                     logger.info(
                             "-----------------------------------------------------------------------");
-                    logger.info(ConfigHandler.INSTALL_LOCATION.getAbsolutePath() + File.separator + key);
+                    logger.info(
+                            ConfigHandler.INSTALL_LOCATION.getAbsolutePath()
+                                    + File.separator
+                                    + key);
                     logger.info("This file is missing and will be downloaded.");
                     logger.info(
                             "-----------------------------------------------------------------------");
@@ -180,7 +182,8 @@ public class TTRUpdater {
                 }
                 logger.info(
                         "-----------------------------------------------------------------------");
-                logger.info(ConfigHandler.INSTALL_LOCATION.getAbsolutePath() + File.separator + key);
+                logger.info(
+                        ConfigHandler.INSTALL_LOCATION.getAbsolutePath() + File.separator + key);
                 logger.info("Local hash: " + localHash.toLowerCase(Locale.ENGLISH));
                 logger.info("Expected hash: " + onlineHash);
                 logger.info("Type: " + osType);

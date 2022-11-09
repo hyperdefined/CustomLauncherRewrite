@@ -17,7 +17,6 @@
 
 package lol.hyper.customlauncher.fieldofficetracker;
 
-import lol.hyper.customlauncher.invasiontracker.Invasion;
 import org.jetbrains.annotations.NotNull;
 
 public class FieldOffice implements Comparable<FieldOffice> {
