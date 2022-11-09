@@ -26,6 +26,8 @@ import lol.hyper.customlauncher.fieldofficetracker.FieldOfficeTracker;
 import lol.hyper.customlauncher.invasiontracker.InvasionTracker;
 import lol.hyper.customlauncher.login.LoginHandler;
 import lol.hyper.customlauncher.ttrupdater.TTRUpdater;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
 import javax.swing.*;
@@ -38,10 +40,11 @@ public class MainWindow extends JFrame {
 
     public static final DefaultListModel<String> model = new DefaultListModel<>();
     static final HashMap<Integer, String> labelsByIndexes = new HashMap<>();
-    final JLabel ttrStatus;
     private final InvasionTracker invasionTracker;
     private final FieldOfficeTracker fieldOfficeTracker;
     private final DistrictTracker districtTracker;
+
+    private final Logger logger = LogManager.getLogger(this);
 
     public MainWindow(ConfigHandler configHandler) {
         JFrame frame = new JFrame("CLR " + Main.version);
@@ -95,17 +98,23 @@ public class MainWindow extends JFrame {
         // invasions button
         JButton invasionsButton = new JButton("Invasions");
         invasionTracker = new InvasionTracker(configHandler);
-        invasionsButton.addActionListener(e -> {
-            if (invasionTracker.isDown) {
-                int dialogButton = JOptionPane.YES_NO_OPTION;
-                int dialogResult = JOptionPane.showConfirmDialog (null, "It looks like the invasion API is currently offline. Would you like to try checking it again?","Error",dialogButton);
-                if (dialogResult == JOptionPane.YES_OPTION){
-                    invasionTracker.invasionTaskTimer.start();
-                }
-            } else {
-                invasionTracker.showWindow();
-            }
-        });
+        invasionsButton.addActionListener(
+                e -> {
+                    if (invasionTracker.isDown) {
+                        int dialogButton = JOptionPane.YES_NO_OPTION;
+                        int dialogResult =
+                                JOptionPane.showConfirmDialog(
+                                        null,
+                                        "It looks like the invasion API is currently offline. Would you like to try checking it again?",
+                                        "Error",
+                                        dialogButton);
+                        if (dialogResult == JOptionPane.YES_OPTION) {
+                            invasionTracker.invasionTaskTimer.start();
+                        }
+                    } else {
+                        invasionTracker.showWindow();
+                    }
+                });
         invasionsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         invasionsButton.setMaximumSize(new Dimension(300, invasionsButton.getMinimumSize().height));
         panel.add(invasionsButton);
@@ -113,17 +122,23 @@ public class MainWindow extends JFrame {
         // field office button
         JButton fieldOfficesButton = new JButton("Field Offices");
         fieldOfficeTracker = new FieldOfficeTracker(configHandler);
-        fieldOfficesButton.addActionListener(e -> {
-            if (fieldOfficeTracker.isDown) {
-                int dialogButton = JOptionPane.YES_NO_OPTION;
-                int dialogResult = JOptionPane.showConfirmDialog (null, "It looks like the field office API is currently offline. Would you like to try checking it again?","Error",dialogButton);
-                if (dialogResult == JOptionPane.YES_OPTION){
-                    fieldOfficeTracker.fieldOfficeTaskTimer.start();
-                }
-            } else {
-                fieldOfficeTracker.showWindow();
-            }
-        });
+        fieldOfficesButton.addActionListener(
+                e -> {
+                    if (fieldOfficeTracker.isDown) {
+                        int dialogButton = JOptionPane.YES_NO_OPTION;
+                        int dialogResult =
+                                JOptionPane.showConfirmDialog(
+                                        null,
+                                        "It looks like the field office API is currently offline. Would you like to try checking it again?",
+                                        "Error",
+                                        dialogButton);
+                        if (dialogResult == JOptionPane.YES_OPTION) {
+                            fieldOfficeTracker.fieldOfficeTaskTimer.start();
+                        }
+                    } else {
+                        fieldOfficeTracker.showWindow();
+                    }
+                });
         fieldOfficesButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         fieldOfficesButton.setMaximumSize(
                 new Dimension(300, fieldOfficesButton.getMinimumSize().height));
@@ -132,17 +147,23 @@ public class MainWindow extends JFrame {
         // population button
         JButton districtsButton = new JButton("Population");
         districtTracker = new DistrictTracker();
-        districtsButton.addActionListener(e -> {
-            if (districtTracker.isDown) {
-                int dialogButton = JOptionPane.YES_NO_OPTION;
-                int dialogResult = JOptionPane.showConfirmDialog (null, "It looks like the population API is currently offline. Would you like to try checking it again?","Error",dialogButton);
-                if (dialogResult == JOptionPane.YES_OPTION){
-                    districtTracker.districtTaskTimer.start();
-                }
-            } else {
-                districtTracker.showWindow();
-            }
-        });
+        districtsButton.addActionListener(
+                e -> {
+                    if (districtTracker.isDown) {
+                        int dialogButton = JOptionPane.YES_NO_OPTION;
+                        int dialogResult =
+                                JOptionPane.showConfirmDialog(
+                                        null,
+                                        "It looks like the population API is currently offline. Would you like to try checking it again?",
+                                        "Error",
+                                        dialogButton);
+                        if (dialogResult == JOptionPane.YES_OPTION) {
+                            districtTracker.districtTaskTimer.start();
+                        }
+                    } else {
+                        districtTracker.showWindow();
+                    }
+                });
         districtsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         districtsButton.setMaximumSize(new Dimension(300, invasionsButton.getMinimumSize().height));
         panel.add(districtsButton);
@@ -156,8 +177,7 @@ public class MainWindow extends JFrame {
                     t1.start();
                 });
         ttrUpdateButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        ttrUpdateButton.setMaximumSize(
-                new Dimension(300, ttrUpdateButton.getMinimumSize().height));
+        ttrUpdateButton.setMaximumSize(new Dimension(300, ttrUpdateButton.getMinimumSize().height));
         panel.add(ttrUpdateButton);
 
         // check for updates button
@@ -168,17 +188,8 @@ public class MainWindow extends JFrame {
                     configWindow.dispose();
                 });
         configButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        configButton.setMaximumSize(
-                new Dimension(300, configButton.getMinimumSize().height));
+        configButton.setMaximumSize(new Dimension(300, configButton.getMinimumSize().height));
         panel.add(configButton);
-
-
-        // game status
-        ttrStatus = new JLabel("Fetching Status...");
-        ttrStatus.setAlignmentX(Component.CENTER_ALIGNMENT);
-        // add some space between the last button and the text
-        panel.add(Box.createRigidArea(new Dimension(0, 5)));
-        panel.add(ttrStatus);
 
         accountList.addMouseListener(
                 new MouseAdapter() {
@@ -191,21 +202,35 @@ public class MainWindow extends JFrame {
                                         "Unable to launch the game. The install location cannot be found.",
                                         "Error",
                                         JOptionPane.ERROR_MESSAGE);
+                                return;
+                            }
+                            // check if the game is online
+                            // before launching
+                            boolean isOnline = checkTTRStatus();
+                            String status = isOnline ? "online" : "offline";
+                            logger.info("TTR is currently: " + status);
+                            if (!isOnline) {
+                                JOptionPane.showMessageDialog(
+                                        frame,
+                                        "It looks like TTR is currently offline. Check their website for more info!",
+                                        "Error",
+                                        JOptionPane.ERROR_MESSAGE);
+                                return;
+                            }
+                            int index = list.getSelectedIndex();
+                            Account account = JSONManager.getAccounts().get(index);
+                            logger.info("Using account: " + account.getUsername());
+                            if (!account.encrypted()) {
+                                String username = account.getUsername();
+                                String password = account.getPassword();
+                                HashMap<String, String> newLoginRequest = new HashMap<>();
+                                newLoginRequest.put("username", username);
+                                newLoginRequest.put("password", password);
+                                new LoginHandler(newLoginRequest);
                             } else {
-                                int index = list.getSelectedIndex();
-                                Account account = JSONManager.getAccounts().get(index);
-                                if (!account.encrypted()) {
-                                    String username = account.getUsername();
-                                    String password = account.getPassword();
-                                    HashMap<String, String> newLoginRequest = new HashMap<>();
-                                    newLoginRequest.put("username", username);
-                                    newLoginRequest.put("password", password);
-                                    new LoginHandler(newLoginRequest);
-                                } else {
-                                    SecretPrompt secretPrompt =
-                                            new SecretPrompt("Enter Passphrase", account);
-                                    secretPrompt.dispose();
-                                }
+                                SecretPrompt secretPrompt =
+                                        new SecretPrompt("Enter Passphrase", account);
+                                secretPrompt.dispose();
                             }
                         }
                     }
@@ -215,12 +240,6 @@ public class MainWindow extends JFrame {
         frame.setVisible(true);
         frame.add(panel);
         frame.setLocationRelativeTo(null);
-
-        // update every 30 seconds
-        Timer timer = new Timer(0, e -> updateTTRStatus());
-        timer.setRepeats(true);
-        timer.setDelay(30000);
-        timer.start();
     }
 
     /**
@@ -237,13 +256,12 @@ public class MainWindow extends JFrame {
         }
     }
 
-    private void updateTTRStatus() {
-        JSONObject ttrStatusJSON = JSONManager.requestJSON("https://www.toontownrewritten.com/api/status");
+    private boolean checkTTRStatus() {
+        JSONObject ttrStatusJSON =
+                JSONManager.requestJSON("https://www.toontownrewritten.com/api/status");
         if (ttrStatusJSON == null) {
-            return;
+            return false;
         }
-        boolean isOpen = ttrStatusJSON.getBoolean("open");
-        String status = isOpen ? "online" : "offline";
-        ttrStatus.setText("TTR is currently " + status + ".");
+        return ttrStatusJSON.getBoolean("open");
     }
 }
