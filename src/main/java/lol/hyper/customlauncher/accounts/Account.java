@@ -19,30 +19,8 @@ package lol.hyper.customlauncher.accounts;
 
 public record Account(String username, String password, boolean encrypted) {
 
-    /**
-     * Returns the username of an account.
-     *
-     * @return Username of account.
-     */
-    public String getUsername() {
-        return username;
-    }
-
-    /**
-     * Returns the password of an account. This password is encrypted.
-     *
-     * @return Password of account.
-     */
-    public String getPassword() {
-        return password;
-    }
-
-    /**
-     * Is the account login encrypted?
-     *
-     * @return The account's encryption status.
-     */
-    public boolean encrypted() {
-        return encrypted;
+    @Override
+    public String toString() {
+        return this.username;
     }
 }

@@ -15,10 +15,9 @@
  * along with CustomLauncherRewrite.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package lol.hyper.customlauncher.accounts.windows;
+package lol.hyper.customlauncher.windows;
 
 import lol.hyper.customlauncher.ConfigHandler;
-import lol.hyper.customlauncher.Main;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

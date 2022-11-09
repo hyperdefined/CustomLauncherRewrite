@@ -15,11 +15,12 @@
  * along with CustomLauncherRewrite.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package lol.hyper.customlauncher.accounts.windows;
+package lol.hyper.customlauncher.windows;
 
 import lol.hyper.customlauncher.ConfigHandler;
 import lol.hyper.customlauncher.Main;
 import lol.hyper.customlauncher.accounts.Account;
+import lol.hyper.customlauncher.accounts.Accounts;
 import lol.hyper.customlauncher.accounts.JSONManager;
 import lol.hyper.customlauncher.districts.DistrictTracker;
 import lol.hyper.customlauncher.fieldofficetracker.FieldOfficeTracker;
@@ -38,11 +39,12 @@ import java.util.HashMap;
 
 public class MainWindow extends JFrame {
 
-    public static final DefaultListModel<String> model = new DefaultListModel<>();
-    static final HashMap<Integer, String> labelsByIndexes = new HashMap<>();
+    public static final DefaultListModel<Account> accountsModel = new DefaultListModel<>();
     private final InvasionTracker invasionTracker;
     private final FieldOfficeTracker fieldOfficeTracker;
     private final DistrictTracker districtTracker;
+
+    private final Accounts accounts = new Accounts();
 
     private final Logger logger = LogManager.getLogger(this);
 
@@ -66,15 +68,8 @@ public class MainWindow extends JFrame {
         accountsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.add(accountsLabel);
 
-        // accounts list
-        // get the labels from the accounts and show them in the list
-        for (int i = 0; i < JSONManager.getAccounts().size(); i++) {
-            Account account = JSONManager.getAccounts().get(i);
-            labelsByIndexes.put(i, account.getUsername());
-            model.addElement(account.getUsername());
-        }
-
-        JList<String> accountList = new JList<>(model);
+        JList<Account> accountList = new JList<>(accountsModel);
+        accountsModel.addAll(accounts.getAccounts());
         DefaultListCellRenderer renderer = (DefaultListCellRenderer) accountList.getCellRenderer();
         renderer.setHorizontalAlignment(SwingConstants.CENTER);
         accountList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -87,7 +82,7 @@ public class MainWindow extends JFrame {
         JButton accountManagerButton = new JButton("Manage Accounts");
         accountManagerButton.addActionListener(
                 e -> {
-                    JFrame accountManagerWindow = new AccountManagerWindow("Account Manager");
+                    JFrame accountManagerWindow = new AccountManagerWindow(this);
                     accountManagerWindow.dispose();
                 });
         accountManagerButton.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -194,7 +189,7 @@ public class MainWindow extends JFrame {
         accountList.addMouseListener(
                 new MouseAdapter() {
                     public void mouseClicked(MouseEvent evt) {
-                        JList<String> list = (JList<String>) evt.getSource();
+                        JList<Account> accountList = (JList<Account>) evt.getSource();
                         if (evt.getClickCount() == 2) {
                             if (!ConfigHandler.INSTALL_LOCATION.exists()) {
                                 JOptionPane.showMessageDialog(
@@ -217,19 +212,18 @@ public class MainWindow extends JFrame {
                                         JOptionPane.ERROR_MESSAGE);
                                 return;
                             }
-                            int index = list.getSelectedIndex();
-                            Account account = JSONManager.getAccounts().get(index);
-                            logger.info("Using account: " + account.getUsername());
-                            if (!account.encrypted()) {
-                                String username = account.getUsername();
-                                String password = account.getPassword();
+                            Account selectedAccount = accountList.getSelectedValue();
+                            logger.info("Using account: " + selectedAccount.username());
+                            if (!selectedAccount.encrypted()) {
+                                String username = selectedAccount.username();
+                                String password = selectedAccount.password();
                                 HashMap<String, String> newLoginRequest = new HashMap<>();
                                 newLoginRequest.put("username", username);
                                 newLoginRequest.put("password", password);
                                 new LoginHandler(newLoginRequest);
                             } else {
                                 SecretPrompt secretPrompt =
-                                        new SecretPrompt("Enter Passphrase", account);
+                                        new SecretPrompt(MainWindow.this, selectedAccount);
                                 secretPrompt.dispose();
                             }
                         }
@@ -247,13 +241,10 @@ public class MainWindow extends JFrame {
      * trick, but it works fine. This also correctly sorts the accounts by the index from the
      * accounts file.
      */
-    public static void refreshAccountList() {
-        model.removeAllElements();
-        for (int i = 0; i < JSONManager.getAccounts().size(); i++) {
-            Account account = JSONManager.getAccounts().get(i);
-            labelsByIndexes.put(i, account.getUsername());
-            model.addElement(account.getUsername());
-        }
+    public void refreshAccountList() {
+        logger.info("Refreshing accounts list window...");
+        accountsModel.removeAllElements();
+        accountsModel.addAll(accounts.getAccounts());
     }
 
     private boolean checkTTRStatus() {
