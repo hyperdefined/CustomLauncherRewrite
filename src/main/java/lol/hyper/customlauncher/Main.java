@@ -43,7 +43,7 @@ public class Main {
     public static Image icon;
     public static String userAgent;
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws IOException {
         // load the log4j2config
         System.setProperty("log4j.configurationFile", "log4j2config.xml");
         // load the version

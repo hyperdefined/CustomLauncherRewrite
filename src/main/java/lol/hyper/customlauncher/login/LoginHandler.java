@@ -21,14 +21,15 @@ import lol.hyper.customlauncher.Main;
 import lol.hyper.customlauncher.generic.ErrorWindow;
 import lol.hyper.customlauncher.generic.InfoWindow;
 import lol.hyper.customlauncher.login.windows.TwoFactorAuth;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.http.NameValuePair;
+import org.apache.hc.core5.http.ParseException;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.hc.core5.http.message.BasicNameValuePair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
@@ -98,9 +99,7 @@ public class LoginHandler {
                 errorWindow.dispose();
             }
             case "partial" -> // partial is used for 2FA or ToonGuard
-            {
-                new TwoFactorAuth(banner, receivedRequest.get("responseToken"));
-            }
+                    new TwoFactorAuth(banner, receivedRequest.get("responseToken"));
             case "true" -> // login was successful
             {
                 logger.info("Login was successful, launching game...");
@@ -175,16 +174,7 @@ public class LoginHandler {
             urlParameters.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
         }
 
-        try {
-            post.setEntity(new UrlEncodedFormEntity(urlParameters));
-        } catch (UnsupportedEncodingException exception) {
-            logger.error("Unable to send login request!", exception);
-            JFrame errorWindow = new ErrorWindow(null, exception);
-            errorWindow.dispose();
-            return null;
-        }
-
-        String responseData;
+        post.setEntity(new UrlEncodedFormEntity(urlParameters));
 
         CloseableHttpClient httpClient = HttpClients.createDefault();
         CloseableHttpResponse response;
@@ -197,9 +187,10 @@ public class LoginHandler {
             return null;
         }
 
+        String responseData;
         try {
             responseData = EntityUtils.toString(response.getEntity());
-        } catch (IOException exception) {
+        } catch (IOException | ParseException exception) {
             logger.error("Unable to send login request!", exception);
             JFrame errorWindow = new ErrorWindow(null, exception);
             errorWindow.dispose();
@@ -212,6 +203,12 @@ public class LoginHandler {
             receivedDetails.put(x, responseJSON.getString(x));
         }
 
+        try {
+            httpClient.close();
+            response.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         return receivedDetails;
     }
 }
