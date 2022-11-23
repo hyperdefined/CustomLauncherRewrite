@@ -61,8 +61,8 @@ public class Accounts {
         JSONArray accountsJSON = new JSONArray(JSONManager.readFile(ACCOUNTS_FILE));
         for (int i = 0; i < accountsJSON.length(); i++) {
             JSONObject currentAccount = accountsJSON.getJSONObject(i);
-            String username = (String) currentAccount.get("username");
-            String password = (String) currentAccount.get("password");
+            String username = currentAccount.getString("username");
+            String password = currentAccount.getString("password");
             // if the account doesn't have this tag, it's using the old system
             // the old system encrypts them
             boolean encrypted;

@@ -78,6 +78,7 @@ public class LoginHandler {
             return;
         }
 
+        logger.info("Attempt: " + attempts);
         logger.info("Received login response:");
         // get the login status
         String status = receivedRequest.get("success");
@@ -112,9 +113,8 @@ public class LoginHandler {
                 // if the queue is over 5, tell the user
                 // the queue is almost always 0
                 // TTR saves your request to queueToken, so just send that back
-                // to get an update response
-                attempts += 1;
-                if (Integer.parseInt(eta) >= 5 || attempts >= 5) {
+                // to get an updated response
+                if (Integer.parseInt(eta) >= 5) {
                     JFrame infoWindow =
                             new InfoWindow(
                                     "You were placed in a queue. Press OK to try again in 5 seconds.");
@@ -126,23 +126,11 @@ public class LoginHandler {
                     } catch (InterruptedException e) {
                         logger.error(e);
                     }
-                    // send the request with the queueToken
-                    HashMap<String, String> newLoginRequest = new HashMap<>();
-                    newLoginRequest.put("queueToken", receivedRequest.get("queueToken"));
-                    handleLoginRequest(newLoginRequest);
-                } else {
-                    try {
-                        // Try again every second.
-                        // If we go over 5 attempts, wait 5 seconds and notify the user
-                        TimeUnit.SECONDS.sleep(1);
-                    } catch (InterruptedException exception) {
-                        logger.error(exception);
-                    }
-                    // send the request with the queueToken
-                    HashMap<String, String> newLoginRequest = new HashMap<>();
-                    newLoginRequest.put("queueToken", receivedRequest.get("queueToken"));
-                    handleLoginRequest(newLoginRequest);
                 }
+                // send the request with the queueToken
+                HashMap<String, String> newLoginRequest = new HashMap<>();
+                newLoginRequest.put("queueToken", receivedRequest.get("queueToken"));
+                handleLoginRequest(newLoginRequest);
             }
             default -> // TTR sent back a weird status that we don't know about
             {
