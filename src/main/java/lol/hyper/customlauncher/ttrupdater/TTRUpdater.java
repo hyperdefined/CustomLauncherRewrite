@@ -60,7 +60,7 @@ public class TTRUpdater {
         // set up the window elements
         JFrame frame = new JFrame(title);
         frame.setSize(370, 150);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setResizable(false);
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

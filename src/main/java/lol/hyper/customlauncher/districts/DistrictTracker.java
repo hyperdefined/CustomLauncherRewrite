@@ -52,7 +52,7 @@ public class DistrictTracker {
     /** Open the population window. */
     public void showWindow() {
         frame = new JFrame("Districts");
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setResizable(false);
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

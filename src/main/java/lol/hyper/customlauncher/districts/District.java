@@ -67,4 +67,17 @@ public class District implements Comparable<District> {
     public int compareTo(District district) {
         return (this.districtName.compareTo(district.getDistrictName()));
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+
+        if (!(o instanceof District district)) {
+            return false;
+        }
+
+        return district.getDistrictName().equalsIgnoreCase(this.getDistrictName());
+    }
 }

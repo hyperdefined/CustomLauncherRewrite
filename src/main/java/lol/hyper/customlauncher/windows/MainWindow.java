@@ -37,7 +37,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
 
-public class MainWindow extends JFrame {
+public final class MainWindow extends JFrame {
 
     public static final DefaultListModel<Account> accountsModel = new DefaultListModel<>();
     private final InvasionTracker invasionTracker;

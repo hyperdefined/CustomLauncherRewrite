@@ -31,7 +31,7 @@ public class TwoFactorAuth extends JFrame {
     public TwoFactorAuth(String banner, String token) {
         JFrame frame = new JFrame("Enter Code");
         frame.setSize(230, 150);
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setResizable(false);
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
