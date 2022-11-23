@@ -34,7 +34,7 @@ public class NewAccountWindow extends JFrame {
     public NewAccountWindow(MainWindow mainWindow) {
         JFrame frame = new JFrame("New Account");
         frame.setSize(370, 400);
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setResizable(false);
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

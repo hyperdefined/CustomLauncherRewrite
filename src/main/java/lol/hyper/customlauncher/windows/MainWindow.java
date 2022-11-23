@@ -50,7 +50,7 @@ public class MainWindow extends JFrame {
 
     public MainWindow(ConfigHandler configHandler) {
         JFrame frame = new JFrame("CLR " + Main.version);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setResizable(false);
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

@@ -71,7 +71,7 @@ public class FieldOfficeTracker {
     /** Open the field office window. */
     public void showWindow() {
         frame = new JFrame("Field Offices");
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setResizable(false);
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

@@ -28,7 +28,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.io.File;
 
-public class LaunchGame extends Thread {
+public final class LaunchGame extends Thread {
 
     public final Logger logger = LogManager.getLogger(this);
     final String cookie;

@@ -31,7 +31,7 @@ public class SecretPrompt extends JFrame {
     public SecretPrompt(Account account) {
         JFrame frame = new JFrame("Enter Passphrase");
         frame.setSize(170, 120);
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setResizable(false);
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

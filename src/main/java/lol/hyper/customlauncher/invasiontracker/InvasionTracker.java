@@ -59,7 +59,7 @@ public class InvasionTracker {
     /** Open the invasion window. */
     public void showWindow() {
         frame = new JFrame("Invasions");
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setResizable(false);
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

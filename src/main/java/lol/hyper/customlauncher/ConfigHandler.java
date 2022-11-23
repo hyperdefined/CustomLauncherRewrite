@@ -34,10 +34,6 @@ public class ConfigHandler {
 
     public ConfigHandler() {
         loadConfig();
-        logger.info("Config version: " + jsonObject.getInt("version"));
-        logger.info("showInvasionNotifications: " + showCogInvasionNotifications());
-        logger.info("showFieldOfficeNotifications: " + showFieldOfficeNotifications());
-        logger.info("ttrInstallLocation: " + INSTALL_LOCATION.getAbsolutePath());
     }
 
     public boolean showCogInvasionNotifications() {
@@ -98,5 +94,10 @@ public class ConfigHandler {
         }
         setDefaults();
         INSTALL_LOCATION = new File(jsonObject.getString("ttrInstallLocation"));
+
+        logger.info("Config version: " + jsonObject.getInt("version"));
+        logger.info("showInvasionNotifications: " + showCogInvasionNotifications());
+        logger.info("showFieldOfficeNotifications: " + showFieldOfficeNotifications());
+        logger.info("ttrInstallLocation: " + INSTALL_LOCATION.getAbsolutePath());
     }
 }
