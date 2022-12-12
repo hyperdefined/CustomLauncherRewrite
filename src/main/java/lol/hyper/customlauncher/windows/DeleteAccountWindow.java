@@ -34,7 +34,7 @@ public class DeleteAccountWindow extends JFrame {
 
     public DeleteAccountWindow(MainWindow mainWindow) {
         JFrame frame = new JFrame("Delete Account");
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setResizable(false);
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

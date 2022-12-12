@@ -33,7 +33,7 @@ public class ConfigWindow extends JFrame {
         configHandler.loadConfig();
         JFrame frame = new JFrame("Configuration");
         frame.setSize(370, 270);
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setResizable(false);
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

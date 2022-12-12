@@ -26,7 +26,7 @@ public class AccountManagerWindow extends JFrame {
     public AccountManagerWindow(MainWindow mainWindow) {
         JFrame frame = new JFrame("Account Manager");
         frame.setSize(370, 100);
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setResizable(false);
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
