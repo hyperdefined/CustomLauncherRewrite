@@ -218,53 +218,51 @@ public class TTRUpdater {
             for (String fileToDownload : filesToDownload) {
                 progressBar.setMaximum(fileToDownload.length());
                 JSONObject file = patches.getJSONObject(fileToDownload);
-                String dl = file.getString("dl");
+                String downloadName = file.getString("dl");
 
-                logger.info("Downloading " + PATCHES_URL_DL + dl);
-                updateStatus.setText("Downloading " + dl);
+                logger.info("Downloading " + PATCHES_URL_DL + downloadName);
+                updateStatus.setText("Downloading " + downloadName);
                 progressBar.setVisible(true);
                 progressBar.setValue(progressBar.getValue() + 1);
 
                 URL downloadURL;
                 try {
-                    downloadURL = new URL(PATCHES_URL_DL + dl);
+                    downloadURL = new URL(PATCHES_URL_DL + downloadName);
                 } catch (MalformedURLException exception) {
-                    logger.error("Invalid URL " + PATCHES_URL_DL + dl);
+                    logger.error("Invalid URL " + PATCHES_URL_DL + downloadName);
                     JFrame errorWindow = new ErrorWindow(null, exception);
                     errorWindow.dispose();
                     frame.dispose();
                     return;
                 }
-                File output = new File(tempFolder + File.separator + dl);
-                if (!saveFile(downloadURL, output)) {
-                    logger.error("Unable to download file" + dl);
+                File downloadOutput = new File(tempFolder + File.separator + downloadName);
+                long downloadStart = System.nanoTime();
+                if (!saveFile(downloadURL, downloadOutput)) {
+                    logger.error("Unable to download file " + downloadName);
                     JFrame errorWindow =
-                            new ErrorWindow("Unable to download file " + dl + ".", null);
+                            new ErrorWindow("Unable to download file " + downloadName + ".", null);
                     errorWindow.dispose();
                     frame.dispose();
                 }
-                logger.info("Finished downloading " + output.getAbsolutePath());
-                updateStatus.setText("Finished downloading " + dl);
+                long downloadTime = TimeUnit.MILLISECONDS.convert(System.nanoTime() - downloadStart, TimeUnit.NANOSECONDS);
+                logger.info("Finished downloading " + downloadOutput.getAbsolutePath() + ". Took " + downloadTime + "ms.");
+                updateStatus.setText("Finished downloading " + downloadName);
 
                 long startTime = System.nanoTime();
-                logger.info("Extracting " + output.getAbsolutePath());
-                updateStatus.setText("Extracting " + output);
+                logger.info("Extracting " + downloadOutput.getAbsolutePath());
+                updateStatus.setText("Extracting " + downloadOutput);
                 progressBar.setVisible(false);
                 try {
-                    decompressBz2(dl, fileToDownload); // extract the file to the new location
+                    decompressBz2(downloadName, fileToDownload); // extract the file to the new location
                 } catch (IOException exception) {
-                    logger.error("Unable to extract file " + dl, exception);
+                    logger.error("Unable to extract file " + downloadName, exception);
                     JFrame errorWindow = new ErrorWindow(null, exception);
                     errorWindow.dispose();
                     frame.dispose();
                 }
-                updateStatus.setText("Finished extracting file " + dl);
-                logger.info("Finished extracting file " + dl);
-                logger.info(
-                        "Done, took "
-                                + TimeUnit.SECONDS.convert(
-                                        System.nanoTime() - startTime, TimeUnit.NANOSECONDS)
-                                + " seconds.");
+                updateStatus.setText("Finished extracting file " + downloadName);
+                long extractedTime = TimeUnit.MILLISECONDS.convert(System.nanoTime() - startTime, TimeUnit.NANOSECONDS);
+                logger.info("Finished extracting file " + downloadName + ". Took " + extractedTime + "ms.");
             }
             // delete all files in the temp folder
             File[] tempFolderFiles = tempFolder.listFiles();
