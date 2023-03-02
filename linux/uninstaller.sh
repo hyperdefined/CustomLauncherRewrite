@@ -16,9 +16,24 @@
 # along with CustomLauncherRewrite.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-echo "Removing /opt/CustomLauncherRewrite..."
+read -p "Before we uninstall, would you like to keep your TTR files? These include screenshots and resource packs. Enter 'Y' to keep them, 'N' to wipe them.: " input
 
-sudo rm -r /opt/CustomLauncherRewrite
+if [ "$input" != "Y" ]; then
+  keep_ttr_files=false
+else
+  keep_ttr_files=true
+fi
+
+if $keep_ttr_files; then
+  echo "Removing /opt/CustomLauncherRewrite but keeping TTR files..."
+  # remove everything but ttr-files folder
+  sudo find /opt/CustomLauncherRewrite/* -type d -not -name 'ttr-files' -exec rm -rf {} +
+  sudo rm /opt/CustomLauncherRewrite/CustomLauncherRewrite*
+  sudo rm /opt/CustomLauncherRewrite/run.sh
+else 
+  echo "Removing /opt/CustomLauncherRewrite..."
+  sudo rm -r /opt/CustomLauncherRewrite
+fi
 
 echo "Removing the desktop entry..."
 sudo rm ~/Desktop/customlauncherrewrite.desktop
