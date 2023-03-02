@@ -65,14 +65,14 @@ public class Main {
                 "CustomLauncherRewrite https://github.com/hyperdefined/CustomLauncherRewrite "
                         + version;
 
-        ConfigHandler configHandler = new ConfigHandler();
-
         // create the config folder
         final File configPath = new File("config");
         if (!configPath.exists()) {
             Files.createDirectory(configPath.toPath());
             logger.info("Creating config folder at " + configPath.getAbsolutePath());
         }
+
+        ConfigHandler configHandler = new ConfigHandler();
 
         // create the ttr-files folder
         if (!ConfigHandler.INSTALL_LOCATION.exists()) {
