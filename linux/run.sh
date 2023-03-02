@@ -16,10 +16,10 @@
 # along with CustomLauncherRewrite.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-output=$(find /opt/CustomLauncherRewrite/ -name CustomLauncherRewrite*.jar -exec java "-jar" {} \;)
-
-case "java.lang.UnsupportedClassVersionError" in 
-  *$output*)
+# Check if Java is installed and the version is at least 17
+if java -version 2>&1 | grep -q "version \"17"; then
+    latest=$(ls -t CustomLauncherRewrite-*.jar | head -n1)
+    java -jar $latest
+else
     notify-send -i stop "Please update Java JRE to version 17 or higher!"
-    ;;
-esac
+fi
