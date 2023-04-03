@@ -24,6 +24,7 @@ import lol.hyper.customlauncher.accounts.Accounts;
 import lol.hyper.customlauncher.accounts.JSONManager;
 import lol.hyper.customlauncher.districts.DistrictTracker;
 import lol.hyper.customlauncher.fieldofficetracker.FieldOfficeTracker;
+import lol.hyper.customlauncher.generic.InfoWindow;
 import lol.hyper.customlauncher.invasiontracker.InvasionTracker;
 import lol.hyper.customlauncher.login.LoginHandler;
 import lol.hyper.customlauncher.ttrupdater.TTRUpdater;
@@ -202,14 +203,7 @@ public final class MainWindow extends JFrame {
                             // check if the game is online
                             // before launching
                             boolean isOnline = checkTTRStatus();
-                            String status = isOnline ? "online" : "offline";
-                            logger.info("TTR is currently: " + status);
                             if (!isOnline) {
-                                JOptionPane.showMessageDialog(
-                                        frame,
-                                        "It looks like TTR is currently offline. Check their website for more info!",
-                                        "Error",
-                                        JOptionPane.ERROR_MESSAGE);
                                 return;
                             }
                             Account selectedAccount = accountList.getSelectedValue();
@@ -248,10 +242,27 @@ public final class MainWindow extends JFrame {
 
     private boolean checkTTRStatus() {
         JSONObject ttrStatusJSON =
-                JSONManager.requestJSON("https://www.toontownrewritten.com/api/status");
+                JSONManager.requestJSON("https://toontownrewritten.com/api/status");
         if (ttrStatusJSON == null) {
             return false;
         }
-        return ttrStatusJSON.getBoolean("open");
+
+        boolean status = ttrStatusJSON.getBoolean("open");
+        logger.info("Game status: " + status);
+        // ttr is opened, let the launcher login
+        if (status) {
+            return true;
+        }
+        // ttr is down, show the banner if there is one
+        if (ttrStatusJSON.has("banner")) {
+            String banner = ttrStatusJSON.getString("banner");
+            logger.info("TTR's banner returned: " + banner);
+            InfoWindow infoWindow = new InfoWindow("TTR seems to be offline:\n" + banner);
+            infoWindow.dispose();
+        } else {
+            InfoWindow infoWindow = new InfoWindow("TTR is closed, but there is no message on why.");
+            infoWindow.dispose();
+        }
+        return false;
     }
 }
