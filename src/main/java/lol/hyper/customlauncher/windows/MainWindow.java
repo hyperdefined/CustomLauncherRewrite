@@ -249,20 +249,13 @@ public final class MainWindow extends JFrame {
 
         boolean status = ttrStatusJSON.getBoolean("open");
         logger.info("Game status: " + status);
-        // ttr is opened, let the launcher login
-        if (status) {
-            return true;
-        }
         // ttr is down, show the banner if there is one
         if (ttrStatusJSON.has("banner")) {
             String banner = ttrStatusJSON.getString("banner");
             logger.info("TTR's banner returned: " + banner);
-            InfoWindow infoWindow = new InfoWindow("TTR seems to be offline:\n" + banner);
-            infoWindow.dispose();
-        } else {
-            InfoWindow infoWindow = new InfoWindow("TTR is closed, but there is no message on why.");
+            InfoWindow infoWindow = new InfoWindow(banner);
             infoWindow.dispose();
         }
-        return false;
+        return status;
     }
 }
