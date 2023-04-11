@@ -71,7 +71,7 @@ public class DistrictTracker {
         panel.add(districtsLabel);
 
         districtTable = new JTable();
-        String[] columns = new String[] {"Name", "Population"};
+        String[] columns = new String[] {"Name", "Population", "Status"};
 
         districtsTableModel = (DefaultTableModel) districtTable.getModel();
         districtsTableModel.setColumnIdentifiers(columns);
@@ -130,9 +130,10 @@ public class DistrictTracker {
         for (District district : sortedDistricts) {
             String name = district.getDistrictName();
             int population = district.getPopulation();
+            String status = district.getCurrentStatus();
             data =
                     new String[] {
-                        name, String.valueOf(population),
+                        name, String.valueOf(population), status
                     };
             districtsTableModel.addRow(data);
             districtTable.setModel(districtsTableModel);

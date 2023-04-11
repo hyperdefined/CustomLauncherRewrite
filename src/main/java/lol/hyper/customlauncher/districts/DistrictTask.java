@@ -24,7 +24,7 @@ import org.json.JSONObject;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Iterator;
+import java.util.Iterator;import java.util.Locale;
 
 public class DistrictTask implements ActionListener {
 
@@ -56,15 +56,15 @@ public class DistrictTask implements ActionListener {
 
         logger.info("Reading " + DISTRICT_URL + " for current districts...");
 
-        JSONObject districts = districtsJSON.getJSONObject("populationByDistrict");
+        JSONObject populationByDistrict = districtsJSON.getJSONObject("populationByDistrict");
         // iterate through each district
-        Iterator<String> keys = districts.keys();
-        while (keys.hasNext()) {
-            String districtFromJSON = keys.next();
+        Iterator<String> populationKeys = populationByDistrict.keys();
+        while (populationKeys.hasNext()) {
+            String districtFromJSON = populationKeys.next();
             // if we do not have that district stored, create a new district object
             // and add it to the list
             if (!districtTracker.districts.containsKey(districtFromJSON)) {
-                int population = districts.getInt(districtFromJSON);
+                int population = populationByDistrict.getInt(districtFromJSON);
                 District district = new District(districtFromJSON);
                 district.setPopulation(population);
                 districtTracker.districts.put(districtFromJSON, district);
@@ -74,8 +74,21 @@ public class DistrictTask implements ActionListener {
                 }
                 // if we already have it saved, update the population
                 District tempDistrict = districtTracker.districts.get(districtFromJSON);
-                int population = districts.getInt(districtFromJSON);
+                int population = populationByDistrict.getInt(districtFromJSON);
                 tempDistrict.setPopulation(population);
+            }
+        }
+
+        JSONObject statusByDistrict = districtsJSON.getJSONObject("statusByDistrict");
+        // iterate through each district
+        Iterator<String> statusKeys = statusByDistrict.keys();
+        while (statusKeys.hasNext()) {
+            String districtFromJSON = statusKeys.next();
+            // only update the status of districts we track
+            if (districtTracker.districts.containsKey(districtFromJSON)) {
+                String status = statusByDistrict.getString(districtFromJSON);
+                District tempDistrict = districtTracker.districts.get(districtFromJSON);
+                tempDistrict.setCurrentStatus(status);
             }
         }
         districtTracker.lastFetched = System.currentTimeMillis();

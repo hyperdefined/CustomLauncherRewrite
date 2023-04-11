@@ -22,6 +22,8 @@ public class District implements Comparable<District> {
     private final String districtName;
     private int population;
 
+    private String currentStatus;
+
     /**
      * Create a district.
      *
@@ -66,6 +68,14 @@ public class District implements Comparable<District> {
     @Override
     public int compareTo(District district) {
         return (this.districtName.compareTo(district.getDistrictName()));
+    }
+
+    public String getCurrentStatus() {
+        return currentStatus;
+    }
+
+    public void setCurrentStatus(String status) {
+        currentStatus = status.substring(0,1).toUpperCase() + status.substring(1).toLowerCase();
     }
 
     @Override
