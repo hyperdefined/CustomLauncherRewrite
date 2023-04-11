@@ -98,11 +98,9 @@ public class InvasionTracker {
         timer.setDelay(500);
         timer.start();
 
-        frame.pack();
         frame.setSize(500, 400);
         frame.add(panel);
         frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
 
         frame.addWindowListener(
                 new java.awt.event.WindowAdapter() {
@@ -111,6 +109,11 @@ public class InvasionTracker {
                         timer.stop();
                     }
                 });
+
+        SwingUtilities.invokeLater(()-> {
+            frame.pack();
+            frame.setVisible(true);
+        });
     }
 
     /** Updates the invasion list on the actual GUI. */

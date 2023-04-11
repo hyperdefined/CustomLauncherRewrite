@@ -94,8 +94,9 @@ public class SecretPrompt extends JFrame {
                     }
                 });
 
-        frame.setVisible(true);
         frame.add(panel);
         frame.setLocationRelativeTo(null);
+
+        SwingUtilities.invokeLater(()-> frame.setVisible(true));
     }
 }

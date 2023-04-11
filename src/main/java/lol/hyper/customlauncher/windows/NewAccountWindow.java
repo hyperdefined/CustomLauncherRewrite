@@ -175,7 +175,10 @@ public class NewAccountWindow extends JFrame {
                 });
 
         frame.setVisible(true);
-        frame.add(panel);
         frame.setLocationRelativeTo(null);
+
+        SwingUtilities.invokeLater(()-> {
+            frame.setVisible(true);
+        });
     }
 }

@@ -110,11 +110,9 @@ public class FieldOfficeTracker {
         timer.setDelay(500);
         timer.start();
 
-        frame.pack();
         frame.setSize(500, 400);
         frame.add(panel);
         frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
 
         // stop the schedules here, so they don't run while the window is closed
         frame.addWindowListener(
@@ -124,6 +122,11 @@ public class FieldOfficeTracker {
                         timer.stop();
                     }
                 });
+
+        SwingUtilities.invokeLater(()-> {
+            frame.pack();
+            frame.setVisible(true);
+        });
     }
 
     /** Updates the field office list on the actual GUI. */

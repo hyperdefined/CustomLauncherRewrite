@@ -112,8 +112,9 @@ public class ConfigWindow extends JFrame {
         showFieldOfficeNotifications.setBounds(20, 70, 100, 80);
         showFieldOfficeNotificationsBox.setBounds(120, 85, 100, 30);
 
-        frame.setVisible(true);
         frame.add(panel);
         frame.setLocationRelativeTo(null);
+
+        SwingUtilities.invokeLater(()-> frame.setVisible(true));
     }
 }

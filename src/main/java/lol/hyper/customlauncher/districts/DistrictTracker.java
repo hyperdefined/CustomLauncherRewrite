@@ -79,7 +79,6 @@ public class DistrictTracker {
         districtTable.getTableHeader().setReorderingAllowed(false);
         districtTable.setFocusable(false);
         JScrollPane scrollPane = new JScrollPane(districtTable);
-        scrollPane.setVisible(true);
         panel.add(scrollPane);
 
         // district label
@@ -96,11 +95,9 @@ public class DistrictTracker {
         timer.setDelay(500);
         timer.start();
 
-        frame.pack();
         frame.setSize(500, 400);
         frame.add(panel);
         frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
 
         // stop the schedules here, so they don't run while the window is closed
         frame.addWindowListener(
@@ -110,6 +107,11 @@ public class DistrictTracker {
                         timer.stop();
                     }
                 });
+
+        SwingUtilities.invokeLater(()-> {
+            frame.pack();
+            frame.setVisible(true);
+        });
     }
 
     /** Updates the district list on the actual GUI. */
