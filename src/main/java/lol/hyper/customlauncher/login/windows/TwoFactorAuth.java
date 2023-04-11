@@ -92,6 +92,9 @@ public class TwoFactorAuth extends JFrame {
         frame.add(panel);
         frame.setLocationRelativeTo(null);
 
-        SwingUtilities.invokeLater(()-> frame.setVisible(true));
+        SwingUtilities.invokeLater(()-> {
+            frame.pack();
+            frame.setVisible(true);
+        });
     }
 }
