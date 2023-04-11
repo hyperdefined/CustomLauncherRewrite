@@ -30,7 +30,7 @@ public class ConfigWindow extends JFrame {
     private final Logger logger = LogManager.getLogger(this);
 
     public ConfigWindow(ConfigHandler configHandler) {
-        configHandler.loadConfig();
+        configHandler.loadConfig(false);
         JFrame frame = new JFrame("Configuration");
         frame.setSize(370, 270);
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);

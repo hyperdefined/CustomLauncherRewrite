@@ -33,7 +33,7 @@ public class ConfigHandler {
     private final Logger logger = LogManager.getLogger(this);
 
     public ConfigHandler() {
-        loadConfig();
+        loadConfig(true);
     }
 
     public boolean showCogInvasionNotifications() {
@@ -75,7 +75,7 @@ public class ConfigHandler {
     }
 
     /** Load the config from disk into the JSON object. */
-    public void loadConfig() {
+    public void loadConfig(boolean log) {
         if (!CONFIG_FILE.exists()) {
             jsonObject = new JSONObject();
         } else {
@@ -95,9 +95,11 @@ public class ConfigHandler {
         setDefaults();
         INSTALL_LOCATION = new File(jsonObject.getString("ttrInstallLocation"));
 
-        logger.info("Config version: " + jsonObject.getInt("version"));
-        logger.info("showInvasionNotifications: " + showCogInvasionNotifications());
-        logger.info("showFieldOfficeNotifications: " + showFieldOfficeNotifications());
-        logger.info("ttrInstallLocation: " + INSTALL_LOCATION.getAbsolutePath());
+        if (log) {
+            logger.info("Config version: " + jsonObject.getInt("version"));
+            logger.info("showInvasionNotifications: " + showCogInvasionNotifications());
+            logger.info("showFieldOfficeNotifications: " + showFieldOfficeNotifications());
+            logger.info("ttrInstallLocation: " + INSTALL_LOCATION.getAbsolutePath());
+        }
     }
 }
