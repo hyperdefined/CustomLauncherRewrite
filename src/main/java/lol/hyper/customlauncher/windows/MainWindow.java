@@ -208,16 +208,19 @@ public final class MainWindow extends JFrame {
                             }
                             Account selectedAccount = accountList.getSelectedValue();
                             logger.info("Using account: " + selectedAccount.username());
-                            if (!selectedAccount.encrypted()) {
-                                String username = selectedAccount.username();
-                                String password = selectedAccount.password();
-                                HashMap<String, String> newLoginRequest = new HashMap<>();
-                                newLoginRequest.put("username", username);
-                                newLoginRequest.put("password", password);
-                                new LoginHandler(newLoginRequest);
-                            } else {
-                                SecretPrompt secretPrompt = new SecretPrompt(selectedAccount);
-                                secretPrompt.dispose();
+                            Account.Type accountType = selectedAccount.accountType();
+                            logger.info("Account type is " + accountType.toInt());
+                            switch (accountType) {
+                                case ENCRYPTED, LEGACY_ENCRYPTED -> {
+                                    SecretPrompt secretPrompt = new SecretPrompt(selectedAccount);
+                                    secretPrompt.dispose();
+                                }
+                                case PLAINTEXT -> {
+                                    HashMap<String, String> newLoginRequest = new HashMap<>();
+                                    newLoginRequest.put("username", selectedAccount.username());
+                                    newLoginRequest.put("password", selectedAccount.password());
+                                    new LoginHandler(newLoginRequest);
+                                }
                             }
                         }
                     }
@@ -227,9 +230,7 @@ public final class MainWindow extends JFrame {
         frame.add(panel);
         frame.setLocationRelativeTo(null);
 
-        SwingUtilities.invokeLater(()-> {
-            frame.setVisible(true);
-        });
+        SwingUtilities.invokeLater(() -> frame.setVisible(true));
     }
 
     /**

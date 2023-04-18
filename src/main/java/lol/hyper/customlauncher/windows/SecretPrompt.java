@@ -19,7 +19,8 @@ package lol.hyper.customlauncher.windows;
 
 import lol.hyper.customlauncher.Main;
 import lol.hyper.customlauncher.accounts.Account;
-import lol.hyper.customlauncher.accounts.JSONManager;
+import lol.hyper.customlauncher.accounts.AccountEncryption;
+import lol.hyper.customlauncher.generic.ErrorWindow;
 import lol.hyper.customlauncher.login.LoginHandler;
 
 import javax.swing.*;
@@ -63,28 +64,47 @@ public class SecretPrompt extends JFrame {
                 event -> {
                     // if the text box is empty
                     if (secretText.getPassword().length != 0) {
-                        // grab the username and password
-                        String actualPassword =
-                                JSONManager.decrypt(
-                                        account.password(),
-                                        String.valueOf(secretText.getPassword()));
+                        Account.Type accountType = account.accountType();
+                        String realPassword = null;
+                        switch (accountType) {
+                            case PLAINTEXT -> {
+                                ErrorWindow errorWindow =
+                                        new ErrorWindow(
+                                                "Plaintext account was detected, this shouldn't happen.",
+                                                null);
+                                errorWindow.dispose();
+                                return;
+                            }
+                            case ENCRYPTED -> {
+                                String secret = String.valueOf(secretText.getPassword());
+                                realPassword =
+                                        AccountEncryption.decrypt(account.password(), secret);
+                                Main.logger.info(realPassword);
+                            }
+                            case LEGACY_ENCRYPTED -> {
+                                String secret = String.valueOf(secretText.getPassword());
+                                realPassword =
+                                        AccountEncryption.decryptLegacy(account.password(), secret);
+                                Main.logger.info(realPassword);
+                            }
+                        }
 
-                        // actualPassword will return null if any exception is thrown
+                        // realPassword will return null if any exception is thrown
                         // most likely the user entered the wrong passphrase
-                        if (actualPassword != null) {
+                        if (realPassword != null) {
                             // send the request to login
                             HashMap<String, String> newLoginRequest = new HashMap<>();
                             newLoginRequest.put("username", account.username());
-                            newLoginRequest.put("password", actualPassword);
+                            newLoginRequest.put("password", realPassword);
                             new LoginHandler(newLoginRequest);
                             frame.dispose();
-                        } else {
-                            JOptionPane.showMessageDialog(
-                                    frame,
-                                    "You entered the wrong passphrase.",
-                                    "Passphrase Error",
-                                    JOptionPane.ERROR_MESSAGE);
+                            return;
                         }
+                        JOptionPane.showMessageDialog(
+                                frame,
+                                "You entered the wrong passphrase.",
+                                "Passphrase Error",
+                                JOptionPane.ERROR_MESSAGE);
                     } else {
                         JOptionPane.showMessageDialog(
                                 frame,
@@ -97,6 +117,6 @@ public class SecretPrompt extends JFrame {
         frame.add(panel);
         frame.setLocationRelativeTo(null);
 
-        SwingUtilities.invokeLater(()-> frame.setVisible(true));
+        SwingUtilities.invokeLater(() -> frame.setVisible(true));
     }
 }

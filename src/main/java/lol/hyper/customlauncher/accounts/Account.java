@@ -17,10 +17,26 @@
 
 package lol.hyper.customlauncher.accounts;
 
-public record Account(String username, String password, boolean encrypted) {
+public record Account(String username, String password, Type accountType) {
 
     @Override
     public String toString() {
         return this.username;
+    }
+
+    public enum Type {
+        PLAINTEXT(0),
+        LEGACY_ENCRYPTED(1),
+        ENCRYPTED(2);
+
+        private final int accountType;
+
+        Type(int accountType) {
+            this.accountType = accountType;
+        }
+
+        public int toInt() {
+            return accountType;
+        }
     }
 }

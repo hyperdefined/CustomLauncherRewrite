@@ -18,6 +18,8 @@
 package lol.hyper.customlauncher.windows;
 
 import lol.hyper.customlauncher.Main;
+import lol.hyper.customlauncher.accounts.Account;
+import lol.hyper.customlauncher.accounts.AccountEncryption;
 import lol.hyper.customlauncher.accounts.Accounts;
 import lol.hyper.customlauncher.accounts.JSONManager;
 import org.apache.logging.log4j.LogManager;
@@ -155,15 +157,18 @@ public class NewAccountWindow extends JFrame {
                         }
 
                         String encryptedPassword =
-                                JSONManager.encrypt(
+                                AccountEncryption.encrypt(
                                         String.valueOf(passwordField.getPassword()),
                                         String.valueOf(secretPhraseField.getPassword()));
-                        accounts.addAccount(usernameTextField.getText(), encryptedPassword, true);
+                        accounts.addAccount(
+                                usernameTextField.getText(),
+                                encryptedPassword,
+                                Account.Type.ENCRYPTED);
                     } else {
                         accounts.addAccount(
                                 usernameTextField.getText(),
                                 String.valueOf(passwordField.getPassword()),
-                                false);
+                                Account.Type.PLAINTEXT);
                     }
                     mainWindow.refreshAccountList();
                     JOptionPane.showMessageDialog(
@@ -171,14 +176,10 @@ public class NewAccountWindow extends JFrame {
                     frame.dispose();
                     logger.info("Saved new account!");
                     logger.info("Username: " + usernameTextField.getText());
-                    logger.info("Encrypted: " + encrypt);
                 });
-
-        frame.setVisible(true);
+        frame.add(panel);
         frame.setLocationRelativeTo(null);
 
-        SwingUtilities.invokeLater(()-> {
-            frame.setVisible(true);
-        });
+        SwingUtilities.invokeLater(() -> frame.setVisible(true));
     }
 }

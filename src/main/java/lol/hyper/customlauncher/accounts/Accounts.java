@@ -47,10 +47,10 @@ public class Accounts {
      *
      * @param username The username.
      * @param password The password.
-     * @param encrypted If the account password is encrypted.
+     * @param accountType The type of account.
      */
-    public void addAccount(String username, String password, boolean encrypted) {
-        Account newAccount = new Account(username, password, encrypted);
+    public void addAccount(String username, String password, Account.Type accountType) {
+        Account newAccount = new Account(username, password, accountType);
         accounts.add(newAccount);
         writeAccounts();
     }
@@ -63,16 +63,47 @@ public class Accounts {
             JSONObject currentAccount = accountsJSON.getJSONObject(i);
             String username = currentAccount.getString("username");
             String password = currentAccount.getString("password");
-            // if the account doesn't have this tag, it's using the old system
-            // the old system encrypts them
-            boolean encrypted;
-            if (!currentAccount.has("encrypted")) {
-                encrypted = true;
-            } else {
-                encrypted = currentAccount.getBoolean("encrypted");
+            Account.Type accountType = null;
+
+            if (currentAccount.has("version")) {
+                // it has a version already set, get that version
+                int version = currentAccount.getInt("version");
+                for (Account.Type type : Account.Type.values()) {
+                    if (type.toInt() == version) {
+                        accountType = type;
+                    }
+                }
             }
-            Account account = new Account(username, password, encrypted);
+
+            // account has a version attached, load that version
+            if (accountType != null) {
+                Account account = new Account(username, password, accountType);
+                accounts.add(account);
+                continue;
+            }
+
+            // old accounts before plaintext was added were encrypted by default
+            if (!currentAccount.has("encrypted")) {
+                accountType = Account.Type.LEGACY_ENCRYPTED;
+                Account account = new Account(username, password, accountType);
+                accounts.add(account);
+                continue;
+            }
+            // has encrypted tag, see if it's encrypted or not
+            if (!currentAccount.getBoolean("encrypted")) {
+                // plaintext account
+                accountType = Account.Type.PLAINTEXT;
+            } else {
+                // version 1 (legacy)
+                accountType = Account.Type.LEGACY_ENCRYPTED;
+            }
+
+            Account account = new Account(username, password, accountType);
             accounts.add(account);
+
+            // force a write to update the json file
+            // this will convert the old accounts system over
+            writeAccounts();
         }
     }
 
@@ -94,7 +125,7 @@ public class Accounts {
             JSONObject accountObj = new JSONObject();
             accountObj.put("username", account.username());
             accountObj.put("password", account.password());
-            accountObj.put("encrypted", account.encrypted());
+            accountObj.put("version", account.accountType().toInt());
             accountsArray.put(accountObj);
         }
         JSONManager.writeFile(accountsArray, ACCOUNTS_FILE);
