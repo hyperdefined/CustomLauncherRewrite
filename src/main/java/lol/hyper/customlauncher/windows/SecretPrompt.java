@@ -20,8 +20,11 @@ package lol.hyper.customlauncher.windows;
 import lol.hyper.customlauncher.Main;
 import lol.hyper.customlauncher.accounts.Account;
 import lol.hyper.customlauncher.accounts.AccountEncryption;
+import lol.hyper.customlauncher.accounts.Accounts;
 import lol.hyper.customlauncher.generic.ErrorWindow;
 import lol.hyper.customlauncher.login.LoginHandler;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,7 +32,9 @@ import java.util.HashMap;
 
 public class SecretPrompt extends JFrame {
 
-    public SecretPrompt(Account account) {
+    private final Logger logger = LogManager.getLogger(this);
+
+    public SecretPrompt(Accounts accounts, Account account) {
         JFrame frame = new JFrame("Enter Passphrase");
         frame.setSize(170, 120);
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -66,6 +71,7 @@ public class SecretPrompt extends JFrame {
                     if (secretText.getPassword().length != 0) {
                         Account.Type accountType = account.accountType();
                         String realPassword = null;
+                        String secret = String.valueOf(secretText.getPassword());
                         switch (accountType) {
                             case PLAINTEXT -> {
                                 ErrorWindow errorWindow =
@@ -75,23 +81,23 @@ public class SecretPrompt extends JFrame {
                                 errorWindow.dispose();
                                 return;
                             }
-                            case ENCRYPTED -> {
-                                String secret = String.valueOf(secretText.getPassword());
-                                realPassword =
-                                        AccountEncryption.decrypt(account.password(), secret);
-                                Main.logger.info(realPassword);
-                            }
-                            case LEGACY_ENCRYPTED -> {
-                                String secret = String.valueOf(secretText.getPassword());
-                                realPassword =
-                                        AccountEncryption.decryptLegacy(account.password(), secret);
-                                Main.logger.info(realPassword);
-                            }
+                            case ENCRYPTED -> realPassword =
+                                    AccountEncryption.decrypt(account.password(), secret);
+                            case LEGACY_ENCRYPTED -> realPassword =
+                                    AccountEncryption.decryptLegacy(account.password(), secret);
                         }
 
                         // realPassword will return null if any exception is thrown
                         // most likely the user entered the wrong passphrase
                         if (realPassword != null) {
+                            // if the decryption worked, update the account to new version
+                            logger.info(
+                                    "Legacy (version 1) account is being used. Converting over to version 2.");
+                            account.setAccountType(Account.Type.ENCRYPTED);
+                            String newPassword = AccountEncryption.encrypt(realPassword, secret);
+                            account.setPassword(newPassword);
+                            accounts.writeAccounts();
+
                             // send the request to login
                             HashMap<String, String> newLoginRequest = new HashMap<>();
                             newLoginRequest.put("username", account.username());

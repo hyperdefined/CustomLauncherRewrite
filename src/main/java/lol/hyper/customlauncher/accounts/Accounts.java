@@ -101,7 +101,7 @@ public class Accounts {
             Account account = new Account(username, password, accountType);
             accounts.add(account);
 
-            // force a write to update the json file
+            // force write to update the json file
             // this will convert the old accounts system over
             writeAccounts();
         }
@@ -119,7 +119,7 @@ public class Accounts {
     }
 
     /** Save all accounts to the accounts file. */
-    private void writeAccounts() {
+    public void writeAccounts() {
         JSONArray accountsArray = new JSONArray();
         for (Account account : accounts) {
             JSONObject accountObj = new JSONObject();
