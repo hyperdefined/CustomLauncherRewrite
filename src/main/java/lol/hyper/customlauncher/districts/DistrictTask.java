@@ -24,7 +24,7 @@ import org.json.JSONObject;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Iterator;import java.util.Locale;
+import java.util.Iterator;
 
 public class DistrictTask implements ActionListener {
 

@@ -31,9 +31,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.*;
 import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;import java.net.URISyntaxException;import java.net.URL;
 import java.nio.file.Files;
-import java.util.HashMap;
+import java.util.HashMap;import java.util.concurrent.ConcurrentHashMap;
 
 public class UpdateChecker {
 
@@ -105,7 +105,7 @@ public class UpdateChecker {
 
     /** Downloads the latest version of the launcher from GitHub. */
     private void downloadLatestVersion() {
-        HashMap<String, URL> downloadURLs = new HashMap<>();
+        HashMap<String, URI> downloadURLs = new HashMap<>();
         if (api.getAllReleases() == null || api.getAllReleases().isEmpty()) {
             logger.error("Unable to look for updates!");
             logger.error("getAllReleases() is null" + (api.getAllReleases() == null));
@@ -118,10 +118,10 @@ public class UpdateChecker {
         GitHubRelease release = api.getLatestVersion();
         for (String url : release.getReleaseAssets()) {
             String extension = url.substring(url.lastIndexOf(".") + 1);
-            URL downloadURL;
+            URI downloadURL;
             try {
-                downloadURL = new URL(url);
-            } catch (MalformedURLException exception) {
+                downloadURL = new URI(url);
+            } catch (URISyntaxException exception) {
                 logger.error("Unable to look for updates! ", exception);
                 ErrorWindow errorWindow = new ErrorWindow("Unable to look for updates!");
                 errorWindow.dispose();
@@ -135,7 +135,7 @@ public class UpdateChecker {
             }
         }
 
-        URL finalURL = null;
+        URI finalURL = null;
         if (SystemUtils.IS_OS_WINDOWS) {
             finalURL = downloadURLs.get("windows");
         }
@@ -153,7 +153,7 @@ public class UpdateChecker {
         logger.info(fileName);
         File output = new File(fileName);
         try {
-            FileUtils.copyURLToFile(finalURL, output);
+            FileUtils.copyURLToFile(finalURL.toURL(), output);
         } catch (IOException exception) {
             logger.error("Unable to download file from " + finalURL, exception);
             ErrorWindow errorWindow = new ErrorWindow(exception);
