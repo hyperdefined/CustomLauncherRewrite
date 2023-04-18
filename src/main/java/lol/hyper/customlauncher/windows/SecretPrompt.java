@@ -76,8 +76,7 @@ public class SecretPrompt extends JFrame {
                             case PLAINTEXT -> {
                                 ErrorWindow errorWindow =
                                         new ErrorWindow(
-                                                "Plaintext account was detected, this shouldn't happen.",
-                                                null);
+                                                "Plaintext account was detected, this shouldn't happen.");
                                 errorWindow.dispose();
                                 return;
                             }

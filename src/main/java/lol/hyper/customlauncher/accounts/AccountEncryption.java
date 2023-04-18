@@ -39,6 +39,7 @@ public class AccountEncryption {
 
     /**
      * Encrypts a login
+     *
      * @param password The password to encrypt.
      * @param secret The secret passphrase from user.
      * @return Encrypted password.
@@ -53,7 +54,8 @@ public class AccountEncryption {
             // Derive a 256-bit secret key from the provided secret
             SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
             KeySpec spec = new PBEKeySpec(secret.toCharArray(), salt, 65536, 256);
-            SecretKey secretKey = new SecretKeySpec(factory.generateSecret(spec).getEncoded(), "AES");
+            SecretKey secretKey =
+                    new SecretKeySpec(factory.generateSecret(spec).getEncoded(), "AES");
 
             // Encrypt the password using AES-GCM
             Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
@@ -64,7 +66,8 @@ public class AccountEncryption {
             byte[] encrypted = cipher.doFinal(password.getBytes(StandardCharsets.UTF_8));
 
             // Combine salt, IV and encrypted data into a single byte array
-            ByteBuffer byteBuffer = ByteBuffer.allocate(4 + salt.length + iv.length + encrypted.length);
+            ByteBuffer byteBuffer =
+                    ByteBuffer.allocate(4 + salt.length + iv.length + encrypted.length);
             byteBuffer.putInt(salt.length);
             byteBuffer.put(salt);
             byteBuffer.put(iv);
@@ -97,7 +100,8 @@ public class AccountEncryption {
             // Derive the secret key from the provided secret and salt
             SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
             KeySpec spec = new PBEKeySpec(secret.toCharArray(), salt, 65536, 256);
-            SecretKey secretKey = new SecretKeySpec(factory.generateSecret(spec).getEncoded(), "AES");
+            SecretKey secretKey =
+                    new SecretKeySpec(factory.generateSecret(spec).getEncoded(), "AES");
 
             // Decrypt the encrypted data using AES-GCM
             Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");

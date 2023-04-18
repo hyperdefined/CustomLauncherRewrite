@@ -64,7 +64,7 @@ public final class LaunchGame extends Thread {
                 logger.error(
                         "Unable to set " + fullPath.getAbsolutePath() + " as an executable!",
                         exception);
-                ErrorWindow errorWindow = new ErrorWindow(null, exception);
+                ErrorWindow errorWindow = new ErrorWindow(exception);
                 errorWindow.dispose();
                 return;
             }
@@ -75,8 +75,7 @@ public final class LaunchGame extends Thread {
                         new ErrorWindow(
                                 "Unable to set "
                                         + fullPath.getAbsolutePath()
-                                        + " as an executable!\nMake sure this file is executable!",
-                                null);
+                                        + " as an executable!\nMake sure this file is executable!");
                 errorWindow.dispose();
                 return;
             }
@@ -84,8 +83,7 @@ public final class LaunchGame extends Thread {
 
         if (launchCommand == null) {
             logger.error("Unable to determine operating system!");
-            ErrorWindow errorWindow =
-                    new ErrorWindow("Unable to determine operating system!", null);
+            ErrorWindow errorWindow = new ErrorWindow("Unable to determine operating system!");
             errorWindow.dispose();
             return;
         }
@@ -111,7 +109,7 @@ public final class LaunchGame extends Thread {
                                 process.waitFor();
                             } catch (IOException | InterruptedException exception) {
                                 logger.error("Unable to launch game!", exception);
-                                JFrame errorWindow = new ErrorWindow(null, exception);
+                                JFrame errorWindow = new ErrorWindow(exception);
                                 errorWindow.dispose();
                             }
                         });

@@ -212,7 +212,8 @@ public final class MainWindow extends JFrame {
                             logger.info("Account type is " + accountType.toInt());
                             switch (accountType) {
                                 case ENCRYPTED, LEGACY_ENCRYPTED -> {
-                                    SecretPrompt secretPrompt = new SecretPrompt(accounts, selectedAccount);
+                                    SecretPrompt secretPrompt =
+                                            new SecretPrompt(accounts, selectedAccount);
                                     secretPrompt.dispose();
                                 }
                                 case PLAINTEXT -> {

@@ -23,8 +23,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
-import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
 import javax.swing.*;
 import java.io.*;
 import java.net.URL;
@@ -32,7 +30,6 @@ import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
 import java.util.stream.Collectors;
 
 public class JSONManager {
@@ -52,7 +49,7 @@ public class JSONManager {
             encoded = Files.readAllBytes(file.toPath());
         } catch (IOException exception) {
             logger.error("Unable to read file " + file, exception);
-            JFrame errorWindow = new ErrorWindow(null, exception);
+            JFrame errorWindow = new ErrorWindow(exception);
             errorWindow.dispose();
         }
         return new String(encoded, StandardCharsets.UTF_8);
@@ -70,7 +67,7 @@ public class JSONManager {
             writer.close();
         } catch (IOException exception) {
             logger.error("Unable to write file " + file, exception);
-            JFrame errorWindow = new ErrorWindow(null, exception);
+            JFrame errorWindow = new ErrorWindow(exception);
             errorWindow.dispose();
         }
     }
@@ -95,7 +92,7 @@ public class JSONManager {
 
         } catch (IOException exception) {
             logger.error("Unable to read URL " + url, exception);
-            JFrame errorWindow = new ErrorWindow(null, exception);
+            JFrame errorWindow = new ErrorWindow(exception);
             errorWindow.dispose();
             return null;
         }

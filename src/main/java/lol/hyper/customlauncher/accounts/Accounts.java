@@ -38,7 +38,7 @@ public class Accounts {
             try {
                 FileUtils.copyFile(ACCOUNTS_FILE, accountsCopy);
             } catch (IOException exception) {
-                ErrorWindow errorWindow = new ErrorWindow(null, exception);
+                ErrorWindow errorWindow = new ErrorWindow(exception);
                 errorWindow.dispose();
             }
         }

@@ -67,7 +67,7 @@ public class LoginHandler {
             attempts += 1;
         } catch (Exception exception) {
             logger.error("Unable to send login request to TTR!", exception);
-            JFrame errorWindow = new ErrorWindow(null, exception);
+            JFrame errorWindow = new ErrorWindow(exception);
             errorWindow.dispose();
             return;
         }
@@ -95,11 +95,11 @@ public class LoginHandler {
         switch (status) {
             case "false" -> // false is invalid login details / maintenance
             {
-                JFrame errorWindow = new ErrorWindow(banner, null);
+                JFrame errorWindow = new ErrorWindow(banner);
                 errorWindow.dispose();
             }
             case "partial" -> // partial is used for 2FA or ToonGuard
-                    new TwoFactorAuth(banner, receivedRequest.get("responseToken"));
+            new TwoFactorAuth(banner, receivedRequest.get("responseToken"));
             case "true" -> // login was successful
             {
                 logger.info("Login was successful, launching game...");
@@ -138,8 +138,7 @@ public class LoginHandler {
                 logger.info(receivedRequest);
                 JFrame errorWindow =
                         new ErrorWindow(
-                                "TTR sent back a weird response, or we got an invalid response.\nCheck the log for more information.",
-                                null);
+                                "TTR sent back a weird response, or we got an invalid response.\nCheck the log for more information.");
                 errorWindow.dispose();
             }
         }
@@ -169,7 +168,7 @@ public class LoginHandler {
             response = httpClient.execute(post);
         } catch (IOException exception) {
             logger.error("Unable to send login request!", exception);
-            JFrame errorWindow = new ErrorWindow(null, exception);
+            JFrame errorWindow = new ErrorWindow(exception);
             errorWindow.dispose();
             return null;
         }
@@ -179,7 +178,7 @@ public class LoginHandler {
             responseData = EntityUtils.toString(response.getEntity());
         } catch (IOException | ParseException exception) {
             logger.error("Unable to send login request!", exception);
-            JFrame errorWindow = new ErrorWindow(null, exception);
+            JFrame errorWindow = new ErrorWindow(exception);
             errorWindow.dispose();
             return null;
         }
