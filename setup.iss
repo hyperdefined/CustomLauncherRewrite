@@ -2,15 +2,15 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "CustomLauncherRewrite"
-#define MyAppVersion "1.5.3"
+#define MyAppVersion "1.8.2"
 #define MyAppPublisher "hyperdefined"
 #define MyAppURL "https://github.com/hyperdefined/CustomLauncherRewrite"
-#define MyAppExeName "CustomLauncherRewrite-1.5.3.exe"
+#define MyAppExeName "CustomLauncherRewrite-1.8.2.exe"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
-AppId={{59AA7AE2-15F7-4A92-BB12-C380725B8938}
+AppId={{D9F9D6F8-B7CC-4551-9F52-B2B389ECD591}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 ;AppVerName={#MyAppName} {#MyAppVersion}
