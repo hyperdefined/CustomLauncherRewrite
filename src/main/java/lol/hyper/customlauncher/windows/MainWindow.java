@@ -190,6 +190,7 @@ public final class MainWindow extends JFrame {
         accountList.addMouseListener(
                 new MouseAdapter() {
                     public void mouseClicked(MouseEvent evt) {
+                        @SuppressWarnings("unchecked")
                         JList<Account> accountList = (JList<Account>) evt.getSource();
                         if (evt.getClickCount() == 2) {
                             if (!ConfigHandler.INSTALL_LOCATION.exists()) {

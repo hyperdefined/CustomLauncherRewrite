@@ -69,6 +69,7 @@ public class DeleteAccountWindow extends JFrame {
         accountList.addMouseListener(
                 new MouseAdapter() {
                     public void mouseClicked(MouseEvent evt) {
+                        @SuppressWarnings("unchecked")
                         JList<Account> accountList = (JList<Account>) evt.getSource();
                         if (evt.getClickCount() == 2) {
                             Account account = accountList.getSelectedValue();

@@ -30,10 +30,9 @@ import org.apache.logging.log4j.Logger;
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URI;import java.net.URISyntaxException;import java.net.URL;
+import java.net.URI;import java.net.URISyntaxException;
 import java.nio.file.Files;
-import java.util.HashMap;import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
 
 public class UpdateChecker {
 
