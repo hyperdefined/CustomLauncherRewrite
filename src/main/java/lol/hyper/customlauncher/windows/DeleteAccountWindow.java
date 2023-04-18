@@ -86,9 +86,6 @@ public class DeleteAccountWindow extends JFrame {
         frame.add(panel);
         frame.setLocationRelativeTo(null);
 
-        SwingUtilities.invokeLater(()-> {
-            frame.pack();
-            frame.setVisible(true);
-        });
+        SwingUtilities.invokeLater(() -> frame.setVisible(true));
     }
 }
