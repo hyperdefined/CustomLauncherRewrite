@@ -17,10 +17,13 @@
 
 package lol.hyper.customlauncher.accounts;
 
+import lol.hyper.customlauncher.generic.ErrorWindow;
+import org.apache.commons.io.FileUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +33,15 @@ public class Accounts {
     private final File ACCOUNTS_FILE = new File("config", "accounts.json");
 
     public Accounts() {
+        File accountsCopy = new File("config", "accounts-BACKUP.json");
+        if (!accountsCopy.exists()) {
+            try {
+                FileUtils.copyFile(ACCOUNTS_FILE, accountsCopy);
+            } catch (IOException exception) {
+                ErrorWindow errorWindow = new ErrorWindow(null, exception);
+                errorWindow.dispose();
+            }
+        }
         loadAccountsFromFile();
     }
 
