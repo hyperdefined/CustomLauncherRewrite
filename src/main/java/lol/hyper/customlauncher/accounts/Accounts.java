@@ -22,10 +22,11 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Accounts {
 
-    private final ArrayList<Account> accounts = new ArrayList<>();
+    private final List<Account> accounts = new ArrayList<>();
     private final File ACCOUNTS_FILE = new File("config", "accounts.json");
 
     public Accounts() {
@@ -37,7 +38,7 @@ public class Accounts {
      *
      * @return The accounts.
      */
-    public ArrayList<Account> getAccounts() {
+    public List<Account> getAccounts() {
         loadAccountsFromFile();
         return accounts;
     }

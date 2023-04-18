@@ -35,7 +35,7 @@ import java.util.*;
 
 public class InvasionTracker {
 
-    public final HashMap<String, Invasion> invasions = new HashMap<>();
+    public final Map<String, Invasion> invasions = new HashMap<>();
     public JTable invasionTable;
     public DefaultTableModel invasionTableModel;
     public JFrame frame;

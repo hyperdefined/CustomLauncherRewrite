@@ -33,7 +33,7 @@ import java.util.List;
 
 public class FieldOfficeTracker {
 
-    public final HashMap<Integer, FieldOffice> fieldOffices = new HashMap<>();
+    public final Map<Integer, FieldOffice> fieldOffices = new HashMap<>();
     public JTable fieldOfficeTable;
     public DefaultTableModel fieldOfficeTableModel;
     public JFrame frame;
@@ -42,7 +42,7 @@ public class FieldOfficeTracker {
     public final SimpleDateFormat lastFetchedFormat = new SimpleDateFormat("hh:mm:ss a");
     public long lastFetched = 0;
     public int runs = 0;
-    public static final HashMap<Integer, String> zonesToStreets = new HashMap<>();
+    public static final Map<Integer, String> zonesToStreets = new HashMap<>();
     public boolean isDown = false;
     public Timer fieldOfficeTaskTimer;
     final ConfigHandler configHandler;

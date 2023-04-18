@@ -30,7 +30,7 @@ import java.util.List;
 
 public class DistrictTracker {
 
-    public final HashMap<String, District> districts = new HashMap<>();
+    public final Map<String, District> districts = new HashMap<>();
     public JTable districtTable;
     public JLabel totalPopulationLabel;
     public DefaultTableModel districtsTableModel;
