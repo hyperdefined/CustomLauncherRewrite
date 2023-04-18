@@ -36,10 +36,7 @@ import org.json.JSONObject;
 
 import javax.swing.*;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class LoginHandler {
@@ -49,7 +46,7 @@ public class LoginHandler {
             "https://www.toontownrewritten.com/api/login?format=json";
     int attempts = 0;
 
-    public LoginHandler(HashMap<String, String> loginRequest) {
+    public LoginHandler(Map<String, String> loginRequest) {
         handleLoginRequest(loginRequest);
     }
 
@@ -58,8 +55,8 @@ public class LoginHandler {
      *
      * @param loginToProcess The request response.
      */
-    private void handleLoginRequest(HashMap<String, String> loginToProcess) {
-        HashMap<String, String> receivedRequest;
+    private void handleLoginRequest(Map<String, String> loginToProcess) {
+        Map<String, String> receivedRequest;
         try {
             logger.info("Sending login request...");
             // send the login request to TTR
@@ -74,7 +71,7 @@ public class LoginHandler {
 
         // if the login failed, don't continue
         // sendRequest() will display & log errors for us
-        if (receivedRequest == null) {
+        if (receivedRequest.isEmpty()) {
             return;
         }
 
@@ -150,7 +147,7 @@ public class LoginHandler {
      * @param loginRequest The login request to process.
      * @return The login request that is sent back.
      */
-    private HashMap<String, String> sendRequest(HashMap<String, String> loginRequest) {
+    private Map<String, String> sendRequest(Map<String, String> loginRequest) {
         HttpPost post = new HttpPost(REQUEST_URL);
         post.setHeader("User-Agent", Main.userAgent);
         post.setHeader("Content-type", "application/x-www-form-urlencoded");
@@ -170,7 +167,7 @@ public class LoginHandler {
             logger.error("Unable to send login request!", exception);
             JFrame errorWindow = new ErrorWindow(exception);
             errorWindow.dispose();
-            return null;
+            return Collections.emptyMap();
         }
 
         String responseData;
@@ -180,7 +177,7 @@ public class LoginHandler {
             logger.error("Unable to send login request!", exception);
             JFrame errorWindow = new ErrorWindow(exception);
             errorWindow.dispose();
-            return null;
+            return Collections.emptyMap();
         }
         JSONObject responseJSON = new JSONObject(responseData);
         HashMap<String, String> receivedDetails = new HashMap<>();
