@@ -149,6 +149,7 @@ public class UpdateChecker {
                 errorWindow.dispose();
                 return;
             }
+            return;
         }
 
         // extract the tar.gz release file into the installation dir

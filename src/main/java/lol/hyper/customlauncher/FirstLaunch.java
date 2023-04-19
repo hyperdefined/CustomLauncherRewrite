@@ -35,8 +35,7 @@ public class FirstLaunch {
         infoWindow.dispose();
         if (SystemUtils.IS_OS_LINUX) {
             copyLinuxInstall();
-        }
-        if (SystemUtils.IS_OS_WINDOWS) {
+        } else if (SystemUtils.IS_OS_WINDOWS) {
             copyWindowsInstall();
         }
     }
