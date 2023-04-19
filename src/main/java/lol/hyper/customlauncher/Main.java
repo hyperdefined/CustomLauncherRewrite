@@ -124,6 +124,12 @@ public class Main {
 
         new UpdateChecker(version);
 
+        File ttrFiles = new File("ttr-files");
+        // we don't have ttr installed, run first setup
+        if (!ttrFiles.exists()) {
+            new FirstLaunch();
+        }
+
         // run the TTR updater
         new TTRUpdater("Updater");
 

@@ -35,10 +35,10 @@ import java.util.Base64;
 
 public class AccountEncryption {
 
-    private static final Logger logger = LogManager.getLogger(JSONManager.class);
+    private static final Logger logger = LogManager.getLogger(AccountEncryption.class);
 
     /**
-     * Encrypts a login
+     * Encrypts a password.
      *
      * @param password The password to encrypt.
      * @param secret The secret passphrase from user.
@@ -82,6 +82,13 @@ public class AccountEncryption {
         return null;
     }
 
+    /**
+     * Decrypts a password.
+     *
+     * @param encryptedData The password to decrypt.
+     * @param secret The secret passphrase from user.
+     * @return Plaintext password.
+     */
     public static String decrypt(String encryptedData, String secret) {
         try {
             // Decode the Base64 encoded input
@@ -117,6 +124,13 @@ public class AccountEncryption {
         return null;
     }
 
+    /**
+     * Decrypts a password using the legacy method.
+     *
+     * @param encryptedPassword The password to decrypt.
+     * @param secret The secret passphrase from user.
+     * @return Plaintext password.
+     */
     public static String decryptLegacy(String encryptedPassword, String secret) {
         SecretKeySpec secretKey;
         MessageDigest sha;
