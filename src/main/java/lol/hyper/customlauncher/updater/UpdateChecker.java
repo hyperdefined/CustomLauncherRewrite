@@ -30,9 +30,9 @@ import org.apache.logging.log4j.Logger;
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
-import java.net.URI;import java.net.URISyntaxException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
-import java.util.HashMap;
 
 public class UpdateChecker {
 
@@ -102,9 +102,10 @@ public class UpdateChecker {
         }
     }
 
-    /** Downloads the latest version of the launcher from GitHub. */
+    /**
+     * Downloads the latest version of the launcher from GitHub.
+     */
     private void downloadLatestVersion() {
-        HashMap<String, URI> downloadURLs = new HashMap<>();
         if (api.getAllReleases() == null || api.getAllReleases().isEmpty()) {
             logger.error("Unable to look for updates!");
             logger.error("getAllReleases() is null" + (api.getAllReleases() == null));
@@ -115,55 +116,77 @@ public class UpdateChecker {
         }
 
         GitHubRelease release = api.getLatestVersion();
-        for (String url : release.getReleaseAssets()) {
-            String extension = url.substring(url.lastIndexOf(".") + 1);
-            URI downloadURL;
-            try {
-                downloadURL = new URI(url);
-            } catch (URISyntaxException exception) {
-                logger.error("Unable to look for updates! ", exception);
-                ErrorWindow errorWindow = new ErrorWindow("Unable to look for updates!");
+
+        if (SystemUtils.IS_OS_WINDOWS) {
+            String newVersionName = "CustomLauncherRewrite-" + release.getTagVersion() + ".exe";
+            URI finalDownload = null;
+            for (String url : release.getReleaseAssets()) {
+                if (url.contains(newVersionName)) {
+                    try {
+                        finalDownload = new URI(url);
+                    } catch (URISyntaxException exception) {
+                        logger.error("Unable to download file!", exception);
+                        ErrorWindow errorWindow = new ErrorWindow(exception);
+                        errorWindow.dispose();
+                        return;
+                    }
+                }
+            }
+            if (finalDownload == null) {
+                logger.error("Unable to find Windows file " + newVersionName + " in assets!");
+                ErrorWindow errorWindow = new ErrorWindow("Unable to find Windows file " + newVersionName + " in assets!");
                 errorWindow.dispose();
                 return;
             }
-            if (extension.equalsIgnoreCase("exe")) {
-                downloadURLs.put("windows", downloadURL);
+
+            logger.info("Downloading new version from " + finalDownload);
+            File output = new File(newVersionName);
+            try {
+                FileUtils.copyURLToFile(finalDownload.toURL(), output);
+            } catch (IOException exception) {
+                logger.error("Unable to download file from " + finalDownload, exception);
+                ErrorWindow errorWindow = new ErrorWindow(exception);
+                errorWindow.dispose();
+                return;
             }
-            if (extension.equalsIgnoreCase("gz")) {
-                downloadURLs.put("linux", downloadURL);
-            }
-        }
-
-        URI finalURL = null;
-        if (SystemUtils.IS_OS_WINDOWS) {
-            finalURL = downloadURLs.get("windows");
-        }
-        if (SystemUtils.IS_OS_LINUX) {
-            finalURL = downloadURLs.get("linux");
-        }
-
-        if (finalURL == null) {
-            logger.warn("Unable to detect operating system!");
-            return;
-        }
-
-        logger.info("Downloading new version from " + finalURL);
-        String fileName = finalURL.toString().substring(finalURL.toString().lastIndexOf("/") + 1);
-        logger.info(fileName);
-        File output = new File(fileName);
-        try {
-            FileUtils.copyURLToFile(finalURL.toURL(), output);
-        } catch (IOException exception) {
-            logger.error("Unable to download file from " + finalURL, exception);
-            ErrorWindow errorWindow = new ErrorWindow(exception);
-            errorWindow.dispose();
-            return;
         }
 
         // extract the tar.gz release file into the installation dir
         if (SystemUtils.IS_OS_LINUX) {
+            String newVersionName = "CustomLauncherRewrite-" + release.getTagVersion() + ".tar.gz";
+            URI finalDownload = null;
+            for (String url : release.getReleaseAssets()) {
+                if (url.contains(newVersionName)) {
+                    try {
+                        finalDownload = new URI(url);
+                    } catch (URISyntaxException exception) {
+                        logger.error("Unable to download file!", exception);
+                        ErrorWindow errorWindow = new ErrorWindow(exception);
+                        errorWindow.dispose();
+                        return;
+                    }
+                }
+            }
+            if (finalDownload == null) {
+                logger.error("Unable to find Windows file " + newVersionName + " in assets!");
+                ErrorWindow errorWindow = new ErrorWindow("Unable to find Linux file " + newVersionName + " in assets!");
+                errorWindow.dispose();
+                return;
+            }
+
+            logger.info("Downloading new version from " + finalDownload);
+            File output = new File(newVersionName);
+            try {
+                FileUtils.copyURLToFile(finalDownload.toURL(), output);
+            } catch (IOException exception) {
+                logger.error("Unable to download file from " + finalDownload, exception);
+                ErrorWindow errorWindow = new ErrorWindow(exception);
+                errorWindow.dispose();
+                return;
+            }
+
             logger.info("Extracting " + output + " to " + System.getProperty("user.dir"));
-            decompress(fileName);
+            decompress(newVersionName);
             try {
                 FileUtils.delete(output);
             } catch (IOException exception) {
@@ -181,11 +204,11 @@ public class UpdateChecker {
      */
     private void launchNewVersion(String newVersion) {
         String[] windowsCommand = {
-            "cmd",
-            "/c",
-            "CustomLauncherRewrite-" + newVersion + ".exe",
-            "--remove-old",
-            Main.version
+                "cmd",
+                "/c",
+                "CustomLauncherRewrite-" + newVersion + ".exe",
+                "--remove-old",
+                Main.version
         };
         String linuxCommand = "./run.sh";
         ProcessBuilder pb = new ProcessBuilder();
