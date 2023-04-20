@@ -29,6 +29,7 @@ import org.apache.logging.log4j.Logger;
 import javax.swing.*;
 import java.awt.*;
 import java.util.HashMap;
+import java.util.Map;
 
 public class SecretPrompt extends JFrame {
 
@@ -89,16 +90,18 @@ public class SecretPrompt extends JFrame {
                         // realPassword will return null if any exception is thrown
                         // most likely the user entered the wrong passphrase
                         if (realPassword != null) {
-                            // if the decryption worked, update the account to new version
-                            logger.info(
-                                    "Legacy (version 1) account is being used. Converting over to version 2.");
-                            account.setAccountType(Account.Type.ENCRYPTED);
-                            String newPassword = AccountEncryption.encrypt(realPassword, secret);
-                            account.setPassword(newPassword);
-                            accounts.writeAccounts();
+                            if (account.accountType() == Account.Type.LEGACY_ENCRYPTED) {
+                                // if the decryption worked, update the account to new version
+                                logger.info(
+                                        "Legacy (version 1) account is being used. Converting over to version 2.");
+                                account.setAccountType(Account.Type.ENCRYPTED);
+                                String newPassword = AccountEncryption.encrypt(realPassword, secret);
+                                account.setPassword(newPassword);
+                                accounts.writeAccounts();
+                            }
 
                             // send the request to login
-                            HashMap<String, String> newLoginRequest = new HashMap<>();
+                            Map<String, String> newLoginRequest = new HashMap<>();
                             newLoginRequest.put("username", account.username());
                             newLoginRequest.put("password", realPassword);
                             new LoginHandler(newLoginRequest);
