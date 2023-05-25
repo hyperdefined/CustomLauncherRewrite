@@ -18,6 +18,7 @@
 package lol.hyper.customlauncher;
 
 import lol.hyper.customlauncher.accounts.JSONManager;
+import lol.hyper.customlauncher.changelog.GameUpdateTracker;
 import lol.hyper.customlauncher.windows.MainWindow;
 import lol.hyper.customlauncher.ttrupdater.TTRUpdater;
 import lol.hyper.customlauncher.updater.UpdateChecker;
@@ -123,6 +124,7 @@ public class Main {
         }
 
         new UpdateChecker(version);
+        GameUpdateTracker gameUpdateTracker = new GameUpdateTracker();
 
         File ttrFiles = new File("ttr-files");
         // we don't have ttr installed, run first setup
@@ -134,7 +136,7 @@ public class Main {
         new TTRUpdater("Updater");
 
         // run the main window
-        JFrame mainWindow = new MainWindow(configHandler);
+        JFrame mainWindow = new MainWindow(configHandler, gameUpdateTracker);
         mainWindow.dispose();
     }
 }

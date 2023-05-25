@@ -119,7 +119,6 @@ public class DistrictTracker {
         districtsTableModel.setRowCount(0);
         // create a separate list of all the districts
         List<District> sortedDistricts = new ArrayList<>();
-        String[] data;
         for (Map.Entry<String, District> entry : districts.entrySet()) {
             sortedDistricts.add(entry.getValue());
         }
@@ -133,14 +132,14 @@ public class DistrictTracker {
             String name = district.getDistrictName();
             int population = district.getPopulation();
             String status = district.getCurrentStatus();
-            data =
+            String[] data =
                     new String[] {
                         name, String.valueOf(population), status
                     };
             districtsTableModel.addRow(data);
-            districtTable.setModel(districtsTableModel);
             totalPopulation = totalPopulation + district.getPopulation();
         }
+        districtTable.setModel(districtsTableModel);
         totalPopulationLabel.setText("Total toons: " + totalPopulation);
         Date currentTime = new Date(lastFetched);
         lastFetchedLabel.setText("Last updated: " + lastFetchedFormat.format(currentTime));

@@ -22,6 +22,8 @@ import lol.hyper.customlauncher.Main;
 import lol.hyper.customlauncher.accounts.Account;
 import lol.hyper.customlauncher.accounts.Accounts;
 import lol.hyper.customlauncher.accounts.JSONManager;
+import lol.hyper.customlauncher.changelog.GameUpdateTracker;
+import lol.hyper.customlauncher.changelog.GameUpdatesWindow;
 import lol.hyper.customlauncher.districts.DistrictTracker;
 import lol.hyper.customlauncher.fieldofficetracker.FieldOfficeTracker;
 import lol.hyper.customlauncher.generic.InfoWindow;
@@ -49,7 +51,7 @@ public final class MainWindow extends JFrame {
 
     private final Logger logger = LogManager.getLogger(this);
 
-    public MainWindow(ConfigHandler configHandler) {
+    public MainWindow(ConfigHandler configHandler, GameUpdateTracker gameUpdateTracker) {
         JFrame frame = new JFrame("CLR " + Main.version);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setResizable(false);
@@ -176,7 +178,18 @@ public final class MainWindow extends JFrame {
         ttrUpdateButton.setMaximumSize(new Dimension(300, ttrUpdateButton.getMinimumSize().height));
         panel.add(ttrUpdateButton);
 
-        // check for updates button
+        // game updates button
+        JButton gameUpdatesButton = new JButton("Game Updates");
+        gameUpdatesButton.addActionListener(
+                e -> {
+                    GameUpdatesWindow gameUpdatesWindow = new GameUpdatesWindow(gameUpdateTracker.allGameUpdates);
+                    gameUpdatesWindow.dispose();
+                });
+        gameUpdatesButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        gameUpdatesButton.setMaximumSize(new Dimension(300, gameUpdatesButton.getMinimumSize().height));
+        panel.add(gameUpdatesButton);
+
+        // config button
         JButton configButton = new JButton("Configuration");
         configButton.addActionListener(
                 e -> {

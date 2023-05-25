@@ -134,7 +134,6 @@ public class FieldOfficeTracker {
         fieldOfficeTableModel.setRowCount(0);
         // create a separate list of all the field offices
         List<FieldOffice> sortedFieldOffice = new ArrayList<>();
-        String[] data;
         for (Map.Entry<Integer, FieldOffice> entry : fieldOffices.entrySet()) {
             sortedFieldOffice.add(entry.getValue());
         }
@@ -146,7 +145,7 @@ public class FieldOfficeTracker {
             int difficulty = fieldOffice.getDifficulty();
             int totalAnnexes = fieldOffice.getTotalAnnexes();
             String open = fieldOffice.status();
-            data =
+            String[] data =
                     new String[] {
                         street,
                         String.valueOf(difficulty),
@@ -154,8 +153,8 @@ public class FieldOfficeTracker {
                         String.valueOf(open)
                     };
             fieldOfficeTableModel.addRow(data);
-            fieldOfficeTable.setModel(fieldOfficeTableModel);
         }
+        fieldOfficeTable.setModel(fieldOfficeTableModel);
         Date currentTime = new Date(lastFetched);
         lastFetchedLabel.setText("Last updated: " + lastFetchedFormat.format(currentTime));
     }

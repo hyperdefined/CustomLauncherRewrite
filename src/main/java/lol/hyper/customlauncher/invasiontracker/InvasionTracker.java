@@ -121,7 +121,6 @@ public class InvasionTracker {
         invasionTableModel.setRowCount(0);
         // create a separate list of all the invasions
         List<Invasion> sortedInvasions = new ArrayList<>();
-        String[] data;
         for (Map.Entry<String, Invasion> entry : invasions.entrySet()) {
             sortedInvasions.add(entry.getValue());
         }
@@ -146,10 +145,10 @@ public class InvasionTracker {
                     timeLeft = convertTime(timeLeftSeconds);
                 }
             }
-            data = new String[] {district, cogType, timeLeft, cogs};
+            String[] data = new String[] {district, cogType, timeLeft, cogs};
             invasionTableModel.addRow(data);
-            invasionTable.setModel(invasionTableModel);
         }
+        invasionTable.setModel(invasionTableModel);
         Date currentTime = new Date(lastFetched);
         lastFetchedLabel.setText("Last updated: " + lastFetchedFormat.format(currentTime));
     }

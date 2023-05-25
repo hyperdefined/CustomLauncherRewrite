@@ -1,0 +1,140 @@
+/*
+ * This file is part of CustomLauncherRewrite.
+ *
+ * CustomLauncherRewrite is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * CustomLauncherRewrite is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with CustomLauncherRewrite.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package lol.hyper.customlauncher.changelog;
+
+import lol.hyper.customlauncher.accounts.JSONManager;
+import lol.hyper.customlauncher.generic.InfoWindow;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.util.*;
+
+public class GameUpdateTracker {
+
+    private final Logger logger = LogManager.getLogger(this);
+
+    // store the updates
+    public SortedSet<GameUpdate> allGameUpdates = new TreeSet<>(Comparator.comparingInt(GameUpdate::id).reversed());
+    private final File savedUpdatesFile = new File("config", "savedUpdates.json");
+
+    public GameUpdateTracker() {
+        if (!savedUpdatesFile.exists()) {
+            InfoWindow infoWindow = new InfoWindow("I am going to fetch release note information. This will take a bit.");
+            infoWindow.dispose();
+            getAllNotes();
+        } else {
+            // we have notes saved, see if we need to update it
+            JSONObject savedUpdatesJSON = new JSONObject(JSONManager.readFile(savedUpdatesFile));
+            // store which IDs we have saved
+            Set<Integer> savedUpdatesList = new HashSet<>();
+            for (String updateID : savedUpdatesJSON.keySet()) {
+                savedUpdatesList.add(Integer.valueOf(updateID));
+            }
+            JSONArray updateList = fetchUpdates();
+            if (updateList == null) {
+                logger.warn("Unable to fetch game updates! API returned null on response.");
+                return;
+            }
+            // compare the remote list to our list
+            Set<Integer> newUpdates = new HashSet<>();
+            for (JSONObject update : getUpdates(updateList)) {
+                int id = update.getInt("noteId");
+                if (!savedUpdatesList.contains(id)) {
+                    newUpdates.add(id);
+                }
+            }
+            // there's an update on the list we don't have
+            if (!newUpdates.isEmpty()) {
+                logger.info("Adding new updates: " + newUpdates);
+                for (int updateID : newUpdates) {
+                    JSONObject updateNotesJSON = JSONManager.requestJSON("https://www.toontownrewritten.com/api/releasenotes/" + updateID);
+                    if (updateNotesJSON == null) {
+                        logger.warn(updateID + " returned null response from " + "https://www.toontownrewritten.com/api/releasenotes/" + updateID);
+                        continue;
+                    }
+                    JSONObject newUpdate = new JSONObject();
+                    newUpdate.put("version", updateNotesJSON.getString("slug"));
+                    newUpdate.put("date", updateNotesJSON.getString("date"));
+                    newUpdate.put("notes", updateNotesJSON.getString("body"));
+                    savedUpdatesJSON.put(String.valueOf(updateID), newUpdate);
+                }
+                JSONManager.writeFile(savedUpdatesJSON, savedUpdatesFile);
+            }
+
+            for (String updateID : savedUpdatesJSON.keySet()) {
+                JSONObject update = savedUpdatesJSON.getJSONObject(updateID);
+                GameUpdate gameUpdate = new GameUpdate(Integer.parseInt(updateID), update.getString("version"), update.getString("notes"), update.getString("date"));
+                allGameUpdates.add(gameUpdate);
+            }
+        }
+    }
+
+    private void getAllNotes() {
+        logger.info("Fetching game updates...");
+        JSONArray updateList = fetchUpdates();
+        if (updateList == null) {
+            logger.warn("Unable to fetch game updates! API returned null on response.");
+            return;
+        }
+        for (JSONObject update : getUpdates(updateList)) {
+            int id = update.getInt("noteId");
+            String version = update.getString("slug");
+            String date = update.getString("date");
+            String notes;
+            JSONObject updateNotesJSON = JSONManager.requestJSON("https://www.toontownrewritten.com/api/releasenotes/" + id);
+            if (updateNotesJSON == null) {
+                notes = null;
+            } else {
+                notes = updateNotesJSON.getString("body");
+            }
+            GameUpdate newUpdate = new GameUpdate(id, version, notes, date);
+            allGameUpdates.add(newUpdate);
+        }
+
+        JSONObject savedUpdatesJSON = new JSONObject();
+        for (GameUpdate gameUpdate : allGameUpdates) {
+            JSONObject gameUpdateJSON = new JSONObject();
+            gameUpdateJSON.put("version", gameUpdate.version());
+            gameUpdateJSON.put("date", gameUpdate.date());
+            gameUpdateJSON.put("notes", gameUpdate.notes());
+            savedUpdatesJSON.put(String.valueOf(gameUpdate.id()), gameUpdateJSON);
+        }
+        JSONManager.writeFile(savedUpdatesJSON, savedUpdatesFile);
+    }
+
+    private JSONArray fetchUpdates() {
+        JSONArray updateList = JSONManager.requestJSONArray("https://www.toontownrewritten.com/api/releasenotes");
+        if (updateList == null) {
+            logger.warn("Unable to fetch game updates! API returned null on response.");
+            return null;
+        }
+        return updateList;
+    }
+
+    private Set<JSONObject> getUpdates(JSONArray updateArray) {
+        Set<JSONObject> updates = new HashSet<>();
+        for (int i = 0; i < updateArray.length(); i++) {
+            JSONObject update = updateArray.getJSONObject(i);
+            updates.add(update);
+        }
+        return updates;
+    }
+}
