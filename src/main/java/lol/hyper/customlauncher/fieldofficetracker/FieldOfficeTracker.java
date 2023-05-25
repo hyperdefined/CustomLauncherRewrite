@@ -31,21 +31,20 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 
-public class FieldOfficeTracker {
+public class FieldOfficeTracker extends JFrame {
 
     public final Map<Integer, FieldOffice> fieldOffices = new HashMap<>();
-    public JTable fieldOfficeTable;
-    public DefaultTableModel fieldOfficeTableModel;
-    public JFrame frame;
+    private JTable fieldOfficeTable;
+    private DefaultTableModel fieldOfficeTableModel;
 
-    public JLabel lastFetchedLabel;
-    public final SimpleDateFormat lastFetchedFormat = new SimpleDateFormat("hh:mm:ss a");
+    private JLabel lastFetchedLabel;
+    private final SimpleDateFormat lastFetchedFormat = new SimpleDateFormat("hh:mm:ss a");
     public long lastFetched = 0;
     public int runs = 0;
     public static final Map<Integer, String> zonesToStreets = new HashMap<>();
     public boolean isDown = false;
     public Timer fieldOfficeTaskTimer;
-    final ConfigHandler configHandler;
+    private final ConfigHandler configHandler;
 
     /**
      * This tracker will process & display the FieldOfficeTask. It handles the window and tracking
@@ -68,17 +67,19 @@ public class FieldOfficeTracker {
         startFieldOfficeRefresh();
     }
 
-    /** Open the field office window. */
+    /**
+     * Open the field office window.
+     */
     public void showWindow() {
-        frame = new JFrame("Field Offices");
-        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        frame.setResizable(false);
+        setTitle("Field Offices");
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        frame.setIconImage(Main.icon);
+        setIconImage(Main.icon);
 
         // GUI elements
         JPanel panel = new JPanel();
@@ -90,7 +91,7 @@ public class FieldOfficeTracker {
         panel.add(fieldOfficeLabel);
 
         fieldOfficeTable = new JTable();
-        String[] columns = new String[] {"Street", "Difficulty", "Total Annexes", "Status"};
+        String[] columns = new String[]{"Street", "Difficulty", "Total Annexes", "Status"};
 
         fieldOfficeTableModel = (DefaultTableModel) fieldOfficeTable.getModel();
         fieldOfficeTableModel.setColumnIdentifiers(columns);
@@ -110,12 +111,12 @@ public class FieldOfficeTracker {
         timer.setDelay(500);
         timer.start();
 
-        frame.setSize(500, 400);
-        frame.add(panel);
-        frame.setLocationRelativeTo(null);
+        setSize(500, 400);
+        add(panel);
+        setLocationRelativeTo(null);
 
         // stop the schedules here, so they don't run while the window is closed
-        frame.addWindowListener(
+        addWindowListener(
                 new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent windowEvent) {
@@ -123,13 +124,13 @@ public class FieldOfficeTracker {
                     }
                 });
 
-        SwingUtilities.invokeLater(()-> {
-            frame.pack();
-            frame.setVisible(true);
-        });
+        pack();
+        setVisible(true);
     }
 
-    /** Updates the field office list on the actual GUI. */
+    /**
+     * Updates the field office list on the actual GUI.
+     */
     private void updateFieldOfficeList() {
         fieldOfficeTableModel.setRowCount(0);
         // create a separate list of all the field offices
@@ -146,11 +147,11 @@ public class FieldOfficeTracker {
             int totalAnnexes = fieldOffice.getTotalAnnexes();
             String open = fieldOffice.status();
             String[] data =
-                    new String[] {
-                        street,
-                        String.valueOf(difficulty),
-                        String.valueOf(totalAnnexes),
-                        String.valueOf(open)
+                    new String[]{
+                            street,
+                            String.valueOf(difficulty),
+                            String.valueOf(totalAnnexes),
+                            String.valueOf(open)
                     };
             fieldOfficeTableModel.addRow(data);
         }
@@ -159,7 +160,9 @@ public class FieldOfficeTracker {
         lastFetchedLabel.setText("Last updated: " + lastFetchedFormat.format(currentTime));
     }
 
-    /** Read field office API every 10 seconds. */
+    /**
+     * Read field office API every 10 seconds.
+     */
     private void startFieldOfficeRefresh() {
         ActionListener actionListener = new FieldOfficeTask(this);
         fieldOfficeTaskTimer = new Timer(0, actionListener);

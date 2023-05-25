@@ -24,16 +24,16 @@ import javax.swing.*;
 public class AccountManagerWindow extends JFrame {
 
     public AccountManagerWindow(MainWindow mainWindow) {
-        JFrame frame = new JFrame("Account Manager");
-        frame.setSize(370, 100);
-        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        frame.setResizable(false);
+        setTitle("Account Manager");
+        setSize(370, 100);
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        frame.setIconImage(Main.icon);
+        setIconImage(Main.icon);
 
         // GUI elements
         JPanel panel = new JPanel();
@@ -50,20 +50,18 @@ public class AccountManagerWindow extends JFrame {
 
         addAccountButton.addActionListener(
                 e -> {
-                    frame.dispose();
-                    JFrame newAccountWindow = new NewAccountWindow(mainWindow);
-                    newAccountWindow.dispose();
+                    dispose();
+                    SwingUtilities.invokeLater(() -> new NewAccountWindow(mainWindow));
                 });
 
         deleteAccountButton.addActionListener(
                 e -> {
-                    frame.dispose();
-                    JFrame deleteAccountWindow = new DeleteAccountWindow(mainWindow);
-                    deleteAccountWindow.dispose();
+                    dispose();
+                    SwingUtilities.invokeLater(() -> new DeleteAccountWindow(mainWindow));
                 });
 
-        frame.setVisible(true);
-        frame.add(panel);
-        frame.setLocationRelativeTo(null);
+        setVisible(true);
+        add(panel);
+        setLocationRelativeTo(null);
     }
 }

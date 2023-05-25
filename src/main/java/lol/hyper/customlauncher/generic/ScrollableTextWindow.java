@@ -17,6 +17,8 @@
 
 package lol.hyper.customlauncher.generic;
 
+import lol.hyper.customlauncher.Main;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -24,7 +26,14 @@ public class ScrollableTextWindow extends JFrame {
 
     public ScrollableTextWindow(String title, String text) {
         setTitle(title);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        setIconImage(Main.icon);
         setPreferredSize(new Dimension(400, 300));
 
         JTextArea textArea = new JTextArea();
@@ -34,6 +43,7 @@ public class ScrollableTextWindow extends JFrame {
         JScrollPane scrollPane = new JScrollPane(textArea);
         getContentPane().add(scrollPane);
 
+        setLocationRelativeTo(null);
         pack();
         setVisible(true);
     }

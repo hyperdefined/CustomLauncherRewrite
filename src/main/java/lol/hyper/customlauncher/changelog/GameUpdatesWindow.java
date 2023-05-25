@@ -83,10 +83,7 @@ public class GameUpdatesWindow extends JFrame {
                     if (selectedRow != -1) {
                         String selectedVersion = (String) gameUpdatesTable.getValueAt(selectedRow, versionColumnIndex);
                         gameUpdatesTable.getSelectionModel().clearSelection();
-                        GameUpdate gameUpdate = gameUpdates.stream().filter(update -> selectedVersion.equalsIgnoreCase(update.version())).findAny().orElse(null);
-                        if (gameUpdate != null) {
-                            new ScrollableTextWindow(selectedVersion, gameUpdate.notes());
-                        }
+                        gameUpdates.stream().filter(update -> selectedVersion.equalsIgnoreCase(update.version())).findAny().ifPresent(gameUpdate -> SwingUtilities.invokeLater(() -> new ScrollableTextWindow(selectedVersion, gameUpdate.notes())));
                     }
                 }
             }

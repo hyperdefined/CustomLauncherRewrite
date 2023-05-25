@@ -36,16 +36,16 @@ public class SecretPrompt extends JFrame {
     private final Logger logger = LogManager.getLogger(this);
 
     public SecretPrompt(Accounts accounts, Account account) {
-        JFrame frame = new JFrame("Enter Passphrase");
-        frame.setSize(170, 120);
-        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        frame.setResizable(false);
+        setTitle("Enter Passphrase");
+        setSize(170, 120);
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        frame.setIconImage(Main.icon);
+        setIconImage(Main.icon);
 
         // GUI elements
         JPanel panel = new JPanel();
@@ -57,13 +57,14 @@ public class SecretPrompt extends JFrame {
         JLabel secretLabel = new JLabel("Secret Phrase");
         JPasswordField secretText = new JPasswordField();
         JButton loginButton = new JButton("Login");
+        loginButton.requestFocusInWindow();
 
         panel.add(secretLabel, gbc);
         panel.add(secretText, gbc);
         panel.add(loginButton, gbc);
 
         // allow pressing enter
-        frame.getRootPane().setDefaultButton(loginButton);
+        getRootPane().setDefaultButton(loginButton);
 
         // button listeners
         loginButton.addActionListener(
@@ -105,26 +106,25 @@ public class SecretPrompt extends JFrame {
                             newLoginRequest.put("username", account.username());
                             newLoginRequest.put("password", realPassword);
                             new LoginHandler(newLoginRequest);
-                            frame.dispose();
+                            dispose();
                             return;
                         }
                         JOptionPane.showMessageDialog(
-                                frame,
+                                this,
                                 "You entered the wrong passphrase.",
                                 "Passphrase Error",
                                 JOptionPane.ERROR_MESSAGE);
                     } else {
                         JOptionPane.showMessageDialog(
-                                frame,
+                                this,
                                 "You must enter the passphrase.",
                                 "Passphrase Error",
                                 JOptionPane.ERROR_MESSAGE);
                     }
                 });
 
-        frame.add(panel);
-        frame.setLocationRelativeTo(null);
-
-        SwingUtilities.invokeLater(() -> frame.setVisible(true));
+        add(panel);
+        setLocationRelativeTo(null);
+        setVisible(true);
     }
 }

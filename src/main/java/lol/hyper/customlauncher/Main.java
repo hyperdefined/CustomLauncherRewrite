@@ -22,6 +22,7 @@ import lol.hyper.customlauncher.changelog.GameUpdateTracker;
 import lol.hyper.customlauncher.windows.MainWindow;
 import lol.hyper.customlauncher.ttrupdater.TTRUpdater;
 import lol.hyper.customlauncher.updater.UpdateChecker;
+import lol.hyper.customlauncher.windows.SecretPrompt;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -133,10 +134,9 @@ public class Main {
         }
 
         // run the TTR updater
-        new TTRUpdater("Updater");
+        SwingUtilities.invokeLater(TTRUpdater::new);
 
         // run the main window
-        JFrame mainWindow = new MainWindow(configHandler, gameUpdateTracker);
-        mainWindow.dispose();
+        SwingUtilities.invokeLater(() -> new MainWindow(configHandler, gameUpdateTracker));
     }
 }

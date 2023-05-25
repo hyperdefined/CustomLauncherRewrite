@@ -33,15 +33,15 @@ public class DeleteAccountWindow extends JFrame {
     private final Logger logger = LogManager.getLogger(this);
 
     public DeleteAccountWindow(MainWindow mainWindow) {
-        JFrame frame = new JFrame("Delete Account");
-        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        frame.setResizable(false);
+        setTitle("Delete Account");
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        frame.setIconImage(Main.icon);
+        setIconImage(Main.icon);
 
         // GUI elements
         JPanel panel = new JPanel();
@@ -76,17 +76,16 @@ public class DeleteAccountWindow extends JFrame {
                             accounts.removeAccount(account);
                             mainWindow.refreshAccountList();
                             JOptionPane.showMessageDialog(
-                                    frame, account.username() + " was deleted!");
-                            frame.dispose();
+                                    DeleteAccountWindow.this, account.username() + " was deleted!");
+                            dispose();
                             logger.info("Deleting account " + account.username());
                         }
                     }
                 });
 
-        frame.setSize(300, 400);
-        frame.add(panel);
-        frame.setLocationRelativeTo(null);
-
-        SwingUtilities.invokeLater(() -> frame.setVisible(true));
+        setSize(300, 400);
+        add(panel);
+        setLocationRelativeTo(null);
+        setVisible(true);
     }
 }

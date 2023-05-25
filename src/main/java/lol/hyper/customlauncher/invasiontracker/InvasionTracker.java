@@ -33,19 +33,18 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.*;
 
-public class InvasionTracker {
+public class InvasionTracker extends JFrame {
 
     public final Map<String, Invasion> invasions = new HashMap<>();
-    public JTable invasionTable;
-    public DefaultTableModel invasionTableModel;
-    public JFrame frame;
-    public JLabel lastFetchedLabel;
-    public final SimpleDateFormat lastFetchedFormat = new SimpleDateFormat("hh:mm:ss a");
+    private JTable invasionTable;
+    private DefaultTableModel invasionTableModel;
+    private JLabel lastFetchedLabel;
+    private final SimpleDateFormat lastFetchedFormat = new SimpleDateFormat("hh:mm:ss a");
     public long lastFetched = 0;
     public int runs = 0;
     public boolean isDown = false;
     public Timer invasionTaskTimer;
-    final ConfigHandler configHandler;
+    private final ConfigHandler configHandler;
 
     /**
      * This tracker will process & display the InvasionTask. It handles the window and tracking
@@ -56,17 +55,19 @@ public class InvasionTracker {
         startInvasionRefresh();
     }
 
-    /** Open the invasion window. */
+    /**
+     * Open the invasion window.
+     */
     public void showWindow() {
-        frame = new JFrame("Invasions");
-        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        frame.setResizable(false);
+        setTitle("Invasions");
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        frame.setIconImage(Main.icon);
+        setIconImage(Main.icon);
 
         // GUI elements
         JPanel panel = new JPanel();
@@ -78,7 +79,7 @@ public class InvasionTracker {
         panel.add(invasionsLabel);
 
         invasionTable = new JTable();
-        String[] columns = new String[] {"District", "Cog Type", "Time Left", "Cogs"};
+        String[] columns = new String[]{"District", "Cog Type", "Time Left", "Cogs"};
 
         invasionTableModel = (DefaultTableModel) invasionTable.getModel();
         invasionTableModel.setColumnIdentifiers(columns);
@@ -98,11 +99,11 @@ public class InvasionTracker {
         timer.setDelay(500);
         timer.start();
 
-        frame.setSize(500, 400);
-        frame.add(panel);
-        frame.setLocationRelativeTo(null);
+        setSize(500, 400);
+        add(panel);
+        setLocationRelativeTo(null);
 
-        frame.addWindowListener(
+        addWindowListener(
                 new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent windowEvent) {
@@ -110,13 +111,13 @@ public class InvasionTracker {
                     }
                 });
 
-        SwingUtilities.invokeLater(()-> {
-            frame.pack();
-            frame.setVisible(true);
-        });
+        pack();
+        setVisible(true);
     }
 
-    /** Updates the invasion list on the actual GUI. */
+    /**
+     * Updates the invasion list on the actual GUI.
+     */
     private void updateInvasionListGUI() {
         invasionTableModel.setRowCount(0);
         // create a separate list of all the invasions
@@ -145,7 +146,7 @@ public class InvasionTracker {
                     timeLeft = convertTime(timeLeftSeconds);
                 }
             }
-            String[] data = new String[] {district, cogType, timeLeft, cogs};
+            String[] data = new String[]{district, cogType, timeLeft, cogs};
             invasionTableModel.addRow(data);
         }
         invasionTable.setModel(invasionTableModel);
@@ -153,7 +154,9 @@ public class InvasionTracker {
         lastFetchedLabel.setText("Last updated: " + lastFetchedFormat.format(currentTime));
     }
 
-    /** Read invasion API every 10 seconds. */
+    /**
+     * Read invasion API every 10 seconds.
+     */
     public void startInvasionRefresh() {
         ActionListener actionListener = new InvasionTask(this);
         invasionTaskTimer = new Timer(0, actionListener);

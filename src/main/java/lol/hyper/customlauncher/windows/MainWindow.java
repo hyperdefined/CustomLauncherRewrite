@@ -52,15 +52,15 @@ public final class MainWindow extends JFrame {
     private final Logger logger = LogManager.getLogger(this);
 
     public MainWindow(ConfigHandler configHandler, GameUpdateTracker gameUpdateTracker) {
-        JFrame frame = new JFrame("CLR " + Main.version);
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setResizable(false);
+        setTitle("CLR " + Main.version);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        frame.setIconImage(Main.icon);
+        setIconImage(Main.icon);
 
         // GUI elements
         JPanel panel = new JPanel();
@@ -84,10 +84,7 @@ public final class MainWindow extends JFrame {
         // new account button
         JButton accountManagerButton = new JButton("Manage Accounts");
         accountManagerButton.addActionListener(
-                e -> {
-                    JFrame accountManagerWindow = new AccountManagerWindow(this);
-                    accountManagerWindow.dispose();
-                });
+                e -> SwingUtilities.invokeLater(() -> new AccountManagerWindow(this)));
         accountManagerButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         accountManagerButton.setMaximumSize(
                 new Dimension(300, accountManagerButton.getMinimumSize().height));
@@ -110,7 +107,7 @@ public final class MainWindow extends JFrame {
                             invasionTracker.invasionTaskTimer.start();
                         }
                     } else {
-                        invasionTracker.showWindow();
+                        SwingUtilities.invokeLater(invasionTracker::showWindow);
                     }
                 });
         invasionsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -134,7 +131,7 @@ public final class MainWindow extends JFrame {
                             fieldOfficeTracker.fieldOfficeTaskTimer.start();
                         }
                     } else {
-                        fieldOfficeTracker.showWindow();
+                        SwingUtilities.invokeLater(fieldOfficeTracker::showWindow);
                     }
                 });
         fieldOfficesButton.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -159,7 +156,7 @@ public final class MainWindow extends JFrame {
                             districtTracker.districtTaskTimer.start();
                         }
                     } else {
-                        districtTracker.showWindow();
+                        SwingUtilities.invokeLater(districtTracker::showWindow);
                     }
                 });
         districtsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -169,11 +166,7 @@ public final class MainWindow extends JFrame {
         // check for updates button
         JButton ttrUpdateButton = new JButton("Check TTR Updates");
         ttrUpdateButton.addActionListener(
-                e -> {
-                    // we do this on another thread since it won't properly update the gui
-                    Thread t1 = new Thread(() -> new TTRUpdater("Updater"));
-                    t1.start();
-                });
+                e -> SwingUtilities.invokeLater(TTRUpdater::new));
         ttrUpdateButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         ttrUpdateButton.setMaximumSize(new Dimension(300, ttrUpdateButton.getMinimumSize().height));
         panel.add(ttrUpdateButton);
@@ -192,10 +185,7 @@ public final class MainWindow extends JFrame {
         // config button
         JButton configButton = new JButton("Configuration");
         configButton.addActionListener(
-                e -> {
-                    ConfigWindow configWindow = new ConfigWindow(configHandler);
-                    configWindow.dispose();
-                });
+                e -> SwingUtilities.invokeLater(() -> new ConfigWindow(configHandler)));
         configButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         configButton.setMaximumSize(new Dimension(300, configButton.getMinimumSize().height));
         panel.add(configButton);
@@ -208,7 +198,7 @@ public final class MainWindow extends JFrame {
                         if (evt.getClickCount() == 2) {
                             if (!ConfigHandler.INSTALL_LOCATION.exists()) {
                                 JOptionPane.showMessageDialog(
-                                        frame,
+                                        MainWindow.this,
                                         "Unable to launch the game. The install location cannot be found.",
                                         "Error",
                                         JOptionPane.ERROR_MESSAGE);
@@ -225,11 +215,8 @@ public final class MainWindow extends JFrame {
                             Account.Type accountType = selectedAccount.accountType();
                             logger.info("Account type is " + accountType.toInt());
                             switch (accountType) {
-                                case ENCRYPTED, LEGACY_ENCRYPTED -> {
-                                    SecretPrompt secretPrompt =
-                                            new SecretPrompt(accounts, selectedAccount);
-                                    secretPrompt.dispose();
-                                }
+                                case ENCRYPTED, LEGACY_ENCRYPTED ->
+                                        SwingUtilities.invokeLater(() -> new SecretPrompt(accounts, selectedAccount));
                                 case PLAINTEXT -> {
                                     HashMap<String, String> newLoginRequest = new HashMap<>();
                                     newLoginRequest.put("username", selectedAccount.username());
@@ -241,11 +228,10 @@ public final class MainWindow extends JFrame {
                     }
                 });
 
-        frame.setSize(300, 450);
-        frame.add(panel);
-        frame.setLocationRelativeTo(null);
-
-        SwingUtilities.invokeLater(() -> frame.setVisible(true));
+        setSize(300, 450);
+        add(panel);
+        setLocationRelativeTo(null);
+        setVisible(true);
     }
 
     /**

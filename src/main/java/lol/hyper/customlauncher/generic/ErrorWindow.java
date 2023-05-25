@@ -23,19 +23,17 @@ import java.awt.*;
 public class ErrorWindow extends JFrame {
 
     public ErrorWindow(String errorMessage) {
-        JFrame frame = new JFrame();
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        JOptionPane.showMessageDialog(frame, errorMessage, "Error", JOptionPane.ERROR_MESSAGE);
-        frame.setLocationRelativeTo(null);
-        frame.dispose();
+        JOptionPane.showMessageDialog(this, errorMessage, "Error", JOptionPane.ERROR_MESSAGE);
+        setLocationRelativeTo(null);
+        dispose();
     }
 
     public ErrorWindow(Exception exception) {
-        JFrame frame = new JFrame();
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ex) {
@@ -59,8 +57,8 @@ public class ErrorWindow extends JFrame {
                         return new Dimension(480, 320);
                     }
                 };
-        JOptionPane.showMessageDialog(null, jsp, "Error", JOptionPane.ERROR_MESSAGE);
-        frame.setLocationRelativeTo(null);
-        frame.dispose();
+        JOptionPane.showMessageDialog(this, jsp, "Error", JOptionPane.ERROR_MESSAGE);
+        setLocationRelativeTo(null);
+        dispose();
     }
 }

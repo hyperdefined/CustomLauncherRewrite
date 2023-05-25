@@ -49,26 +49,26 @@ import java.util.*;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class TTRUpdater {
+public class TTRUpdater extends JFrame {
 
     public final String PATCHES_URL = "https://cdn.toontownrewritten.com/content/patchmanifest.txt";
     public final String PATCHES_URL_DL = "https://download.toontownrewritten.com/patches/";
     public final Logger logger = LogManager.getLogger(this);
     final JProgressBar progressBar;
 
-    public TTRUpdater(String title) {
+    public TTRUpdater() {
         // set up the window elements
-        JFrame frame = new JFrame(title);
-        frame.setSize(370, 150);
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setResizable(false);
+        setTitle("TTR Updater");
+        setSize(370, 150);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {
             logger.error(e);
         }
 
-        frame.setIconImage(Main.icon);
+        setIconImage(Main.icon);
 
         // GUI elements
         JPanel panel = new JPanel();
@@ -85,18 +85,18 @@ public class TTRUpdater {
         progressBar.setBounds(150, 100, 100, 30);
         updateStatus.setBounds(70, 25, 370, 40);
 
-        frame.add(panel);
-        frame.setVisible(true);
-        frame.setLocationRelativeTo(null);
+        add(panel);
+        setVisible(true);
+        setLocationRelativeTo(null);
 
         // don't run the updater if the folder doesn't exist
         if (!ConfigHandler.INSTALL_LOCATION.exists()) {
             JOptionPane.showMessageDialog(
-                    frame,
+                    this,
                     "Unable to check for TTR updates. We are unable to find your TTR install directory.",
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
-            frame.dispose();
+            dispose();
             logger.warn("Can't find current install directory. Skipping updates.");
         }
 
@@ -104,7 +104,7 @@ public class TTRUpdater {
         JSONObject patches = JSONManager.requestJSON(PATCHES_URL);
         if (patches == null) {
             logger.error("patchesmanifest.txt returned null!");
-            frame.dispose();
+            dispose();
             return;
         }
         ArrayList<String> filesToDownload = new ArrayList<>();
@@ -131,7 +131,7 @@ public class TTRUpdater {
                     new ErrorWindow(
                             "We are unable to detect your operating system. Please report this to the GitHub!");
             errorWindow.dispose();
-            frame.dispose();
+            dispose();
             return;
         }
 
@@ -176,7 +176,7 @@ public class TTRUpdater {
                             exception);
                     JFrame errorWindow = new ErrorWindow(exception);
                     errorWindow.dispose();
-                    frame.dispose();
+                    dispose();
                     return;
                 }
                 logger.info(
@@ -205,7 +205,7 @@ public class TTRUpdater {
                 logger.error("Unable to create temp folder!");
                 JFrame errorWindow = new ErrorWindow("Unable to create temp folder!");
                 errorWindow.dispose();
-                frame.dispose();
+                dispose();
             }
 
             logger.info(filesToDownload.size() + " file(s) are going to be downloaded.");
@@ -231,7 +231,7 @@ public class TTRUpdater {
                     logger.error("Invalid URL " + PATCHES_URL_DL + downloadName);
                     JFrame errorWindow = new ErrorWindow(exception);
                     errorWindow.dispose();
-                    frame.dispose();
+                    dispose();
                     return;
                 }
                 File downloadOutput = new File(tempFolder + File.separator + downloadName);
@@ -241,7 +241,7 @@ public class TTRUpdater {
                     JFrame errorWindow =
                             new ErrorWindow("Unable to download file " + downloadName + ".");
                     errorWindow.dispose();
-                    frame.dispose();
+                    dispose();
                 }
                 long downloadTime = TimeUnit.MILLISECONDS.convert(System.nanoTime() - downloadStart, TimeUnit.NANOSECONDS);
                 logger.info("Finished downloading " + downloadOutput.getAbsolutePath() + ". Took " + downloadTime + "ms.");
@@ -257,7 +257,7 @@ public class TTRUpdater {
                     logger.error("Unable to extract file " + downloadName, exception);
                     JFrame errorWindow = new ErrorWindow(exception);
                     errorWindow.dispose();
-                    frame.dispose();
+                    dispose();
                 }
                 updateStatus.setText("Finished extracting file " + downloadName);
                 long extractedTime = TimeUnit.MILLISECONDS.convert(System.nanoTime() - startTime, TimeUnit.NANOSECONDS);
@@ -275,7 +275,7 @@ public class TTRUpdater {
                                 exception);
                         JFrame errorWindow = new ErrorWindow(exception);
                         errorWindow.dispose();
-                        frame.dispose();
+                        dispose();
                     }
                 }
             }
@@ -286,12 +286,12 @@ public class TTRUpdater {
                 logger.error("Unable to delete temp folder!", exception);
                 JFrame errorWindow = new ErrorWindow(exception);
                 errorWindow.dispose();
-                frame.dispose();
+                dispose();
             }
         }
         JFrame infoWindow = new InfoWindow("Finished checking for TTR updates!");
         infoWindow.dispose();
-        frame.dispose();
+        dispose();
     }
 
     /**
@@ -318,7 +318,7 @@ public class TTRUpdater {
     /**
      * Extract the compressed bzip2 files to their output file.
      *
-     * @param temp The temp file's name that was downloaded.
+     * @param temp       The temp file's name that was downloaded.
      * @param outputName The file's output name.
      */
     public void decompressBz2(String temp, String outputName) throws IOException {
@@ -329,7 +329,7 @@ public class TTRUpdater {
                         new BufferedInputStream(new FileInputStream(tempFile)));
         FileOutputStream out = new FileOutputStream(output);
         try (in;
-                out) {
+             out) {
             IOUtils.copy(in, out);
         }
         in.close();
@@ -339,7 +339,7 @@ public class TTRUpdater {
     /**
      * Downloads TTR file and saves it to the temp folder.
      *
-     * @param downloadURL The URL to download.
+     * @param downloadURL    The URL to download.
      * @param downloadOutput The file to save to.
      * @return True if successful, false if not.
      */

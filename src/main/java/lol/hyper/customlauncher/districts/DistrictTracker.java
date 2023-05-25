@@ -28,13 +28,12 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 
-public class DistrictTracker {
+public class DistrictTracker extends JFrame {
 
     public final Map<String, District> districts = new HashMap<>();
     public JTable districtTable;
     public JLabel totalPopulationLabel;
     public DefaultTableModel districtsTableModel;
-    public JFrame frame;
     public JLabel lastFetchedLabel;
     public final SimpleDateFormat lastFetchedFormat = new SimpleDateFormat("hh:mm:ss a");
     public long lastFetched = 0;
@@ -49,17 +48,19 @@ public class DistrictTracker {
         startDistrictRefresh();
     }
 
-    /** Open the population window. */
+    /**
+     * Open the population window.
+     */
     public void showWindow() {
-        frame = new JFrame("Districts");
-        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        frame.setResizable(false);
+        setTitle("Districts");
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        frame.setIconImage(Main.icon);
+        setIconImage(Main.icon);
 
         // GUI elements
         JPanel panel = new JPanel();
@@ -71,7 +72,7 @@ public class DistrictTracker {
         panel.add(districtsLabel);
 
         districtTable = new JTable();
-        String[] columns = new String[] {"Name", "Population", "Status"};
+        String[] columns = new String[]{"Name", "Population", "Status"};
 
         districtsTableModel = (DefaultTableModel) districtTable.getModel();
         districtsTableModel.setColumnIdentifiers(columns);
@@ -95,12 +96,12 @@ public class DistrictTracker {
         timer.setDelay(500);
         timer.start();
 
-        frame.setSize(500, 400);
-        frame.add(panel);
-        frame.setLocationRelativeTo(null);
+        setSize(500, 400);
+        add(panel);
+        setLocationRelativeTo(null);
 
         // stop the schedules here, so they don't run while the window is closed
-        frame.addWindowListener(
+        addWindowListener(
                 new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent windowEvent) {
@@ -108,13 +109,13 @@ public class DistrictTracker {
                     }
                 });
 
-        SwingUtilities.invokeLater(()-> {
-            frame.pack();
-            frame.setVisible(true);
-        });
+        pack();
+        setVisible(true);
     }
 
-    /** Updates the district list on the actual GUI. */
+    /**
+     * Updates the district list on the actual GUI.
+     */
     private void updateDistricts() {
         districtsTableModel.setRowCount(0);
         // create a separate list of all the districts
@@ -133,8 +134,8 @@ public class DistrictTracker {
             int population = district.getPopulation();
             String status = district.getCurrentStatus();
             String[] data =
-                    new String[] {
-                        name, String.valueOf(population), status
+                    new String[]{
+                            name, String.valueOf(population), status
                     };
             districtsTableModel.addRow(data);
             totalPopulation = totalPopulation + district.getPopulation();
@@ -145,7 +146,9 @@ public class DistrictTracker {
         lastFetchedLabel.setText("Last updated: " + lastFetchedFormat.format(currentTime));
     }
 
-    /** Read population API every 10 seconds. */
+    /**
+     * Read population API every 10 seconds.
+     */
     private void startDistrictRefresh() {
         ActionListener actionListener = new DistrictTask(this);
         districtTaskTimer = new Timer(0, actionListener);

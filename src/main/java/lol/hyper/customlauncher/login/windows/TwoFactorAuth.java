@@ -29,16 +29,16 @@ import java.util.HashMap;
 public class TwoFactorAuth extends JFrame {
 
     public TwoFactorAuth(String banner, String token) {
-        JFrame frame = new JFrame("Enter Code");
-        frame.setSize(230, 150);
-        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        frame.setResizable(false);
+        setTitle("Enter Code");
+        setSize(230, 150);
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        frame.setIconImage(Main.icon);
+        setIconImage(Main.icon);
 
         // GUI elements
         JPanel panel = new JPanel();
@@ -69,7 +69,7 @@ public class TwoFactorAuth extends JFrame {
         panel.add(loginButton, gbc);
 
         // allow pressing enter
-        frame.getRootPane().setDefaultButton(loginButton);
+        getRootPane().setDefaultButton(loginButton);
 
         // button listeners
         loginButton.addActionListener(
@@ -79,22 +79,19 @@ public class TwoFactorAuth extends JFrame {
                         newLoginRequest.put("authToken", token);
                         newLoginRequest.put("appToken", userAuthCode.getText());
                         new LoginHandler(newLoginRequest);
-                        frame.dispose();
+                        dispose();
                     } else {
                         JOptionPane.showMessageDialog(
-                                frame,
+                                this,
                                 "You must enter the code.",
                                 "Error",
                                 JOptionPane.ERROR_MESSAGE);
                     }
                 });
 
-        frame.add(panel);
-        frame.setLocationRelativeTo(null);
-
-        SwingUtilities.invokeLater(()-> {
-            frame.pack();
-            frame.setVisible(true);
-        });
+        add(panel);
+        setLocationRelativeTo(null);
+        pack();
+        setVisible(true);
     }
 }

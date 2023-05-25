@@ -31,10 +31,10 @@ public class ConfigWindow extends JFrame {
 
     public ConfigWindow(ConfigHandler configHandler) {
         configHandler.loadConfig(false);
-        JFrame frame = new JFrame("Configuration");
-        frame.setSize(370, 270);
-        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        frame.setResizable(false);
+        setTitle("Configuration");
+        setSize(370, 270);
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ex) {
@@ -63,13 +63,13 @@ public class ConfigWindow extends JFrame {
                     File testPath = new File(ttrInstallBox.getText());
                     if (!(testPath.exists()) && !(testPath.isDirectory())) {
                         JOptionPane.showMessageDialog(
-                                frame,
+                                this,
                                 ttrInstallBox.getText() + " is not a valid path!",
                                 "Error",
                                 JOptionPane.ERROR_MESSAGE);
                     } else {
                         JOptionPane.showMessageDialog(
-                                frame,
+                                this,
                                 "Settings saved!",
                                 "Options",
                                 JOptionPane.INFORMATION_MESSAGE);
@@ -112,9 +112,8 @@ public class ConfigWindow extends JFrame {
         showFieldOfficeNotifications.setBounds(20, 70, 100, 80);
         showFieldOfficeNotificationsBox.setBounds(120, 85, 100, 30);
 
-        frame.add(panel);
-        frame.setLocationRelativeTo(null);
-
-        SwingUtilities.invokeLater(()-> frame.setVisible(true));
+        add(panel);
+        setLocationRelativeTo(null);
+        setVisible(true);
     }
 }

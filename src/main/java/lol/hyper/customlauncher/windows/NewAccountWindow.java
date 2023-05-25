@@ -33,16 +33,16 @@ public class NewAccountWindow extends JFrame {
     private final Logger logger = LogManager.getLogger(this);
 
     public NewAccountWindow(MainWindow mainWindow) {
-        JFrame frame = new JFrame("New Account");
-        frame.setSize(370, 400);
-        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        frame.setResizable(false);
+        setTitle("New Account");
+        setSize(370, 400);
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        frame.setIconImage(Main.icon);
+        setIconImage(Main.icon);
 
         // GUI elements
         JPanel panel = new JPanel();
@@ -97,10 +97,10 @@ public class NewAccountWindow extends JFrame {
         password2Label.setVisible(false);
 
         // button listeners
-        resetButton.addActionListener(e -> frame.dispose());
+        resetButton.addActionListener(e -> dispose());
 
         // allow pressing enter
-        frame.getRootPane().setDefaultButton(loginButton);
+        getRootPane().setDefaultButton(loginButton);
 
         Accounts accounts = new Accounts();
 
@@ -130,7 +130,7 @@ public class NewAccountWindow extends JFrame {
                     accounts.getAccounts().forEach(account -> usernames.add(account.username()));
                     if (usernames.contains(usernameTextField.getText())) {
                         JOptionPane.showMessageDialog(
-                                frame,
+                                this,
                                 "You cannot add an account with the same username.",
                                 "Error",
                                 JOptionPane.ERROR_MESSAGE);
@@ -138,7 +138,7 @@ public class NewAccountWindow extends JFrame {
                     }
                     if (usernameIsEmpty || passwordIsEmpty) {
                         JOptionPane.showMessageDialog(
-                                frame,
+                                this,
                                 "You must fill in all text boxes.",
                                 "Error",
                                 JOptionPane.ERROR_MESSAGE);
@@ -148,7 +148,7 @@ public class NewAccountWindow extends JFrame {
                     if (encrypt) {
                         if (secretIsEmpty) {
                             JOptionPane.showMessageDialog(
-                                    frame,
+                                    this,
                                     "You must enter a passphrase.",
                                     "Error",
                                     JOptionPane.ERROR_MESSAGE);
@@ -171,14 +171,13 @@ public class NewAccountWindow extends JFrame {
                     }
                     mainWindow.refreshAccountList();
                     JOptionPane.showMessageDialog(
-                            frame, usernameTextField.getText() + " was saved!");
-                    frame.dispose();
+                            this, usernameTextField.getText() + " was saved!");
+                    dispose();
                     logger.info("Saved new account!");
                     logger.info("Username: " + usernameTextField.getText());
                 });
-        frame.add(panel);
-        frame.setLocationRelativeTo(null);
-
-        SwingUtilities.invokeLater(() -> frame.setVisible(true));
+        add(panel);
+        setLocationRelativeTo(null);
+        setVisible(true);
     }
 }
