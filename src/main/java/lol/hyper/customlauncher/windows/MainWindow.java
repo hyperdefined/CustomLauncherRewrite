@@ -18,7 +18,7 @@
 package lol.hyper.customlauncher.windows;
 
 import lol.hyper.customlauncher.ConfigHandler;
-import lol.hyper.customlauncher.Main;
+import lol.hyper.customlauncher.CustomLauncherRewrite;
 import lol.hyper.customlauncher.accounts.Account;
 import lol.hyper.customlauncher.accounts.Accounts;
 import lol.hyper.customlauncher.accounts.JSONManager;
@@ -52,7 +52,7 @@ public final class MainWindow extends JFrame {
     private final Logger logger = LogManager.getLogger(this);
 
     public MainWindow(ConfigHandler configHandler, GameUpdateTracker gameUpdateTracker) {
-        setTitle("CLR " + Main.version);
+        setTitle("CLR " + CustomLauncherRewrite.version);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
         try {
@@ -60,7 +60,7 @@ public final class MainWindow extends JFrame {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        setIconImage(Main.icon);
+        setIconImage(CustomLauncherRewrite.icon);
 
         // GUI elements
         JPanel panel = new JPanel();

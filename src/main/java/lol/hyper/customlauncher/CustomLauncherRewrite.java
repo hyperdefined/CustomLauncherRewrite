@@ -22,7 +22,6 @@ import lol.hyper.customlauncher.changelog.GameUpdateTracker;
 import lol.hyper.customlauncher.windows.MainWindow;
 import lol.hyper.customlauncher.ttrupdater.TTRUpdater;
 import lol.hyper.customlauncher.updater.UpdateChecker;
-import lol.hyper.customlauncher.windows.SecretPrompt;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -38,7 +37,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.Properties;
 
-public class Main {
+public class CustomLauncherRewrite {
 
     public static String version;
     public static Logger logger;
@@ -50,10 +49,10 @@ public class Main {
         System.setProperty("log4j.configurationFile", "log4j2config.xml");
         // load the version
         final Properties properties = new Properties();
-        properties.load(Main.class.getClassLoader().getResourceAsStream("project.properties"));
+        properties.load(CustomLauncherRewrite.class.getClassLoader().getResourceAsStream("project.properties"));
         version = properties.getProperty("version");
         // log some basic info
-        logger = LogManager.getLogger(Main.class);
+        logger = LogManager.getLogger(CustomLauncherRewrite.class);
         logger.info(
                 System.getProperty("os.name")
                         + " "
@@ -100,7 +99,7 @@ public class Main {
         }
 
         // load the icon
-        InputStream iconStream = Main.class.getResourceAsStream("/icon.png");
+        InputStream iconStream = CustomLauncherRewrite.class.getResourceAsStream("/icon.png");
         if (iconStream != null) {
             icon = ImageIO.read(iconStream);
         }

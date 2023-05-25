@@ -20,7 +20,7 @@ package lol.hyper.customlauncher.fieldofficetracker;
 import dorkbox.notify.Notify;
 import dorkbox.notify.Pos;
 import lol.hyper.customlauncher.ConfigHandler;
-import lol.hyper.customlauncher.Main;
+import lol.hyper.customlauncher.CustomLauncherRewrite;
 
 import javax.swing.*;
 import javax.swing.Timer;
@@ -79,7 +79,7 @@ public class FieldOfficeTracker extends JFrame {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        setIconImage(Main.icon);
+        setIconImage(CustomLauncherRewrite.icon);
 
         // GUI elements
         JPanel panel = new JPanel();
@@ -198,7 +198,7 @@ public class FieldOfficeTracker extends JFrame {
                         .darkStyle()
                         .position(Pos.BOTTOM_RIGHT)
                         .hideAfter(5000)
-                        .image(Main.icon);
+                        .image(CustomLauncherRewrite.icon);
 
         notify.show();
     }

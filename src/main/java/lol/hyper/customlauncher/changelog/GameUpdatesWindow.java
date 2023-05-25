@@ -17,7 +17,7 @@
 
 package lol.hyper.customlauncher.changelog;
 
-import lol.hyper.customlauncher.Main;
+import lol.hyper.customlauncher.CustomLauncherRewrite;
 import lol.hyper.customlauncher.generic.ScrollableTextWindow;
 
 import javax.swing.*;
@@ -37,7 +37,7 @@ public class GameUpdatesWindow extends JFrame {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        setIconImage(Main.icon);
+        setIconImage(CustomLauncherRewrite.icon);
 
         // GUI elements
         JPanel panel = new JPanel();

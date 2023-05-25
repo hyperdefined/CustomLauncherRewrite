@@ -17,7 +17,7 @@
 
 package lol.hyper.customlauncher.districts;
 
-import lol.hyper.customlauncher.Main;
+import lol.hyper.customlauncher.CustomLauncherRewrite;
 
 import javax.swing.*;
 import javax.swing.Timer;
@@ -60,7 +60,7 @@ public class DistrictTracker extends JFrame {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        setIconImage(Main.icon);
+        setIconImage(CustomLauncherRewrite.icon);
 
         // GUI elements
         JPanel panel = new JPanel();

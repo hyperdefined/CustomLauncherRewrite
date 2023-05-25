@@ -17,11 +17,10 @@
 
 package lol.hyper.customlauncher.login;
 
-import lol.hyper.customlauncher.Main;
+import lol.hyper.customlauncher.CustomLauncherRewrite;
 import lol.hyper.customlauncher.generic.ErrorWindow;
 import lol.hyper.customlauncher.generic.InfoWindow;
 import lol.hyper.customlauncher.login.windows.TwoFactorAuth;
-import lol.hyper.customlauncher.windows.MainWindow;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
@@ -150,7 +149,7 @@ public class LoginHandler {
      */
     private Map<String, String> sendRequest(Map<String, String> loginRequest) {
         HttpPost post = new HttpPost(REQUEST_URL);
-        post.setHeader("User-Agent", Main.userAgent);
+        post.setHeader("User-Agent", CustomLauncherRewrite.userAgent);
         post.setHeader("Content-type", "application/x-www-form-urlencoded");
 
         List<NameValuePair> urlParameters = new ArrayList<>();

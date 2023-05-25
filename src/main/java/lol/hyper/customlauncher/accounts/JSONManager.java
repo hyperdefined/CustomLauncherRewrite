@@ -17,7 +17,7 @@
 
 package lol.hyper.customlauncher.accounts;
 
-import lol.hyper.customlauncher.Main;
+import lol.hyper.customlauncher.CustomLauncherRewrite;
 import lol.hyper.customlauncher.generic.ErrorWindow;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -83,7 +83,7 @@ public class JSONManager {
         String rawJSON;
         try {
             URLConnection conn = new URL(url).openConnection();
-            conn.setRequestProperty("User-Agent", Main.userAgent);
+            conn.setRequestProperty("User-Agent", CustomLauncherRewrite.userAgent);
             conn.connect();
 
             InputStream in = conn.getInputStream();
@@ -115,7 +115,7 @@ public class JSONManager {
         String rawJSON;
         try {
             URLConnection conn = new URL(url).openConnection();
-            conn.setRequestProperty("User-Agent", Main.userAgent);
+            conn.setRequestProperty("User-Agent", CustomLauncherRewrite.userAgent);
             conn.connect();
 
             InputStream in = conn.getInputStream();

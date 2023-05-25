@@ -17,7 +17,7 @@
 
 package lol.hyper.customlauncher.windows;
 
-import lol.hyper.customlauncher.Main;
+import lol.hyper.customlauncher.CustomLauncherRewrite;
 import lol.hyper.customlauncher.accounts.Account;
 import lol.hyper.customlauncher.accounts.AccountEncryption;
 import lol.hyper.customlauncher.accounts.Accounts;
@@ -45,7 +45,7 @@ public class SecretPrompt extends JFrame {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        setIconImage(Main.icon);
+        setIconImage(CustomLauncherRewrite.icon);
 
         // GUI elements
         JPanel panel = new JPanel();

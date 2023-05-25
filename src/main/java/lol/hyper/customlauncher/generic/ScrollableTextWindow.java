@@ -17,7 +17,7 @@
 
 package lol.hyper.customlauncher.generic;
 
-import lol.hyper.customlauncher.Main;
+import lol.hyper.customlauncher.CustomLauncherRewrite;
 
 import javax.swing.*;
 import java.awt.*;
@@ -33,7 +33,7 @@ public class ScrollableTextWindow extends JFrame {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        setIconImage(Main.icon);
+        setIconImage(CustomLauncherRewrite.icon);
         setPreferredSize(new Dimension(400, 300));
 
         JTextArea textArea = new JTextArea();

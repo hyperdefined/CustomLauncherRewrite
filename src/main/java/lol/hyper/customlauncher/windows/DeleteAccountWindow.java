@@ -17,7 +17,7 @@
 
 package lol.hyper.customlauncher.windows;
 
-import lol.hyper.customlauncher.Main;
+import lol.hyper.customlauncher.CustomLauncherRewrite;
 import lol.hyper.customlauncher.accounts.Account;
 import lol.hyper.customlauncher.accounts.Accounts;
 import org.apache.logging.log4j.LogManager;
@@ -41,7 +41,7 @@ public class DeleteAccountWindow extends JFrame {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        setIconImage(Main.icon);
+        setIconImage(CustomLauncherRewrite.icon);
 
         // GUI elements
         JPanel panel = new JPanel();

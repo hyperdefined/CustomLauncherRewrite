@@ -17,7 +17,7 @@
 
 package lol.hyper.customlauncher.updater;
 
-import lol.hyper.customlauncher.Main;
+import lol.hyper.customlauncher.CustomLauncherRewrite;
 import lol.hyper.customlauncher.generic.ErrorWindow;
 import lol.hyper.githubreleaseapi.GitHubRelease;
 import lol.hyper.githubreleaseapi.GitHubReleaseAPI;
@@ -209,7 +209,7 @@ public class UpdateChecker {
                 "/c",
                 "CustomLauncherRewrite-" + newVersion + ".exe",
                 "--remove-old",
-                Main.version
+                CustomLauncherRewrite.version
         };
         String linuxCommand = "./run.sh";
         ProcessBuilder pb = new ProcessBuilder();
@@ -222,7 +222,7 @@ public class UpdateChecker {
                             System.getProperty("user.dir")
                                     + File.separator
                                     + "CustomLauncherRewrite-"
-                                    + Main.version
+                                    + CustomLauncherRewrite.version
                                     + ".jar");
             try {
                 Files.delete(current.toPath());

@@ -18,7 +18,7 @@
 package lol.hyper.customlauncher.ttrupdater;
 
 import lol.hyper.customlauncher.ConfigHandler;
-import lol.hyper.customlauncher.Main;
+import lol.hyper.customlauncher.CustomLauncherRewrite;
 import lol.hyper.customlauncher.accounts.JSONManager;
 import lol.hyper.customlauncher.generic.ErrorWindow;
 import lol.hyper.customlauncher.generic.InfoWindow;
@@ -68,7 +68,7 @@ public class TTRUpdater extends JFrame {
             logger.error(e);
         }
 
-        setIconImage(Main.icon);
+        setIconImage(CustomLauncherRewrite.icon);
 
         // GUI elements
         JPanel panel = new JPanel();
@@ -349,7 +349,7 @@ public class TTRUpdater extends JFrame {
         CloseableHttpClient httpClient = HttpClients.createDefault();
 
         HttpGet httpGet = new HttpGet(downloadURL.toString());
-        httpGet.addHeader("User-Agent", Main.userAgent);
+        httpGet.addHeader("User-Agent", CustomLauncherRewrite.userAgent);
 
         try {
             CloseableHttpResponse httpResponse = httpClient.execute(httpGet);

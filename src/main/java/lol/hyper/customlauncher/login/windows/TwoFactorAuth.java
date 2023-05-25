@@ -17,7 +17,7 @@
 
 package lol.hyper.customlauncher.login.windows;
 
-import lol.hyper.customlauncher.Main;
+import lol.hyper.customlauncher.CustomLauncherRewrite;
 import lol.hyper.customlauncher.login.LoginHandler;
 
 import javax.swing.*;
@@ -38,7 +38,7 @@ public class TwoFactorAuth extends JFrame {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        setIconImage(Main.icon);
+        setIconImage(CustomLauncherRewrite.icon);
 
         // GUI elements
         JPanel panel = new JPanel();
