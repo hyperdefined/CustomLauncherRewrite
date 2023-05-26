@@ -18,11 +18,18 @@
 package lol.hyper.customlauncher.generic;
 
 import lol.hyper.customlauncher.CustomLauncherRewrite;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Arrays;
 
 public class ScrollableTextWindow extends JFrame {
+
+    private final JTextPane textArea;
+
+    public final Logger logger = LogManager.getLogger(this);
 
     public ScrollableTextWindow(String title, String text) {
         setTitle(title);
@@ -34,17 +41,39 @@ public class ScrollableTextWindow extends JFrame {
             ex.printStackTrace();
         }
         setIconImage(CustomLauncherRewrite.icon);
-        setPreferredSize(new Dimension(400, 300));
+        setPreferredSize(new Dimension(600, 500));
 
-        JTextArea textArea = new JTextArea();
+        textArea = new JTextPane();
         textArea.setEditable(false);
-        textArea.setText(text);
+        textArea.setContentType("text/html");
 
         JScrollPane scrollPane = new JScrollPane(textArea);
+        JScrollBar verticalScrollBar = scrollPane.getVerticalScrollBar();
+        verticalScrollBar.setValue(verticalScrollBar.getMinimum());
         getContentPane().add(scrollPane);
+
+        formatContent(text);
 
         setLocationRelativeTo(null);
         pack();
         setVisible(true);
+    }
+
+    private void formatContent(String content) {
+        String[] contentLines = content.split(System.lineSeparator());
+        StringBuilder htmlContent = new StringBuilder();
+        for (String line : contentLines) {
+            String cleanedLine = line.trim();
+            if (cleanedLine.matches("^\\*\\s?(.*)")) {
+                // lines that start with * convert to list
+                cleanedLine = cleanedLine.replaceAll("^\\*\\s?(.*)", "<li>$1</li>");
+            } else if (cleanedLine.matches("^=(.*)$")) {
+                // lines that start with = convert to header
+                cleanedLine = cleanedLine.replaceAll("^=(.*)$", "<h1>$1</h1>");
+            }
+            htmlContent.append(cleanedLine).append(System.lineSeparator());
+        }
+
+        textArea.setText("<html><body><ul>" + htmlContent + "</ul></body></html>");
     }
 }
