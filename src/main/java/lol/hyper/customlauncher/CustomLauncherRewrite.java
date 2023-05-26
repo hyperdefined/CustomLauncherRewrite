@@ -133,7 +133,7 @@ public class CustomLauncherRewrite {
         }
 
         // run the TTR updater
-        SwingUtilities.invokeLater(TTRUpdater::new);
+        new TTRUpdater();
 
         // run the main window
         SwingUtilities.invokeLater(() -> new MainWindow(configHandler, gameUpdateTracker));
