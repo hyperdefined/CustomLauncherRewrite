@@ -15,10 +15,26 @@
  * along with CustomLauncherRewrite.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package lol.hyper.customlauncher.accounts;
+/*
+ * This file is part of CustomLauncherRewrite.
+ *
+ * CustomLauncherRewrite is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * CustomLauncherRewrite is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with CustomLauncherRewrite.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package lol.hyper.customlauncher.tools;
 
 import lol.hyper.customlauncher.CustomLauncherRewrite;
-import lol.hyper.customlauncher.generic.ErrorWindow;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
@@ -30,13 +46,9 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.stream.Collectors;
 
 public class JSONManager {
-
-    public static final File accountsFile =
-            Paths.get("config" + File.separator + "accounts.json").toFile();
     private static final Logger logger = LogManager.getLogger(JSONManager.class);
 
     /**

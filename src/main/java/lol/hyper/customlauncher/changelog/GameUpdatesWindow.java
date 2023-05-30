@@ -18,7 +18,7 @@
 package lol.hyper.customlauncher.changelog;
 
 import lol.hyper.customlauncher.CustomLauncherRewrite;
-import lol.hyper.customlauncher.generic.ScrollableTextWindow;
+import lol.hyper.customlauncher.tools.ScrollableTextWindow;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;

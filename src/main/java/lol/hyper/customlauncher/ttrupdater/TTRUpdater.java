@@ -19,9 +19,9 @@ package lol.hyper.customlauncher.ttrupdater;
 
 import lol.hyper.customlauncher.ConfigHandler;
 import lol.hyper.customlauncher.CustomLauncherRewrite;
-import lol.hyper.customlauncher.accounts.JSONManager;
-import lol.hyper.customlauncher.generic.ErrorWindow;
-import lol.hyper.customlauncher.generic.InfoWindow;
+import lol.hyper.customlauncher.tools.JSONManager;
+import lol.hyper.customlauncher.tools.ErrorWindow;
+import lol.hyper.customlauncher.tools.InfoWindow;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;

@@ -21,7 +21,7 @@ import lol.hyper.customlauncher.CustomLauncherRewrite;
 import lol.hyper.customlauncher.accounts.Account;
 import lol.hyper.customlauncher.accounts.AccountEncryption;
 import lol.hyper.customlauncher.accounts.Accounts;
-import lol.hyper.customlauncher.generic.ErrorWindow;
+import lol.hyper.customlauncher.tools.ErrorWindow;
 import lol.hyper.customlauncher.login.LoginHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

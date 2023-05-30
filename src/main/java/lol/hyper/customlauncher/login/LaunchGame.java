@@ -18,7 +18,7 @@
 package lol.hyper.customlauncher.login;
 
 import lol.hyper.customlauncher.ConfigHandler;
-import lol.hyper.customlauncher.generic.ErrorWindow;
+import lol.hyper.customlauncher.tools.ErrorWindow;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

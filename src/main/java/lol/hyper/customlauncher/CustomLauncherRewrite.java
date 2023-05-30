@@ -17,7 +17,8 @@
 
 package lol.hyper.customlauncher;
 
-import lol.hyper.customlauncher.accounts.JSONManager;
+import lol.hyper.customlauncher.accounts.Accounts;
+import lol.hyper.customlauncher.tools.JSONManager;
 import lol.hyper.customlauncher.changelog.GameUpdateTracker;
 import lol.hyper.customlauncher.windows.MainWindow;
 import lol.hyper.customlauncher.ttrupdater.TTRUpdater;
@@ -73,6 +74,7 @@ public class CustomLauncherRewrite {
             logger.info("Creating config folder at " + configPath.getAbsolutePath());
         }
 
+        // set the config
         ConfigHandler configHandler = new ConfigHandler();
 
         // create the ttr-files folder
@@ -95,7 +97,7 @@ public class CustomLauncherRewrite {
             audioSettings.put("music-volume", 10);
             audioSettings.put("sfx-volume", 10);
             options.put("audio", audioSettings);
-            JSONManager.writeFile(options, new File("ttr-files/settings.json"));
+            JSONManager.writeFile(options, new File("ttr-files", "settings.json"));
         }
 
         // load the icon
@@ -105,9 +107,9 @@ public class CustomLauncherRewrite {
         }
 
         // create accounts.json with no accounts
-        if (!JSONManager.accountsFile.exists()) {
+        if (!Accounts.ACCOUNTS_FILE.exists()) {
             JSONArray newAccounts = new JSONArray();
-            JSONManager.writeFile(newAccounts, JSONManager.accountsFile);
+            JSONManager.writeFile(newAccounts, Accounts.ACCOUNTS_FILE);
             logger.info("Creating base accounts file...");
         }
 
@@ -123,7 +125,10 @@ public class CustomLauncherRewrite {
             }
         }
 
+        // check for updates
         new UpdateChecker(version);
+
+        // load ttr game updates
         GameUpdateTracker gameUpdateTracker = new GameUpdateTracker();
 
         File ttrFiles = new File("ttr-files");

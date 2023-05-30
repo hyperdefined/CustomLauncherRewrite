@@ -18,7 +18,7 @@
 package lol.hyper.customlauncher.updater;
 
 import lol.hyper.customlauncher.CustomLauncherRewrite;
-import lol.hyper.customlauncher.generic.ErrorWindow;
+import lol.hyper.customlauncher.tools.ErrorWindow;
 import lol.hyper.githubreleaseapi.GitHubRelease;
 import lol.hyper.githubreleaseapi.GitHubReleaseAPI;
 import lol.hyper.githubreleaseapi.ReleaseNotFoundException;
