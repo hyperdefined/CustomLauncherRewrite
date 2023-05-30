@@ -1,12 +1,17 @@
+# intellij files
 .idea
 *.iml
 target/
 out/
+
+# launcher files
 temp/
 config/
-log-*.log
 ttr-files/
-hs*.log
-*.exe
-*~
 logs/
+
+# removes any files that start with ~
+*~
+
+# setup files
+Output/
