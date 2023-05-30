@@ -102,8 +102,6 @@ public class NewAccountWindow extends JFrame {
         // allow pressing enter
         getRootPane().setDefaultButton(loginButton);
 
-        Accounts accounts = new Accounts();
-
         encryptedCheck.addItemListener(
                 e -> {
                     if (e.getStateChange() == ItemEvent.SELECTED) {
@@ -127,7 +125,7 @@ public class NewAccountWindow extends JFrame {
                     boolean secretIsEmpty = secretPhraseField.getPassword().length == 0;
                     boolean encrypt = encryptedCheck.isSelected();
                     ArrayList<String> usernames = new ArrayList<>();
-                    accounts.getAccounts().forEach(account -> usernames.add(account.username()));
+                    mainWindow.accounts.getAccounts().forEach(account -> usernames.add(account.username()));
                     if (usernames.contains(usernameTextField.getText())) {
                         JOptionPane.showMessageDialog(
                                 this,
@@ -159,12 +157,12 @@ public class NewAccountWindow extends JFrame {
                                 AccountEncryption.encrypt(
                                         String.valueOf(passwordField.getPassword()),
                                         String.valueOf(secretPhraseField.getPassword()));
-                        accounts.addAccount(
+                        mainWindow.accounts.addAccount(
                                 usernameTextField.getText(),
                                 encryptedPassword,
                                 Account.Type.ENCRYPTED);
                     } else {
-                        accounts.addAccount(
+                        mainWindow.accounts.addAccount(
                                 usernameTextField.getText(),
                                 String.valueOf(passwordField.getPassword()),
                                 Account.Type.PLAINTEXT);

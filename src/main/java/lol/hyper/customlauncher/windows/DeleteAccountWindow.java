@@ -52,12 +52,9 @@ public class DeleteAccountWindow extends JFrame {
         accountsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.add(accountsLabel);
 
-        // accounts list
-        Accounts accounts = new Accounts();
-
         DefaultListModel<Account> model = new DefaultListModel<>();
         JList<Account> accountList = new JList<>(model);
-        model.addAll(accounts.getAccounts());
+        model.addAll(mainWindow.accounts.getAccounts());
         DefaultListCellRenderer renderer = (DefaultListCellRenderer) accountList.getCellRenderer();
         renderer.setHorizontalAlignment(SwingConstants.CENTER);
         accountList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -73,7 +70,7 @@ public class DeleteAccountWindow extends JFrame {
                         JList<Account> accountList = (JList<Account>) evt.getSource();
                         if (evt.getClickCount() == 2) {
                             Account account = accountList.getSelectedValue();
-                            accounts.removeAccount(account);
+                            mainWindow.accounts.removeAccount(account);
                             mainWindow.refreshAccountList();
                             JOptionPane.showMessageDialog(
                                     DeleteAccountWindow.this, account.username() + " was deleted!");

@@ -42,7 +42,6 @@ public class Accounts {
                 errorWindow.dispose();
             }
         }
-        loadAccountsFromFile();
     }
 
     /**

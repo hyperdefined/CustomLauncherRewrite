@@ -29,7 +29,6 @@ import lol.hyper.customlauncher.fieldofficetracker.FieldOfficeTracker;
 import lol.hyper.customlauncher.generic.InfoWindow;
 import lol.hyper.customlauncher.invasiontracker.InvasionTracker;
 import lol.hyper.customlauncher.login.LoginHandler;
-import lol.hyper.customlauncher.login.windows.TwoFactorAuth;
 import lol.hyper.customlauncher.ttrupdater.TTRUpdater;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -48,7 +47,7 @@ public final class MainWindow extends JFrame {
     private final FieldOfficeTracker fieldOfficeTracker;
     private final DistrictTracker districtTracker;
 
-    private final Accounts accounts = new Accounts();
+    public final Accounts accounts = new Accounts();
 
     private final Logger logger = LogManager.getLogger(this);
 
