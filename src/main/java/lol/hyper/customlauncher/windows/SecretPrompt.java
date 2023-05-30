@@ -125,6 +125,5 @@ public class SecretPrompt extends JFrame {
 
         add(panel);
         setLocationRelativeTo(null);
-        setVisible(true);
     }
 }

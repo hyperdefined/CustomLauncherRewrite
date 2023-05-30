@@ -176,8 +176,8 @@ public class NewAccountWindow extends JFrame {
                     logger.info("Saved new account!");
                     logger.info("Username: " + usernameTextField.getText());
                 });
+
         add(panel);
         setLocationRelativeTo(null);
-        setVisible(true);
     }
 }

@@ -114,6 +114,5 @@ public class ConfigWindow extends JFrame {
 
         add(panel);
         setLocationRelativeTo(null);
-        setVisible(true);
     }
 }

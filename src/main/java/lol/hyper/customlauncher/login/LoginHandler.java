@@ -21,6 +21,7 @@ import lol.hyper.customlauncher.CustomLauncherRewrite;
 import lol.hyper.customlauncher.generic.ErrorWindow;
 import lol.hyper.customlauncher.generic.InfoWindow;
 import lol.hyper.customlauncher.login.windows.TwoFactorAuth;
+import lol.hyper.customlauncher.windows.SecretPrompt;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
@@ -96,7 +97,10 @@ public class LoginHandler {
                 errorWindow.dispose();
             }
             case "partial" -> // partial is used for 2FA or ToonGuard
-                    SwingUtilities.invokeLater(() -> new TwoFactorAuth(banner, receivedRequest.get("responseToken")));
+                    SwingUtilities.invokeLater(() -> {
+                        TwoFactorAuth twoFactorAuth = new TwoFactorAuth(banner, receivedRequest.get("responseToken"));
+                        twoFactorAuth.setVisible(true);
+                    });
             case "true" -> // login was successful
             {
                 logger.info("Login was successful, launching game...");

@@ -29,6 +29,7 @@ import lol.hyper.customlauncher.fieldofficetracker.FieldOfficeTracker;
 import lol.hyper.customlauncher.generic.InfoWindow;
 import lol.hyper.customlauncher.invasiontracker.InvasionTracker;
 import lol.hyper.customlauncher.login.LoginHandler;
+import lol.hyper.customlauncher.login.windows.TwoFactorAuth;
 import lol.hyper.customlauncher.ttrupdater.TTRUpdater;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -84,7 +85,10 @@ public final class MainWindow extends JFrame {
         // new account button
         JButton accountManagerButton = new JButton("Manage Accounts");
         accountManagerButton.addActionListener(
-                e -> SwingUtilities.invokeLater(() -> new AccountManagerWindow(this)));
+                e -> SwingUtilities.invokeLater(() -> {
+                    AccountManagerWindow accountManagerWindow = new AccountManagerWindow(this);
+                    accountManagerWindow.setVisible(true);
+                }));
         accountManagerButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         accountManagerButton.setMaximumSize(
                 new Dimension(300, accountManagerButton.getMinimumSize().height));
@@ -166,7 +170,11 @@ public final class MainWindow extends JFrame {
         // check for updates button
         JButton ttrUpdateButton = new JButton("Check TTR Updates");
         ttrUpdateButton.addActionListener(
-                e -> SwingUtilities.invokeLater(TTRUpdater::new));
+                e -> {
+                    TTRUpdater ttrUpdater = new TTRUpdater();
+                    ttrUpdater.setVisible(true);
+                    ttrUpdater.checkUpdates();
+                });
         ttrUpdateButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         ttrUpdateButton.setMaximumSize(new Dimension(300, ttrUpdateButton.getMinimumSize().height));
         panel.add(ttrUpdateButton);
@@ -174,10 +182,10 @@ public final class MainWindow extends JFrame {
         // game updates button
         JButton gameUpdatesButton = new JButton("Game Updates");
         gameUpdatesButton.addActionListener(
-                e -> {
+                e -> SwingUtilities.invokeLater(() -> {
                     GameUpdatesWindow gameUpdatesWindow = new GameUpdatesWindow(gameUpdateTracker.allGameUpdates);
-                    gameUpdatesWindow.dispose();
-                });
+                    gameUpdatesWindow.setVisible(true);
+                }));
         gameUpdatesButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         gameUpdatesButton.setMaximumSize(new Dimension(300, gameUpdatesButton.getMinimumSize().height));
         panel.add(gameUpdatesButton);
@@ -185,7 +193,10 @@ public final class MainWindow extends JFrame {
         // config button
         JButton configButton = new JButton("Configuration");
         configButton.addActionListener(
-                e -> SwingUtilities.invokeLater(() -> new ConfigWindow(configHandler)));
+                e -> SwingUtilities.invokeLater(() -> {
+                    ConfigWindow configWindow = new ConfigWindow(configHandler);
+                    configWindow.setVisible(true);
+                }));
         configButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         configButton.setMaximumSize(new Dimension(300, configButton.getMinimumSize().height));
         panel.add(configButton);
@@ -215,8 +226,10 @@ public final class MainWindow extends JFrame {
                             Account.Type accountType = selectedAccount.accountType();
                             logger.info("Account type is " + accountType.toInt());
                             switch (accountType) {
-                                case ENCRYPTED, LEGACY_ENCRYPTED ->
-                                        SwingUtilities.invokeLater(() -> new SecretPrompt(accounts, selectedAccount));
+                                case ENCRYPTED, LEGACY_ENCRYPTED -> SwingUtilities.invokeLater(() -> {
+                                    SecretPrompt secretPrompt = new SecretPrompt(accounts, selectedAccount);
+                                    secretPrompt.setVisible(true);
+                                });
                                 case PLAINTEXT -> {
                                     HashMap<String, String> newLoginRequest = new HashMap<>();
                                     newLoginRequest.put("username", selectedAccount.username());
@@ -231,7 +244,6 @@ public final class MainWindow extends JFrame {
         setSize(300, 450);
         add(panel);
         setLocationRelativeTo(null);
-        setVisible(true);
     }
 
     /**

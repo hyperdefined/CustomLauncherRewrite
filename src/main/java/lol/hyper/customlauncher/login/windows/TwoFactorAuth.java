@@ -92,6 +92,5 @@ public class TwoFactorAuth extends JFrame {
         add(panel);
         setLocationRelativeTo(null);
         pack();
-        setVisible(true);
     }
 }

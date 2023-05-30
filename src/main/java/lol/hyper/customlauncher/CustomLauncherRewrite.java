@@ -133,9 +133,14 @@ public class CustomLauncherRewrite {
         }
 
         // run the TTR updater
-        new TTRUpdater();
+        TTRUpdater ttrUpdater = new TTRUpdater();
+        ttrUpdater.setVisible(true);
+        ttrUpdater.checkUpdates();
 
         // run the main window
-        SwingUtilities.invokeLater(() -> new MainWindow(configHandler, gameUpdateTracker));
+        SwingUtilities.invokeLater(() -> {
+            MainWindow frame = new MainWindow(configHandler, gameUpdateTracker);
+            frame.setVisible(true);
+        });
     }
 }

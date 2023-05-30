@@ -57,12 +57,7 @@ public class GameUpdatesWindow extends JFrame {
         setSize(500, 400);
         add(panel);
         setLocationRelativeTo(null);
-
-        SwingUtilities.invokeLater(() -> {
-            pack();
-            setVisible(true);
-        });
-
+        pack();
 
         gameUpdatedModel.setRowCount(0);
         for (GameUpdate gameUpdate : gameUpdates) {

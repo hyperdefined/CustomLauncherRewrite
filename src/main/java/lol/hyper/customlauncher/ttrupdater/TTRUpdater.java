@@ -54,7 +54,8 @@ public class TTRUpdater extends JFrame {
     public final String PATCHES_URL = "https://cdn.toontownrewritten.com/content/patchmanifest.txt";
     public final String PATCHES_URL_DL = "https://download.toontownrewritten.com/patches/";
     public final Logger logger = LogManager.getLogger(this);
-    final JProgressBar progressBar;
+    private final JProgressBar progressBar;
+    private final JLabel updateStatus;
 
     public TTRUpdater() {
         // set up the window elements
@@ -74,7 +75,7 @@ public class TTRUpdater extends JFrame {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-        JLabel updateStatus = new JLabel("Checking files...");
+        updateStatus = new JLabel("Checking files...");
         updateStatus.setAlignmentX(Component.CENTER_ALIGNMENT);
         progressBar = new JProgressBar(0, 0);
         progressBar.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -86,9 +87,10 @@ public class TTRUpdater extends JFrame {
         updateStatus.setBounds(70, 25, 370, 40);
 
         add(panel);
-        setVisible(true);
         setLocationRelativeTo(null);
+    }
 
+    public void checkUpdates() {
         // don't run the updater if the folder doesn't exist
         if (!ConfigHandler.INSTALL_LOCATION.exists()) {
             JOptionPane.showMessageDialog(
@@ -321,7 +323,7 @@ public class TTRUpdater extends JFrame {
      * @param temp       The temp file's name that was downloaded.
      * @param outputName The file's output name.
      */
-    public void decompressBz2(String temp, String outputName) throws IOException {
+    private void decompressBz2(String temp, String outputName) throws IOException {
         File tempFile = new File("temp" + File.separator + temp);
         File output = new File(ConfigHandler.INSTALL_LOCATION, outputName);
         BZip2CompressorInputStream in =
@@ -343,7 +345,7 @@ public class TTRUpdater extends JFrame {
      * @param downloadOutput The file to save to.
      * @return True if successful, false if not.
      */
-    public boolean saveFile(URL downloadURL, File downloadOutput) {
+    private boolean saveFile(URL downloadURL, File downloadOutput) {
         boolean isSucceed = true;
 
         CloseableHttpClient httpClient = HttpClients.createDefault();

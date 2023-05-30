@@ -86,6 +86,5 @@ public class DeleteAccountWindow extends JFrame {
         setSize(300, 400);
         add(panel);
         setLocationRelativeTo(null);
-        setVisible(true);
     }
 }
