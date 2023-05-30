@@ -29,11 +29,6 @@ public class Account {
         this.accountType = accountType;
     }
 
-    @Override
-    public String toString() {
-        return this.username;
-    }
-
     public void setPassword(String newPassword) {
         this.password = newPassword;
     }
@@ -68,5 +63,23 @@ public class Account {
         public int toInt() {
             return accountType;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+
+        if (!(o instanceof Account account)) {
+            return false;
+        }
+
+        return account.username().equalsIgnoreCase(this.username());
+    }
+
+    @Override
+    public String toString() {
+        return this.username;
     }
 }
