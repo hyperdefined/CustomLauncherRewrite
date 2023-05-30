@@ -162,8 +162,6 @@ public class TTRUpdater extends JFrame {
                                     + File.separator
                                     + key);
                     logger.info("This file is missing and will be downloaded.");
-                    logger.info(
-                            "-----------------------------------------------------------------------");
                     filesToDownload.add(key);
                     continue;
                 }
@@ -194,10 +192,11 @@ public class TTRUpdater extends JFrame {
                     logger.info("File is outdated! Will be downloaded.");
                     filesToDownload.add(key);
                 }
-                logger.info(
-                        "-----------------------------------------------------------------------");
             }
         }
+
+        logger.info(
+                "-----------------------------------------------------------------------");
 
         // we store files we need to download in filesToDownload
         // if there are files in that list, download them
