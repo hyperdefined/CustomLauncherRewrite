@@ -170,11 +170,20 @@ public final class MainWindow extends JFrame {
         // check for updates button
         JButton ttrUpdateButton = new JButton("Check TTR Updates");
         ttrUpdateButton.addActionListener(
-                e -> {
+                e -> SwingUtilities.invokeLater(() -> {
                     TTRUpdater ttrUpdater = new TTRUpdater();
                     ttrUpdater.setVisible(true);
-                    ttrUpdater.checkUpdates();
-                });
+
+                    SwingWorker<Void, Void> worker = new SwingWorker<>() {
+                        @Override
+                        protected Void doInBackground() {
+                            ttrUpdater.checkUpdates();
+                            return null;
+                        }
+                    };
+
+                    worker.execute();
+                }));
         ttrUpdateButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         ttrUpdateButton.setMaximumSize(new Dimension(300, ttrUpdateButton.getMinimumSize().height));
         panel.add(ttrUpdateButton);
