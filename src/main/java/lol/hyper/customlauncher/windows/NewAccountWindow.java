@@ -173,6 +173,7 @@ public class NewAccountWindow extends JFrame {
                     dispose();
                     logger.info("Saved new account!");
                     logger.info("Username: " + usernameTextField.getText());
+                    logger.info("Encrypted: " + encrypt);
                 });
 
         add(panel);

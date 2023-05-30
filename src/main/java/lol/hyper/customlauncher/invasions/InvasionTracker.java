@@ -15,7 +15,7 @@
  * along with CustomLauncherRewrite.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package lol.hyper.customlauncher.invasiontracker;
+package lol.hyper.customlauncher.invasions;
 
 import dorkbox.notify.Notify;
 import dorkbox.notify.Pos;

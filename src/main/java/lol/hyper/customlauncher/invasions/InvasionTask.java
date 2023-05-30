@@ -15,7 +15,7 @@
  * along with CustomLauncherRewrite.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package lol.hyper.customlauncher.invasiontracker;
+package lol.hyper.customlauncher.invasions;
 
 import lol.hyper.customlauncher.accounts.JSONManager;
 import org.apache.logging.log4j.LogManager;

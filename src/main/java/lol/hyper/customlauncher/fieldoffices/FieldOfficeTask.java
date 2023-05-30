@@ -15,7 +15,7 @@
  * along with CustomLauncherRewrite.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package lol.hyper.customlauncher.fieldofficetracker;
+package lol.hyper.customlauncher.fieldoffices;
 
 import lol.hyper.customlauncher.accounts.JSONManager;
 import org.apache.logging.log4j.LogManager;
