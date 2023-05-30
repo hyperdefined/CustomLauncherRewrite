@@ -209,45 +209,47 @@ public final class MainWindow extends JFrame {
         configButton.setMaximumSize(new Dimension(300, configButton.getMinimumSize().height));
         panel.add(configButton);
 
-        accountList.addMouseListener(
-                new MouseAdapter() {
-                    public void mouseClicked(MouseEvent evt) {
-                        @SuppressWarnings("unchecked")
-                        JList<Account> accountList = (JList<Account>) evt.getSource();
-                        if (evt.getClickCount() == 2) {
-                            if (!ConfigHandler.INSTALL_LOCATION.exists()) {
-                                JOptionPane.showMessageDialog(
-                                        MainWindow.this,
-                                        "Unable to launch the game. The install location cannot be found.",
-                                        "Error",
-                                        JOptionPane.ERROR_MESSAGE);
-                                return;
-                            }
-                            // check if the game is online
-                            // before launching
-                            boolean isOnline = checkTTRStatus();
-                            if (!isOnline) {
-                                return;
-                            }
-                            Account selectedAccount = accountList.getSelectedValue();
-                            logger.info("Using account: " + selectedAccount.username());
-                            Account.Type accountType = selectedAccount.accountType();
-                            logger.info("Account type is " + accountType.toInt());
-                            switch (accountType) {
-                                case ENCRYPTED, LEGACY_ENCRYPTED -> SwingUtilities.invokeLater(() -> {
-                                    SecretPrompt secretPrompt = new SecretPrompt(accounts, selectedAccount);
-                                    secretPrompt.setVisible(true);
-                                });
-                                case PLAINTEXT -> {
-                                    HashMap<String, String> newLoginRequest = new HashMap<>();
-                                    newLoginRequest.put("username", selectedAccount.username());
-                                    newLoginRequest.put("password", selectedAccount.password());
-                                    new LoginHandler(newLoginRequest);
-                                }
-                            }
+        accountList.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent event) {
+                @SuppressWarnings("unchecked")
+                JList<Account> accountList = (JList<Account>) event.getSource();
+                if (event.getClickCount() == 2) {
+                    // clear the selection
+                    accountList.getSelectionModel().clearSelection();
+                    if (!ConfigHandler.INSTALL_LOCATION.exists()) {
+                        JOptionPane.showMessageDialog(
+                                MainWindow.this,
+                                "Unable to launch the game. The install location cannot be found.",
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    // check if the game is online
+                    // before launching
+                    boolean isOnline = checkTTRStatus();
+                    if (!isOnline) {
+                        return;
+                    }
+                    Account selectedAccount = accountList.getSelectedValue();
+                    logger.info("Using account: " + selectedAccount.username());
+                    Account.Type accountType = selectedAccount.accountType();
+                    logger.info("Account type is " + accountType.toInt());
+                    switch (accountType) {
+                        case ENCRYPTED, LEGACY_ENCRYPTED -> SwingUtilities.invokeLater(() -> {
+                            SecretPrompt secretPrompt = new SecretPrompt(accounts, selectedAccount);
+                            secretPrompt.setVisible(true);
+                        });
+                        case PLAINTEXT -> {
+                            HashMap<String, String> newLoginRequest = new HashMap<>();
+                            newLoginRequest.put("username", selectedAccount.username());
+                            newLoginRequest.put("password", selectedAccount.password());
+                            new LoginHandler(newLoginRequest);
                         }
                     }
-                });
+                }
+            }
+        });
 
         setSize(300, 450);
         add(panel);
