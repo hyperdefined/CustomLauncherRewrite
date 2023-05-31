@@ -17,8 +17,8 @@
 
 package lol.hyper.customlauncher;
 
-import lol.hyper.customlauncher.tools.ErrorWindow;
-import lol.hyper.customlauncher.tools.InfoWindow;
+import lol.hyper.customlauncher.tools.ExceptionWindow;
+import lol.hyper.customlauncher.tools.PopUpWindow;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
@@ -31,7 +31,7 @@ public class FirstLaunch {
     private final Logger logger = LogManager.getLogger(this);
 
     public FirstLaunch() {
-        new InfoWindow("Welcome to CustomLauncherRewrite! I am first going to detect for an existing TTR install.\nI will copy screenshots, settings, and resource packs.");
+        new PopUpWindow(null, "Welcome to CustomLauncherRewrite! I am first going to detect for an existing TTR install.\nI will copy screenshots, settings, and resource packs.");
         if (SystemUtils.IS_OS_LINUX) {
             copyLinuxInstall();
         } else if (SystemUtils.IS_OS_WINDOWS) {
@@ -53,7 +53,7 @@ public class FirstLaunch {
         }
         // can't find install folder
         if (!foundInstall) {
-            new InfoWindow("I am unable to find your TTR install location. You'll have to manually copy things over that you wish to keep.");
+            new PopUpWindow(null, "I am unable to find your TTR install location. You'll have to manually copy things over that you wish to keep.");
             return;
         }
         logger.info("Found existing TTR install at " + windowsInstall);
@@ -64,7 +64,7 @@ public class FirstLaunch {
         String LINUX_INSTALL = "/.var/app/com.toontownrewritten.Launcher/data/";
         File linuxInstall = new File(System.getProperty("user.home") + LINUX_INSTALL);
         if (!linuxInstall.exists()) {
-            new InfoWindow("I am unable to find your TTR install location. You'll have to manually copy things over that you wish to keep.");
+            new PopUpWindow(null, "I am unable to find your TTR install location. You'll have to manually copy things over that you wish to keep.");
             return;
         }
         logger.info("Found existing TTR install at " + linuxInstall);
@@ -83,7 +83,7 @@ public class FirstLaunch {
             FileUtils.copyFileToDirectory(screenshots, newInstall);
         } catch (IOException exception) {
             logger.error("Unable to copy TTR files!", exception);
-            new ErrorWindow(exception);
+            new ExceptionWindow(exception);
         }
     }
 }

@@ -26,7 +26,7 @@ import lol.hyper.customlauncher.changelog.GameUpdateTracker;
 import lol.hyper.customlauncher.changelog.GameUpdatesWindow;
 import lol.hyper.customlauncher.districts.DistrictTracker;
 import lol.hyper.customlauncher.fieldoffices.FieldOfficeTracker;
-import lol.hyper.customlauncher.tools.InfoWindow;
+import lol.hyper.customlauncher.tools.PopUpWindow;
 import lol.hyper.customlauncher.invasions.InvasionTracker;
 import lol.hyper.customlauncher.login.LoginHandler;
 import lol.hyper.customlauncher.ttrupdater.TTRUpdater;
@@ -282,7 +282,7 @@ public final class MainWindow extends JFrame {
         if (ttrStatusJSON.has("banner")) {
             String banner = ttrStatusJSON.getString("banner");
             logger.info("TTR's banner returned: " + banner);
-            new InfoWindow(banner);
+            new PopUpWindow(this, banner);
         }
         return status;
     }

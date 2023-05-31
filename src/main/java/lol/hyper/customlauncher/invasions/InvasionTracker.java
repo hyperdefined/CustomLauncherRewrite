@@ -21,7 +21,7 @@ import dorkbox.notify.Notify;
 import dorkbox.notify.Pos;
 import lol.hyper.customlauncher.ConfigHandler;
 import lol.hyper.customlauncher.CustomLauncherRewrite;
-import lol.hyper.customlauncher.tools.InfoWindow;
+import lol.hyper.customlauncher.tools.PopUpWindow;
 
 import javax.swing.*;
 import javax.swing.Timer;
@@ -62,7 +62,7 @@ public class InvasionTracker extends JFrame {
     public void showWindow() {
         // this can happen...
         if (invasions.isEmpty()) {
-            new InfoWindow("There are no invasions currently.");
+            new PopUpWindow(null, "There are no invasions currently.");
             return;
         }
 

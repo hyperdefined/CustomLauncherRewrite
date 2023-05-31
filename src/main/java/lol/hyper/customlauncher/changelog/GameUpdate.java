@@ -17,12 +17,7 @@
 
 package lol.hyper.customlauncher.changelog;
 
-public class GameUpdate implements Comparable<GameUpdate> {
-
-    private final int id;
-    private final String version;
-    private final String notes;
-    private final String date;
+public record GameUpdate(int id, String version, String notes, String date) implements Comparable<GameUpdate> {
 
     /**
      * Stores information about an update. This has release notes, date, and version.
@@ -32,11 +27,7 @@ public class GameUpdate implements Comparable<GameUpdate> {
      * @param notes   The update release notes.
      * @param date    The update date.
      */
-    public GameUpdate(int id, String version, String notes, String date) {
-        this.id = id;
-        this.version = version;
-        this.notes = notes;
-        this.date = date;
+    public GameUpdate {
     }
 
     /**
@@ -44,6 +35,7 @@ public class GameUpdate implements Comparable<GameUpdate> {
      *
      * @return The number ID.
      */
+    @Override
     public int id() {
         return id;
     }
@@ -53,6 +45,7 @@ public class GameUpdate implements Comparable<GameUpdate> {
      *
      * @return The notes formatted.
      */
+    @Override
     public String notes() {
         return notes;
     }
@@ -62,6 +55,7 @@ public class GameUpdate implements Comparable<GameUpdate> {
      *
      * @return The version of the update.
      */
+    @Override
     public String version() {
         return version;
     }
@@ -71,6 +65,7 @@ public class GameUpdate implements Comparable<GameUpdate> {
      *
      * @return The date of the update.
      */
+    @Override
     public String date() {
         return date;
     }

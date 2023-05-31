@@ -18,8 +18,8 @@
 package lol.hyper.customlauncher.login;
 
 import lol.hyper.customlauncher.CustomLauncherRewrite;
-import lol.hyper.customlauncher.tools.ErrorWindow;
-import lol.hyper.customlauncher.tools.InfoWindow;
+import lol.hyper.customlauncher.tools.ExceptionWindow;
+import lol.hyper.customlauncher.tools.PopUpWindow;
 import lol.hyper.customlauncher.login.windows.TwoFactorAuth;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
@@ -64,8 +64,7 @@ public class LoginHandler {
             attempts += 1;
         } catch (Exception exception) {
             logger.error("Unable to send login request to TTR!", exception);
-            JFrame errorWindow = new ErrorWindow(exception);
-            errorWindow.dispose();
+            new ExceptionWindow(exception);
             return;
         }
 
@@ -91,9 +90,7 @@ public class LoginHandler {
         // TTR has different statuses for login responses
         switch (status) {
             case "false" -> // false is invalid login details / maintenance
-            {
-                new ErrorWindow(banner);
-            }
+                    new PopUpWindow(null, banner);
             case "partial" -> // partial is used for 2FA or ToonGuard
                     SwingUtilities.invokeLater(() -> {
                         TwoFactorAuth twoFactorAuth = new TwoFactorAuth(banner, receivedRequest.get("responseToken"));
@@ -114,7 +111,7 @@ public class LoginHandler {
                 // TTR saves your request to queueToken, so just send that back
                 // to get an updated response
                 if (Integer.parseInt(eta) >= 5) {
-                    new InfoWindow("You were placed in a queue. Press OK to try again in 5 seconds.");
+                    new PopUpWindow(null, "You were placed in a queue. Press OK to try again in 5 seconds.");
 
                     // send the login request again after 5 seconds
                     try {
@@ -132,7 +129,7 @@ public class LoginHandler {
             {
                 logger.error("Weird login response: " + status);
                 logger.info(receivedRequest);
-                new ErrorWindow("TTR sent back a weird response, or we got an invalid response.\nCheck the log for more information.");
+                new PopUpWindow(null, "TTR sent back a weird response, or we got an invalid response.\nCheck the log for more information.");
             }
         }
     }
@@ -161,7 +158,7 @@ public class LoginHandler {
             response = httpClient.execute(post);
         } catch (IOException exception) {
             logger.error("Unable to send login request!", exception);
-            new ErrorWindow(exception);
+            new ExceptionWindow(exception);
             return Collections.emptyMap();
         }
 
@@ -170,7 +167,7 @@ public class LoginHandler {
             responseData = EntityUtils.toString(response.getEntity());
         } catch (IOException | ParseException exception) {
             logger.error("Unable to send login request!", exception);
-            new ErrorWindow(exception);
+            new ExceptionWindow(exception);
             return Collections.emptyMap();
         }
         JSONObject responseJSON = new JSONObject(responseData);

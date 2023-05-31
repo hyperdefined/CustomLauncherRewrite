@@ -17,7 +17,7 @@
 
 package lol.hyper.customlauncher.accounts;
 
-import lol.hyper.customlauncher.tools.ErrorWindow;
+import lol.hyper.customlauncher.tools.ExceptionWindow;
 import lol.hyper.customlauncher.tools.JSONManager;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
@@ -47,7 +47,7 @@ public class Accounts {
                 FileUtils.copyFile(ACCOUNTS_FILE, accountsCopy);
             } catch (IOException exception) {
                 logger.error("Unable to backup the accounts file!", exception);
-                new ErrorWindow(exception);
+                new ExceptionWindow(exception);
             }
         }
     }

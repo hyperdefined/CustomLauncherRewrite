@@ -40,7 +40,6 @@ import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import javax.swing.*;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
@@ -62,7 +61,7 @@ public class JSONManager {
             encoded = Files.readAllBytes(file.toPath());
         } catch (IOException exception) {
             logger.error("Unable to read file " + file, exception);
-            new ErrorWindow(exception);
+            new ExceptionWindow(exception);
         }
         return new String(encoded, StandardCharsets.UTF_8);
     }
@@ -79,7 +78,7 @@ public class JSONManager {
             writer.close();
         } catch (IOException exception) {
             logger.error("Unable to write file " + file, exception);
-            new ErrorWindow(exception);
+            new ExceptionWindow(exception);
         }
     }
 
@@ -103,7 +102,7 @@ public class JSONManager {
 
         } catch (IOException exception) {
             logger.error("Unable to read URL " + url, exception);
-            new ErrorWindow(exception);
+            new ExceptionWindow(exception);
             return null;
         }
 
@@ -134,7 +133,7 @@ public class JSONManager {
 
         } catch (IOException exception) {
             logger.error("Unable to read URL " + url, exception);
-            new ErrorWindow(exception);
+            new ExceptionWindow(exception);
             return null;
         }
 

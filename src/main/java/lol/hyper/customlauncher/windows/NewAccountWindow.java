@@ -20,7 +20,6 @@ package lol.hyper.customlauncher.windows;
 import lol.hyper.customlauncher.CustomLauncherRewrite;
 import lol.hyper.customlauncher.accounts.Account;
 import lol.hyper.customlauncher.accounts.AccountEncryption;
-import lol.hyper.customlauncher.accounts.Accounts;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

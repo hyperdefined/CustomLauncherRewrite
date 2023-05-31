@@ -18,7 +18,7 @@
 package lol.hyper.customlauncher.changelog;
 
 import lol.hyper.customlauncher.tools.JSONManager;
-import lol.hyper.customlauncher.tools.InfoWindow;
+import lol.hyper.customlauncher.tools.PopUpWindow;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
@@ -32,12 +32,12 @@ public class GameUpdateTracker {
     private final Logger logger = LogManager.getLogger(this);
 
     // store the updates
-    public SortedSet<GameUpdate> allGameUpdates = new TreeSet<>(Comparator.comparingInt(GameUpdate::id).reversed());
+    public final SortedSet<GameUpdate> allGameUpdates = new TreeSet<>(Comparator.comparingInt(GameUpdate::id).reversed());
     private final File savedUpdatesFile = new File("config", "savedUpdates.json");
 
     public GameUpdateTracker() {
         if (!savedUpdatesFile.exists()) {
-            new InfoWindow("I am going to fetch release note information. This will take a bit.");
+            new PopUpWindow(null, "I am going to fetch release note information. This will take a bit.");
             getAllNotes();
         } else {
             // we have notes saved, see if we need to update it

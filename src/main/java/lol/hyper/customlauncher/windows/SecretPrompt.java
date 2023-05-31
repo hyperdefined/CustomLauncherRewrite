@@ -21,8 +21,8 @@ import lol.hyper.customlauncher.CustomLauncherRewrite;
 import lol.hyper.customlauncher.accounts.Account;
 import lol.hyper.customlauncher.accounts.AccountEncryption;
 import lol.hyper.customlauncher.accounts.Accounts;
-import lol.hyper.customlauncher.tools.ErrorWindow;
 import lol.hyper.customlauncher.login.LoginHandler;
+import lol.hyper.customlauncher.tools.PopUpWindow;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -76,7 +76,7 @@ public class SecretPrompt extends JFrame {
                         String secret = String.valueOf(secretText.getPassword());
                         switch (accountType) {
                             case PLAINTEXT -> {
-                                new ErrorWindow("Plaintext account was detected, this shouldn't happen.");
+                                new PopUpWindow(this, "Plaintext account was detected, this shouldn't happen.");
                                 return;
                             }
                             case ENCRYPTED -> realPassword =

@@ -15,52 +15,19 @@
  * along with CustomLauncherRewrite.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/*
- * This file is part of CustomLauncherRewrite.
- *
- * CustomLauncherRewrite is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * CustomLauncherRewrite is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with CustomLauncherRewrite.  If not, see <https://www.gnu.org/licenses/>.
- */
-
 package lol.hyper.customlauncher.tools;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class ErrorWindow extends JFrame {
-
-    /**
-     * Create a popup window for simple error messages.
-     *
-     * @param errorMessage The message to display on the window.
-     */
-    public ErrorWindow(String errorMessage) {
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        JOptionPane.showMessageDialog(this, errorMessage, "Error", JOptionPane.ERROR_MESSAGE);
-        setLocationRelativeTo(null);
-        dispose();
-    }
+public class ExceptionWindow extends JFrame {
 
     /**
      * Create a popup window for exceptions.
      *
      * @param exception The exception to display on the window.
      */
-    public ErrorWindow(Exception exception) {
+    public ExceptionWindow(Exception exception) {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ex) {

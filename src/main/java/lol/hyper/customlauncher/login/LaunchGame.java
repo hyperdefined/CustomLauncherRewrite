@@ -18,12 +18,12 @@
 package lol.hyper.customlauncher.login;
 
 import lol.hyper.customlauncher.ConfigHandler;
-import lol.hyper.customlauncher.tools.ErrorWindow;
+import lol.hyper.customlauncher.tools.ExceptionWindow;
+import lol.hyper.customlauncher.tools.PopUpWindow;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.util.Map;
 import java.io.File;
@@ -62,20 +62,20 @@ public final class LaunchGame extends Thread {
                 result = fullPath.setExecutable(true);
             } catch (SecurityException exception) {
                 logger.error("Unable to set " + fullPath.getAbsolutePath() + " as an executable!", exception);
-                new ErrorWindow(exception);
+                new ExceptionWindow(exception);
                 return;
             }
 
             if (!result) {
                 logger.error("Unable to set " + fullPath.getAbsolutePath() + " as an executable!");
-                new ErrorWindow("Unable to set " + fullPath.getAbsolutePath() + " as an executable!\nMake sure this file is executable!");
+                new PopUpWindow(null, "Unable to set " + fullPath.getAbsolutePath() + " as an executable!\nMake sure this file is executable!");
                 return;
             }
         }
 
         if (launchCommand == null) {
             logger.error("Unable to determine operating system!");
-            new ErrorWindow("Unable to determine operating system!");
+            new PopUpWindow(null, "Unable to determine operating system!");
             return;
         }
 
@@ -100,7 +100,7 @@ public final class LaunchGame extends Thread {
                                 process.waitFor();
                             } catch (IOException | InterruptedException exception) {
                                 logger.error("Unable to launch game!", exception);
-                                new ErrorWindow(exception);
+                                new ExceptionWindow(exception);
                             }
                         });
         t1.start();
