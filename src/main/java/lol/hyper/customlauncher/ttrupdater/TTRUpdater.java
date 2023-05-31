@@ -57,6 +57,9 @@ public class TTRUpdater extends JFrame {
     private final JProgressBar progressBar;
     private final JLabel updateStatus;
 
+    /**
+     * Create the TTR updater window.
+     */
     public TTRUpdater() {
         // set up the window elements
         setTitle("TTR Updater");
@@ -90,6 +93,9 @@ public class TTRUpdater extends JFrame {
         setLocationRelativeTo(null);
     }
 
+    /**
+     * Check for updates!
+     */
     public void checkUpdates() {
         // don't run the updater if the folder doesn't exist
         if (!ConfigHandler.INSTALL_LOCATION.exists()) {
@@ -103,13 +109,13 @@ public class TTRUpdater extends JFrame {
         }
 
         logger.info("We are checking for TTR updates!");
+        // read the patches
         JSONObject patches = JSONManager.requestJSON(PATCHES_URL);
         if (patches == null) {
             logger.error("patchesmanifest.txt returned null!");
             dispose();
             return;
         }
-        ArrayList<String> filesToDownload = new ArrayList<>();
 
         String osType = null;
 
@@ -136,8 +142,9 @@ public class TTRUpdater extends JFrame {
             dispose();
             return;
         }
-
         progressBar.setMaximum(patches.length());
+
+        ArrayList<String> filesToDownload = new ArrayList<>();
 
         // this loops through the JSON
         // key is the file name
@@ -251,9 +258,9 @@ public class TTRUpdater extends JFrame {
                 long startTime = System.nanoTime();
                 logger.info("Extracting " + downloadOutput.getAbsolutePath());
                 updateStatus.setText("Extracting " + downloadOutput);
-                progressBar.setVisible(false);
                 try {
-                    decompressBz2(downloadName, fileToDownload); // extract the file to the new location
+                    // extract the file to the new location
+                    decompressBz2(downloadName, fileToDownload);
                 } catch (IOException exception) {
                     logger.error("Unable to extract file " + downloadName, exception);
                     JFrame errorWindow = new ErrorWindow(exception);
@@ -290,6 +297,7 @@ public class TTRUpdater extends JFrame {
                 dispose();
             }
         }
+        logger.info("Finished checking for TTR updates!");
         JFrame infoWindow = new InfoWindow("Finished checking for TTR updates!");
         infoWindow.dispose();
         dispose();
@@ -325,16 +333,21 @@ public class TTRUpdater extends JFrame {
     private void decompressBz2(String temp, String outputName) throws IOException {
         File tempFile = new File("temp" + File.separator + temp);
         File output = new File(ConfigHandler.INSTALL_LOCATION, outputName);
-        BZip2CompressorInputStream in =
-                new BZip2CompressorInputStream(
-                        new BufferedInputStream(new FileInputStream(tempFile)));
-        FileOutputStream out = new FileOutputStream(output);
-        try (in;
-             out) {
-            IOUtils.copy(in, out);
+
+        long totalBytes = tempFile.length();
+        long bytesRead = 0;
+        byte[] buffer = new byte[1024];
+        int len;
+
+        try (BZip2CompressorInputStream in = new BZip2CompressorInputStream(
+                new BufferedInputStream(new FileInputStream(tempFile))); FileOutputStream out = new FileOutputStream(output)) {
+            while ((len = in.read(buffer)) != -1) {
+                out.write(buffer, 0, len);
+                bytesRead += len;
+                int progress = (int) ((bytesRead * 100) / totalBytes);
+                progressBar.setValue(progress);
+            }
         }
-        in.close();
-        out.close();
     }
 
     /**
