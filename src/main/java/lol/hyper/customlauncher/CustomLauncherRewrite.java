@@ -54,18 +54,14 @@ public class CustomLauncherRewrite {
         version = properties.getProperty("version");
         // log some basic info
         logger = LogManager.getLogger(CustomLauncherRewrite.class);
-        logger.info(
-                System.getProperty("os.name")
-                        + " "
-                        + System.getProperty("sun.arch.data.model")
-                        + "bit");
+        logger.info("OS: " + System.getProperty("os.name") + " " + System.getProperty("sun.arch.data.model") + "bit");
+        logger.info("Arch: " + System.getProperty("os.arch"));
+        logger.info("Java: " + System.getProperty("java.vm.version") + " (" + System.getProperty("java.vendor") + ")");
         logger.info("Program is starting.");
         logger.info("Running version " + version);
         logger.info("Current directory " + System.getProperty("user.dir"));
 
-        userAgent =
-                "CustomLauncherRewrite https://github.com/hyperdefined/CustomLauncherRewrite "
-                        + version;
+        userAgent = "CustomLauncherRewrite https://github.com/hyperdefined/CustomLauncherRewrite " + version;
 
         // create the config folder
         final File configPath = new File("config");
