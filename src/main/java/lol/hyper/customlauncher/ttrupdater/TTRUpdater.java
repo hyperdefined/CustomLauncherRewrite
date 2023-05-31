@@ -134,10 +134,7 @@ public class TTRUpdater extends JFrame {
         }
 
         if (osType == null) {
-            ErrorWindow errorWindow =
-                    new ErrorWindow(
-                            "We are unable to detect your operating system. Please report this to the GitHub!");
-            errorWindow.dispose();
+            new ErrorWindow("We are unable to detect your operating system. Please report this to the GitHub!");
             dispose();
             return;
         }
@@ -180,8 +177,7 @@ public class TTRUpdater extends JFrame {
                     logger.error(
                             "Unable to calculate SHA1 hash for file " + localFile.getAbsolutePath(),
                             exception);
-                    JFrame errorWindow = new ErrorWindow(exception);
-                    errorWindow.dispose();
+                    new ErrorWindow(exception);
                     dispose();
                     return;
                 }
@@ -210,8 +206,7 @@ public class TTRUpdater extends JFrame {
             File tempFolder = new File("temp");
             if (!tempFolder.exists() && !tempFolder.mkdirs()) {
                 logger.error("Unable to create temp folder!");
-                JFrame errorWindow = new ErrorWindow("Unable to create temp folder!");
-                errorWindow.dispose();
+                new ErrorWindow("Unable to create temp folder!");
                 dispose();
             }
 
@@ -236,8 +231,7 @@ public class TTRUpdater extends JFrame {
                     downloadURL = new URL(PATCHES_URL_DL + downloadName);
                 } catch (MalformedURLException exception) {
                     logger.error("Invalid URL " + PATCHES_URL_DL + downloadName);
-                    JFrame errorWindow = new ErrorWindow(exception);
-                    errorWindow.dispose();
+                    new ErrorWindow(exception);
                     dispose();
                     return;
                 }
@@ -245,9 +239,7 @@ public class TTRUpdater extends JFrame {
                 long downloadStart = System.nanoTime();
                 if (!saveFile(downloadURL, downloadOutput)) {
                     logger.error("Unable to download file " + downloadName);
-                    JFrame errorWindow =
-                            new ErrorWindow("Unable to download file " + downloadName + ".");
-                    errorWindow.dispose();
+                    new ErrorWindow("Unable to download file " + downloadName + ".");
                     dispose();
                 }
                 long downloadTime = TimeUnit.MILLISECONDS.convert(System.nanoTime() - downloadStart, TimeUnit.NANOSECONDS);
@@ -262,8 +254,7 @@ public class TTRUpdater extends JFrame {
                     decompressBz2(downloadName, fileToDownload);
                 } catch (IOException exception) {
                     logger.error("Unable to extract file " + downloadName, exception);
-                    JFrame errorWindow = new ErrorWindow(exception);
-                    errorWindow.dispose();
+                    new ErrorWindow(exception);
                     dispose();
                 }
                 updateStatus.setText("Finished extracting file " + fileToDownload);
@@ -280,8 +271,7 @@ public class TTRUpdater extends JFrame {
                         logger.error(
                                 "Unable to delete file " + currentFile.getAbsolutePath(),
                                 exception);
-                        JFrame errorWindow = new ErrorWindow(exception);
-                        errorWindow.dispose();
+                        new ErrorWindow(exception);
                         dispose();
                     }
                 }
@@ -291,14 +281,12 @@ public class TTRUpdater extends JFrame {
                 Files.delete(Paths.get(System.getProperty("user.dir") + File.separator + "temp"));
             } catch (IOException exception) {
                 logger.error("Unable to delete temp folder!", exception);
-                JFrame errorWindow = new ErrorWindow(exception);
-                errorWindow.dispose();
+                new ErrorWindow(exception);
                 dispose();
             }
         }
         logger.info("Finished checking for TTR updates!");
-        JFrame infoWindow = new InfoWindow("Finished checking for TTR updates!");
-        infoWindow.dispose();
+        new InfoWindow("Finished checking for TTR updates!");
         dispose();
     }
 

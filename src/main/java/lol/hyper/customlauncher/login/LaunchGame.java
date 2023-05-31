@@ -46,14 +46,14 @@ public final class LaunchGame extends Thread {
 
         if (SystemUtils.IS_OS_WINDOWS) {
             if (System.getProperty("sun.arch.data.model").equalsIgnoreCase("64")) {
-                launchCommand = new String[] {"cmd", "/c", "TTREngine64.exe"};
+                launchCommand = new String[]{"cmd", "/c", "TTREngine64.exe"};
             } else {
-                launchCommand = new String[] {"cmd", "/c", "TTREngine.exe"};
+                launchCommand = new String[]{"cmd", "/c", "TTREngine.exe"};
             }
             logger.info("Launching game from " + ConfigHandler.INSTALL_LOCATION);
         }
         if (SystemUtils.IS_OS_LINUX) {
-            launchCommand = new String[] {"./TTREngine"};
+            launchCommand = new String[]{"./TTREngine"};
 
             // Make sure it's executable before running
             boolean result;
@@ -61,30 +61,21 @@ public final class LaunchGame extends Thread {
             try {
                 result = fullPath.setExecutable(true);
             } catch (SecurityException exception) {
-                logger.error(
-                        "Unable to set " + fullPath.getAbsolutePath() + " as an executable!",
-                        exception);
-                ErrorWindow errorWindow = new ErrorWindow(exception);
-                errorWindow.dispose();
+                logger.error("Unable to set " + fullPath.getAbsolutePath() + " as an executable!", exception);
+                new ErrorWindow(exception);
                 return;
             }
 
             if (!result) {
                 logger.error("Unable to set " + fullPath.getAbsolutePath() + " as an executable!");
-                ErrorWindow errorWindow =
-                        new ErrorWindow(
-                                "Unable to set "
-                                        + fullPath.getAbsolutePath()
-                                        + " as an executable!\nMake sure this file is executable!");
-                errorWindow.dispose();
+                new ErrorWindow("Unable to set " + fullPath.getAbsolutePath() + " as an executable!\nMake sure this file is executable!");
                 return;
             }
         }
 
         if (launchCommand == null) {
             logger.error("Unable to determine operating system!");
-            ErrorWindow errorWindow = new ErrorWindow("Unable to determine operating system!");
-            errorWindow.dispose();
+            new ErrorWindow("Unable to determine operating system!");
             return;
         }
 
@@ -109,8 +100,7 @@ public final class LaunchGame extends Thread {
                                 process.waitFor();
                             } catch (IOException | InterruptedException exception) {
                                 logger.error("Unable to launch game!", exception);
-                                JFrame errorWindow = new ErrorWindow(exception);
-                                errorWindow.dispose();
+                                new ErrorWindow(exception);
                             }
                         });
         t1.start();

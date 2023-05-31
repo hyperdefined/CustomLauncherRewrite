@@ -92,8 +92,7 @@ public class LoginHandler {
         switch (status) {
             case "false" -> // false is invalid login details / maintenance
             {
-                JFrame errorWindow = new ErrorWindow(banner);
-                errorWindow.dispose();
+                new ErrorWindow(banner);
             }
             case "partial" -> // partial is used for 2FA or ToonGuard
                     SwingUtilities.invokeLater(() -> {
@@ -115,10 +114,7 @@ public class LoginHandler {
                 // TTR saves your request to queueToken, so just send that back
                 // to get an updated response
                 if (Integer.parseInt(eta) >= 5) {
-                    JFrame infoWindow =
-                            new InfoWindow(
-                                    "You were placed in a queue. Press OK to try again in 5 seconds.");
-                    infoWindow.dispose();
+                    new InfoWindow("You were placed in a queue. Press OK to try again in 5 seconds.");
 
                     // send the login request again after 5 seconds
                     try {
@@ -136,10 +132,7 @@ public class LoginHandler {
             {
                 logger.error("Weird login response: " + status);
                 logger.info(receivedRequest);
-                JFrame errorWindow =
-                        new ErrorWindow(
-                                "TTR sent back a weird response, or we got an invalid response.\nCheck the log for more information.");
-                errorWindow.dispose();
+                new ErrorWindow("TTR sent back a weird response, or we got an invalid response.\nCheck the log for more information.");
             }
         }
     }
@@ -168,8 +161,7 @@ public class LoginHandler {
             response = httpClient.execute(post);
         } catch (IOException exception) {
             logger.error("Unable to send login request!", exception);
-            JFrame errorWindow = new ErrorWindow(exception);
-            errorWindow.dispose();
+            new ErrorWindow(exception);
             return Collections.emptyMap();
         }
 
@@ -178,8 +170,7 @@ public class LoginHandler {
             responseData = EntityUtils.toString(response.getEntity());
         } catch (IOException | ParseException exception) {
             logger.error("Unable to send login request!", exception);
-            JFrame errorWindow = new ErrorWindow(exception);
-            errorWindow.dispose();
+            new ErrorWindow(exception);
             return Collections.emptyMap();
         }
         JSONObject responseJSON = new JSONObject(responseData);

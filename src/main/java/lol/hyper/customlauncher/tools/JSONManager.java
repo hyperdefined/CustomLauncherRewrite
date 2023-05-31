@@ -62,8 +62,7 @@ public class JSONManager {
             encoded = Files.readAllBytes(file.toPath());
         } catch (IOException exception) {
             logger.error("Unable to read file " + file, exception);
-            JFrame errorWindow = new ErrorWindow(exception);
-            errorWindow.dispose();
+            new ErrorWindow(exception);
         }
         return new String(encoded, StandardCharsets.UTF_8);
     }
@@ -80,8 +79,7 @@ public class JSONManager {
             writer.close();
         } catch (IOException exception) {
             logger.error("Unable to write file " + file, exception);
-            JFrame errorWindow = new ErrorWindow(exception);
-            errorWindow.dispose();
+            new ErrorWindow(exception);
         }
     }
 
@@ -105,8 +103,7 @@ public class JSONManager {
 
         } catch (IOException exception) {
             logger.error("Unable to read URL " + url, exception);
-            JFrame errorWindow = new ErrorWindow(exception);
-            errorWindow.dispose();
+            new ErrorWindow(exception);
             return null;
         }
 
@@ -137,8 +134,7 @@ public class JSONManager {
 
         } catch (IOException exception) {
             logger.error("Unable to read URL " + url, exception);
-            JFrame errorWindow = new ErrorWindow(exception);
-            errorWindow.dispose();
+            new ErrorWindow(exception);
             return null;
         }
 

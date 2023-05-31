@@ -45,8 +45,7 @@ public class UpdateChecker {
         } catch (IOException exception) {
             api = null;
             logger.error("Unable to look for updates!", exception);
-            ErrorWindow errorWindow = new ErrorWindow(exception);
-            errorWindow.dispose();
+            new ErrorWindow(exception);
         }
         checkForUpdate(currentVersion);
     }
@@ -62,8 +61,7 @@ public class UpdateChecker {
             current = api.getReleaseByTag(currentVersion);
         } catch (ReleaseNotFoundException exception) {
             logger.error("Current version does not exist on GitHub!");
-            ErrorWindow errorWindow = new ErrorWindow("It looks like you're running a version not present on GitHub.\nThis is the case if you're running in a dev environment!");
-            errorWindow.dispose();
+            new ErrorWindow("It looks like you're running a version not present on GitHub.\nThis is the case if you're running in a dev environment!");
             return;
         }
         int behind = api.getBuildsBehind(current);
@@ -110,8 +108,7 @@ public class UpdateChecker {
             logger.error("Unable to look for updates!");
             logger.error("getAllReleases() is null" + (api.getAllReleases() == null));
             logger.error("getAllReleases() is empty" + (api.getAllReleases().isEmpty()));
-            ErrorWindow errorWindow = new ErrorWindow("Unable to look for updates!");
-            errorWindow.dispose();
+            new ErrorWindow("Unable to look for updates!");
             return;
         }
 
@@ -126,16 +123,14 @@ public class UpdateChecker {
                         finalDownload = new URI(url);
                     } catch (URISyntaxException exception) {
                         logger.error("Unable to download file!", exception);
-                        ErrorWindow errorWindow = new ErrorWindow(exception);
-                        errorWindow.dispose();
+                        new ErrorWindow(exception);
                         return;
                     }
                 }
             }
             if (finalDownload == null) {
                 logger.error("Unable to find Windows file " + newVersionName + " in assets!");
-                ErrorWindow errorWindow = new ErrorWindow("Unable to find Windows file " + newVersionName + " in assets!");
-                errorWindow.dispose();
+                new ErrorWindow("Unable to find Windows file " + newVersionName + " in assets!");
                 return;
             }
 
@@ -145,8 +140,7 @@ public class UpdateChecker {
                 FileUtils.copyURLToFile(finalDownload.toURL(), output);
             } catch (IOException exception) {
                 logger.error("Unable to download file from " + finalDownload, exception);
-                ErrorWindow errorWindow = new ErrorWindow(exception);
-                errorWindow.dispose();
+                new ErrorWindow(exception);
                 return;
             }
             return;
@@ -162,16 +156,14 @@ public class UpdateChecker {
                         finalDownload = new URI(url);
                     } catch (URISyntaxException exception) {
                         logger.error("Unable to download file!", exception);
-                        ErrorWindow errorWindow = new ErrorWindow(exception);
-                        errorWindow.dispose();
+                        new ErrorWindow(exception);
                         return;
                     }
                 }
             }
             if (finalDownload == null) {
                 logger.error("Unable to find Windows file " + newVersionName + " in assets!");
-                ErrorWindow errorWindow = new ErrorWindow("Unable to find Linux file " + newVersionName + " in assets!");
-                errorWindow.dispose();
+                new ErrorWindow("Unable to find Linux file " + newVersionName + " in assets!");
                 return;
             }
 
@@ -181,8 +173,7 @@ public class UpdateChecker {
                 FileUtils.copyURLToFile(finalDownload.toURL(), output);
             } catch (IOException exception) {
                 logger.error("Unable to download file from " + finalDownload, exception);
-                ErrorWindow errorWindow = new ErrorWindow(exception);
-                errorWindow.dispose();
+                new ErrorWindow(exception);
                 return;
             }
 
@@ -192,8 +183,7 @@ public class UpdateChecker {
                 FileUtils.delete(output);
             } catch (IOException exception) {
                 logger.error("Unable to delete file " + output, exception);
-                ErrorWindow errorWindow = new ErrorWindow(exception);
-                errorWindow.dispose();
+                new ErrorWindow(exception);
             }
         }
     }
@@ -228,8 +218,7 @@ public class UpdateChecker {
                 Files.delete(current.toPath());
             } catch (IOException exception) {
                 logger.error("Unable to launch new version!", exception);
-                ErrorWindow errorWindow = new ErrorWindow(exception);
-                errorWindow.dispose();
+                new ErrorWindow(exception);
             }
         }
         if (SystemUtils.IS_OS_WINDOWS) {
@@ -241,8 +230,7 @@ public class UpdateChecker {
             p.getInputStream().close();
         } catch (IOException exception) {
             logger.error("Unable to launch new version!", exception);
-            ErrorWindow errorWindow = new ErrorWindow(exception);
-            errorWindow.dispose();
+            new ErrorWindow(exception);
         }
     }
 
@@ -261,8 +249,7 @@ public class UpdateChecker {
             process = builder.start();
         } catch (IOException exception) {
             logger.error("Unable to extract release file!", exception);
-            ErrorWindow errorWindow = new ErrorWindow(exception);
-            errorWindow.dispose();
+            new ErrorWindow(exception);
             return;
         }
         int exitCode = 0;
@@ -270,15 +257,13 @@ public class UpdateChecker {
             exitCode = process.waitFor();
         } catch (InterruptedException exception) {
             logger.error("Unable to extract release file!", exception);
-            ErrorWindow errorWindow = new ErrorWindow(exception);
-            errorWindow.dispose();
+            new ErrorWindow(exception);
         }
         if (exitCode == 0) {
             logger.info("Extracted " + temp + "!");
         } else {
             logger.error("Unable to extract release file! Returned exit code " + exitCode);
-            ErrorWindow errorWindow = new ErrorWindow("Unable to extract release file!");
-            errorWindow.dispose();
+            new ErrorWindow("Unable to extract release file!");
         }
     }
 }

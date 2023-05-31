@@ -20,6 +20,8 @@ package lol.hyper.customlauncher.accounts;
 import lol.hyper.customlauncher.tools.ErrorWindow;
 import lol.hyper.customlauncher.tools.JSONManager;
 import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -33,6 +35,8 @@ public class Accounts {
     private final List<Account> accounts = new ArrayList<>();
     public static final File ACCOUNTS_FILE = new File("config", "accounts.json");
 
+    public final Logger logger = LogManager.getLogger(this);
+
     /**
      * Creates an Account object.
      */
@@ -42,8 +46,8 @@ public class Accounts {
             try {
                 FileUtils.copyFile(ACCOUNTS_FILE, accountsCopy);
             } catch (IOException exception) {
-                ErrorWindow errorWindow = new ErrorWindow(exception);
-                errorWindow.dispose();
+                logger.error("Unable to backup the accounts file!", exception);
+                new ErrorWindow(exception);
             }
         }
     }

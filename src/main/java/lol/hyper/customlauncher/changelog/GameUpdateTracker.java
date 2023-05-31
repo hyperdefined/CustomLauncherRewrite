@@ -37,8 +37,7 @@ public class GameUpdateTracker {
 
     public GameUpdateTracker() {
         if (!savedUpdatesFile.exists()) {
-            InfoWindow infoWindow = new InfoWindow("I am going to fetch release note information. This will take a bit.");
-            infoWindow.dispose();
+            new InfoWindow("I am going to fetch release note information. This will take a bit.");
             getAllNotes();
         } else {
             // we have notes saved, see if we need to update it

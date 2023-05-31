@@ -76,10 +76,7 @@ public class SecretPrompt extends JFrame {
                         String secret = String.valueOf(secretText.getPassword());
                         switch (accountType) {
                             case PLAINTEXT -> {
-                                ErrorWindow errorWindow =
-                                        new ErrorWindow(
-                                                "Plaintext account was detected, this shouldn't happen.");
-                                errorWindow.dispose();
+                                new ErrorWindow("Plaintext account was detected, this shouldn't happen.");
                                 return;
                             }
                             case ENCRYPTED -> realPassword =

@@ -282,8 +282,7 @@ public final class MainWindow extends JFrame {
         if (ttrStatusJSON.has("banner")) {
             String banner = ttrStatusJSON.getString("banner");
             logger.info("TTR's banner returned: " + banner);
-            InfoWindow infoWindow = new InfoWindow(banner);
-            infoWindow.dispose();
+            new InfoWindow(banner);
         }
         return status;
     }

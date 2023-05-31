@@ -73,7 +73,7 @@ public class ConfigWindow extends JFrame {
                                 "Settings saved!",
                                 "Options",
                                 JOptionPane.INFORMATION_MESSAGE);
-                        this.dispose();
+                        dispose();
                         configHandler.editConfig(
                                 "showInvasionNotifications",
                                 showInvasionNotificationsBox.isSelected());
