@@ -215,14 +215,14 @@ public final class MainWindow extends JFrame {
                 @SuppressWarnings("unchecked")
                 JList<Account> accountList = (JList<Account>) event.getSource();
                 if (event.getClickCount() == 2) {
-                    // clear the selection
-                    accountList.getSelectionModel().clearSelection();
                     if (!ConfigHandler.INSTALL_LOCATION.exists()) {
                         JOptionPane.showMessageDialog(
                                 MainWindow.this,
                                 "Unable to launch the game. The install location cannot be found.",
                                 "Error",
                                 JOptionPane.ERROR_MESSAGE);
+                        // clear the selection
+                        accountList.getSelectionModel().clearSelection();
                         return;
                     }
                     // check if the game is online
@@ -247,6 +247,8 @@ public final class MainWindow extends JFrame {
                             new LoginHandler(newLoginRequest);
                         }
                     }
+                    // clear the selection
+                    accountList.getSelectionModel().clearSelection();
                 }
             }
         });
