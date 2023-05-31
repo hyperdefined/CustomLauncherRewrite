@@ -24,7 +24,6 @@ import lol.hyper.customlauncher.tools.ErrorWindow;
 import lol.hyper.customlauncher.tools.InfoWindow;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
@@ -256,8 +255,8 @@ public class TTRUpdater extends JFrame {
                 updateStatus.setText("Finished downloading " + downloadName);
 
                 long startTime = System.nanoTime();
-                logger.info("Extracting " + downloadOutput.getAbsolutePath());
-                updateStatus.setText("Extracting " + downloadOutput);
+                logger.info("Extracting " + downloadOutput.getAbsolutePath() + " to " + ConfigHandler.INSTALL_LOCATION + File.separator + fileToDownload);
+                updateStatus.setText("Extracting " + downloadOutput + " to " + fileToDownload);
                 try {
                     // extract the file to the new location
                     decompressBz2(downloadName, fileToDownload);
@@ -267,7 +266,7 @@ public class TTRUpdater extends JFrame {
                     errorWindow.dispose();
                     dispose();
                 }
-                updateStatus.setText("Finished extracting file " + downloadName);
+                updateStatus.setText("Finished extracting file " + fileToDownload);
                 long extractedTime = TimeUnit.MILLISECONDS.convert(System.nanoTime() - startTime, TimeUnit.NANOSECONDS);
                 logger.info("Finished extracting file " + downloadName + ". Took " + extractedTime + "ms.");
             }
