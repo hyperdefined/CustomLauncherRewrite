@@ -79,6 +79,7 @@ public class GameUpdateTracker {
                 JSONManager.writeFile(savedUpdatesJSON, savedUpdatesFile);
             }
 
+            // add all updates to the list
             for (String updateID : savedUpdatesJSON.keySet()) {
                 JSONObject update = savedUpdatesJSON.getJSONObject(updateID);
                 GameUpdate gameUpdate = new GameUpdate(Integer.parseInt(updateID), update.getString("version"), update.getString("notes"), update.getString("date"));
@@ -87,6 +88,9 @@ public class GameUpdateTracker {
         }
     }
 
+    /**
+     * This forces a refresh on the saved updates. This is only called if the file is not there.
+     */
     private void getAllNotes() {
         logger.info("Fetching game updates...");
         JSONArray updateList = fetchUpdates();
@@ -120,6 +124,11 @@ public class GameUpdateTracker {
         JSONManager.writeFile(savedUpdatesJSON, savedUpdatesFile);
     }
 
+    /**
+     * This will read TTR's API into a JSONArray.
+     *
+     * @return The JSONArray containing all updates.
+     */
     private JSONArray fetchUpdates() {
         JSONArray updateList = JSONManager.requestJSONArray("https://www.toontownrewritten.com/api/releasenotes");
         if (updateList == null) {
@@ -129,6 +138,11 @@ public class GameUpdateTracker {
         return updateList;
     }
 
+    /**
+     * Get all individual updates from TTR.
+     * @param updateArray The array from TTR's api.
+     * @return A Set that contains all updates as JSONObjects.
+     */
     private Set<JSONObject> getUpdates(JSONArray updateArray) {
         Set<JSONObject> updates = new HashSet<>();
         for (int i = 0; i < updateArray.length(); i++) {

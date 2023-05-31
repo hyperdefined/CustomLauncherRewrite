@@ -39,6 +39,11 @@ import java.awt.*;
 
 public class ErrorWindow extends JFrame {
 
+    /**
+     * Create a popup window for simple error messages.
+     *
+     * @param errorMessage The message to display on the window.
+     */
     public ErrorWindow(String errorMessage) {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -50,6 +55,11 @@ public class ErrorWindow extends JFrame {
         dispose();
     }
 
+    /**
+     * Create a popup window for exceptions.
+     *
+     * @param exception The exception to display on the window.
+     */
     public ErrorWindow(Exception exception) {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

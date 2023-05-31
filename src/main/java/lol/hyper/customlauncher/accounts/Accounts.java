@@ -33,6 +33,9 @@ public class Accounts {
     private final List<Account> accounts = new ArrayList<>();
     public static final File ACCOUNTS_FILE = new File("config", "accounts.json");
 
+    /**
+     * Creates an Account object.
+     */
     public Accounts() {
         File accountsCopy = new File("config", "accounts-BACKUP.json");
         if (!accountsCopy.exists()) {

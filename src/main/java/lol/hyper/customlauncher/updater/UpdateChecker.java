@@ -260,7 +260,7 @@ public class UpdateChecker {
         try {
             process = builder.start();
         } catch (IOException exception) {
-            logger.error("Unable to launch new version!", exception);
+            logger.error("Unable to extract release file!", exception);
             ErrorWindow errorWindow = new ErrorWindow(exception);
             errorWindow.dispose();
             return;
@@ -269,7 +269,7 @@ public class UpdateChecker {
         try {
             exitCode = process.waitFor();
         } catch (InterruptedException exception) {
-            logger.error("Unable to launch new version!", exception);
+            logger.error("Unable to extract release file!", exception);
             ErrorWindow errorWindow = new ErrorWindow(exception);
             errorWindow.dispose();
         }

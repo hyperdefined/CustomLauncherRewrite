@@ -70,14 +70,15 @@ public class GameUpdatesWindow extends JFrame {
         gameUpdatesTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent event) {
-                if (event.getClickCount() == 2) {  // Check for double-click event
+                if (event.getClickCount() == 2) {
                     int selectedRow = gameUpdatesTable.getSelectedRow();
-                    int versionColumnIndex = 0;  // Index of the "Version" column
+                    int versionColumnIndex = 0;
 
-                    // Perform actions based on the selected row and column
+                    // allow clicking in any column
                     if (selectedRow != -1) {
                         String selectedVersion = (String) gameUpdatesTable.getValueAt(selectedRow, versionColumnIndex);
                         gameUpdatesTable.getSelectionModel().clearSelection();
+                        // open the release notes for said version clicked
                         gameUpdates.stream().filter(update -> selectedVersion.equalsIgnoreCase(update.version())).findAny().ifPresent(gameUpdate -> SwingUtilities.invokeLater(() -> new ScrollableTextWindow(selectedVersion, gameUpdate.notes())));
                     }
                 }

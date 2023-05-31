@@ -70,12 +70,22 @@ public class District implements Comparable<District> {
         return (this.districtName.compareTo(district.getDistrictName()));
     }
 
+    /**
+     * Get the district's statue.
+     *
+     * @return The status.
+     */
     public String getCurrentStatus() {
         return currentStatus;
     }
 
+    /**
+     * Set the district's statue.
+     *
+     * @param status The new status.
+     */
     public void setCurrentStatus(String status) {
-        currentStatus = status.substring(0,1).toUpperCase() + status.substring(1).toLowerCase();
+        currentStatus = status.substring(0, 1).toUpperCase() + status.substring(1).toLowerCase();
     }
 
     @Override

@@ -40,7 +40,6 @@ import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Arrays;
 
 public class ScrollableTextWindow extends JFrame {
 
@@ -48,6 +47,12 @@ public class ScrollableTextWindow extends JFrame {
 
     public final Logger logger = LogManager.getLogger(this);
 
+    /**
+     * Creates a window with scrollable text.
+     *
+     * @param title The title of the window.
+     * @param text  The text to display.
+     */
     public ScrollableTextWindow(String title, String text) {
         setTitle(title);
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);

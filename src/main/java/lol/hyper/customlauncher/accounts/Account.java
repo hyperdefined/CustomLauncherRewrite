@@ -23,35 +23,75 @@ public class Account {
     private String password;
     private Type accountType;
 
+    /**
+     * Creates an account.
+     *
+     * @param username    The username to the account.
+     * @param password    The password to the account. Can be plaintext or encrypted.
+     * @param accountType The type of account. Make sure to pass in the correct password for the type.
+     */
     public Account(String username, String password, Type accountType) {
         this.username = username;
         this.password = password;
         this.accountType = accountType;
     }
 
+    /**
+     * Set the password for this account. Can be encrypted or plaintext. Make sure to update the type.
+     *
+     * @param newPassword The new password.
+     */
     public void setPassword(String newPassword) {
         this.password = newPassword;
     }
 
+    /**
+     * Set the account type. See {@link Type}.
+     * @param accountType The new account type.
+     */
     public void setAccountType(Type accountType) {
         this.accountType = accountType;
     }
 
+    /**
+     * Get the password for this account. Can be plaintext or encrypted.
+     * @return The password.
+     */
     public String password() {
         return password;
     }
 
+    /**
+     * Get the username for this account.
+     * @return The username.
+     */
     public String username() {
         return username;
     }
 
+    /**
+     * Get the account type for this account. See {@link Type}.
+     * @return The account type.
+     */
     public Type accountType() {
         return accountType;
     }
 
+    /**
+     * The type the account is.
+     */
     public enum Type {
+        /**
+         * PLAINTEXT is for accounts storing their password in plaintext.
+         */
         PLAINTEXT(0),
+        /**
+         * LEGACY_ENCRYPTED is for accounts storing their password in the old encryption. See {@link AccountEncryption#decryptLegacy(String, String)}.
+         */
         LEGACY_ENCRYPTED(1),
+        /**
+         * ENCRYPTED is for accounts storing their password encrypted. See {@link AccountEncryption#encrypt(String, String)}.
+         */
         ENCRYPTED(2);
 
         private final int accountType;

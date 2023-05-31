@@ -101,6 +101,10 @@ public class Invasion implements Comparable<Invasion> {
         return invasion.getDistrict().equals(this.getDistrict());
     }
 
+    /**
+     * Get when we started tracking the invasion.
+     * @return The timestamp.
+     */
     public long getCacheStartTime() {
         return cacheStartTime;
     }

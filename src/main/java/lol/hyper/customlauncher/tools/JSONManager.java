@@ -54,7 +54,7 @@ public class JSONManager {
     /**
      * Read contents of a file.
      *
-     * @return Contents of a file.
+     * @return Contents of a file into a String.
      */
     public static String readFile(File file) {
         byte[] encoded = new byte[0];
@@ -71,7 +71,7 @@ public class JSONManager {
     /**
      * Write data to JSON file.
      *
-     * @param json Data to write to file. This much be a JSON string.
+     * @param json Data to write to file.
      */
     public static void writeFile(Object json, File file) {
         try {
