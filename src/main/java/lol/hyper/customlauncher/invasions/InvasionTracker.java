@@ -34,12 +34,12 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.*;
 
-public class InvasionTracker extends JFrame {
+public class InvasionTracker extends JPanel {
 
     public final Map<String, Invasion> invasions = new HashMap<>();
-    private JTable invasionTable;
-    private DefaultTableModel invasionTableModel;
-    private JLabel lastFetchedLabel;
+    private final JTable invasionTable;
+    private final DefaultTableModel invasionTableModel;
+    private final JLabel lastFetchedLabel;
     private final SimpleDateFormat lastFetchedFormat = new SimpleDateFormat("hh:mm:ss a");
     public long lastFetched = 0;
     public int runs = 0;
@@ -53,37 +53,14 @@ public class InvasionTracker extends JFrame {
      */
     public InvasionTracker(ConfigHandler configHandler) {
         this.configHandler = configHandler;
-        startInvasionRefresh();
-    }
 
-    /**
-     * Open the invasion window.
-     */
-    public void showWindow() {
         // this can happen...
         if (invasions.isEmpty()) {
             new PopUpWindow(null, "There are no invasions currently.");
-            return;
         }
-
-        setTitle("Invasions");
-        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        setResizable(false);
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        setIconImage(CustomLauncherRewrite.icon);
 
         // GUI elements
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-
-        // invasions label
-        JLabel invasionsLabel = new JLabel("Current Invasions");
-        invasionsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        panel.add(invasionsLabel);
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         invasionTable = new JTable();
         String[] columns = new String[]{"District", "Cog Type", "Time Left", "Cogs"};
@@ -95,31 +72,20 @@ public class InvasionTracker extends JFrame {
         invasionTable.setFocusable(false);
         JScrollPane scrollPane = new JScrollPane(invasionTable);
         scrollPane.setVisible(true);
-        panel.add(scrollPane);
+        add(scrollPane);
 
         lastFetchedLabel = new JLabel("Waiting to update...");
         lastFetchedLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        panel.add(lastFetchedLabel);
+        add(lastFetchedLabel);
 
+        // start the refresh for updating the table
         ActionListener actionListener = e -> updateInvasionListGUI();
         Timer timer = new Timer(0, actionListener);
         timer.setDelay(500);
         timer.start();
 
-        setSize(500, 400);
-        add(panel);
-        setLocationRelativeTo(null);
-
-        addWindowListener(
-                new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                        timer.stop();
-                    }
-                });
-
-        pack();
-        setVisible(true);
+        // start the timer for reading the API
+        startInvasionRefresh();
     }
 
     /**

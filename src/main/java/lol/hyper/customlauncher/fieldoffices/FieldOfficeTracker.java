@@ -31,13 +31,13 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 
-public class FieldOfficeTracker extends JFrame {
+public class FieldOfficeTracker extends JPanel {
 
     public final Map<Integer, FieldOffice> fieldOffices = new HashMap<>();
-    private JTable fieldOfficeTable;
-    private DefaultTableModel fieldOfficeTableModel;
+    private final JTable fieldOfficeTable;
+    private final DefaultTableModel fieldOfficeTableModel;
 
-    private JLabel lastFetchedLabel;
+    private final JLabel lastFetchedLabel;
     private final SimpleDateFormat lastFetchedFormat = new SimpleDateFormat("hh:mm:ss a");
     public long lastFetched = 0;
     public int runs = 0;
@@ -64,35 +64,15 @@ public class FieldOfficeTracker extends JFrame {
         zonesToStreets.put(9100, "Lullaby Lane");
         zonesToStreets.put(9200, "Pajama Place");
         this.configHandler = configHandler;
-        startFieldOfficeRefresh();
-    }
-
-    /**
-     * Open the field office window.
-     */
-    public void showWindow() {
-        setTitle("Field Offices");
-        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        setResizable(false);
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        setIconImage(CustomLauncherRewrite.icon);
 
         // GUI elements
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        // field office label
-        JLabel fieldOfficeLabel = new JLabel("Field Offices");
-        fieldOfficeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        panel.add(fieldOfficeLabel);
-
+        // create the table
         fieldOfficeTable = new JTable();
         String[] columns = new String[]{"Street", "Difficulty", "Total Annexes", "Status"};
 
+        // create the table model
         fieldOfficeTableModel = (DefaultTableModel) fieldOfficeTable.getModel();
         fieldOfficeTableModel.setColumnIdentifiers(columns);
         fieldOfficeTable.setDefaultEditor(Object.class, null);
@@ -100,32 +80,21 @@ public class FieldOfficeTracker extends JFrame {
         fieldOfficeTable.setFocusable(false);
         JScrollPane scrollPane = new JScrollPane(fieldOfficeTable);
         scrollPane.setVisible(true);
-        panel.add(scrollPane);
+        add(scrollPane);
 
+        // store when we last updated
         lastFetchedLabel = new JLabel("Waiting to update...");
         lastFetchedLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        panel.add(lastFetchedLabel);
+        add(lastFetchedLabel);
 
+        // start the refresh for updating the table
         ActionListener actionListener = e -> updateFieldOfficeList();
         Timer timer = new Timer(0, actionListener);
         timer.setDelay(500);
         timer.start();
 
-        setSize(500, 400);
-        add(panel);
-        setLocationRelativeTo(null);
-
-        // stop the schedules here, so they don't run while the window is closed
-        addWindowListener(
-                new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                        timer.stop();
-                    }
-                });
-
-        pack();
-        setVisible(true);
+        // start the timer for reading TTR's API
+        startFieldOfficeRefresh();
     }
 
     /**

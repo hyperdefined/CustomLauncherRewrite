@@ -17,8 +17,6 @@
 
 package lol.hyper.customlauncher.districts;
 
-import lol.hyper.customlauncher.CustomLauncherRewrite;
-
 import javax.swing.*;
 import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
@@ -28,13 +26,13 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 
-public class DistrictTracker extends JFrame {
+public class DistrictTracker extends JPanel {
 
     public final Map<String, District> districts = new HashMap<>();
-    public JTable districtTable;
-    public JLabel totalPopulationLabel;
-    public DefaultTableModel districtsTableModel;
-    public JLabel lastFetchedLabel;
+    public final JTable districtTable;
+    public final JLabel totalPopulationLabel;
+    public final DefaultTableModel districtsTableModel;
+    public final JLabel lastFetchedLabel;
     public final SimpleDateFormat lastFetchedFormat = new SimpleDateFormat("hh:mm:ss a");
     public long lastFetched = 0;
     public boolean isDown = false;
@@ -45,72 +43,39 @@ public class DistrictTracker extends JFrame {
      * each district.
      */
     public DistrictTracker() {
-        startDistrictRefresh();
-    }
-
-    /**
-     * Open the population window.
-     */
-    public void showWindow() {
-        setTitle("Districts");
-        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        setResizable(false);
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        setIconImage(CustomLauncherRewrite.icon);
-
         // GUI elements
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        // district label
-        JLabel districtsLabel = new JLabel("Districts");
-        districtsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        panel.add(districtsLabel);
-
+        // create the table
         districtTable = new JTable();
         String[] columns = new String[]{"Name", "Population", "Status"};
 
+        // create the table model
         districtsTableModel = (DefaultTableModel) districtTable.getModel();
         districtsTableModel.setColumnIdentifiers(columns);
         districtTable.setDefaultEditor(Object.class, null);
         districtTable.getTableHeader().setReorderingAllowed(false);
         districtTable.setFocusable(false);
         JScrollPane scrollPane = new JScrollPane(districtTable);
-        panel.add(scrollPane);
+        add(scrollPane);
 
         // district label
         totalPopulationLabel = new JLabel("Fetching population...");
         totalPopulationLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        panel.add(totalPopulationLabel);
+        add(totalPopulationLabel);
 
+        // store when we last updated
         lastFetchedLabel = new JLabel("Waiting to update...");
         lastFetchedLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        panel.add(lastFetchedLabel);
+        add(lastFetchedLabel);
 
+        // start the refresh for updating the table
         ActionListener actionListener = e -> updateDistricts();
         Timer timer = new Timer(0, actionListener);
         timer.setDelay(500);
         timer.start();
 
-        setSize(500, 400);
-        add(panel);
-        setLocationRelativeTo(null);
-
-        // stop the schedules here, so they don't run while the window is closed
-        addWindowListener(
-                new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                        timer.stop();
-                    }
-                });
-
-        pack();
-        setVisible(true);
+        startDistrictRefresh();
     }
 
     /**

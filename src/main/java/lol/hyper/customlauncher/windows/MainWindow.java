@@ -43,9 +43,6 @@ import java.util.HashMap;
 public final class MainWindow extends JFrame {
 
     public static final DefaultListModel<Account> accountsModel = new DefaultListModel<>();
-    private final InvasionTracker invasionTracker;
-    private final FieldOfficeTracker fieldOfficeTracker;
-    private final DistrictTracker districtTracker;
 
     public final Accounts accounts = new Accounts();
 
@@ -62,14 +59,23 @@ public final class MainWindow extends JFrame {
         }
         setIconImage(CustomLauncherRewrite.icon);
 
+        // tracker stuff
+        InvasionTracker invasionTracker = new InvasionTracker(configHandler);
+        FieldOfficeTracker fieldOfficeTracker = new FieldOfficeTracker(configHandler);
+        DistrictTracker districtTracker = new DistrictTracker();
+        ConfigWindow configWindow = new ConfigWindow(configHandler);
+        GameUpdatesWindow gameUpdatesWindow = new GameUpdatesWindow(gameUpdateTracker.allGameUpdates);
+
         // GUI elements
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
         // accounts label
-        JLabel accountsLabel = new JLabel("Accounts (double click)");
+        JLabel accountsLabel = new JLabel("Double click to open account.");
         accountsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.add(accountsLabel);
+
+        JTabbedPane tabs = new JTabbedPane();
 
         JList<Account> accountList = new JList<>(accountsModel);
         accountsModel.addAll(accounts.getAccounts());
@@ -92,122 +98,6 @@ public final class MainWindow extends JFrame {
         accountManagerButton.setMaximumSize(
                 new Dimension(300, accountManagerButton.getMinimumSize().height));
         panel.add(accountManagerButton);
-
-        // invasions button
-        JButton invasionsButton = new JButton("Invasions");
-        invasionTracker = new InvasionTracker(configHandler);
-        invasionsButton.addActionListener(
-                e -> {
-                    if (invasionTracker.isDown) {
-                        int dialogButton = JOptionPane.YES_NO_OPTION;
-                        int dialogResult =
-                                JOptionPane.showConfirmDialog(
-                                        null,
-                                        "It looks like the invasion API is currently offline. Would you like to try checking it again?",
-                                        "Error",
-                                        dialogButton);
-                        if (dialogResult == JOptionPane.YES_OPTION) {
-                            invasionTracker.invasionTaskTimer.start();
-                        }
-                    } else {
-                        SwingUtilities.invokeLater(invasionTracker::showWindow);
-                    }
-                });
-        invasionsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        invasionsButton.setMaximumSize(new Dimension(300, invasionsButton.getMinimumSize().height));
-        panel.add(invasionsButton);
-
-        // field office button
-        JButton fieldOfficesButton = new JButton("Field Offices");
-        fieldOfficeTracker = new FieldOfficeTracker(configHandler);
-        fieldOfficesButton.addActionListener(
-                e -> {
-                    if (fieldOfficeTracker.isDown) {
-                        int dialogButton = JOptionPane.YES_NO_OPTION;
-                        int dialogResult =
-                                JOptionPane.showConfirmDialog(
-                                        null,
-                                        "It looks like the field office API is currently offline. Would you like to try checking it again?",
-                                        "Error",
-                                        dialogButton);
-                        if (dialogResult == JOptionPane.YES_OPTION) {
-                            fieldOfficeTracker.fieldOfficeTaskTimer.start();
-                        }
-                    } else {
-                        SwingUtilities.invokeLater(fieldOfficeTracker::showWindow);
-                    }
-                });
-        fieldOfficesButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        fieldOfficesButton.setMaximumSize(
-                new Dimension(300, fieldOfficesButton.getMinimumSize().height));
-        panel.add(fieldOfficesButton);
-
-        // population button
-        JButton districtsButton = new JButton("Population");
-        districtTracker = new DistrictTracker();
-        districtsButton.addActionListener(
-                e -> {
-                    if (districtTracker.isDown) {
-                        int dialogButton = JOptionPane.YES_NO_OPTION;
-                        int dialogResult =
-                                JOptionPane.showConfirmDialog(
-                                        null,
-                                        "It looks like the population API is currently offline. Would you like to try checking it again?",
-                                        "Error",
-                                        dialogButton);
-                        if (dialogResult == JOptionPane.YES_OPTION) {
-                            districtTracker.districtTaskTimer.start();
-                        }
-                    } else {
-                        SwingUtilities.invokeLater(districtTracker::showWindow);
-                    }
-                });
-        districtsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        districtsButton.setMaximumSize(new Dimension(300, invasionsButton.getMinimumSize().height));
-        panel.add(districtsButton);
-
-        // check for updates button
-        JButton ttrUpdateButton = new JButton("Check TTR Updates");
-        ttrUpdateButton.addActionListener(
-                e -> SwingUtilities.invokeLater(() -> {
-                    TTRUpdater ttrUpdater = new TTRUpdater();
-                    ttrUpdater.setVisible(true);
-
-                    SwingWorker<Void, Void> worker = new SwingWorker<>() {
-                        @Override
-                        protected Void doInBackground() {
-                            ttrUpdater.checkUpdates();
-                            return null;
-                        }
-                    };
-
-                    worker.execute();
-                }));
-        ttrUpdateButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        ttrUpdateButton.setMaximumSize(new Dimension(300, ttrUpdateButton.getMinimumSize().height));
-        panel.add(ttrUpdateButton);
-
-        // game updates button
-        JButton gameUpdatesButton = new JButton("Game Updates");
-        gameUpdatesButton.addActionListener(
-                e -> SwingUtilities.invokeLater(() -> {
-                    GameUpdatesWindow gameUpdatesWindow = new GameUpdatesWindow(gameUpdateTracker.allGameUpdates);
-                    gameUpdatesWindow.setVisible(true);
-                }));
-        gameUpdatesButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        gameUpdatesButton.setMaximumSize(new Dimension(300, gameUpdatesButton.getMinimumSize().height));
-        panel.add(gameUpdatesButton);
-
-        // config button
-        JButton configButton = new JButton("Configuration");
-        configButton.addActionListener(
-                e -> SwingUtilities.invokeLater(() -> {
-                    ConfigWindow configWindow = new ConfigWindow(configHandler);
-                    configWindow.setVisible(true);
-                }));
-        configButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        configButton.setMaximumSize(new Dimension(300, configButton.getMinimumSize().height));
-        panel.add(configButton);
 
         accountList.addMouseListener(new MouseAdapter() {
             @Override
@@ -253,8 +143,15 @@ public final class MainWindow extends JFrame {
             }
         });
 
-        setSize(300, 450);
-        add(panel);
+        setSize(500, 450);
+        tabs.add("Accounts", panel);
+        tabs.add("Invasions", invasionTracker);
+        tabs.add("Field Offices", fieldOfficeTracker);
+        tabs.add("Population", districtTracker);
+        tabs.add("Game Updates", gameUpdatesWindow);
+        tabs.add("Settings", configWindow);
+        tabs.setBorder(null);
+        add(tabs);
         setLocationRelativeTo(null);
     }
 

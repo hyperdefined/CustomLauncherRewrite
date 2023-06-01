@@ -25,34 +25,34 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 
-public class ConfigWindow extends JFrame {
+public class ConfigWindow extends JPanel {
 
     private final Logger logger = LogManager.getLogger(this);
 
     public ConfigWindow(ConfigHandler configHandler) {
         configHandler.loadConfig(false);
-        setTitle("Configuration");
-        setSize(370, 270);
-        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        setResizable(false);
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
 
         // GUI elements
-        JPanel panel = new JPanel();
-        panel.setLayout(null);
+        setLayout(null);
 
         JLabel ttrInstall = new JLabel("<html>TTR Installation</html>");
         JTextField ttrInstallBox = new JTextField(ConfigHandler.INSTALL_LOCATION.getAbsolutePath());
-        JLabel showInvasionNotifications = new JLabel("<html>Show invasion notifications?</html>");
+        JLabel showInvasionNotificationsText = new JLabel("<html>Show invasion notifications?</html>");
         JCheckBox showInvasionNotificationsBox = new JCheckBox();
-        JLabel showFieldOfficeNotifications =
-                new JLabel("<html>Show field office notifications?</html>");
+        JLabel showFieldOfficeNotificationsText = new JLabel("<html>Show field office notifications?</html>");
         JCheckBox showFieldOfficeNotificationsBox = new JCheckBox();
         JButton saveButton = new JButton("Save");
+
+        JButton browseButton = new JButton("Browse");
+        browseButton.addActionListener(e -> {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+            int choice = fileChooser.showOpenDialog(ConfigWindow.this);
+            if (choice == JFileChooser.APPROVE_OPTION) {
+                String selectedPath = fileChooser.getSelectedFile().getAbsolutePath();
+                ttrInstallBox.setText(selectedPath);
+            }
+        });
 
         ttrInstallBox.setCaretPosition(0);
         showInvasionNotificationsBox.setSelected(configHandler.showCogInvasionNotifications());
@@ -60,59 +60,43 @@ public class ConfigWindow extends JFrame {
 
         saveButton.addActionListener(
                 e -> {
-                    File testPath = new File(ttrInstallBox.getText());
+                    String newInstallPath = ttrInstallBox.getText().trim();
+                    File testPath = new File(newInstallPath);
                     if (!(testPath.exists()) && !(testPath.isDirectory())) {
-                        JOptionPane.showMessageDialog(
-                                this,
-                                ttrInstallBox.getText() + " is not a valid path!",
-                                "Error",
-                                JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(this, newInstallPath + " is not a valid path!", "Error", JOptionPane.ERROR_MESSAGE);
                     } else {
-                        JOptionPane.showMessageDialog(
-                                this,
-                                "Settings saved!",
-                                "Options",
-                                JOptionPane.INFORMATION_MESSAGE);
-                        dispose();
-                        configHandler.editConfig(
-                                "showInvasionNotifications",
-                                showInvasionNotificationsBox.isSelected());
-                        configHandler.editConfig(
-                                "showFieldOfficeNotifications",
-                                showFieldOfficeNotificationsBox.isSelected());
-                        configHandler.editConfig("ttrInstallLocation", ttrInstallBox.getText());
+                        JOptionPane.showMessageDialog(this, "Settings saved!", "Options", JOptionPane.INFORMATION_MESSAGE);
 
-                        logger.info(
-                                "Saving new config to "
-                                        + configHandler.CONFIG_FILE.getAbsolutePath());
-                        logger.info("ttrInstallLocation: " + ttrInstallBox.getText());
-                        logger.info(
-                                "showFieldOfficeNotifications: "
-                                        + showFieldOfficeNotificationsBox.isSelected());
-                        logger.info(
-                                "showInvasionNotifications: "
-                                        + showInvasionNotificationsBox.isSelected());
+                        boolean showInvasionNotifications = showInvasionNotificationsBox.isSelected();
+                        boolean showFieldOfficeNotifications = showFieldOfficeNotificationsBox.isSelected();
+
+                        configHandler.editConfig("showInvasionNotifications", showInvasionNotifications);
+                        configHandler.editConfig("showFieldOfficeNotifications", showFieldOfficeNotifications);
+                        configHandler.editConfig("ttrInstallLocation", newInstallPath);
+
+                        logger.info("Saving new config to " + configHandler.CONFIG_FILE.getAbsolutePath());
+                        logger.info("ttrInstallLocation: " + newInstallPath);
+                        logger.info("showInvasionNotifications: " + showInvasionNotifications);
+                        logger.info("showFieldOfficeNotifications: " + showFieldOfficeNotifications);
                     }
                 });
-
-        panel.add(ttrInstall);
-        panel.add(ttrInstallBox);
-        panel.add(saveButton);
-        panel.add(showInvasionNotifications);
-        panel.add(showInvasionNotificationsBox);
-        panel.add(showFieldOfficeNotifications);
-        panel.add(showFieldOfficeNotificationsBox);
-
         ttrInstall.setBounds(20, 15, 100, 30);
-        ttrInstallBox.setBounds(120, 15, 200, 30);
-        saveButton.setBounds(20, 170, 60, 30);
+        ttrInstallBox.setBounds(120, 15, 250, 30);
+        saveButton.setBounds(20, 200, 60, 30);
         ttrInstallBox.setMaximumSize(new Dimension(200, 25));
-        showInvasionNotifications.setBounds(20, 30, 100, 80);
-        showInvasionNotificationsBox.setBounds(120, 45, 100, 30);
-        showFieldOfficeNotifications.setBounds(20, 70, 100, 80);
-        showFieldOfficeNotificationsBox.setBounds(120, 85, 100, 30);
+        showInvasionNotificationsText.setBounds(20, 60, 100, 80);
+        showInvasionNotificationsBox.setBounds(120, 75, 100, 30);
+        showFieldOfficeNotificationsText.setBounds(20, 100, 100, 80);
+        showFieldOfficeNotificationsBox.setBounds(120, 115, 100, 30);
+        browseButton.setBounds(380, 15, 70, 30);
 
-        add(panel);
-        setLocationRelativeTo(null);
+        add(ttrInstall);
+        add(ttrInstallBox);
+        add(saveButton);
+        add(showInvasionNotificationsText);
+        add(showInvasionNotificationsBox);
+        add(showFieldOfficeNotificationsText);
+        add(showFieldOfficeNotificationsBox);
+        add(browseButton);
     }
 }
