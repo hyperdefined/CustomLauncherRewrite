@@ -55,6 +55,7 @@ public class TTRUpdater extends JFrame {
     public final Logger logger = LogManager.getLogger(this);
     private final JProgressBar progressBar;
     private final JLabel updateStatus;
+    private final JLabel fileProgress;
 
     /**
      * Create the TTR updater window.
@@ -79,11 +80,14 @@ public class TTRUpdater extends JFrame {
 
         updateStatus = new JLabel("Checking files...");
         updateStatus.setAlignmentX(Component.CENTER_ALIGNMENT);
+        fileProgress = new JLabel();
+        fileProgress.setAlignmentX(Component.CENTER_ALIGNMENT);
         progressBar = new JProgressBar(0, 0);
         progressBar.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.add(Box.createRigidArea(new Dimension(0, 30)));
         panel.add(updateStatus);
         panel.add(progressBar);
+        panel.add(fileProgress);
 
         progressBar.setBounds(150, 100, 100, 30);
         updateStatus.setBounds(70, 25, 370, 40);
@@ -202,7 +206,9 @@ public class TTRUpdater extends JFrame {
 
         // we store files we need to download in filesToDownload
         // if there are files in that list, download them
+        int currentProgress = 0;
         if (filesToDownload.size() > 0) {
+            fileProgress.setText(String.format("Progress: %d / %d", currentProgress, filesToDownload.size()));
             File tempFolder = new File("temp");
             if (!tempFolder.exists() && !tempFolder.mkdirs()) {
                 logger.error("Unable to create temp folder!");
@@ -260,6 +266,8 @@ public class TTRUpdater extends JFrame {
                 updateStatus.setText("Finished extracting file " + fileToDownload);
                 long extractedTime = TimeUnit.MILLISECONDS.convert(System.nanoTime() - startTime, TimeUnit.NANOSECONDS);
                 logger.info("Finished extracting file " + downloadName + ". Took " + extractedTime + "ms.");
+                currentProgress++;
+                fileProgress.setText(String.format("Progress: %d / %d", currentProgress, filesToDownload.size()));
             }
             // delete all files in the temp folder
             File[] tempFolderFiles = tempFolder.listFiles();
