@@ -71,6 +71,19 @@ public record GameUpdate(int id, String version, String notes, String date) impl
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+
+        if (!(o instanceof GameUpdate gameUpdate)) {
+            return false;
+        }
+
+        return gameUpdate.version.equals(this.version);
+    }
+
+    @Override
     public int compareTo(GameUpdate other) {
         return Integer.compare(this.id, other.id());
     }
