@@ -101,6 +101,11 @@ public class Invasion implements Comparable<Invasion> {
         return invasion.getDistrict().equals(this.getDistrict());
     }
 
+    @Override
+    public int hashCode() {
+        return district.hashCode();
+    }
+
     /**
      * Get when we started tracking the invasion.
      * @return The timestamp.

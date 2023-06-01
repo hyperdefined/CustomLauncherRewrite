@@ -92,4 +92,9 @@ public record GameUpdate(int id, String version, String notes, String date) impl
     public String toString() {
         return version;
     }
+
+    @Override
+    public int hashCode() {
+        return id * version.hashCode() * notes.hashCode();
+    }
 }

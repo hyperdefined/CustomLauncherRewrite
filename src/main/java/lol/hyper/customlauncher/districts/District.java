@@ -100,4 +100,9 @@ public class District implements Comparable<District> {
 
         return district.getDistrictName().equalsIgnoreCase(this.getDistrictName());
     }
+
+    @Override
+    public int hashCode() {
+        return districtName.hashCode();
+    }
 }

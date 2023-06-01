@@ -29,14 +29,11 @@ import lol.hyper.customlauncher.fieldoffices.FieldOfficeTracker;
 import lol.hyper.customlauncher.tools.PopUpWindow;
 import lol.hyper.customlauncher.invasions.InvasionTracker;
 import lol.hyper.customlauncher.login.LoginHandler;
-import lol.hyper.customlauncher.ttrupdater.TTRUpdater;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;

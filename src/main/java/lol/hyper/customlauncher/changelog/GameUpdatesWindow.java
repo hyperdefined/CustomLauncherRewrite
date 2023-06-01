@@ -17,7 +17,6 @@
 
 package lol.hyper.customlauncher.changelog;
 
-import lol.hyper.customlauncher.CustomLauncherRewrite;
 import lol.hyper.customlauncher.tools.ScrollableTextWindow;
 import lol.hyper.customlauncher.ttrupdater.TTRUpdater;
 
