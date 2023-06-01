@@ -76,9 +76,8 @@ public class CustomLauncherRewrite {
         // create the ttr-files folder
         if (!ConfigHandler.INSTALL_LOCATION.exists()) {
             Files.createDirectory(ConfigHandler.INSTALL_LOCATION.toPath());
-            logger.info(
-                    "Creating TTR install folder at "
-                            + ConfigHandler.INSTALL_LOCATION.getAbsolutePath());
+            logger.info("Creating TTR install folder at " + ConfigHandler.INSTALL_LOCATION.getAbsolutePath());
+            new FirstLaunch();
         }
 
         // load the icon
@@ -111,12 +110,6 @@ public class CustomLauncherRewrite {
 
         // load ttr game updates
         GameUpdateTracker gameUpdateTracker = new GameUpdateTracker();
-
-        File ttrFiles = new File("ttr-files");
-        // we don't have ttr installed, run first setup
-        if (!ttrFiles.exists()) {
-            new FirstLaunch();
-        }
 
         // run the TTR updater
         TTRUpdater ttrUpdater = new TTRUpdater();
