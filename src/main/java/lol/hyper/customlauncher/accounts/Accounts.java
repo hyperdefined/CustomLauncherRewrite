@@ -41,14 +41,11 @@ public class Accounts {
      * Creates an Account object.
      */
     public Accounts() {
-        File accountsCopy = new File("config", "accounts-BACKUP.json");
-        if (!accountsCopy.exists()) {
-            try {
-                FileUtils.copyFile(ACCOUNTS_FILE, accountsCopy);
-            } catch (IOException exception) {
-                logger.error("Unable to backup the accounts file!", exception);
-                new ExceptionWindow(exception);
-            }
+        // create the base accounts files
+        if (!ACCOUNTS_FILE.exists()) {
+            JSONArray newAccounts = new JSONArray();
+            JSONManager.writeFile(newAccounts, Accounts.ACCOUNTS_FILE);
+            logger.info("Creating base accounts file...");
         }
     }
 
@@ -65,8 +62,8 @@ public class Accounts {
     /**
      * Create a new account and save it.
      *
-     * @param username The username.
-     * @param password The password.
+     * @param username    The username.
+     * @param password    The password.
      * @param accountType The type of account.
      */
     public void addAccount(String username, String password, Account.Type accountType) {
@@ -75,7 +72,9 @@ public class Accounts {
         writeAccounts();
     }
 
-    /** Loads accounts saved in the accounts.json file. */
+    /**
+     * Loads accounts saved in the accounts.json file.
+     */
     private void loadAccountsFromFile() {
         accounts.clear();
         JSONArray accountsJSON = new JSONArray(JSONManager.readFile(ACCOUNTS_FILE));
@@ -138,7 +137,9 @@ public class Accounts {
         writeAccounts();
     }
 
-    /** Save all accounts to the accounts file. */
+    /**
+     * Save all accounts to the accounts file.
+     */
     public void writeAccounts() {
         JSONArray accountsArray = new JSONArray();
         for (Account account : accounts) {

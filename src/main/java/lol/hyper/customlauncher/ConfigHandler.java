@@ -17,12 +17,15 @@
 
 package lol.hyper.customlauncher;
 
+import lol.hyper.customlauncher.tools.ExceptionWindow;
 import lol.hyper.customlauncher.tools.JSONManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 
 public class ConfigHandler {
 
@@ -33,6 +36,16 @@ public class ConfigHandler {
     private final Logger logger = LogManager.getLogger(this);
 
     public ConfigHandler() {
+        File CONFIG_FOLDER = new File("config");
+        if (!CONFIG_FOLDER.exists()) {
+            try {
+                logger.info("Creating config folder at " + CONFIG_FOLDER.getAbsolutePath());
+                Files.createDirectory(CONFIG_FOLDER.toPath());
+            } catch (IOException exception) {
+                logger.error("Cannot create config folder!", exception);
+                new ExceptionWindow(exception);
+            }
+        }
         loadConfig(true);
     }
 
@@ -51,7 +64,9 @@ public class ConfigHandler {
         }
     }
 
-    /** Sets the default config values. If anything is missing it will update the config. */
+    /**
+     * Sets the default config values. If anything is missing it will update the config.
+     */
     private void setDefaults() {
         boolean changed = false;
         if (!jsonObject.has("showInvasionNotifications")) {
@@ -63,9 +78,7 @@ public class ConfigHandler {
             changed = true;
         }
         if (!jsonObject.has("ttrInstallLocation")) {
-            jsonObject.put(
-                    "ttrInstallLocation",
-                    System.getProperty("user.dir") + File.separator + "ttr-files");
+            jsonObject.put("ttrInstallLocation", System.getProperty("user.dir") + File.separator + "ttr-files");
             changed = true;
         }
         if (changed) {
@@ -74,7 +87,9 @@ public class ConfigHandler {
         JSONManager.writeFile(jsonObject, CONFIG_FILE);
     }
 
-    /** Load the config from disk into the JSON object. */
+    /**
+     * Load the config from disk into the JSON object.
+     */
     public void loadConfig(boolean log) {
         if (!CONFIG_FILE.exists()) {
             jsonObject = new JSONObject();
@@ -94,6 +109,18 @@ public class ConfigHandler {
         }
         setDefaults();
         INSTALL_LOCATION = new File(jsonObject.getString("ttrInstallLocation"));
+
+        // create the ttr-files folder
+        if (!INSTALL_LOCATION.exists()) {
+            try {
+                Files.createDirectory(INSTALL_LOCATION.toPath());
+                logger.info("Creating TTR install folder at " + INSTALL_LOCATION.getAbsolutePath());
+                new FirstLaunch();
+            } catch (IOException exception) {
+                logger.error("Cannot create TTR folder!", exception);
+                new ExceptionWindow(exception);
+            }
+        }
 
         if (log) {
             logger.info("Config version: " + jsonObject.getInt("version"));

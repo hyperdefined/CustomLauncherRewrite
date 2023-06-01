@@ -63,34 +63,13 @@ public class CustomLauncherRewrite {
 
         userAgent = "CustomLauncherRewrite https://github.com/hyperdefined/CustomLauncherRewrite " + version;
 
-        // create the config folder
-        final File configPath = new File("config");
-        if (!configPath.exists()) {
-            Files.createDirectory(configPath.toPath());
-            logger.info("Creating config folder at " + configPath.getAbsolutePath());
-        }
-
         // set the config
         ConfigHandler configHandler = new ConfigHandler();
-
-        // create the ttr-files folder
-        if (!ConfigHandler.INSTALL_LOCATION.exists()) {
-            Files.createDirectory(ConfigHandler.INSTALL_LOCATION.toPath());
-            logger.info("Creating TTR install folder at " + ConfigHandler.INSTALL_LOCATION.getAbsolutePath());
-            new FirstLaunch();
-        }
 
         // load the icon
         InputStream iconStream = CustomLauncherRewrite.class.getResourceAsStream("/icon.png");
         if (iconStream != null) {
             icon = ImageIO.read(iconStream);
-        }
-
-        // create accounts.json with no accounts
-        if (!Accounts.ACCOUNTS_FILE.exists()) {
-            JSONArray newAccounts = new JSONArray();
-            JSONManager.writeFile(newAccounts, Accounts.ACCOUNTS_FILE);
-            logger.info("Creating base accounts file...");
         }
 
         // this is used for removing old versions on Windows
