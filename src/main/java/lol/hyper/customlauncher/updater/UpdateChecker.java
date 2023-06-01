@@ -102,6 +102,7 @@ public class UpdateChecker {
                     File accountsBackup = new File("config", "accounts-BACKUP.json");
                     try {
                         FileUtils.copyFile(Accounts.ACCOUNTS_FILE, accountsBackup);
+                        logger.info("Backing up accounts.json for version 1.9.0...");
                     } catch (IOException exception) {
                         logger.error("Unable to backup the accounts file!", exception);
                         new ExceptionWindow(exception);
