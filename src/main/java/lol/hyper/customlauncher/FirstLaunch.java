@@ -31,7 +31,7 @@ public class FirstLaunch {
     private final Logger logger = LogManager.getLogger(this);
 
     public FirstLaunch() {
-        new PopUpWindow(null, "Welcome to CustomLauncherRewrite! I am first going to detect for an existing TTR install.\nI will copy screenshots, settings, and resource packs.");
+        new PopUpWindow(null, "Welcome to CustomLauncherRewrite! I am first going to detect for an existing TTR install.\n I will copy screenshots, settings, and resource packs.");
         if (SystemUtils.IS_OS_LINUX) {
             copyLinuxInstall();
         } else if (SystemUtils.IS_OS_WINDOWS) {
@@ -78,9 +78,15 @@ public class FirstLaunch {
         File screenshots = new File(source, "screenshots");
         File newInstall = new File("ttr-files");
         try {
-            FileUtils.copyFileToDirectory(settings, newInstall);
-            FileUtils.copyFileToDirectory(resourcePacks, newInstall);
-            FileUtils.copyFileToDirectory(screenshots, newInstall);
+            if (settings.exists()) {
+                FileUtils.copyFileToDirectory(settings, newInstall);
+            }
+            if (resourcePacks.exists()) {
+                FileUtils.copyDirectory(resourcePacks, new File(newInstall, "resources"));
+            }
+            if (screenshots.exists()) {
+                FileUtils.copyDirectory(screenshots, new File(newInstall, "screenshots"));
+            }
         } catch (IOException exception) {
             logger.error("Unable to copy TTR files!", exception);
             new ExceptionWindow(exception);
