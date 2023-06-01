@@ -79,21 +79,6 @@ public class CustomLauncherRewrite {
             logger.info(
                     "Creating TTR install folder at "
                             + ConfigHandler.INSTALL_LOCATION.getAbsolutePath());
-            JSONObject options = new JSONObject();
-            // TTR on linux has a bug with fullscreen mode
-            // we set TTR to be windowed mode on first launch
-            // the user can always change this
-            if (SystemUtils.IS_OS_LINUX) {
-                JSONObject videoSettings = new JSONObject();
-                videoSettings.put("display-mode", "window");
-                options.put("video", videoSettings);
-            }
-            // lower the game audio so the user doesn't die when it launches
-            JSONObject audioSettings = new JSONObject();
-            audioSettings.put("music-volume", 10);
-            audioSettings.put("sfx-volume", 10);
-            options.put("audio", audioSettings);
-            JSONManager.writeFile(options, new File("ttr-files", "settings.json"));
         }
 
         // load the icon
