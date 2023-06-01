@@ -132,7 +132,7 @@ public class FieldOfficeTracker extends JPanel {
     /**
      * Read field office API every 10 seconds.
      */
-    private void startFieldOfficeRefresh() {
+    public void startFieldOfficeRefresh() {
         ActionListener actionListener = new FieldOfficeTask(this);
         fieldOfficeTaskTimer = new Timer(0, actionListener);
         fieldOfficeTaskTimer.setDelay(10000);

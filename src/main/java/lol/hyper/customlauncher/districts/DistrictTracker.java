@@ -114,7 +114,7 @@ public class DistrictTracker extends JPanel {
     /**
      * Read population API every 10 seconds.
      */
-    private void startDistrictRefresh() {
+    public void startDistrictRefresh() {
         ActionListener actionListener = new DistrictTask(this);
         districtTaskTimer = new Timer(0, actionListener);
         districtTaskTimer.setDelay(30000);

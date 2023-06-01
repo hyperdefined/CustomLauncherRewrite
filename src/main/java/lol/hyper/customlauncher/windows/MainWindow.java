@@ -35,6 +35,8 @@ import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -76,6 +78,44 @@ public final class MainWindow extends JFrame {
         panel.add(accountsLabel);
 
         JTabbedPane tabs = new JTabbedPane();
+
+        tabs.addChangeListener(event -> {
+            int selectedIndex = tabs.getSelectedIndex();
+            switch (selectedIndex) {
+                // invasions tab
+                case 1 -> {
+                    if (invasionTracker.isDown) {
+                        int dialogResult =
+                                JOptionPane.showConfirmDialog(this, "It looks like the invasion API is down, would you want to try again?", "Invasion Tracker", JOptionPane.YES_NO_OPTION);
+                        if (dialogResult == JOptionPane.YES_OPTION) {
+                            invasionTracker.startInvasionRefresh();
+                        }
+                    }
+                }
+
+                // field offices tab
+                case 2 -> {
+                    if (fieldOfficeTracker.isDown) {
+                        int dialogResult =
+                                JOptionPane.showConfirmDialog(this, "It looks like the field office API is down, would you want to try again?", "Field Office Tracker", JOptionPane.YES_NO_OPTION);
+                        if (dialogResult == JOptionPane.YES_OPTION) {
+                            fieldOfficeTracker.startFieldOfficeRefresh();
+                        }
+                    }
+                }
+
+                // population tab
+                case 3 -> {
+                    if (districtTracker.isDown) {
+                        int dialogResult =
+                                JOptionPane.showConfirmDialog(this, "It looks like the population API is down, would you want to try again?", "Population Tracker", JOptionPane.YES_NO_OPTION);
+                        if (dialogResult == JOptionPane.YES_OPTION) {
+                            districtTracker.startDistrictRefresh();
+                        }
+                    }
+                }
+            }
+        });
 
         JList<Account> accountList = new JList<>(accountsModel);
         accountsModel.addAll(accounts.getAccounts());
