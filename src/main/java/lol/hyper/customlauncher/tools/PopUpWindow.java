@@ -62,6 +62,7 @@ public class PopUpWindow extends JDialog {
 
         pack();
         setLocationRelativeTo(frame);
+        Toolkit.getDefaultToolkit().beep();
         setVisible(true);
     }
 }

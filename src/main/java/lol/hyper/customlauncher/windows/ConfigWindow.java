@@ -18,6 +18,7 @@
 package lol.hyper.customlauncher.windows;
 
 import lol.hyper.customlauncher.ConfigHandler;
+import lol.hyper.customlauncher.tools.PopUpWindow;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -69,7 +70,7 @@ public class ConfigWindow extends JPanel {
                         ttrInstallBox.setText(ConfigHandler.INSTALL_LOCATION.getAbsolutePath());
                         ttrInstallBox.setCaretPosition(0);
                     } else {
-                        JOptionPane.showMessageDialog(this, "Settings saved!", "Options", JOptionPane.INFORMATION_MESSAGE);
+                        new PopUpWindow(null, "Settings saved!");
 
                         boolean showInvasionNotifications = showInvasionNotificationsBox.isSelected();
                         boolean showFieldOfficeNotifications = showFieldOfficeNotificationsBox.isSelected();
