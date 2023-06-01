@@ -16,11 +16,13 @@ CustomLauncherRewrite is an all purpose launcher for Toontown Rewritten. This la
 * Built in invasion tracker, field office tracker, and district tracking.
 * Support for Windows and Linux.
 
-![Screenshot1](https://raw.githubusercontent.com/hyperdefined/CustomLauncherRewrite/master/images/image.png)
-![Screenshot2](https://raw.githubusercontent.com/hyperdefined/CustomLauncherRewrite/master/images/image2.png)
-![Screenshot3](https://raw.githubusercontent.com/hyperdefined/CustomLauncherRewrite/master/images/image3.png)
-![Screenshot4](https://raw.githubusercontent.com/hyperdefined/CustomLauncherRewrite/master/images/image4.png)
-![Screenshot5](https://raw.githubusercontent.com/hyperdefined/CustomLauncherRewrite/master/images/image5.png)
+| Main Window                                                                                                  | New Account                                                                                                   | Game Updater                                                                                                  | Release Notes                                                                                                 |
+| ------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| ![Screenshot1](https://raw.githubusercontent.com/hyperdefined/CustomLauncherRewrite/master/images/image.png) | ![Screenshot2](https://raw.githubusercontent.com/hyperdefined/CustomLauncherRewrite/master/images/image2.png) | ![Screenshot5](https://raw.githubusercontent.com/hyperdefined/CustomLauncherRewrite/master/images/image5.png) | ![Screenshot7](https://raw.githubusercontent.com/hyperdefined/CustomLauncherRewrite/master/images/image7.png) |
+
+| Invasion Tracker                                                                                              | Field Office Tracker                                                                                          | Population Tracker                                                                                            |
+| ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| ![Screenshot4](https://raw.githubusercontent.com/hyperdefined/CustomLauncherRewrite/master/images/image4.png) | ![Screenshot3](https://raw.githubusercontent.com/hyperdefined/CustomLauncherRewrite/master/images/image3.png) | ![Screenshot6](https://raw.githubusercontent.com/hyperdefined/CustomLauncherRewrite/master/images/image6.png) |
 
 ## Support
 First check the [wiki](https://github.com/hyperdefined/CustomLauncherRewrite/wiki) for most common questions.
@@ -33,14 +35,14 @@ The code for this program could definitely be improved. Feel free to fork and ma
 ## License
 This program is released under GNU General Public License v3. See [LICENSE](https://github.com/hyperdefined/CustomLauncherRewrite/blob/master/LICENSE).
 
-| Licenses |
-| ----------- |
-| [org.json](https://github.com/stleary/JSON-java/blob/master/LICENSE) |
-| [commons-io](https://github.com/apache/commons-io/blob/master/LICENSE.txt) |
-| [commons-lang](https://github.com/apache/commons-lang/blob/master/LICENSE.txt) |
-| [commons-compress](https://github.com/apache/commons-compress/blob/master/LICENSE.txt) |
+| Licenses                                                                                         |
+|--------------------------------------------------------------------------------------------------|
+| [org.json](https://github.com/stleary/JSON-java/blob/master/LICENSE)                             |
+| [commons-io](https://github.com/apache/commons-io/blob/master/LICENSE.txt)                       |
+| [commons-lang](https://github.com/apache/commons-lang/blob/master/LICENSE.txt)                   |
+| [commons-compress](https://github.com/apache/commons-compress/blob/master/LICENSE.txt)           |
 | [httpcomponents-client](https://github.com/apache/httpcomponents-client/blob/master/LICENSE.txt) |
-| [launch4j](https://github.com/mirror/launch4j/blob/master/LICENSE.txt) |
-| [log4j2](https://github.com/apache/logging-log4j2/blob/master/LICENSE.txt) |
-| [notify](https://github.com/dorkbox/Notify/blob/master/LICENSE) |
-| [GitHubReleaseAPI](https://github.com/hyperdefined/GitHubReleaseAPI/blob/master/LICENSE) |
+| [launch4j](https://github.com/mirror/launch4j/blob/master/LICENSE.txt)                           |
+| [log4j2](https://github.com/apache/logging-log4j2/blob/master/LICENSE.txt)                       |
+| [notify](https://github.com/dorkbox/Notify/blob/master/LICENSE)                                  |
+| [GitHubReleaseAPI](https://github.com/hyperdefined/GitHubReleaseAPI/blob/master/LICENSE)         |
