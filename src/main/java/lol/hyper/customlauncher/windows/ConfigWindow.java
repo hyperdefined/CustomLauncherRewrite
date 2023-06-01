@@ -37,6 +37,7 @@ public class ConfigWindow extends JPanel {
 
         JLabel ttrInstall = new JLabel("<html>TTR Installation</html>");
         JTextField ttrInstallBox = new JTextField(ConfigHandler.INSTALL_LOCATION.getAbsolutePath());
+        ttrInstallBox.setCaretPosition(0);
         JLabel showInvasionNotificationsText = new JLabel("<html>Show invasion notifications?</html>");
         JCheckBox showInvasionNotificationsBox = new JCheckBox();
         JLabel showFieldOfficeNotificationsText = new JLabel("<html>Show field office notifications?</html>");
@@ -51,6 +52,7 @@ public class ConfigWindow extends JPanel {
             if (choice == JFileChooser.APPROVE_OPTION) {
                 String selectedPath = fileChooser.getSelectedFile().getAbsolutePath();
                 ttrInstallBox.setText(selectedPath);
+                ttrInstallBox.setCaretPosition(0);
             }
         });
 
@@ -64,6 +66,8 @@ public class ConfigWindow extends JPanel {
                     File testPath = new File(newInstallPath);
                     if (!(testPath.exists()) && !(testPath.isDirectory())) {
                         JOptionPane.showMessageDialog(this, newInstallPath + " is not a valid path!", "Error", JOptionPane.ERROR_MESSAGE);
+                        ttrInstallBox.setText(ConfigHandler.INSTALL_LOCATION.getAbsolutePath());
+                        ttrInstallBox.setCaretPosition(0);
                     } else {
                         JOptionPane.showMessageDialog(this, "Settings saved!", "Options", JOptionPane.INFORMATION_MESSAGE);
 
