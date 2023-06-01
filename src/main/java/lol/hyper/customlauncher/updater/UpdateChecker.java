@@ -18,6 +18,7 @@
 package lol.hyper.customlauncher.updater;
 
 import lol.hyper.customlauncher.CustomLauncherRewrite;
+import lol.hyper.customlauncher.accounts.Accounts;
 import lol.hyper.customlauncher.tools.ExceptionWindow;
 import lol.hyper.customlauncher.tools.PopUpWindow;
 import lol.hyper.githubreleaseapi.GitHubRelease;
@@ -95,6 +96,18 @@ public class UpdateChecker {
             if (dialogResult == JOptionPane.YES_OPTION) {
                 // download the latest version and run it
                 downloadLatestVersion();
+
+                // hardcode this
+                if (latestVersion.equals("1.9.0")) {
+                    File accountsBackup = new File("config", "accounts-BACKUP.json");
+                    try {
+                        FileUtils.copyFile(Accounts.ACCOUNTS_FILE, accountsBackup);
+                    } catch (IOException exception) {
+                        logger.error("Unable to backup the accounts file!", exception);
+                        new ExceptionWindow(exception);
+                    }
+                }
+
                 launchNewVersion(latestVersion);
                 System.exit(0);
             }
