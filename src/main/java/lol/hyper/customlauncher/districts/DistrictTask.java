@@ -17,9 +17,6 @@
 
 package lol.hyper.customlauncher.districts;
 
-import lol.hyper.customlauncher.tools.JSONManager;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
 import java.awt.event.ActionEvent;
@@ -27,10 +24,7 @@ import java.awt.event.ActionListener;
 import java.util.Iterator;
 
 public class DistrictTask implements ActionListener {
-
-    final String DISTRICT_URL = "https://www.toontownrewritten.com/api/population";
     private final DistrictTracker districtTracker;
-    private final Logger logger = LogManager.getLogger(this);
 
     /**
      * Start tracking districts. This will read the API and update each population of all districts.
@@ -43,20 +37,10 @@ public class DistrictTask implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        // Read the API and store whatever JSON is received
-        JSONObject districtsJSON = JSONManager.requestJSON(DISTRICT_URL);
-        // if reading the JSON failed, stop the task
-        if (districtsJSON == null) {
-            districtTracker.isDown = true;
-            districtTracker.districtTaskTimer.stop();
-            return;
-        }
-
         districtTracker.isDown = false; // make sure to set this to false since we can read the API
 
-        logger.info("Reading " + DISTRICT_URL + " for current districts...");
-
-        JSONObject populationByDistrict = districtsJSON.getJSONObject("populationByDistrict");
+        JSONObject rootJSON = new JSONObject(districtTracker.result);
+        JSONObject populationByDistrict = rootJSON.getJSONObject("populationByDistrict");
         // iterate through each district
         Iterator<String> populationKeys = populationByDistrict.keys();
         while (populationKeys.hasNext()) {
@@ -79,7 +63,7 @@ public class DistrictTask implements ActionListener {
             }
         }
 
-        JSONObject statusByDistrict = districtsJSON.getJSONObject("statusByDistrict");
+        JSONObject statusByDistrict = rootJSON.getJSONObject("statusByDistrict");
         // iterate through each district
         Iterator<String> statusKeys = statusByDistrict.keys();
         while (statusKeys.hasNext()) {

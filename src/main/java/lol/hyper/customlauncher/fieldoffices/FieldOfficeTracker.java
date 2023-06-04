@@ -21,6 +21,9 @@ import dorkbox.notify.Notify;
 import dorkbox.notify.Pos;
 import lol.hyper.customlauncher.ConfigHandler;
 import lol.hyper.customlauncher.CustomLauncherRewrite;
+import lol.hyper.customlauncher.tools.RequestWorker;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.Timer;
@@ -30,6 +33,7 @@ import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class FieldOfficeTracker extends JPanel {
 
@@ -45,6 +49,10 @@ public class FieldOfficeTracker extends JPanel {
     public boolean isDown = false;
     public Timer fieldOfficeTaskTimer;
     private final ConfigHandler configHandler;
+
+    public String result;
+
+    private final Logger logger = LogManager.getLogger(this);
 
     /**
      * This tracker will process & display the FieldOfficeTask. It handles the window and tracking
@@ -133,6 +141,18 @@ public class FieldOfficeTracker extends JPanel {
      * Read field office API every 10 seconds.
      */
     public void startFieldOfficeRefresh() {
+        String FIELD_OFFICE_URL = "https://www.toontownrewritten.com/api/fieldoffices";
+        RequestWorker requestWorker = new RequestWorker(FIELD_OFFICE_URL);
+        requestWorker.execute();
+        try {
+            result = requestWorker.get();
+            logger.info("Reading " + FIELD_OFFICE_URL + " for current districts...");
+        } catch (InterruptedException | ExecutionException ex) {
+            isDown = true;
+            fieldOfficeTaskTimer.stop();
+            return;
+        }
+
         ActionListener actionListener = new FieldOfficeTask(this);
         fieldOfficeTaskTimer = new Timer(0, actionListener);
         fieldOfficeTaskTimer.setDelay(10000);

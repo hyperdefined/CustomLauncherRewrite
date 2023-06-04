@@ -114,6 +114,37 @@ public class JSONManager {
     }
 
     /**
+     * Get a String from a URL.
+     *
+     * @param url The URL to get string from.
+     * @return The response string.
+     */
+    public static String request(String url) {
+        String rawJSON;
+        try {
+            URLConnection conn = new URL(url).openConnection();
+            conn.setRequestProperty("User-Agent", CustomLauncherRewrite.userAgent);
+            conn.connect();
+
+            InputStream in = conn.getInputStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+            rawJSON = reader.lines().collect(Collectors.joining(System.lineSeparator()));
+            reader.close();
+
+        } catch (IOException exception) {
+            logger.error("Unable to read URL " + url, exception);
+            new ExceptionWindow(exception);
+            return null;
+        }
+
+        if (rawJSON.isEmpty()) {
+            logger.error("Read JSON from " + url + " returned an empty string!");
+            return null;
+        }
+        return rawJSON;
+    }
+
+    /**
      * Get a JSONArray from a URL.
      *
      * @param url The URL to get JSONArray from.

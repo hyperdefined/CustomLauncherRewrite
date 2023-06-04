@@ -17,9 +17,6 @@
 
 package lol.hyper.customlauncher.fieldoffices;
 
-import lol.hyper.customlauncher.tools.JSONManager;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
 import java.awt.event.ActionEvent;
@@ -28,10 +25,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class FieldOfficeTask implements ActionListener {
-
-    final String FIELD_OFFICE_URL = "https://www.toontownrewritten.com/api/fieldoffices";
     private final FieldOfficeTracker fieldOfficeTracker;
-    private final Logger logger = LogManager.getLogger(this);
 
     /**
      * Start tracking field offices. This will read the API, store any new ones, and update any
@@ -45,20 +39,11 @@ public class FieldOfficeTask implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        // Read the API and store whatever JSON is received
-        JSONObject fieldOfficeRoot = JSONManager.requestJSON(FIELD_OFFICE_URL);
-        if (fieldOfficeRoot == null) {
-            fieldOfficeTracker.isDown = true;
-            fieldOfficeTracker.fieldOfficeTaskTimer.stop();
-            return;
-        }
-
         fieldOfficeTracker.isDown = false;
 
         // each field office is under the fieldOffices JSON
-        JSONObject fieldOfficeJSON = fieldOfficeRoot.getJSONObject("fieldOffices");
-
-        logger.info("Reading " + FIELD_OFFICE_URL + " for current field offices...");
+        JSONObject rootJSON = new JSONObject(fieldOfficeTracker.result);
+        JSONObject fieldOfficeJSON = rootJSON.getJSONObject("fieldOffices");
 
         // go through all the field offices from the API
         Iterator<String> keys = fieldOfficeJSON.keys();

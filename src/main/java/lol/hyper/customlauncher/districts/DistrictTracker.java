@@ -17,6 +17,10 @@
 
 package lol.hyper.customlauncher.districts;
 
+import lol.hyper.customlauncher.tools.RequestWorker;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javax.swing.*;
 import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
@@ -25,6 +29,7 @@ import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class DistrictTracker extends JPanel {
 
@@ -37,6 +42,10 @@ public class DistrictTracker extends JPanel {
     public long lastFetched = 0;
     public boolean isDown = false;
     public Timer districtTaskTimer;
+
+    public String result;
+
+    private final Logger logger = LogManager.getLogger(this);
 
     /**
      * This tracker will process & display the DistrictTask. It handles the window and tracking of
@@ -115,6 +124,18 @@ public class DistrictTracker extends JPanel {
      * Read population API every 10 seconds.
      */
     public void startDistrictRefresh() {
+        String DISTRICT_URL = "https://www.toontownrewritten.com/api/population";
+        RequestWorker requestWorker = new RequestWorker(DISTRICT_URL);
+        requestWorker.execute();
+        try {
+            result = requestWorker.get();
+            logger.info("Reading " + DISTRICT_URL + " for current districts...");
+        } catch (InterruptedException | ExecutionException ex) {
+            isDown = true;
+            districtTaskTimer.stop();
+            return;
+        }
+
         ActionListener actionListener = new DistrictTask(this);
         districtTaskTimer = new Timer(0, actionListener);
         districtTaskTimer.setDelay(30000);

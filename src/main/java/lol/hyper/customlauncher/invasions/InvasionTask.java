@@ -17,7 +17,6 @@
 
 package lol.hyper.customlauncher.invasions;
 
-import lol.hyper.customlauncher.tools.JSONManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
@@ -30,9 +29,8 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class InvasionTask implements ActionListener {
-
-    final String INVASION_URL = "https://api.toon.plus/invasions";
     private final InvasionTracker invasionTracker;
+
     private final Logger logger = LogManager.getLogger(this);
 
     /**
@@ -47,17 +45,9 @@ public class InvasionTask implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        // Read the API and store whatever JSON is received
-        JSONObject invasionsJSON = JSONManager.requestJSON(INVASION_URL);
-        // if reading the JSON failed, stop the task
-        if (invasionsJSON == null) {
-            invasionTracker.isDown = true;
-            invasionTracker.invasionTaskTimer.stop();
-            return;
-        }
         invasionTracker.isDown = false; // make sure to set this to false since we can read the API
 
-        logger.info("Reading " + INVASION_URL + " for current invasions...");
+        JSONObject invasionsJSON = new JSONObject(invasionTracker.result);
 
         // iterate through each of the invasions (separate JSONs)
         Iterator<String> keys = invasionsJSON.keys();
