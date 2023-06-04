@@ -18,7 +18,6 @@
 package lol.hyper.customlauncher.updater;
 
 import lol.hyper.customlauncher.CustomLauncherRewrite;
-import lol.hyper.customlauncher.accounts.Accounts;
 import lol.hyper.customlauncher.tools.ExceptionWindow;
 import lol.hyper.customlauncher.tools.PopUpWindow;
 import lol.hyper.githubreleaseapi.GitHubRelease;
@@ -90,25 +89,10 @@ public class UpdateChecker {
             textArea.setText(updates.toString());
             logger.info("A new version is available! Version: " + latestVersion);
 
-            int dialogResult =
-                    JOptionPane.showConfirmDialog(
-                            null, scrollPane, "Updates", JOptionPane.YES_NO_OPTION);
+            int dialogResult = JOptionPane.showConfirmDialog(null, scrollPane, "Updates", JOptionPane.YES_NO_OPTION);
             if (dialogResult == JOptionPane.YES_OPTION) {
                 // download the latest version and run it
                 downloadLatestVersion();
-
-                // hardcode this
-                if (latestVersion.equals("1.9.0")) {
-                    File accountsBackup = new File("config", "accounts-BACKUP.json");
-                    try {
-                        FileUtils.copyFile(Accounts.ACCOUNTS_FILE, accountsBackup);
-                        logger.info("Backing up accounts.json for version 1.9.0...");
-                    } catch (IOException exception) {
-                        logger.error("Unable to backup the accounts file!", exception);
-                        new ExceptionWindow(exception);
-                    }
-                }
-
                 launchNewVersion(latestVersion);
                 System.exit(0);
             }
@@ -121,9 +105,9 @@ public class UpdateChecker {
     private void downloadLatestVersion() {
         if (api.getAllReleases() == null || api.getAllReleases().isEmpty()) {
             logger.error("Unable to look for updates!");
-            logger.error("getAllReleases() is null" + (api.getAllReleases() == null));
-            logger.error("getAllReleases() is empty" + (api.getAllReleases().isEmpty()));
-            new PopUpWindow(null, "Unable to look for updates!");
+            logger.error("getAllReleases() is null: " + (api.getAllReleases() == null));
+            logger.error("getAllReleases() is empty: " + (api.getAllReleases().isEmpty()));
+            new PopUpWindow(null, "Unable to look for updates! Check the log for more information.");
             return;
         }
 
