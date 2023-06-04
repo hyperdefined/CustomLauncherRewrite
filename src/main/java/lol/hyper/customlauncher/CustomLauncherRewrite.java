@@ -17,17 +17,12 @@
 
 package lol.hyper.customlauncher;
 
-import lol.hyper.customlauncher.accounts.Accounts;
-import lol.hyper.customlauncher.tools.JSONManager;
 import lol.hyper.customlauncher.changelog.GameUpdateTracker;
 import lol.hyper.customlauncher.windows.MainWindow;
 import lol.hyper.customlauncher.ttrupdater.TTRUpdater;
 import lol.hyper.customlauncher.updater.UpdateChecker;
-import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;

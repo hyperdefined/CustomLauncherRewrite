@@ -17,16 +17,13 @@
 
 package lol.hyper.customlauncher.accounts;
 
-import lol.hyper.customlauncher.tools.ExceptionWindow;
 import lol.hyper.customlauncher.tools.JSONManager;
-import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
