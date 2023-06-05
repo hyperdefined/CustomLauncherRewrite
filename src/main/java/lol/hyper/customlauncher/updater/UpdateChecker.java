@@ -23,6 +23,9 @@ import lol.hyper.customlauncher.tools.PopUpWindow;
 import lol.hyper.githubreleaseapi.GitHubRelease;
 import lol.hyper.githubreleaseapi.GitHubReleaseAPI;
 import lol.hyper.githubreleaseapi.ReleaseNotFoundException;
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
@@ -48,14 +51,12 @@ public class UpdateChecker {
             logger.error("Unable to look for updates!", exception);
             new ExceptionWindow(exception);
         }
-        checkForUpdate(currentVersion);
+        if (api != null) {
+            checkForUpdate(currentVersion);
+        }
     }
 
     private void checkForUpdate(String currentVersion) {
-        // if the api is broken, don't even bother
-        if (api == null) {
-            return;
-        }
         String latestVersion = api.getLatestVersion().getTagVersion();
         GitHubRelease current;
         try {
@@ -193,26 +194,14 @@ public class UpdateChecker {
      * @param newVersion Version to launch.
      */
     private void launchNewVersion(String newVersion) {
-        String[] windowsCommand = {
-                "cmd",
-                "/c",
-                "CustomLauncherRewrite-" + newVersion + ".exe",
-                "--remove-old",
-                CustomLauncherRewrite.version
-        };
+        String[] windowsCommand = {"cmd", "/c", "CustomLauncherRewrite-" + newVersion + ".exe", "--remove-old", CustomLauncherRewrite.version};
         String linuxCommand = "./run.sh";
         ProcessBuilder pb = new ProcessBuilder();
         if (SystemUtils.IS_OS_LINUX) {
             pb.command(linuxCommand);
 
             // delete the old version
-            File current =
-                    new File(
-                            System.getProperty("user.dir")
-                                    + File.separator
-                                    + "CustomLauncherRewrite-"
-                                    + CustomLauncherRewrite.version
-                                    + ".jar");
+            File current = new File(System.getProperty("user.dir") + File.separator + "CustomLauncherRewrite-" + CustomLauncherRewrite.version + ".jar");
             try {
                 Files.delete(current.toPath());
             } catch (IOException exception) {
@@ -236,33 +225,32 @@ public class UpdateChecker {
     /**
      * Extract the compressed tar.gz.
      *
-     * @param temp The temp file's name that was downloaded.
+     * @param downloadedFile The temp file's name that was downloaded.
      */
-    private void decompress(String temp) {
-        // TODO: Make this not use shell commands.
-        ProcessBuilder builder = new ProcessBuilder();
-        builder.command("tar", "-xvf", temp);
-        builder.directory(new File(System.getProperty("user.dir")));
-        Process process;
-        try {
-            process = builder.start();
+    private void decompress(String downloadedFile) {
+        try (FileInputStream fileInputStream = new FileInputStream(downloadedFile);
+             BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+             GzipCompressorInputStream gzipInputStream = new GzipCompressorInputStream(bufferedInputStream);
+             TarArchiveInputStream tarArchiveInputStream = new TarArchiveInputStream(gzipInputStream)) {
+
+            TarArchiveEntry entry;
+            while ((entry = tarArchiveInputStream.getNextTarEntry()) != null) {
+                if (entry.isDirectory()) {
+                    new File(System.getProperty("user.dir"), entry.getName()).mkdirs();
+                } else {
+                    File outputFile = new File(System.getProperty("user.dir"), entry.getName());
+                    try (OutputStream outputStream = new FileOutputStream(outputFile)) {
+                        byte[] buffer = new byte[4096];
+                        int bytesRead;
+                        while ((bytesRead = tarArchiveInputStream.read(buffer)) != -1) {
+                            outputStream.write(buffer, 0, bytesRead);
+                        }
+                    }
+                }
+            }
         } catch (IOException exception) {
-            logger.error("Unable to extract release file!", exception);
+            logger.error("Unable to decompress file " + downloadedFile, exception);
             new ExceptionWindow(exception);
-            return;
-        }
-        int exitCode = 0;
-        try {
-            exitCode = process.waitFor();
-        } catch (InterruptedException exception) {
-            logger.error("Unable to extract release file!", exception);
-            new ExceptionWindow(exception);
-        }
-        if (exitCode == 0) {
-            logger.info("Extracted " + temp + "!");
-        } else {
-            logger.error("Unable to extract release file! Returned exit code " + exitCode);
-            new PopUpWindow(null, "Unable to extract release file!");
         }
     }
 }
