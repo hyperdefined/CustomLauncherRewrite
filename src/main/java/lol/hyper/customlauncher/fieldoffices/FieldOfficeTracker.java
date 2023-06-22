@@ -21,6 +21,10 @@ import dorkbox.notify.Notify;
 import dorkbox.notify.Pos;
 import lol.hyper.customlauncher.ConfigHandler;
 import lol.hyper.customlauncher.CustomLauncherRewrite;
+import lol.hyper.customlauncher.tools.JSONManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.json.JSONObject;
 
 import javax.swing.*;
 import javax.swing.Timer;
@@ -30,6 +34,9 @@ import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class FieldOfficeTracker extends JPanel {
 
@@ -43,8 +50,13 @@ public class FieldOfficeTracker extends JPanel {
     public int runs = 0;
     public static final Map<Integer, String> zonesToStreets = new HashMap<>();
     public boolean isDown = false;
-    public Timer fieldOfficeTaskTimer;
     private final ConfigHandler configHandler;
+
+    private final Logger logger = LogManager.getLogger(this);
+
+    public ScheduledExecutorService executor;
+
+    public JSONObject lastResult;
 
     /**
      * This tracker will process & display the FieldOfficeTask. It handles the window and tracking
@@ -133,10 +145,8 @@ public class FieldOfficeTracker extends JPanel {
      * Read field office API every 10 seconds.
      */
     public void startFieldOfficeRefresh() {
-        ActionListener actionListener = new FieldOfficeTask(this);
-        fieldOfficeTaskTimer = new Timer(0, actionListener);
-        fieldOfficeTaskTimer.setDelay(10000);
-        fieldOfficeTaskTimer.start();
+        executor = Executors.newSingleThreadScheduledExecutor();
+        executor.scheduleAtFixedRate(this::makeRequest, 0, 10, TimeUnit.SECONDS);
     }
 
     public void showNotification(FieldOffice fieldOffice, boolean newFieldOffice) {
@@ -170,5 +180,65 @@ public class FieldOfficeTracker extends JPanel {
                         .image(CustomLauncherRewrite.icon);
 
         notify.show();
+    }
+
+    /**
+     * Make the request and handle the information it returns.
+     */
+    private void makeRequest() {
+        String FIELD_OFFICE_URL = "https://www.toontownrewritten.com/api/fieldoffices";
+        logger.info("Reading " + FIELD_OFFICE_URL + " for current field offices...");
+        lastResult = JSONManager.requestJSON(FIELD_OFFICE_URL);
+
+        // if the request failed, stop the task
+        if (lastResult == null) {
+            isDown = true;
+            executor.shutdown();
+            return;
+        }
+
+        isDown = false;
+
+        // each field office is under the fieldOffices JSON
+        JSONObject fieldOfficeJSON = lastResult.getJSONObject("fieldOffices");
+
+        // go through all the field offices from the API
+        Iterator<String> keys = fieldOfficeJSON.keys();
+        while (keys.hasNext()) {
+            // each field office json is named the zone ID
+            // so use this to identify the field office
+            int fieldOfficeZone = Integer.parseInt(keys.next());
+            JSONObject zoneJSON = fieldOfficeJSON.getJSONObject(String.valueOf(fieldOfficeZone));
+            // update field office data if we already have it
+            if (fieldOffices.containsKey(fieldOfficeZone)) {
+                FieldOffice office = fieldOffices.get(fieldOfficeZone);
+                office.setOpen(zoneJSON.getBoolean("open"));
+                office.setTotalAnnexes(zoneJSON.getInt("annexes"));
+            } else {
+                // save the new field office
+                int difficulty = zoneJSON.getInt("difficulty") + 1; // they zero index this
+                int totalAnnexes = zoneJSON.getInt("annexes");
+                boolean open = zoneJSON.getBoolean("open");
+                FieldOffice office = new FieldOffice(fieldOfficeZone, difficulty, totalAnnexes);
+                office.setOpen(open);
+                // add it to our list
+                fieldOffices.put(fieldOfficeZone, office);
+                showNotification(office, true);
+            }
+        }
+
+        // we look at the current field office list and see if any of them
+        // are not on the field office JSON (aka that field office is gone)
+        Iterator<Map.Entry<Integer, FieldOffice>> it = fieldOffices.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<Integer, FieldOffice> pair = it.next();
+            int key = pair.getKey();
+            if (!fieldOfficeJSON.has(String.valueOf(key))) {
+                showNotification(pair.getValue(), false);
+                it.remove();
+            }
+        }
+        runs++;
+        lastFetched = System.currentTimeMillis();
     }
 }

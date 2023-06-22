@@ -17,6 +17,11 @@
 
 package lol.hyper.customlauncher.districts;
 
+import lol.hyper.customlauncher.tools.JSONManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.json.JSONObject;
+
 import javax.swing.*;
 import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
@@ -25,6 +30,9 @@ import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class DistrictTracker extends JPanel {
 
@@ -36,11 +44,13 @@ public class DistrictTracker extends JPanel {
     public final SimpleDateFormat lastFetchedFormat = new SimpleDateFormat("hh:mm:ss a");
     public long lastFetched = 0;
     public boolean isDown = false;
-    public Timer districtTaskTimer;
+    private final Logger logger = LogManager.getLogger(this);
+
+    public ScheduledExecutorService executor;
+
 
     /**
-     * This tracker will process & display the DistrictTask. It handles the window and tracking of
-     * each district.
+     * Handle reading and displaying information from the population API.
      */
     public DistrictTracker() {
         // GUI elements
@@ -112,12 +122,67 @@ public class DistrictTracker extends JPanel {
     }
 
     /**
-     * Read population API every 10 seconds.
+     * Read population API every 30 seconds.
      */
     public void startDistrictRefresh() {
-        ActionListener actionListener = new DistrictTask(this);
-        districtTaskTimer = new Timer(0, actionListener);
-        districtTaskTimer.setDelay(30000);
-        districtTaskTimer.start();
+        executor = Executors.newSingleThreadScheduledExecutor();
+        executor.scheduleAtFixedRate(this::makeRequest, 0, 30, TimeUnit.SECONDS);
+    }
+
+    /**
+     * Make the request and handle the information it returns.
+     */
+    private void makeRequest() {
+        String DISTRICT_URL = "https://www.toontownrewritten.com/api/population";
+        logger.info("Reading " + DISTRICT_URL + " for current population...");
+        JSONObject lastResult = JSONManager.requestJSON(DISTRICT_URL);
+
+        // if the request failed, stop the task
+        if (lastResult == null) {
+            isDown = true;
+            executor.shutdown();
+            return;
+        }
+
+        isDown = false; // make sure to set this to false since we can read the API
+
+        logger.info("Reading " + DISTRICT_URL + " for current districts...");
+
+        JSONObject populationByDistrict = lastResult.getJSONObject("populationByDistrict");
+        // iterate through each district
+        Iterator<String> populationKeys = populationByDistrict.keys();
+        while (populationKeys.hasNext()) {
+            String districtFromJSON = populationKeys.next();
+            // if we do not have that district stored, create a new district object
+            // and add it to the list
+            if (!districts.containsKey(districtFromJSON)) {
+                int population = populationByDistrict.getInt(districtFromJSON);
+                District district = new District(districtFromJSON);
+                district.setPopulation(population);
+                districts.put(districtFromJSON, district);
+            } else {
+                if (!districts.containsKey(districtFromJSON)) {
+                    return; // JUST IN CASE
+                }
+                // if we already have it saved, update the population
+                District tempDistrict = districts.get(districtFromJSON);
+                int population = populationByDistrict.getInt(districtFromJSON);
+                tempDistrict.setPopulation(population);
+            }
+        }
+
+        JSONObject statusByDistrict = lastResult.getJSONObject("statusByDistrict");
+        // iterate through each district
+        Iterator<String> statusKeys = statusByDistrict.keys();
+        while (statusKeys.hasNext()) {
+            String districtFromJSON = statusKeys.next();
+            // only update the status of districts we track
+            if (districts.containsKey(districtFromJSON)) {
+                String status = statusByDistrict.getString(districtFromJSON);
+                District tempDistrict = districts.get(districtFromJSON);
+                tempDistrict.setCurrentStatus(status);
+            }
+        }
+        lastFetched = System.currentTimeMillis();
     }
 }
