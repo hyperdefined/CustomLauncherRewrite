@@ -21,9 +21,6 @@ import dorkbox.notify.Notify;
 import dorkbox.notify.Pos;
 import lol.hyper.customlauncher.ConfigHandler;
 import lol.hyper.customlauncher.CustomLauncherRewrite;
-import lol.hyper.customlauncher.tools.RequestWorker;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.Timer;
@@ -35,7 +32,6 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 
 public class InvasionTracker extends JPanel {
 
@@ -49,10 +45,6 @@ public class InvasionTracker extends JPanel {
     public boolean isDown = false;
     public Timer invasionTaskTimer;
     private final ConfigHandler configHandler;
-
-    public String result;
-
-    private final Logger logger = LogManager.getLogger(this);
 
     /**
      * This tracker will process & display the InvasionTask. It handles the window and tracking
@@ -133,18 +125,6 @@ public class InvasionTracker extends JPanel {
      * Read invasion API every 10 seconds.
      */
     public void startInvasionRefresh() {
-        String INVASION_URL = "https://api.toon.plus/invasions";
-        RequestWorker requestWorker = new RequestWorker(INVASION_URL);
-        requestWorker.execute();
-        try {
-            result = requestWorker.get();
-            logger.info("Reading " + INVASION_URL + " for current invasions...");
-        } catch (InterruptedException | ExecutionException ex) {
-            isDown = true;
-            invasionTaskTimer.stop();
-            return;
-        }
-
         ActionListener actionListener = new InvasionTask(this);
         invasionTaskTimer = new Timer(0, actionListener);
         invasionTaskTimer.setDelay(10000);

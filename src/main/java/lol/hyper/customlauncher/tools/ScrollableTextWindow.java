@@ -28,8 +28,6 @@ public class ScrollableTextWindow extends JFrame {
 
     private final JTextPane textArea;
 
-    public final Logger logger = LogManager.getLogger(this);
-
     /**
      * Creates a window with scrollable text.
      *
