@@ -35,7 +35,7 @@ Here is what the various features of the launcher look like. Click on an image t
 | ![Screenshot4](https://raw.githubusercontent.com/hyperdefined/CustomLauncherRewrite/master/images/image4.png) | ![Screenshot3](https://raw.githubusercontent.com/hyperdefined/CustomLauncherRewrite/master/images/image3.png) | ![Screenshot6](https://raw.githubusercontent.com/hyperdefined/CustomLauncherRewrite/master/images/image6.png) |
 
 ## Installing
-Head over to the [Installation](https://github.com/hyperdefined/CustomLauncherRewrite/wiki/Installation) page on the wiki.
+See how to install for [Windows](https://github.com/hyperdefined/CustomLauncherRewrite/wiki/Windows-Install) and [Linux](https://github.com/hyperdefined/CustomLauncherRewrite/wiki/Linux-Install).
 
 ## Support
 First check the [wiki](https://github.com/hyperdefined/CustomLauncherRewrite/wiki) for most common questions.
