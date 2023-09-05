@@ -74,20 +74,25 @@ public final class LaunchGame extends Thread {
             launchCommand = new String[]{"./TTREngine"};
 
             // Make sure it's executable before running
-            boolean result;
             File fullPath = new File(ConfigHandler.INSTALL_LOCATION, "TTREngine");
-            try {
-                result = fullPath.setExecutable(true);
-            } catch (SecurityException exception) {
-                logger.error("Unable to set " + fullPath.getAbsolutePath() + " as an executable!", exception);
-                new ExceptionWindow(exception);
-                return;
-            }
+            if (!fullPath.canExecute()) {
+                logger.info(fullPath.getAbsolutePath() + " is not executable. Attempting to set it.");
+                boolean result;
+                try {
+                    result = fullPath.setExecutable(true);
+                } catch (SecurityException exception) {
+                    logger.error("Unable to set " + fullPath.getAbsolutePath() + " as an executable!", exception);
+                    new ExceptionWindow(exception);
+                    return;
+                }
 
-            if (!result) {
-                logger.error("Unable to set " + fullPath.getAbsolutePath() + " as an executable!");
-                new PopUpWindow(null, "Unable to set " + fullPath.getAbsolutePath() + " as an executable!\nMake sure this file is executable!");
-                return;
+                if (!result) {
+                    logger.error("Unable to set " + fullPath.getAbsolutePath() + " as an executable!");
+                    new PopUpWindow(null, "Unable to set " + fullPath.getAbsolutePath() + " as an executable!\nMake sure this file is executable!");
+                    return;
+                } else {
+                    logger.info(fullPath.getAbsolutePath() + " was set executable successfully!");
+                }
             }
         }
 
