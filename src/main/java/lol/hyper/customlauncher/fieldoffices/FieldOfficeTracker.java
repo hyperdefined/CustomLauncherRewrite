@@ -244,6 +244,7 @@ public class FieldOfficeTracker extends JPanel {
                 if (configHandler.showFieldOfficeNotifications()) {
                     showNotification(office, true);
                 }
+                logger.info("Tracking new field office for " + fieldOfficeZone + ". Stars: " + difficulty + ". Annexes: " + totalAnnexes + ". Open: " + open);
             }
         }
 
@@ -258,6 +259,7 @@ public class FieldOfficeTracker extends JPanel {
                     showNotification(pair.getValue(), false);
                 }
                 it.remove();
+                logger.info("Removing saved field office for " + key);
             }
         }
         runs++;
