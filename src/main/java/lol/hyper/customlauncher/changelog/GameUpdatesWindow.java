@@ -59,21 +59,20 @@ public class GameUpdatesWindow extends JPanel {
 
         // check for updates button
         JButton ttrUpdateButton = new JButton("Check for TTR Updates");
-        ttrUpdateButton.addActionListener(
-                e -> SwingUtilities.invokeLater(() -> {
-                    TTRUpdater ttrUpdater = new TTRUpdater();
-                    ttrUpdater.setVisible(true);
+        ttrUpdateButton.addActionListener(e -> SwingUtilities.invokeLater(() -> {
+            TTRUpdater ttrUpdater = new TTRUpdater();
+            ttrUpdater.setVisible(true);
 
-                    SwingWorker<Void, Void> worker = new SwingWorker<>() {
-                        @Override
-                        protected Void doInBackground() {
-                            ttrUpdater.checkUpdates();
-                            return null;
-                        }
-                    };
+            SwingWorker<Void, Void> worker = new SwingWorker<>() {
+                @Override
+                protected Void doInBackground() {
+                    ttrUpdater.checkUpdates();
+                    return null;
+                }
+            };
 
-                    worker.execute();
-                }));
+            worker.execute();
+        }));
         ttrUpdateButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         ttrUpdateButton.setMaximumSize(new Dimension(300, ttrUpdateButton.getMinimumSize().height));
         add(ttrUpdateButton);

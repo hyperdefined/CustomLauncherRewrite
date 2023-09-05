@@ -44,13 +44,12 @@ public class ExceptionWindow extends JFrame {
         }
         JTextArea jta = new JTextArea(sb.toString());
         jta.setEditable(false);
-        JScrollPane jsp =
-                new JScrollPane(jta) {
-                    @Override
-                    public Dimension getPreferredSize() {
-                        return new Dimension(480, 320);
-                    }
-                };
+        JScrollPane jsp = new JScrollPane(jta) {
+            @Override
+            public Dimension getPreferredSize() {
+                return new Dimension(480, 320);
+            }
+        };
         JOptionPane.showMessageDialog(this, jsp, "Error", JOptionPane.ERROR_MESSAGE);
         setLocationRelativeTo(null);
         dispose();

@@ -48,8 +48,7 @@ public class LoginHandler {
     /**
      * TTR's API URL for logins.
      */
-    private static final String REQUEST_URL =
-            "https://www.toontownrewritten.com/api/login?format=json";
+    private static final String REQUEST_URL = "https://www.toontownrewritten.com/api/login?format=json";
     /**
      * Track how many attempts for login.
      */

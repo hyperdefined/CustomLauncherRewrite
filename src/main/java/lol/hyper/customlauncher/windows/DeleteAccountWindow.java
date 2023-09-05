@@ -70,22 +70,19 @@ public class DeleteAccountWindow extends JFrame {
         scrollBar.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.add(scrollBar);
 
-        accountList.addMouseListener(
-                new MouseAdapter() {
-                    public void mouseClicked(MouseEvent evt) {
-                        @SuppressWarnings("unchecked")
-                        JList<Account> accountList = (JList<Account>) evt.getSource();
-                        if (evt.getClickCount() == 2) {
-                            Account account = accountList.getSelectedValue();
-                            mainWindow.accounts.removeAccount(account);
-                            mainWindow.refreshAccountList();
-                            JOptionPane.showMessageDialog(
-                                    DeleteAccountWindow.this, account.username() + " was deleted!");
-                            dispose();
-                            logger.info("Deleting account " + account.username());
-                        }
-                    }
-                });
+        accountList.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent evt) {
+                @SuppressWarnings("unchecked") JList<Account> accountList = (JList<Account>) evt.getSource();
+                if (evt.getClickCount() == 2) {
+                    Account account = accountList.getSelectedValue();
+                    mainWindow.accounts.removeAccount(account);
+                    mainWindow.refreshAccountList();
+                    JOptionPane.showMessageDialog(DeleteAccountWindow.this, account.username() + " was deleted!");
+                    dispose();
+                    logger.info("Deleting account " + account.username());
+                }
+            }
+        });
 
         setSize(300, 400);
         add(panel);

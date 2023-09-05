@@ -104,6 +104,7 @@ public class Invasion implements Comparable<Invasion> {
 
     /**
      * Updates the cogs defeated.
+     *
      * @param newAmount The amount.
      */
     public void updateCogsDefeated(int newAmount) {

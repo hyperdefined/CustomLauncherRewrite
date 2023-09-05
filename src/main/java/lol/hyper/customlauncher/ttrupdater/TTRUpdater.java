@@ -120,11 +120,7 @@ public class TTRUpdater extends JFrame {
     public void checkUpdates() {
         // don't run the updater if the folder doesn't exist
         if (!ConfigHandler.INSTALL_LOCATION.exists()) {
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Unable to check for TTR updates. We are unable to find your TTR install directory.",
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Unable to check for TTR updates. We are unable to find your TTR install directory.", "Error", JOptionPane.ERROR_MESSAGE);
             dispose();
             logger.warn("Can't find current install directory. Skipping updates.");
         }
@@ -171,21 +167,14 @@ public class TTRUpdater extends JFrame {
             JSONObject currentFile = (JSONObject) patches.get(key);
             String onlineHash = currentFile.getString("hash");
             // get the list of OS's the file is for
-            List<String> only =
-                    currentFile.getJSONArray("only").toList().stream()
-                            .map(object -> Objects.toString(object, null))
-                            .toList();
+            List<String> only = currentFile.getJSONArray("only").toList().stream().map(object -> Objects.toString(object, null)).toList();
             // if we are running the OS the file is for, check it
             if (only.contains(osType)) {
                 File localFile = new File(ConfigHandler.INSTALL_LOCATION, key);
                 updateStatus.setText("Checking file " + localFile.getName());
                 if (!localFile.exists()) {
-                    logger.info(
-                            "-----------------------------------------------------------------------");
-                    logger.info(
-                            ConfigHandler.INSTALL_LOCATION.getAbsolutePath()
-                                    + File.separator
-                                    + key);
+                    logger.info("-----------------------------------------------------------------------");
+                    logger.info(ConfigHandler.INSTALL_LOCATION.getAbsolutePath() + File.separator + key);
                     logger.info("This file is missing and will be downloaded.");
                     filesToDownload.add(key);
                     continue;
@@ -196,17 +185,13 @@ public class TTRUpdater extends JFrame {
                 try {
                     localHash = calcSHA1(localFile);
                 } catch (Exception exception) {
-                    logger.error(
-                            "Unable to calculate SHA1 hash for file " + localFile.getAbsolutePath(),
-                            exception);
+                    logger.error("Unable to calculate SHA1 hash for file " + localFile.getAbsolutePath(), exception);
                     new ExceptionWindow(exception);
                     dispose();
                     return;
                 }
-                logger.info(
-                        "-----------------------------------------------------------------------");
-                logger.info(
-                        ConfigHandler.INSTALL_LOCATION.getAbsolutePath() + File.separator + key);
+                logger.info("-----------------------------------------------------------------------");
+                logger.info(ConfigHandler.INSTALL_LOCATION.getAbsolutePath() + File.separator + key);
                 logger.info("Local hash: " + localHash.toLowerCase(Locale.ENGLISH));
                 logger.info("Expected hash: " + onlineHash);
                 logger.info("Type: " + osType);
@@ -219,8 +204,7 @@ public class TTRUpdater extends JFrame {
             }
         }
 
-        logger.info(
-                "-----------------------------------------------------------------------");
+        logger.info("-----------------------------------------------------------------------");
 
         // we store files we need to download in filesToDownload
         // if there are files in that list, download them
@@ -294,9 +278,7 @@ public class TTRUpdater extends JFrame {
                     try {
                         Files.delete(currentFile.toPath());
                     } catch (IOException exception) {
-                        logger.error(
-                                "Unable to delete file " + currentFile.getAbsolutePath(),
-                                exception);
+                        logger.error("Unable to delete file " + currentFile.getAbsolutePath(), exception);
                         new ExceptionWindow(exception);
                         dispose();
                     }
@@ -352,8 +334,7 @@ public class TTRUpdater extends JFrame {
         byte[] buffer = new byte[1024];
         int len;
 
-        try (BZip2CompressorInputStream in = new BZip2CompressorInputStream(
-                new BufferedInputStream(new FileInputStream(tempFile))); FileOutputStream out = new FileOutputStream(output)) {
+        try (BZip2CompressorInputStream in = new BZip2CompressorInputStream(new BufferedInputStream(new FileInputStream(tempFile))); FileOutputStream out = new FileOutputStream(output)) {
             while ((len = in.read(buffer)) != -1) {
                 out.write(buffer, 0, len);
                 bytesRead += len;

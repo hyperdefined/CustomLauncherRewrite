@@ -66,12 +66,8 @@ public class NewAccountWindow extends JFrame {
         JButton resetButton = new JButton("Cancel");
         JCheckBox encryptedCheck = new JCheckBox();
         encryptedCheck.setSelected(false);
-        JLabel plaintext =
-                new JLabel(
-                        "<html>You are currently saving the account in plaintext.<br>If you wish to encrypt this, select the checkbox.</html>");
-        JLabel encrypted =
-                new JLabel(
-                        "<html>You are encrypting the account. The passphrase is used to<br> encrypt it.<br>This passphrase can be anything. You will need to enter it<br>anytime you login.</html>");
+        JLabel plaintext = new JLabel("<html>You are currently saving the account in plaintext.<br>If you wish to encrypt this, select the checkbox.</html>");
+        JLabel encrypted = new JLabel("<html>You are encrypting the account. The passphrase is used to<br> encrypt it.<br>This passphrase can be anything. You will need to enter it<br>anytime you login.</html>");
 
         userLabel.setBounds(50, 15, 100, 30);
         passwordLabel.setBounds(50, 55, 100, 30);
@@ -109,79 +105,55 @@ public class NewAccountWindow extends JFrame {
         // allow pressing enter
         getRootPane().setDefaultButton(loginButton);
 
-        encryptedCheck.addItemListener(
-                e -> {
-                    if (e.getStateChange() == ItemEvent.SELECTED) {
-                        encrypted.setVisible(true);
-                        plaintext.setVisible(false);
-                        secretPhraseField.setVisible(true);
-                        password2Label.setVisible(true);
-                    }
-                    if (e.getStateChange() == ItemEvent.DESELECTED) {
-                        encrypted.setVisible(false);
-                        plaintext.setVisible(true);
-                        secretPhraseField.setVisible(false);
-                        password2Label.setVisible(false);
-                    }
-                });
+        encryptedCheck.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                encrypted.setVisible(true);
+                plaintext.setVisible(false);
+                secretPhraseField.setVisible(true);
+                password2Label.setVisible(true);
+            }
+            if (e.getStateChange() == ItemEvent.DESELECTED) {
+                encrypted.setVisible(false);
+                plaintext.setVisible(true);
+                secretPhraseField.setVisible(false);
+                password2Label.setVisible(false);
+            }
+        });
 
-        loginButton.addActionListener(
-                e -> {
-                    boolean usernameIsEmpty = usernameTextField.getText().isEmpty();
-                    boolean passwordIsEmpty = passwordField.getPassword().length == 0;
-                    boolean secretIsEmpty = secretPhraseField.getPassword().length == 0;
-                    boolean encrypt = encryptedCheck.isSelected();
-                    ArrayList<String> usernames = new ArrayList<>();
-                    mainWindow.accounts.getAccounts().forEach(account -> usernames.add(account.username()));
-                    if (usernames.contains(usernameTextField.getText())) {
-                        JOptionPane.showMessageDialog(
-                                this,
-                                "You cannot add an account with the same username.",
-                                "Error",
-                                JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-                    if (usernameIsEmpty || passwordIsEmpty) {
-                        JOptionPane.showMessageDialog(
-                                this,
-                                "You must fill in all text boxes.",
-                                "Error",
-                                JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
+        loginButton.addActionListener(e -> {
+            boolean usernameIsEmpty = usernameTextField.getText().isEmpty();
+            boolean passwordIsEmpty = passwordField.getPassword().length == 0;
+            boolean secretIsEmpty = secretPhraseField.getPassword().length == 0;
+            boolean encrypt = encryptedCheck.isSelected();
+            ArrayList<String> usernames = new ArrayList<>();
+            mainWindow.accounts.getAccounts().forEach(account -> usernames.add(account.username()));
+            if (usernames.contains(usernameTextField.getText())) {
+                JOptionPane.showMessageDialog(this, "You cannot add an account with the same username.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if (usernameIsEmpty || passwordIsEmpty) {
+                JOptionPane.showMessageDialog(this, "You must fill in all text boxes.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
-                    if (encrypt) {
-                        if (secretIsEmpty) {
-                            JOptionPane.showMessageDialog(
-                                    this,
-                                    "You must enter a passphrase.",
-                                    "Error",
-                                    JOptionPane.ERROR_MESSAGE);
-                            return;
-                        }
+            if (encrypt) {
+                if (secretIsEmpty) {
+                    JOptionPane.showMessageDialog(this, "You must enter a passphrase.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
 
-                        String encryptedPassword =
-                                AccountEncryption.encrypt(
-                                        String.valueOf(passwordField.getPassword()),
-                                        String.valueOf(secretPhraseField.getPassword()));
-                        mainWindow.accounts.addAccount(
-                                usernameTextField.getText(),
-                                encryptedPassword,
-                                Account.Type.ENCRYPTED);
-                    } else {
-                        mainWindow.accounts.addAccount(
-                                usernameTextField.getText(),
-                                String.valueOf(passwordField.getPassword()),
-                                Account.Type.PLAINTEXT);
-                    }
-                    mainWindow.refreshAccountList();
-                    JOptionPane.showMessageDialog(
-                            this, usernameTextField.getText() + " was saved!");
-                    dispose();
-                    logger.info("Saved new account!");
-                    logger.info("Username: " + usernameTextField.getText());
-                    logger.info("Encrypted: " + encrypt);
-                });
+                String encryptedPassword = AccountEncryption.encrypt(String.valueOf(passwordField.getPassword()), String.valueOf(secretPhraseField.getPassword()));
+                mainWindow.accounts.addAccount(usernameTextField.getText(), encryptedPassword, Account.Type.ENCRYPTED);
+            } else {
+                mainWindow.accounts.addAccount(usernameTextField.getText(), String.valueOf(passwordField.getPassword()), Account.Type.PLAINTEXT);
+            }
+            mainWindow.refreshAccountList();
+            JOptionPane.showMessageDialog(this, usernameTextField.getText() + " was saved!");
+            dispose();
+            logger.info("Saved new account!");
+            logger.info("Username: " + usernameTextField.getText());
+            logger.info("Encrypted: " + encrypt);
+        });
 
         add(panel);
         setLocationRelativeTo(null);

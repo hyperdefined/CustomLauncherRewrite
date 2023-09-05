@@ -95,8 +95,7 @@ public final class MainWindow extends JFrame {
                 // invasions tab
                 case 1 -> {
                     if (invasionTracker.isDown) {
-                        int dialogResult =
-                                JOptionPane.showConfirmDialog(this, "It looks like the invasion API is down, would you want to try again?", "Invasion Tracker", JOptionPane.YES_NO_OPTION);
+                        int dialogResult = JOptionPane.showConfirmDialog(this, "It looks like the invasion API is down, would you want to try again?", "Invasion Tracker", JOptionPane.YES_NO_OPTION);
                         if (dialogResult == JOptionPane.YES_OPTION) {
                             invasionTracker.startInvasionRefresh();
                         }
@@ -106,8 +105,7 @@ public final class MainWindow extends JFrame {
                 // field offices tab
                 case 2 -> {
                     if (fieldOfficeTracker.isDown) {
-                        int dialogResult =
-                                JOptionPane.showConfirmDialog(this, "It looks like the field office API is down, would you want to try again?", "Field Office Tracker", JOptionPane.YES_NO_OPTION);
+                        int dialogResult = JOptionPane.showConfirmDialog(this, "It looks like the field office API is down, would you want to try again?", "Field Office Tracker", JOptionPane.YES_NO_OPTION);
                         if (dialogResult == JOptionPane.YES_OPTION) {
                             fieldOfficeTracker.startFieldOfficeRefresh();
                         }
@@ -117,8 +115,7 @@ public final class MainWindow extends JFrame {
                 // population tab
                 case 3 -> {
                     if (districtTracker.isDown) {
-                        int dialogResult =
-                                JOptionPane.showConfirmDialog(this, "It looks like the population API is down, would you want to try again?", "Population Tracker", JOptionPane.YES_NO_OPTION);
+                        int dialogResult = JOptionPane.showConfirmDialog(this, "It looks like the population API is down, would you want to try again?", "Population Tracker", JOptionPane.YES_NO_OPTION);
                         if (dialogResult == JOptionPane.YES_OPTION) {
                             districtTracker.startDistrictRefresh();
                         }
@@ -139,28 +136,21 @@ public final class MainWindow extends JFrame {
 
         // new account button
         JButton accountManagerButton = new JButton("Manage Accounts");
-        accountManagerButton.addActionListener(
-                e -> SwingUtilities.invokeLater(() -> {
-                    AccountManagerWindow accountManagerWindow = new AccountManagerWindow(this);
-                    accountManagerWindow.setVisible(true);
-                }));
+        accountManagerButton.addActionListener(e -> SwingUtilities.invokeLater(() -> {
+            AccountManagerWindow accountManagerWindow = new AccountManagerWindow(this);
+            accountManagerWindow.setVisible(true);
+        }));
         accountManagerButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        accountManagerButton.setMaximumSize(
-                new Dimension(300, accountManagerButton.getMinimumSize().height));
+        accountManagerButton.setMaximumSize(new Dimension(300, accountManagerButton.getMinimumSize().height));
         panel.add(accountManagerButton);
 
         accountList.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent event) {
-                @SuppressWarnings("unchecked")
-                JList<Account> accountList = (JList<Account>) event.getSource();
+                @SuppressWarnings("unchecked") JList<Account> accountList = (JList<Account>) event.getSource();
                 if (event.getClickCount() == 2) {
                     if (!ConfigHandler.INSTALL_LOCATION.exists()) {
-                        JOptionPane.showMessageDialog(
-                                MainWindow.this,
-                                "Unable to launch the game. The install location cannot be found.",
-                                "Error",
-                                JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(MainWindow.this, "Unable to launch the game. The install location cannot be found.", "Error", JOptionPane.ERROR_MESSAGE);
                         // clear the selection
                         accountList.getSelectionModel().clearSelection();
                         return;
@@ -222,8 +212,7 @@ public final class MainWindow extends JFrame {
      * @return True if open, false if the game is down.
      */
     private boolean checkTTRStatus() {
-        JSONObject ttrStatusJSON =
-                JSONUtils.requestJSON("https://toontownrewritten.com/api/status");
+        JSONObject ttrStatusJSON = JSONUtils.requestJSON("https://toontownrewritten.com/api/status");
         if (ttrStatusJSON == null) {
             return false;
         }

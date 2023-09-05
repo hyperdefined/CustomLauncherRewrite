@@ -159,13 +159,7 @@ public class FieldOfficeTracker extends JPanel {
             int difficulty = fieldOffice.getDifficulty();
             int totalAnnexes = fieldOffice.getTotalAnnexes();
             String open = fieldOffice.status();
-            String[] data =
-                    new String[]{
-                            street,
-                            String.valueOf(difficulty),
-                            String.valueOf(totalAnnexes),
-                            String.valueOf(open)
-                    };
+            String[] data = new String[]{street, String.valueOf(difficulty), String.valueOf(totalAnnexes), String.valueOf(open)};
             fieldOfficeTableModel.addRow(data);
         }
         fieldOfficeTable.setModel(fieldOfficeTableModel);
@@ -204,18 +198,7 @@ public class FieldOfficeTracker extends JPanel {
             messageTitle = "Field Office Gone!";
         }
 
-        Notify notify =
-                Notify.create()
-                        .title(messageTitle)
-                        .text(
-                                zonesToStreets.get(fieldOffice.getArea())
-                                        + " - "
-                                        + fieldOffice.getDifficulty()
-                                        + " star")
-                        .darkStyle()
-                        .position(Pos.BOTTOM_RIGHT)
-                        .hideAfter(5000)
-                        .image(CustomLauncherRewrite.icon);
+        Notify notify = Notify.create().title(messageTitle).text(zonesToStreets.get(fieldOffice.getArea()) + " - " + fieldOffice.getDifficulty() + " star").darkStyle().position(Pos.BOTTOM_RIGHT).hideAfter(5000).image(CustomLauncherRewrite.icon);
 
         notify.show();
     }

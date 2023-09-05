@@ -45,7 +45,8 @@ public final class LaunchGame extends Thread {
 
     /**
      * Creates a LaunchGame instance.
-     * @param cookie The login cookie to use.
+     *
+     * @param cookie     The login cookie to use.
      * @param gameServer The game server to use.
      */
     public LaunchGame(String cookie, String gameServer) {
@@ -110,18 +111,16 @@ public final class LaunchGame extends Thread {
         env.put("TTR_GAMESERVER", this.gameServer);
         env.put("TTR_PLAYCOOKIE", this.cookie);
 
-        Thread t1 =
-                new Thread(
-                        () -> {
-                            try {
-                                Process process = pb.start();
-                                process.getInputStream().close();
-                                process.waitFor();
-                            } catch (IOException | InterruptedException exception) {
-                                logger.error("Unable to launch game!", exception);
-                                new ExceptionWindow(exception);
-                            }
-                        });
+        Thread t1 = new Thread(() -> {
+            try {
+                Process process = pb.start();
+                process.getInputStream().close();
+                process.waitFor();
+            } catch (IOException | InterruptedException exception) {
+                logger.error("Unable to launch game!", exception);
+                new ExceptionWindow(exception);
+            }
+        });
         t1.start();
     }
 }

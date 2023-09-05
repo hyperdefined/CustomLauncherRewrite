@@ -91,17 +91,11 @@ public class UpdateChecker {
             textArea.setLineWrap(true);
             textArea.setWrapStyleWord(true);
             scrollPane.setPreferredSize(new Dimension(500, 500));
-            updates.append("You are running an outdated version! You are running ")
-                    .append(currentVersion)
-                    .append(" currently.");
+            updates.append("You are running an outdated version! You are running ").append(currentVersion).append(" currently.");
             updates.append(" Would you like to update?\n\n");
             for (int i = behind - 1; i >= 0; i--) {
                 String tag = api.getAllReleases().get(i).getTagVersion();
-                updates.append("----------------------------------------\nVersion: ")
-                        .append(tag)
-                        .append("\n")
-                        .append(api.getReleaseByTag(tag).getReleaseNotes())
-                        .append("\n");
+                updates.append("----------------------------------------\nVersion: ").append(tag).append("\n").append(api.getReleaseByTag(tag).getReleaseNotes()).append("\n");
             }
             textArea.setText(updates.toString());
             logger.info("A new version is available! Version: " + latestVersion);
@@ -244,10 +238,7 @@ public class UpdateChecker {
      * @param downloadedFile The temp file's name that was downloaded.
      */
     private void decompress(String downloadedFile) {
-        try (FileInputStream fileInputStream = new FileInputStream(downloadedFile);
-             BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
-             GzipCompressorInputStream gzipInputStream = new GzipCompressorInputStream(bufferedInputStream);
-             TarArchiveInputStream tarArchiveInputStream = new TarArchiveInputStream(gzipInputStream)) {
+        try (FileInputStream fileInputStream = new FileInputStream(downloadedFile); BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream); GzipCompressorInputStream gzipInputStream = new GzipCompressorInputStream(bufferedInputStream); TarArchiveInputStream tarArchiveInputStream = new TarArchiveInputStream(gzipInputStream)) {
 
             TarArchiveEntry entry;
             while ((entry = tarArchiveInputStream.getNextTarEntry()) != null) {

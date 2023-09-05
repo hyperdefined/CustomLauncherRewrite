@@ -28,7 +28,7 @@ public class PopUpWindow extends JDialog {
     /**
      * Create a simple popup message.
      *
-     * @param parent       The parent frame this is spawning from.
+     * @param parent      The parent frame this is spawning from.
      * @param infoMessage The message to display on the window.
      */
     public PopUpWindow(Frame parent, String infoMessage) {

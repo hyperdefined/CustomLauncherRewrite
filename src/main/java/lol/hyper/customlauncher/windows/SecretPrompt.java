@@ -76,58 +76,46 @@ public class SecretPrompt extends JFrame {
         getRootPane().setDefaultButton(loginButton);
 
         // button listeners
-        loginButton.addActionListener(
-                event -> {
-                    // if the text box is empty
-                    if (secretText.getPassword().length != 0) {
-                        Account.Type accountType = account.accountType();
-                        String realPassword = null;
-                        String secret = String.valueOf(secretText.getPassword());
-                        switch (accountType) {
-                            case PLAINTEXT -> {
-                                new PopUpWindow(this, "Plaintext account was detected, this shouldn't happen.");
-                                return;
-                            }
-                            case ENCRYPTED -> realPassword =
-                                    AccountEncryption.decrypt(account.password(), secret);
-                            case LEGACY_ENCRYPTED -> realPassword =
-                                    AccountEncryption.decryptLegacy(account.password(), secret);
-                        }
-
-                        // realPassword will return null if any exception is thrown
-                        // most likely the user entered the wrong passphrase
-                        if (realPassword != null) {
-                            if (account.accountType() == Account.Type.LEGACY_ENCRYPTED) {
-                                // if the decryption worked, update the account to new version
-                                logger.info(
-                                        "Legacy (version 1) account is being used. Converting over to version 2.");
-                                account.setAccountType(Account.Type.ENCRYPTED);
-                                String newPassword = AccountEncryption.encrypt(realPassword, secret);
-                                account.setPassword(newPassword);
-                                accounts.writeAccounts();
-                            }
-
-                            // send the request to login
-                            Map<String, String> newLoginRequest = new HashMap<>();
-                            newLoginRequest.put("username", account.username());
-                            newLoginRequest.put("password", realPassword);
-                            new LoginHandler(newLoginRequest);
-                            dispose();
-                            return;
-                        }
-                        JOptionPane.showMessageDialog(
-                                this,
-                                "You entered the wrong passphrase.",
-                                "Passphrase Error",
-                                JOptionPane.ERROR_MESSAGE);
-                    } else {
-                        JOptionPane.showMessageDialog(
-                                this,
-                                "You must enter the passphrase.",
-                                "Passphrase Error",
-                                JOptionPane.ERROR_MESSAGE);
+        loginButton.addActionListener(event -> {
+            // if the text box is empty
+            if (secretText.getPassword().length != 0) {
+                Account.Type accountType = account.accountType();
+                String realPassword = null;
+                String secret = String.valueOf(secretText.getPassword());
+                switch (accountType) {
+                    case PLAINTEXT -> {
+                        new PopUpWindow(this, "Plaintext account was detected, this shouldn't happen.");
+                        return;
                     }
-                });
+                    case ENCRYPTED -> realPassword = AccountEncryption.decrypt(account.password(), secret);
+                    case LEGACY_ENCRYPTED -> realPassword = AccountEncryption.decryptLegacy(account.password(), secret);
+                }
+
+                // realPassword will return null if any exception is thrown
+                // most likely the user entered the wrong passphrase
+                if (realPassword != null) {
+                    if (account.accountType() == Account.Type.LEGACY_ENCRYPTED) {
+                        // if the decryption worked, update the account to new version
+                        logger.info("Legacy (version 1) account is being used. Converting over to version 2.");
+                        account.setAccountType(Account.Type.ENCRYPTED);
+                        String newPassword = AccountEncryption.encrypt(realPassword, secret);
+                        account.setPassword(newPassword);
+                        accounts.writeAccounts();
+                    }
+
+                    // send the request to login
+                    Map<String, String> newLoginRequest = new HashMap<>();
+                    newLoginRequest.put("username", account.username());
+                    newLoginRequest.put("password", realPassword);
+                    new LoginHandler(newLoginRequest);
+                    dispose();
+                    return;
+                }
+                JOptionPane.showMessageDialog(this, "You entered the wrong passphrase.", "Passphrase Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "You must enter the passphrase.", "Passphrase Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
 
         add(panel);
         setLocationRelativeTo(null);

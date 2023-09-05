@@ -30,8 +30,9 @@ public class TwoFactorAuth extends JFrame {
 
     /**
      * Creates a 2FA window.
+     *
      * @param banner The text to display on the window.
-     * @param token The 2FA token for requests.
+     * @param token  The 2FA token for requests.
      */
     public TwoFactorAuth(String banner, String token) {
         setTitle("Enter Code");
@@ -57,15 +58,14 @@ public class TwoFactorAuth extends JFrame {
 
         // force the textbox to only have 6 characters
         // 2fa and toonguard codes are 6 long
-        userAuthCode.addKeyListener(
-                new KeyAdapter() {
-                    @Override
-                    public void keyTyped(KeyEvent e) {
-                        if (userAuthCode.getText().length() >= 6) {
-                            e.consume();
-                        }
-                    }
-                });
+        userAuthCode.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                if (userAuthCode.getText().length() >= 6) {
+                    e.consume();
+                }
+            }
+        });
 
         JButton loginButton = new JButton("Submit");
 
@@ -77,22 +77,17 @@ public class TwoFactorAuth extends JFrame {
         getRootPane().setDefaultButton(loginButton);
 
         // button listeners
-        loginButton.addActionListener(
-                event -> {
-                    if (!userAuthCode.getText().isEmpty()) {
-                        HashMap<String, String> newLoginRequest = new HashMap<>();
-                        newLoginRequest.put("authToken", token);
-                        newLoginRequest.put("appToken", userAuthCode.getText());
-                        new LoginHandler(newLoginRequest);
-                        dispose();
-                    } else {
-                        JOptionPane.showMessageDialog(
-                                this,
-                                "You must enter the code.",
-                                "Error",
-                                JOptionPane.ERROR_MESSAGE);
-                    }
-                });
+        loginButton.addActionListener(event -> {
+            if (!userAuthCode.getText().isEmpty()) {
+                HashMap<String, String> newLoginRequest = new HashMap<>();
+                newLoginRequest.put("authToken", token);
+                newLoginRequest.put("appToken", userAuthCode.getText());
+                new LoginHandler(newLoginRequest);
+                dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "You must enter the code.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
 
         add(panel);
         setLocationRelativeTo(null);

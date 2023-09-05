@@ -53,23 +53,21 @@ public class AccountManagerWindow extends JFrame {
         panel.add(addAccountButton);
         panel.add(deleteAccountButton);
 
-        addAccountButton.addActionListener(
-                e -> {
-                    dispose();
-                    SwingUtilities.invokeLater(() -> {
-                        NewAccountWindow newAccountWindow = new NewAccountWindow(mainWindow);
-                        newAccountWindow.setVisible(true);
-                    });
-                });
+        addAccountButton.addActionListener(e -> {
+            dispose();
+            SwingUtilities.invokeLater(() -> {
+                NewAccountWindow newAccountWindow = new NewAccountWindow(mainWindow);
+                newAccountWindow.setVisible(true);
+            });
+        });
 
-        deleteAccountButton.addActionListener(
-                e -> {
-                    dispose();
-                    SwingUtilities.invokeLater(() -> {
-                        DeleteAccountWindow deleteAccountWindow = new DeleteAccountWindow(mainWindow);
-                        deleteAccountWindow.setVisible(true);
-                    });
-                });
+        deleteAccountButton.addActionListener(e -> {
+            dispose();
+            SwingUtilities.invokeLater(() -> {
+                DeleteAccountWindow deleteAccountWindow = new DeleteAccountWindow(mainWindow);
+                deleteAccountWindow.setVisible(true);
+            });
+        });
 
         add(panel);
         setLocationRelativeTo(null);

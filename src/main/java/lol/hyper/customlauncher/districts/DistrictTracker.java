@@ -137,10 +137,7 @@ public class DistrictTracker extends JPanel {
             String name = district.getDistrictName();
             int population = district.getPopulation();
             String status = district.getCurrentStatus();
-            String[] data =
-                    new String[]{
-                            name, String.valueOf(population), status
-                    };
+            String[] data = new String[]{name, String.valueOf(population), status};
             districtsTableModel.addRow(data);
             totalPopulation = totalPopulation + district.getPopulation();
         }
