@@ -28,8 +28,14 @@ import java.io.File;
 import java.io.IOException;
 
 public class FirstLaunch {
+    /**
+     * The FirstLaunch logger.
+     */
     private final Logger logger = LogManager.getLogger(this);
 
+    /**
+     * Runs the process for first launch.
+     */
     public FirstLaunch() {
         new PopUpWindow(null, "Welcome to CustomLauncherRewrite! I am first going to detect for an existing TTR install.\n I will copy screenshots, settings, and resource packs.");
         if (SystemUtils.IS_OS_LINUX) {
@@ -39,6 +45,9 @@ public class FirstLaunch {
         }
     }
 
+    /**
+     * Locates and copies various files from another TTR installation on Windows.
+     */
     private void copyWindowsInstall() {
         File windowsInstall = null;
         File[] roots = File.listRoots();
@@ -60,6 +69,9 @@ public class FirstLaunch {
         copyFiles(windowsInstall);
     }
 
+    /**
+     * Locates and copies various files from another TTR installation on Linux.
+     */
     private void copyLinuxInstall() {
         String LINUX_INSTALL = "/.var/app/com.toontownrewritten.Launcher/data/";
         File linuxInstall = new File(System.getProperty("user.home") + LINUX_INSTALL);
@@ -71,6 +83,11 @@ public class FirstLaunch {
         copyFiles(linuxInstall);
     }
 
+    /**
+     * Copies the files from a given source folder into the "ttr-files" folder.
+     *
+     * @param source The source folder.
+     */
     private void copyFiles(File source) {
         // we found the installation, copy files over
         File settings = new File(source, "settings.json");

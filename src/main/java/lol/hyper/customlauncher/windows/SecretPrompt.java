@@ -33,8 +33,17 @@ import java.util.Map;
 
 public class SecretPrompt extends JFrame {
 
+    /**
+     * The SecretPrompt logger.
+     */
     private final Logger logger = LogManager.getLogger(this);
 
+    /**
+     * Creates a secret prompt window.
+     *
+     * @param accounts The accounts. This is only used just in case we find legacy accounts we need to update.
+     * @param account  The account we are displaying the window for.
+     */
     public SecretPrompt(Accounts accounts, Account account) {
         setTitle("Enter Passphrase");
         setSize(170, 120);

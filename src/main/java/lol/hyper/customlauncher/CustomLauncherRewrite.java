@@ -18,6 +18,7 @@
 package lol.hyper.customlauncher;
 
 import lol.hyper.customlauncher.changelog.GameUpdateTracker;
+import lol.hyper.customlauncher.tools.ExceptionWindow;
 import lol.hyper.customlauncher.windows.MainWindow;
 import lol.hyper.customlauncher.ttrupdater.TTRUpdater;
 import lol.hyper.customlauncher.updater.UpdateChecker;
@@ -35,17 +36,39 @@ import java.util.Properties;
 
 public class CustomLauncherRewrite {
 
+    /**
+     * Stores the version, loaded from 'project.properties.'
+     */
     public static String version;
+    /**
+     * The main logger.
+     */
     public static Logger logger;
+    /**
+     * The program's icon.
+     */
     public static Image icon;
+    /**
+     * The user agent used for requests.
+     * This is set here since it includes the version.
+     */
     public static String userAgent;
 
-    public static void main(String[] args) throws IOException {
+    /**
+     * The entry point for the program.
+     *
+     * @param args Only used for updating the program. Passing "--remove-old VERSION" will simply remove that old version.
+     */
+    public static void main(String[] args) {
         // load the log4j2config
         System.setProperty("log4j.configurationFile", "log4j2config.xml");
         // load the version
         final Properties properties = new Properties();
-        properties.load(CustomLauncherRewrite.class.getClassLoader().getResourceAsStream("project.properties"));
+        try {
+            properties.load(CustomLauncherRewrite.class.getClassLoader().getResourceAsStream("project.properties"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         version = properties.getProperty("version");
         // log some basic info
         logger = LogManager.getLogger(CustomLauncherRewrite.class);
@@ -64,7 +87,12 @@ public class CustomLauncherRewrite {
         // load the icon
         InputStream iconStream = CustomLauncherRewrite.class.getResourceAsStream("/icon.png");
         if (iconStream != null) {
-            icon = ImageIO.read(iconStream);
+            try {
+                icon = ImageIO.read(iconStream);
+            } catch (IOException exception) {
+                logger.error("Unable to load icon!");
+                new ExceptionWindow(exception);
+            }
         }
 
         // this is used for removing old versions on Windows
@@ -74,7 +102,12 @@ public class CustomLauncherRewrite {
             String arg1 = args[0];
             if (arg1.equalsIgnoreCase("--remove-old")) {
                 String oldVersion = args[1];
-                Files.delete(new File("CustomLauncherRewrite-" + oldVersion + ".exe").toPath());
+                try {
+                    Files.delete(new File("CustomLauncherRewrite-" + oldVersion + ".exe").toPath());
+                } catch (IOException exception) {
+                    logger.error("Unable to delete old version " + oldVersion);
+                    new ExceptionWindow(exception);
+                }
                 logger.info("Deleting old version " + oldVersion);
             }
         }

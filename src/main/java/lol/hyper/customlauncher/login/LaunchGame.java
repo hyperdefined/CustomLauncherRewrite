@@ -30,15 +30,32 @@ import java.io.File;
 
 public final class LaunchGame extends Thread {
 
+    /**
+     * The LaunchGame logger.
+     */
     public final Logger logger = LogManager.getLogger(this);
-    final String cookie;
-    final String gameServer;
+    /**
+     * The account's login cookie.
+     */
+    private final String cookie;
+    /**
+     * The game server to use.
+     */
+    private final String gameServer;
 
+    /**
+     * Creates a LaunchGame instance.
+     * @param cookie The login cookie to use.
+     * @param gameServer The game server to use.
+     */
     public LaunchGame(String cookie, String gameServer) {
         this.cookie = cookie;
         this.gameServer = gameServer;
     }
 
+    /**
+     * Launch the game.
+     */
     public void run() {
         ProcessBuilder pb = new ProcessBuilder();
 
@@ -84,6 +101,8 @@ public final class LaunchGame extends Thread {
         // https://stackoverflow.com/a/58922302
         pb.redirectOutput(ProcessBuilder.Redirect.PIPE);
         pb.redirectErrorStream(true);
+
+        // make sure we set the working directory and command
         pb.directory(ConfigHandler.INSTALL_LOCATION);
         pb.command(launchCommand);
 

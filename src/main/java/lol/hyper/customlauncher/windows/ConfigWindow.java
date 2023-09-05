@@ -28,8 +28,16 @@ import java.io.File;
 
 public class ConfigWindow extends JPanel {
 
+    /**
+     * The ConfigWindow logger.
+     */
     private final Logger logger = LogManager.getLogger(this);
 
+    /**
+     * Creates a config window.
+     *
+     * @param configHandler The ConfigHandler instance.
+     */
     public ConfigWindow(ConfigHandler configHandler) {
         configHandler.loadConfig(false);
 

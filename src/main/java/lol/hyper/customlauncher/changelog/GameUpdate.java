@@ -17,10 +17,16 @@
 
 package lol.hyper.customlauncher.changelog;
 
+/**
+ * @param id      The ID of the update.
+ * @param version The version of the update.
+ * @param notes   The update changelog.
+ * @param date    The date of the update.
+ */
 public record GameUpdate(int id, String version, String notes, String date) implements Comparable<GameUpdate> {
 
     /**
-     * Stores information about an update. This has release notes, date, and version.
+     * Creates a game update.
      *
      * @param id      The update ID.
      * @param version The update version.

@@ -28,6 +28,11 @@ import java.util.HashMap;
 
 public class TwoFactorAuth extends JFrame {
 
+    /**
+     * Creates a 2FA window.
+     * @param banner The text to display on the window.
+     * @param token The 2FA token for requests.
+     */
     public TwoFactorAuth(String banner, String token) {
         setTitle("Enter Code");
         setSize(230, 150);

@@ -23,6 +23,11 @@ import javax.swing.*;
 
 public class AccountManagerWindow extends JFrame {
 
+    /**
+     * Creates an account manager window.
+     *
+     * @param mainWindow The MainWindow instance.
+     */
     public AccountManagerWindow(MainWindow mainWindow) {
         setTitle("Account Manager");
         setSize(370, 100);

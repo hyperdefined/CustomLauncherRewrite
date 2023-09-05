@@ -19,6 +19,7 @@ package lol.hyper.customlauncher.accounts;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
@@ -35,13 +36,16 @@ import java.util.Base64;
 
 public class AccountEncryption {
 
+    /**
+     * The AccountEncryption logger.
+     */
     private static final Logger logger = LogManager.getLogger(AccountEncryption.class);
 
     /**
      * Encrypts a password.
      *
      * @param password The password to encrypt.
-     * @param secret The secret passphrase from user.
+     * @param secret   The secret passphrase from user.
      * @return Encrypted password.
      */
     public static String encrypt(String password, String secret) {
@@ -54,8 +58,7 @@ public class AccountEncryption {
             // Derive a 256-bit secret key from the provided secret
             SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
             KeySpec spec = new PBEKeySpec(secret.toCharArray(), salt, 65536, 256);
-            SecretKey secretKey =
-                    new SecretKeySpec(factory.generateSecret(spec).getEncoded(), "AES");
+            SecretKey secretKey = new SecretKeySpec(factory.generateSecret(spec).getEncoded(), "AES");
 
             // Encrypt the password using AES-GCM
             Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
@@ -66,8 +69,7 @@ public class AccountEncryption {
             byte[] encrypted = cipher.doFinal(password.getBytes(StandardCharsets.UTF_8));
 
             // Combine salt, IV and encrypted data into a single byte array
-            ByteBuffer byteBuffer =
-                    ByteBuffer.allocate(4 + salt.length + iv.length + encrypted.length);
+            ByteBuffer byteBuffer = ByteBuffer.allocate(4 + salt.length + iv.length + encrypted.length);
             byteBuffer.putInt(salt.length);
             byteBuffer.put(salt);
             byteBuffer.put(iv);
@@ -86,7 +88,7 @@ public class AccountEncryption {
      * Decrypts a password.
      *
      * @param encryptedData The password to decrypt.
-     * @param secret The secret passphrase from user.
+     * @param secret        The secret passphrase from user.
      * @return Plaintext password.
      */
     public static String decrypt(String encryptedData, String secret) {
@@ -107,8 +109,7 @@ public class AccountEncryption {
             // Derive the secret key from the provided secret and salt
             SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
             KeySpec spec = new PBEKeySpec(secret.toCharArray(), salt, 65536, 256);
-            SecretKey secretKey =
-                    new SecretKeySpec(factory.generateSecret(spec).getEncoded(), "AES");
+            SecretKey secretKey = new SecretKeySpec(factory.generateSecret(spec).getEncoded(), "AES");
 
             // Decrypt the encrypted data using AES-GCM
             Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
@@ -128,7 +129,7 @@ public class AccountEncryption {
      * Decrypts a password using the legacy method.
      *
      * @param encryptedPassword The password to decrypt.
-     * @param secret The secret passphrase from user.
+     * @param secret            The secret passphrase from user.
      * @return Plaintext password.
      */
     public static String decryptLegacy(String encryptedPassword, String secret) {
@@ -142,9 +143,7 @@ public class AccountEncryption {
             secretKey = new SecretKeySpec(key, "AES");
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5PADDING");
             cipher.init(Cipher.DECRYPT_MODE, secretKey);
-            return new String(
-                    cipher.doFinal(Base64.getDecoder().decode(encryptedPassword)),
-                    StandardCharsets.UTF_8);
+            return new String(cipher.doFinal(Base64.getDecoder().decode(encryptedPassword)), StandardCharsets.UTF_8);
         } catch (Exception exception) {
             logger.error("Error while decrypting input text!", exception);
             return null;

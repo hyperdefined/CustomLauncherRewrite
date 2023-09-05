@@ -17,7 +17,7 @@
 
 package lol.hyper.customlauncher.changelog;
 
-import lol.hyper.customlauncher.tools.JSONManager;
+import lol.hyper.customlauncher.tools.JSONUtils;
 import lol.hyper.customlauncher.tools.PopUpWindow;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,19 +29,29 @@ import java.util.*;
 
 public class GameUpdateTracker {
 
+    /**
+     * The GameUpdateTracker logger.
+     */
     private final Logger logger = LogManager.getLogger(this);
-
-    // store the updates
+    /**
+     * Stores the updates. Sorted in reverse order, so it's newest -> oldest.
+     */
     public final SortedSet<GameUpdate> allGameUpdates = new TreeSet<>(Comparator.comparingInt(GameUpdate::id).reversed());
+    /**
+     * The file for saving updates.
+     */
     private final File savedUpdatesFile = new File("config", "savedUpdates.json");
 
+    /**
+     * Creates a GameUpdateTracker instance.
+     */
     public GameUpdateTracker() {
         if (!savedUpdatesFile.exists()) {
             new PopUpWindow(null, "I am going to fetch release note information. This will take a bit.");
             getAllNotes();
         } else {
             // we have notes saved, see if we need to update it
-            JSONObject savedUpdatesJSON = new JSONObject(JSONManager.readFile(savedUpdatesFile));
+            JSONObject savedUpdatesJSON = new JSONObject(JSONUtils.readFile(savedUpdatesFile));
             // store which IDs we have saved
             Set<Integer> savedUpdatesList = new HashSet<>();
             for (String updateID : savedUpdatesJSON.keySet()) {
@@ -64,7 +74,7 @@ public class GameUpdateTracker {
             if (!newUpdates.isEmpty()) {
                 logger.info("Adding new updates: " + newUpdates);
                 for (int updateID : newUpdates) {
-                    JSONObject updateNotesJSON = JSONManager.requestJSON("https://www.toontownrewritten.com/api/releasenotes/" + updateID);
+                    JSONObject updateNotesJSON = JSONUtils.requestJSON("https://www.toontownrewritten.com/api/releasenotes/" + updateID);
                     if (updateNotesJSON == null) {
                         logger.warn(updateID + " returned null response from " + "https://www.toontownrewritten.com/api/releasenotes/" + updateID);
                         continue;
@@ -75,7 +85,7 @@ public class GameUpdateTracker {
                     newUpdate.put("notes", updateNotesJSON.getString("body"));
                     savedUpdatesJSON.put(String.valueOf(updateID), newUpdate);
                 }
-                JSONManager.writeFile(savedUpdatesJSON, savedUpdatesFile);
+                JSONUtils.writeFile(savedUpdatesJSON, savedUpdatesFile);
             }
 
             // add all updates to the list
@@ -88,7 +98,7 @@ public class GameUpdateTracker {
     }
 
     /**
-     * This forces a refresh on the saved updates. This is only called if the file is not there.
+     * Download all updates. This is only called if the file isn't there.
      */
     private void getAllNotes() {
         logger.info("Fetching game updates...");
@@ -102,7 +112,7 @@ public class GameUpdateTracker {
             String version = update.getString("slug");
             String date = update.getString("date");
             String notes;
-            JSONObject updateNotesJSON = JSONManager.requestJSON("https://www.toontownrewritten.com/api/releasenotes/" + id);
+            JSONObject updateNotesJSON = JSONUtils.requestJSON("https://www.toontownrewritten.com/api/releasenotes/" + id);
             if (updateNotesJSON == null) {
                 notes = null;
             } else {
@@ -120,7 +130,7 @@ public class GameUpdateTracker {
             gameUpdateJSON.put("notes", gameUpdate.notes());
             savedUpdatesJSON.put(String.valueOf(gameUpdate.id()), gameUpdateJSON);
         }
-        JSONManager.writeFile(savedUpdatesJSON, savedUpdatesFile);
+        JSONUtils.writeFile(savedUpdatesJSON, savedUpdatesFile);
     }
 
     /**
@@ -129,7 +139,7 @@ public class GameUpdateTracker {
      * @return The JSONArray containing all updates.
      */
     private JSONArray fetchUpdates() {
-        JSONArray updateList = JSONManager.requestJSONArray("https://www.toontownrewritten.com/api/releasenotes");
+        JSONArray updateList = JSONUtils.requestJSONArray("https://www.toontownrewritten.com/api/releasenotes");
         if (updateList == null) {
             logger.warn("Unable to fetch game updates! API returned null on response.");
             return null;
@@ -139,6 +149,7 @@ public class GameUpdateTracker {
 
     /**
      * Get all individual updates from TTR.
+     *
      * @param updateArray The array from TTR's api.
      * @return A Set that contains all updates as JSONObjects.
      */

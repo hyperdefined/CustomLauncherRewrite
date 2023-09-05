@@ -17,7 +17,7 @@
 
 package lol.hyper.customlauncher.accounts;
 
-import lol.hyper.customlauncher.tools.JSONManager;
+import lol.hyper.customlauncher.tools.JSONUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
@@ -29,9 +29,17 @@ import java.util.List;
 
 public class Accounts {
 
+    /**
+     * Stores all accounts.
+     */
     private final List<Account> accounts = new ArrayList<>();
+    /**
+     * The accounts file.
+     */
     public static final File ACCOUNTS_FILE = new File("config", "accounts.json");
-
+    /**
+     * The Accounts logger.
+     */
     public final Logger logger = LogManager.getLogger(this);
 
     /**
@@ -41,13 +49,13 @@ public class Accounts {
         // create the base accounts files
         if (!ACCOUNTS_FILE.exists()) {
             JSONArray newAccounts = new JSONArray();
-            JSONManager.writeFile(newAccounts, Accounts.ACCOUNTS_FILE);
+            JSONUtils.writeFile(newAccounts, Accounts.ACCOUNTS_FILE);
             logger.info("Creating base accounts file...");
         }
     }
 
     /**
-     * Get an updated list of accounts
+     * Get all accounts. This will load this file.
      *
      * @return The accounts.
      */
@@ -57,7 +65,7 @@ public class Accounts {
     }
 
     /**
-     * Create a new account and save it.
+     * Create a new account. This will write the file.
      *
      * @param username    The username.
      * @param password    The password.
@@ -74,7 +82,7 @@ public class Accounts {
      */
     private void loadAccountsFromFile() {
         accounts.clear();
-        JSONArray accountsJSON = new JSONArray(JSONManager.readFile(ACCOUNTS_FILE));
+        JSONArray accountsJSON = new JSONArray(JSONUtils.readFile(ACCOUNTS_FILE));
         for (int i = 0; i < accountsJSON.length(); i++) {
             JSONObject currentAccount = accountsJSON.getJSONObject(i);
             String username = currentAccount.getString("username");
@@ -124,7 +132,7 @@ public class Accounts {
     }
 
     /**
-     * Delete an account from the file.
+     * Delete an account. This will write the file.
      *
      * @param accountToRemove Account that should be deleted.
      */
@@ -146,6 +154,6 @@ public class Accounts {
             accountObj.put("version", account.accountType().toInt());
             accountsArray.put(accountObj);
         }
-        JSONManager.writeFile(accountsArray, ACCOUNTS_FILE);
+        JSONUtils.writeFile(accountsArray, ACCOUNTS_FILE);
     }
 }

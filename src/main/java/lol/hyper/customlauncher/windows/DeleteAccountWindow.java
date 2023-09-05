@@ -29,8 +29,16 @@ import java.awt.event.MouseEvent;
 
 public class DeleteAccountWindow extends JFrame {
 
+    /**
+     * The DeleteAccountWindow logger.
+     */
     private final Logger logger = LogManager.getLogger(this);
 
+    /**
+     * Creates a delete account window.
+     *
+     * @param mainWindow The MainWindow instance.
+     */
     public DeleteAccountWindow(MainWindow mainWindow) {
         setTitle("Delete Account");
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);

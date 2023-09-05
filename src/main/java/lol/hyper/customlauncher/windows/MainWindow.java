@@ -21,7 +21,7 @@ import lol.hyper.customlauncher.ConfigHandler;
 import lol.hyper.customlauncher.CustomLauncherRewrite;
 import lol.hyper.customlauncher.accounts.Account;
 import lol.hyper.customlauncher.accounts.Accounts;
-import lol.hyper.customlauncher.tools.JSONManager;
+import lol.hyper.customlauncher.tools.JSONUtils;
 import lol.hyper.customlauncher.changelog.GameUpdateTracker;
 import lol.hyper.customlauncher.changelog.GameUpdatesWindow;
 import lol.hyper.customlauncher.districts.DistrictTracker;
@@ -41,12 +41,25 @@ import java.util.HashMap;
 
 public final class MainWindow extends JFrame {
 
-    public static final DefaultListModel<Account> accountsModel = new DefaultListModel<>();
-
+    /**
+     * The list of accounts used to display on the main window.
+     */
+    private final DefaultListModel<Account> accountsModel = new DefaultListModel<>();
+    /**
+     * Accounts currently loaded.
+     */
     public final Accounts accounts = new Accounts();
-
+    /**
+     * The MainWindow logger.
+     */
     private final Logger logger = LogManager.getLogger(this);
 
+    /**
+     * Creates the main window interface, and mainly handles the entire program.
+     *
+     * @param configHandler     The config, loaded on startup before this.
+     * @param gameUpdateTracker The game update tracker that was created before this.
+     */
     public MainWindow(ConfigHandler configHandler, GameUpdateTracker gameUpdateTracker) {
         setTitle("CLR " + CustomLauncherRewrite.version);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -203,9 +216,14 @@ public final class MainWindow extends JFrame {
         accountsModel.addAll(accounts.getAccounts());
     }
 
+    /**
+     * Check TTR's status using their API.
+     *
+     * @return True if open, false if the game is down.
+     */
     private boolean checkTTRStatus() {
         JSONObject ttrStatusJSON =
-                JSONManager.requestJSON("https://toontownrewritten.com/api/status");
+                JSONUtils.requestJSON("https://toontownrewritten.com/api/status");
         if (ttrStatusJSON == null) {
             return false;
         }

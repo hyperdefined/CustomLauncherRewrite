@@ -29,8 +29,16 @@ import java.util.ArrayList;
 
 public class NewAccountWindow extends JFrame {
 
+    /**
+     * The NewAccountWindow logger.
+     */
     private final Logger logger = LogManager.getLogger(this);
 
+    /**
+     * Creates a new account window.
+     *
+     * @param mainWindow The MainWindow instance.
+     */
     public NewAccountWindow(MainWindow mainWindow) {
         setTitle("New Account");
         setSize(370, 400);

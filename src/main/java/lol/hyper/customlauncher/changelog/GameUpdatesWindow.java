@@ -29,6 +29,11 @@ import java.util.Set;
 
 public class GameUpdatesWindow extends JPanel {
 
+    /**
+     * Creates a game updates window.
+     *
+     * @param gameUpdates All them GameUpdates.
+     */
     public GameUpdatesWindow(Set<GameUpdate> gameUpdates) {
         // GUI elements
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));

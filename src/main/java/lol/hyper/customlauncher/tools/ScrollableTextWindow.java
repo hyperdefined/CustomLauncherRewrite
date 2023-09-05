@@ -18,14 +18,15 @@
 package lol.hyper.customlauncher.tools;
 
 import lol.hyper.customlauncher.CustomLauncherRewrite;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class ScrollableTextWindow extends JFrame {
 
+    /**
+     * The text area for the window.
+     */
     private final JTextPane textArea;
 
     /**
@@ -62,6 +63,11 @@ public class ScrollableTextWindow extends JFrame {
         setVisible(true);
     }
 
+    /**
+     * Formats the content into proper HTML lists and headings.
+     *
+     * @param content The content to format.
+     */
     private void formatContent(String content) {
         String[] contentLines = content.split(System.lineSeparator());
         StringBuilder htmlContent = new StringBuilder();

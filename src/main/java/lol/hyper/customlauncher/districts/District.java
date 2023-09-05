@@ -19,9 +19,17 @@ package lol.hyper.customlauncher.districts;
 
 public class District implements Comparable<District> {
 
+    /**
+     * The district name.
+     */
     private final String districtName;
+    /**
+     * The population.
+     */
     private int population;
-
+    /**
+     * The status of the district.
+     */
     private String currentStatus;
 
     /**

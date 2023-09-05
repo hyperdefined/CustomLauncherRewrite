@@ -30,13 +30,17 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.stream.Collectors;
 
-public class JSONManager {
-    private static final Logger logger = LogManager.getLogger(JSONManager.class);
+public class JSONUtils {
+    /**
+     * The JSONUtils logger.
+     */
+    private static final Logger logger = LogManager.getLogger(JSONUtils.class);
 
     /**
      * Read contents of a file.
      *
-     * @return Contents of a file into a String.
+     * @param file The file to read.
+     * @return The data from the file.
      */
     public static String readFile(File file) {
         byte[] encoded = new byte[0];
@@ -50,14 +54,15 @@ public class JSONManager {
     }
 
     /**
-     * Write data to JSON file.
+     * Write a file.
      *
-     * @param json Data to write to file.
+     * @param data The data to write. This will be turned into a String.
+     * @param file The file to write to.
      */
-    public static void writeFile(Object json, File file) {
+    public static void writeFile(Object data, File file) {
         try {
             FileWriter writer = new FileWriter(file);
-            writer.write(json.toString());
+            writer.write(data.toString());
             writer.close();
         } catch (IOException exception) {
             logger.error("Unable to write file " + file, exception);
@@ -69,7 +74,7 @@ public class JSONManager {
      * Get a JSONObject from a URL.
      *
      * @param url The URL to get JSON from.
-     * @return The response JSONObject.
+     * @return The response JSONObject. Returns null if there was some issue.
      */
     public static JSONObject requestJSON(String url) {
         String rawJSON;
@@ -100,7 +105,7 @@ public class JSONManager {
      * Get a JSONArray from a URL.
      *
      * @param url The URL to get JSONArray from.
-     * @return The response JSONArray.
+     * @return The response JSONArray. Returns null if there was some issue.
      */
     public static JSONArray requestJSONArray(String url) {
         String rawJSON;

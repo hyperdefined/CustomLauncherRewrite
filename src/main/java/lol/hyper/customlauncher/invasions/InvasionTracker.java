@@ -21,7 +21,7 @@ import dorkbox.notify.Notify;
 import dorkbox.notify.Pos;
 import lol.hyper.customlauncher.ConfigHandler;
 import lol.hyper.customlauncher.CustomLauncherRewrite;
-import lol.hyper.customlauncher.tools.JSONManager;
+import lol.hyper.customlauncher.tools.JSONUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
@@ -44,24 +44,53 @@ import java.util.concurrent.TimeUnit;
 
 public class InvasionTracker extends JPanel {
 
-    public final Map<String, Invasion> invasions = new HashMap<>();
+    /**
+     * All current invasions saved locally.
+     */
+    private final Map<String, Invasion> invasions = new HashMap<>();
+    /**
+     * The table for displaying invasions.
+     */
     private final JTable invasionTable;
+    /**
+     * The model for storing invasions.
+     */
     private final DefaultTableModel invasionTableModel;
+    /**
+     * Label for "last updated."
+     */
     private final JLabel lastFetchedLabel;
+    /**
+     * Date format for "Last updated."
+     */
     private final SimpleDateFormat lastFetchedFormat = new SimpleDateFormat("hh:mm:ss a");
-    public long lastFetched = 0;
-    public int runs = 0;
+    /**
+     * When was the last time we made an API request.
+     */
+    private long lastFetched = 0;
+    /**
+     * Tracks how many times the tracker runs.
+     */
+    private int runs = 0;
+    /**
+     * Tracks if the API is offline.
+     */
     public boolean isDown = false;
+    /**
+     * The ConfigHandler instance.
+     */
     private final ConfigHandler configHandler;
-
+    /**
+     * The InvasionTracker logger.
+     */
     private final Logger logger = LogManager.getLogger(this);
-
-    public ScheduledExecutorService executor;
-
-    public JSONObject lastResult;
+    /**
+     * Scheduler for making API requests.
+     */
+    private ScheduledExecutorService executor;
 
     /**
-     * This tracker will process & display the InvasionTask. It handles the window and tracking
+     * This tracker will process and display the InvasionTask. It handles the window and tracking
      * of each invasion.
      */
     public InvasionTracker(ConfigHandler configHandler) {
@@ -115,7 +144,7 @@ public class InvasionTracker extends JPanel {
             String timeLeft;
             long timeLeftSeconds;
             String cogs;
-            if (invasion.megaInvasion) {
+            if (invasion.isMegaInvasion()) {
                 cogs = "Mega Invasion";
                 timeLeft = "Mega Invasion";
             } else {
@@ -156,6 +185,12 @@ public class InvasionTracker extends JPanel {
         return String.format("%02d:%02d:%02d", hours, minutes, seconds);
     }
 
+    /**
+     * Show a notification for invasion.
+     *
+     * @param invasion    The invasion.
+     * @param newInvasion Is it a new one?
+     */
     public void showNotification(Invasion invasion, boolean newInvasion) {
         // do not spam the user with all notifications at once
         if (runs == 0) {
@@ -174,18 +209,7 @@ public class InvasionTracker extends JPanel {
             messageTitle = "Invasion Gone!";
         }
 
-        Notify notify =
-                Notify.create()
-                        .title(messageTitle)
-                        .text(
-                                invasion.getDistrict()
-                                        + " - "
-                                        + invasion.getCogType().replace("\u0003", ""))
-                        .darkStyle()
-                        .position(Pos.BOTTOM_RIGHT)
-                        .hideAfter(5000)
-                        .image(CustomLauncherRewrite.icon);
-
+        Notify notify = Notify.create().title(messageTitle).text(invasion.getDistrict() + " - " + invasion.getCogType().replace("\u0003", "")).darkStyle().position(Pos.BOTTOM_RIGHT).hideAfter(5000).image(CustomLauncherRewrite.icon);
         notify.show();
     }
 
@@ -195,7 +219,7 @@ public class InvasionTracker extends JPanel {
     private void makeRequest() {
         String INVASION_URL = "https://api.toon.plus/invasions";
         logger.info("Reading " + INVASION_URL + " for current invasions...");
-        lastResult = JSONManager.requestJSON(INVASION_URL);
+        JSONObject lastResult = JSONUtils.requestJSON(INVASION_URL);
 
         // if the request failed, stop the task
         if (lastResult == null) {
@@ -204,7 +228,7 @@ public class InvasionTracker extends JPanel {
             return;
         }
 
-       isDown = false; // make sure to set this to false since we can read the API
+        isDown = false; // make sure to set this to false since we can read the API
 
         // iterate through each of the invasions (separate JSONs)
         Iterator<String> keys = lastResult.keys();
@@ -222,20 +246,10 @@ public class InvasionTracker extends JPanel {
                 boolean megaInvasion = temp.getBoolean("MegaInvasion");
                 Invasion newInvasion = new Invasion(district, cogType, cogsTotal, megaInvasion);
                 newInvasion.updateCogsDefeated(cogsDefeated);
-                newInvasion.endTime =
-                        Instant.parse(temp.getString("EstimatedCompletion"))
-                                .atZone(ZoneId.systemDefault());
+                newInvasion.endTime = Instant.parse(temp.getString("EstimatedCompletion")).atZone(ZoneId.systemDefault());
                 invasions.put(district, newInvasion);
                 showNotification(newInvasion, true);
-                logger.info(
-                        "Tracking new invasion for "
-                                + district
-                                + ". Cogs: "
-                                + cogsDefeated
-                                + "/"
-                                + cogsTotal
-                                + ". ETA: "
-                                + newInvasion.endTime);
+                logger.info("Tracking new invasion for " + district + ". Cogs: " + cogsDefeated + "/" + cogsTotal + ". ETA: " + newInvasion.endTime);
             } else {
                 if (!invasions.containsKey(district)) {
                     return; // JUST IN CASE
@@ -247,19 +261,9 @@ public class InvasionTracker extends JPanel {
                 // ignore mega invasion cog count
                 if (!temp.getBoolean("MegaInvasion")) {
                     int cogsDefeated = temp.getInt("CurrentProgress");
-                    logger.info(
-                            "Updating invasion details for "
-                                    + district
-                                    + ". Cogs: "
-                                    + tempInv.getCogsDefeated()
-                                    + " -> "
-                                    + cogsDefeated
-                                    + ". ETA: "
-                                    + tempInv.endTime);
+                    logger.info("Updating invasion details for " + district + ". Cogs: " + tempInv.getCogsDefeated() + " -> " + cogsDefeated + ". ETA: " + tempInv.endTime);
                     tempInv.updateCogsDefeated(cogsDefeated);
-                    tempInv.endTime =
-                            Instant.parse(temp.getString("EstimatedCompletion"))
-                                    .atZone(ZoneId.systemDefault());
+                    tempInv.endTime = Instant.parse(temp.getString("EstimatedCompletion")).atZone(ZoneId.systemDefault());
                 }
             }
         }

@@ -40,9 +40,20 @@ import java.nio.file.Files;
 
 public class UpdateChecker {
 
+    /**
+     * GitHubReleaseAPI instance.
+     */
     private GitHubReleaseAPI api;
+    /**
+     * The UpdateChecker logger.
+     */
     private final Logger logger = LogManager.getLogger(this);
 
+    /**
+     * Creates an UpdateChecker instance.
+     *
+     * @param currentVersion The current version of the program.
+     */
     public UpdateChecker(String currentVersion) {
         try {
             this.api = new GitHubReleaseAPI("CustomLauncherRewrite", "hyperdefined");
@@ -56,6 +67,11 @@ public class UpdateChecker {
         }
     }
 
+    /**
+     * Check for updates.
+     *
+     * @param currentVersion The current version of the program.
+     */
     private void checkForUpdate(String currentVersion) {
         String latestVersion = api.getLatestVersion().getTagVersion();
         GitHubRelease current;
@@ -191,7 +207,7 @@ public class UpdateChecker {
     /**
      * Launches the new version of the launcher that was downloaded.
      *
-     * @param newVersion Version to launch.
+     * @param newVersion New version to launch.
      */
     private void launchNewVersion(String newVersion) {
         String[] windowsCommand = {"cmd", "/c", "CustomLauncherRewrite-" + newVersion + ".exe", "--remove-old", CustomLauncherRewrite.version};

@@ -41,11 +41,25 @@ import java.util.concurrent.TimeUnit;
 
 public class LoginHandler {
 
+    /**
+     * The LoginHandler logger.
+     */
     public static final Logger logger = LogManager.getLogger(LoginHandler.class);
+    /**
+     * TTR's API URL for logins.
+     */
     private static final String REQUEST_URL =
             "https://www.toontownrewritten.com/api/login?format=json";
-    int attempts = 0;
+    /**
+     * Track how many attempts for login.
+     */
+    private int attempts = 0;
 
+    /**
+     * Starts the login process.
+     *
+     * @param loginRequest The login request to process. This is simple a key/value Map.
+     */
     public LoginHandler(Map<String, String> loginRequest) {
         handleLoginRequest(loginRequest);
     }
@@ -138,7 +152,7 @@ public class LoginHandler {
      * Send the login request to TTR.
      *
      * @param loginRequest The login request to process.
-     * @return The login request that is sent back.
+     * @return The request that is sent back.
      */
     private Map<String, String> sendRequest(Map<String, String> loginRequest) {
         HttpPost post = new HttpPost(REQUEST_URL);

@@ -18,7 +18,7 @@
 package lol.hyper.customlauncher;
 
 import lol.hyper.customlauncher.tools.ExceptionWindow;
-import lol.hyper.customlauncher.tools.JSONManager;
+import lol.hyper.customlauncher.tools.JSONUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
@@ -29,12 +29,30 @@ import java.nio.file.Files;
 
 public class ConfigHandler {
 
+    /**
+     * The main config file.
+     */
     public final File CONFIG_FILE = new File("config", "config.json");
+    /**
+     * The config version, used for detecting and changes.
+     */
     public final int CONFIG_VERSION = 1;
+    /**
+     * TTR's install folder.
+     */
     public static File INSTALL_LOCATION;
-    private JSONObject jsonObject;
+    /**
+     * The config's content.
+     */
+    private JSONObject configJSON;
+    /**
+     * The ConfigHandler logger.
+     */
     private final Logger logger = LogManager.getLogger(this);
 
+    /**
+     * Initializes the config.
+     */
     public ConfigHandler() {
         File CONFIG_FOLDER = new File("config");
         if (!CONFIG_FOLDER.exists()) {
@@ -49,66 +67,80 @@ public class ConfigHandler {
         loadConfig(true);
     }
 
+    /**
+     * Should we show invasion notifications?
+     *
+     * @return Yes/No
+     */
     public boolean showCogInvasionNotifications() {
-        return jsonObject.getBoolean("showInvasionNotifications");
+        return configJSON.getBoolean("showInvasionNotifications");
     }
 
+    /**
+     * Should we show field office notifications?
+     *
+     * @return Yes/No
+     */
     public boolean showFieldOfficeNotifications() {
-        return jsonObject.getBoolean("showFieldOfficeNotifications");
+        return configJSON.getBoolean("showFieldOfficeNotifications");
     }
 
+    /**
+     * Edit a config's value. This will write to the file.
+     *
+     * @param key   The key.
+     * @param value The value we want to set.
+     */
     public void editConfig(String key, Object value) {
-        if (jsonObject.has(key)) {
-            jsonObject.put(key, value);
-            JSONManager.writeFile(jsonObject, CONFIG_FILE);
+        if (configJSON.has(key)) {
+            configJSON.put(key, value);
+            JSONUtils.writeFile(configJSON, CONFIG_FILE);
         }
     }
 
     /**
-     * Sets the default config values. If anything is missing it will update the config.
+     * Sets the default config values. If anything is missing, it will update the config.
      */
     private void setDefaults() {
         boolean changed = false;
-        if (!jsonObject.has("showInvasionNotifications")) {
-            jsonObject.put("showInvasionNotifications", true);
+        if (!configJSON.has("showInvasionNotifications")) {
+            configJSON.put("showInvasionNotifications", true);
             changed = true;
         }
-        if (!jsonObject.has("showFieldOfficeNotifications")) {
-            jsonObject.put("showFieldOfficeNotifications", true);
+        if (!configJSON.has("showFieldOfficeNotifications")) {
+            configJSON.put("showFieldOfficeNotifications", true);
             changed = true;
         }
-        if (!jsonObject.has("ttrInstallLocation")) {
-            jsonObject.put("ttrInstallLocation", System.getProperty("user.dir") + File.separator + "ttr-files");
+        if (!configJSON.has("ttrInstallLocation")) {
+            configJSON.put("ttrInstallLocation", System.getProperty("user.dir") + File.separator + "ttr-files");
             changed = true;
         }
         if (changed) {
-            jsonObject.put("version", CONFIG_VERSION);
+            configJSON.put("version", CONFIG_VERSION);
         }
-        JSONManager.writeFile(jsonObject, CONFIG_FILE);
+        JSONUtils.writeFile(configJSON, CONFIG_FILE);
     }
 
     /**
-     * Load the config from disk into the JSON object.
+     * Read the config.json file.
+     *
+     * @param log Should we log the contents?
      */
     public void loadConfig(boolean log) {
         if (!CONFIG_FILE.exists()) {
-            jsonObject = new JSONObject();
+            configJSON = new JSONObject();
         } else {
-            jsonObject = new JSONObject(JSONManager.readFile(CONFIG_FILE));
-            if (!jsonObject.has("version")) {
-                jsonObject.put("version", CONFIG_VERSION);
-                JSONManager.writeFile(jsonObject, CONFIG_FILE);
+            configJSON = new JSONObject(JSONUtils.readFile(CONFIG_FILE));
+            if (!configJSON.has("version")) {
+                configJSON.put("version", CONFIG_VERSION);
+                JSONUtils.writeFile(configJSON, CONFIG_FILE);
             }
-            if (jsonObject.getInt("version") != CONFIG_VERSION) {
-                logger.warn(
-                        "Config version is not correct! Somethings will not work correctly. Version should be "
-                                + CONFIG_VERSION
-                                + " but read "
-                                + jsonObject.getInt("version"));
+            if (configJSON.getInt("version") != CONFIG_VERSION) {
+                logger.warn("Config version is not correct! Somethings will not work correctly. Version should be " + CONFIG_VERSION + " but read " + configJSON.getInt("version"));
             }
         }
         setDefaults();
-        INSTALL_LOCATION = new File(jsonObject.getString("ttrInstallLocation"));
+        INSTALL_LOCATION = new File(configJSON.getString("ttrInstallLocation"));
 
         // create the ttr-files folder
         if (!INSTALL_LOCATION.exists()) {
@@ -123,7 +155,7 @@ public class ConfigHandler {
         }
 
         if (log) {
-            logger.info("Config version: " + jsonObject.getInt("version"));
+            logger.info("Config version: " + configJSON.getInt("version"));
             logger.info("showInvasionNotifications: " + showCogInvasionNotifications());
             logger.info("showFieldOfficeNotifications: " + showFieldOfficeNotifications());
             logger.info("ttrInstallLocation: " + INSTALL_LOCATION.getAbsolutePath());

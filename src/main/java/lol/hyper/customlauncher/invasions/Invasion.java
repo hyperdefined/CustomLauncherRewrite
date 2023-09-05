@@ -21,14 +21,43 @@ import java.time.ZonedDateTime;
 
 public class Invasion implements Comparable<Invasion> {
 
+    /**
+     * What cog the invasion is.
+     */
     private final String cogType;
+    /**
+     * How many cogs the invasion is total.
+     */
     private final int cogsTotal;
+    /**
+     * The district of the invasion.
+     */
     private final String district;
+    /**
+     * The end time reported by the API.
+     */
     public ZonedDateTime endTime;
+    /**
+     * The current cog defeated count.
+     */
     private int cogsDefeated;
-    public final boolean megaInvasion;
+    /**
+     * Is the invasion a mega invasion?
+     */
+    private final boolean megaInvasion;
+    /**
+     * Stores when we started to track this invasion locally.
+     */
     private final long cacheStartTime;
 
+    /**
+     * Creates a new invasion.
+     *
+     * @param district     The district.
+     * @param cogType      The cog type.
+     * @param cogsTotal    How many cogs total.
+     * @param megaInvasion Is it a mega invasion?
+     */
     public Invasion(String district, String cogType, int cogsTotal, boolean megaInvasion) {
         this.cogType = cogType;
         this.district = district;
@@ -73,7 +102,10 @@ public class Invasion implements Comparable<Invasion> {
         return district;
     }
 
-    /** Update the amount of cogs defeated. */
+    /**
+     * Updates the cogs defeated.
+     * @param newAmount The amount.
+     */
     public void updateCogsDefeated(int newAmount) {
         cogsDefeated = newAmount;
     }
@@ -108,9 +140,19 @@ public class Invasion implements Comparable<Invasion> {
 
     /**
      * Get when we started tracking the invasion.
+     *
      * @return The timestamp.
      */
     public long getCacheStartTime() {
         return cacheStartTime;
+    }
+
+    /**
+     * Is the invasion a mega invasion?
+     *
+     * @return Yes/No
+     */
+    public boolean isMegaInvasion() {
+        return megaInvasion;
     }
 }

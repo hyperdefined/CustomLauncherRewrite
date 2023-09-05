@@ -19,8 +19,17 @@ package lol.hyper.customlauncher.accounts;
 
 public class Account {
 
+    /**
+     * The username of the account.
+     */
     private final String username;
+    /**
+     * The password of the account. If encrypted, this will be the encrypted password.
+     */
     private String password;
+    /**
+     * The account type.
+     */
     private Type accountType;
 
     /**
@@ -47,6 +56,7 @@ public class Account {
 
     /**
      * Set the account type. See {@link Type}.
+     *
      * @param accountType The new account type.
      */
     public void setAccountType(Type accountType) {
@@ -55,6 +65,7 @@ public class Account {
 
     /**
      * Get the password for this account. Can be plaintext or encrypted.
+     *
      * @return The password.
      */
     public String password() {
@@ -63,6 +74,7 @@ public class Account {
 
     /**
      * Get the username for this account.
+     *
      * @return The username.
      */
     public String username() {
@@ -71,6 +83,7 @@ public class Account {
 
     /**
      * Get the account type for this account. See {@link Type}.
+     *
      * @return The account type.
      */
     public Type accountType() {
@@ -100,6 +113,11 @@ public class Account {
             this.accountType = accountType;
         }
 
+        /**
+         * Type to int.
+         *
+         * @return The type as a number.
+         */
         public int toInt() {
             return accountType;
         }

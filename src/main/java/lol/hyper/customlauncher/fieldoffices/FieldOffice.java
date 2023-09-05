@@ -21,16 +21,28 @@ import org.jetbrains.annotations.NotNull;
 
 public class FieldOffice implements Comparable<FieldOffice> {
 
+    /**
+     * The zone ID of the street.
+     */
     private final int area;
+    /**
+     * The difficulty of the field office.
+     */
     private final int difficulty;
+    /**
+     * Is the field office open?
+     */
     private boolean open;
+    /**
+     * The total annexes of the field office.
+     */
     private int totalAnnexes;
 
     /**
-     * Creates a new field office object with information.
+     * Creates a new field office.
      *
-     * @param area The zone ID of where the field office is.
-     * @param difficulty The difficulty of the field office.
+     * @param area         The zone ID of where the field office is.
+     * @param difficulty   The difficulty of the field office.
      * @param totalAnnexes How many total annexes the field office has.
      */
     public FieldOffice(int area, int difficulty, int totalAnnexes) {

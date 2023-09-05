@@ -20,7 +20,7 @@ package lol.hyper.customlauncher.ttrupdater;
 import lol.hyper.customlauncher.ConfigHandler;
 import lol.hyper.customlauncher.CustomLauncherRewrite;
 import lol.hyper.customlauncher.tools.ExceptionWindow;
-import lol.hyper.customlauncher.tools.JSONManager;
+import lol.hyper.customlauncher.tools.JSONUtils;
 import lol.hyper.customlauncher.tools.PopUpWindow;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.apache.commons.io.FileUtils;
@@ -50,15 +50,33 @@ import java.util.concurrent.TimeUnit;
 
 public class TTRUpdater extends JFrame {
 
+    /**
+     * The URL used for checking files. Not sure why this is a "txt" file if it returns a JSON.
+     */
     public final String PATCHES_URL = "https://cdn.toontownrewritten.com/content/patchmanifest.txt";
+    /**
+     * The URL used for storing downloads. This is the root URL, so pass in the file name.
+     */
     public final String PATCHES_URL_DL = "https://download.toontownrewritten.com/patches/";
+    /**
+     * The TTRUpdater logger.
+     */
     public final Logger logger = LogManager.getLogger(this);
+    /**
+     * The main progress bar on the window.
+     */
     private final JProgressBar progressBar;
+    /**
+     * The current file status text.
+     */
     private final JLabel updateStatus;
-    private final JLabel fileProgress;
+    /**
+     * The total file status.
+     */
+    private final JLabel totalUpdateStatus;
 
     /**
-     * Create the TTR updater window.
+     * Creates the TTR updater window.
      */
     public TTRUpdater() {
         // set up the window elements
@@ -80,14 +98,14 @@ public class TTRUpdater extends JFrame {
 
         updateStatus = new JLabel("Checking files...");
         updateStatus.setAlignmentX(Component.CENTER_ALIGNMENT);
-        fileProgress = new JLabel();
-        fileProgress.setAlignmentX(Component.CENTER_ALIGNMENT);
+        totalUpdateStatus = new JLabel();
+        totalUpdateStatus.setAlignmentX(Component.CENTER_ALIGNMENT);
         progressBar = new JProgressBar(0, 0);
         progressBar.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.add(Box.createRigidArea(new Dimension(0, 30)));
         panel.add(updateStatus);
         panel.add(progressBar);
-        panel.add(fileProgress);
+        panel.add(totalUpdateStatus);
 
         progressBar.setBounds(150, 100, 100, 30);
         updateStatus.setBounds(70, 25, 370, 40);
@@ -113,7 +131,7 @@ public class TTRUpdater extends JFrame {
 
         logger.info("We are checking for TTR updates!");
         // read the patches
-        JSONObject patches = JSONManager.requestJSON(PATCHES_URL);
+        JSONObject patches = JSONUtils.requestJSON(PATCHES_URL);
         if (patches == null) {
             logger.error("patchesmanifest.txt returned null!");
             dispose();
@@ -208,7 +226,7 @@ public class TTRUpdater extends JFrame {
         // if there are files in that list, download them
         int currentProgress = 0;
         if (filesToDownload.size() > 0) {
-            fileProgress.setText(String.format("Progress: %d / %d", currentProgress, filesToDownload.size()));
+            totalUpdateStatus.setText(String.format("Progress: %d / %d", currentProgress, filesToDownload.size()));
             File tempFolder = new File("temp");
             if (!tempFolder.exists() && !tempFolder.mkdirs()) {
                 logger.error("Unable to create temp folder!");
@@ -267,7 +285,7 @@ public class TTRUpdater extends JFrame {
                 long extractedTime = TimeUnit.MILLISECONDS.convert(System.nanoTime() - startTime, TimeUnit.NANOSECONDS);
                 logger.info("Finished extracting file " + downloadName + ". Took " + extractedTime + "ms.");
                 currentProgress++;
-                fileProgress.setText(String.format("Progress: %d / %d", currentProgress, filesToDownload.size()));
+                totalUpdateStatus.setText(String.format("Progress: %d / %d", currentProgress, filesToDownload.size()));
             }
             // delete all files in the temp folder
             File[] tempFolderFiles = tempFolder.listFiles();

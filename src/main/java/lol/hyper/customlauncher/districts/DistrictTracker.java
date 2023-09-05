@@ -17,7 +17,7 @@
 
 package lol.hyper.customlauncher.districts;
 
-import lol.hyper.customlauncher.tools.JSONManager;
+import lol.hyper.customlauncher.tools.JSONUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
@@ -36,17 +36,46 @@ import java.util.concurrent.TimeUnit;
 
 public class DistrictTracker extends JPanel {
 
-    public final Map<String, District> districts = new HashMap<>();
-    public final JTable districtTable;
-    public final JLabel totalPopulationLabel;
-    public final DefaultTableModel districtsTableModel;
-    public final JLabel lastFetchedLabel;
-    public final SimpleDateFormat lastFetchedFormat = new SimpleDateFormat("hh:mm:ss a");
-    public long lastFetched = 0;
+    /**
+     * All current districts saved locally.
+     */
+    private final Map<String, District> districts = new HashMap<>();
+    /**
+     * The table for displaying districts.
+     */
+    private final JTable districtTable;
+    /**
+     * Label for "total toons."
+     */
+    private final JLabel totalPopulationLabel;
+    /**
+     * The model for storing districts.
+     */
+    private final DefaultTableModel districtsTableModel;
+    /**
+     * Label for "last updated."
+     */
+    private final JLabel lastFetchedLabel;
+    /**
+     * Date format for "Last updated."
+     */
+    private final SimpleDateFormat lastFetchedFormat = new SimpleDateFormat("hh:mm:ss a");
+    /**
+     * When was the last time we made an API request.
+     */
+    private long lastFetched = 0;
+    /**
+     * Tracks if the API is offline.
+     */
     public boolean isDown = false;
+    /**
+     * The DistrictTracker logger.
+     */
     private final Logger logger = LogManager.getLogger(this);
-
-    public ScheduledExecutorService executor;
+    /**
+     * Scheduler for making API requests.
+     */
+    private ScheduledExecutorService executor;
 
 
     /**
@@ -135,7 +164,7 @@ public class DistrictTracker extends JPanel {
     private void makeRequest() {
         String DISTRICT_URL = "https://www.toontownrewritten.com/api/population";
         logger.info("Reading " + DISTRICT_URL + " for current population...");
-        JSONObject lastResult = JSONManager.requestJSON(DISTRICT_URL);
+        JSONObject lastResult = JSONUtils.requestJSON(DISTRICT_URL);
 
         // if the request failed, stop the task
         if (lastResult == null) {

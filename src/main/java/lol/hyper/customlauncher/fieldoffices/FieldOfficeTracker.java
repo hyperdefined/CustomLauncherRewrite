@@ -21,7 +21,7 @@ import dorkbox.notify.Notify;
 import dorkbox.notify.Pos;
 import lol.hyper.customlauncher.ConfigHandler;
 import lol.hyper.customlauncher.CustomLauncherRewrite;
-import lol.hyper.customlauncher.tools.JSONManager;
+import lol.hyper.customlauncher.tools.JSONUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
@@ -40,26 +40,58 @@ import java.util.concurrent.TimeUnit;
 
 public class FieldOfficeTracker extends JPanel {
 
-    public final Map<Integer, FieldOffice> fieldOffices = new HashMap<>();
+    /**
+     * All current field offices saved locally.
+     */
+    private final Map<Integer, FieldOffice> fieldOffices = new HashMap<>();
+    /**
+     * The table for displaying field offices.
+     */
     private final JTable fieldOfficeTable;
+    /**
+     * The model for storing field offices.
+     */
     private final DefaultTableModel fieldOfficeTableModel;
-
+    /**
+     * Label for "last updated."
+     */
     private final JLabel lastFetchedLabel;
+    /**
+     * Date format for "Last updated."
+     */
     private final SimpleDateFormat lastFetchedFormat = new SimpleDateFormat("hh:mm:ss a");
-    public long lastFetched = 0;
-    public int runs = 0;
+    /**
+     * When was the last time we made an API request.
+     */
+    private long lastFetched = 0;
+    /**
+     * Tracks how many times the tracker runs.
+     */
+    private int runs = 0;
+    /**
+     * Maps for zone IDs to street names.
+     */
     public static final Map<Integer, String> zonesToStreets = new HashMap<>();
+    /**
+     * Tracks if the API is offline.
+     */
     public boolean isDown = false;
+    /**
+     * The ConfigHandler instance.
+     */
     private final ConfigHandler configHandler;
-
+    /**
+     * The FieldOfficeTracker logger.
+     */
     private final Logger logger = LogManager.getLogger(this);
+    /**
+     * Scheduler for making API requests.
+     */
+    private ScheduledExecutorService executor;
 
-    public ScheduledExecutorService executor;
-
-    public JSONObject lastResult;
 
     /**
-     * This tracker will process & display the FieldOfficeTask. It handles the window and tracking
+     * This tracker will process and display the FieldOfficeTask. It handles the window and tracking
      * of each field office.
      */
     public FieldOfficeTracker(ConfigHandler configHandler) {
@@ -149,6 +181,12 @@ public class FieldOfficeTracker extends JPanel {
         executor.scheduleAtFixedRate(this::makeRequest, 0, 10, TimeUnit.SECONDS);
     }
 
+    /**
+     * Show a notification for field office.
+     *
+     * @param fieldOffice    The field office.
+     * @param newFieldOffice Is it a new one?
+     */
     public void showNotification(FieldOffice fieldOffice, boolean newFieldOffice) {
         // do not spam the user with all notifications at once
         if (runs == 0) {
@@ -188,7 +226,7 @@ public class FieldOfficeTracker extends JPanel {
     private void makeRequest() {
         String FIELD_OFFICE_URL = "https://www.toontownrewritten.com/api/fieldoffices";
         logger.info("Reading " + FIELD_OFFICE_URL + " for current field offices...");
-        lastResult = JSONManager.requestJSON(FIELD_OFFICE_URL);
+        JSONObject lastResult = JSONUtils.requestJSON(FIELD_OFFICE_URL);
 
         // if the request failed, stop the task
         if (lastResult == null) {
