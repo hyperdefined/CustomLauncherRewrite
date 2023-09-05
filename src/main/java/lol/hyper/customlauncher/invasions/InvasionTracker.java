@@ -198,11 +198,6 @@ public class InvasionTracker extends JPanel {
             return;
         }
 
-        // do we show notifications?
-        if (!configHandler.showCogInvasionNotifications()) {
-            return;
-        }
-
         String messageTitle;
         if (newInvasion) {
             messageTitle = "New Invasion!";
@@ -250,7 +245,9 @@ public class InvasionTracker extends JPanel {
                 newInvasion.updateCogsDefeated(cogsDefeated);
                 newInvasion.endTime = Instant.parse(temp.getString("EstimatedCompletion")).atZone(ZoneId.systemDefault());
                 invasions.put(district, newInvasion);
-                showNotification(newInvasion, true);
+                if (configHandler.showCogInvasionNotifications()) {
+                    showNotification(newInvasion, true);
+                }
                 logger.info("Tracking new invasion for " + district + ". Cogs: " + cogsDefeated + "/" + cogsTotal + ". ETA: " + newInvasion.endTime);
             } else {
                 if (!invasions.containsKey(district)) {
@@ -281,8 +278,10 @@ public class InvasionTracker extends JPanel {
             String key = district + "/" + cogType;
             // if the invasion no longer exists on the API, remove it from our list
             if (!lastResult.has(key)) {
-                showNotification(pair.getValue(), false);
                 String savedDuration = (System.nanoTime() - pair.getValue().getCacheStartTime()) / 1000000000 + " seconds.";
+                if (configHandler.showCogInvasionNotifications()) {
+                    showNotification(pair.getValue(), false);
+                }
                 it.remove();
                 logger.info("Removing saved invasion for " + district + ". Tracked for " + savedDuration);
             }

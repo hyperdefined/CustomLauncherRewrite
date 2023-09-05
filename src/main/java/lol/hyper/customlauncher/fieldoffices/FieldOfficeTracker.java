@@ -187,10 +187,6 @@ public class FieldOfficeTracker extends JPanel {
         if (runs == 0) {
             return;
         }
-        // do we show notifications?
-        if (!configHandler.showFieldOfficeNotifications()) {
-            return;
-        }
 
         String messageTitle;
         if (newFieldOffice) {
@@ -245,7 +241,9 @@ public class FieldOfficeTracker extends JPanel {
                 office.setOpen(open);
                 // add it to our list
                 fieldOffices.put(fieldOfficeZone, office);
-                showNotification(office, true);
+                if (configHandler.showFieldOfficeNotifications()) {
+                    showNotification(office, true);
+                }
             }
         }
 
@@ -256,7 +254,9 @@ public class FieldOfficeTracker extends JPanel {
             Map.Entry<Integer, FieldOffice> pair = it.next();
             int key = pair.getKey();
             if (!fieldOfficeJSON.has(String.valueOf(key))) {
-                showNotification(pair.getValue(), false);
+                if (configHandler.showFieldOfficeNotifications()) {
+                    showNotification(pair.getValue(), false);
+                }
                 it.remove();
             }
         }
