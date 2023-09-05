@@ -18,7 +18,8 @@
 package lol.hyper.customlauncher.invasions;
 
 import dorkbox.notify.Notify;
-import dorkbox.notify.Pos;
+import dorkbox.notify.Position;
+import dorkbox.notify.Theme;
 import lol.hyper.customlauncher.ConfigHandler;
 import lol.hyper.customlauncher.CustomLauncherRewrite;
 import lol.hyper.customlauncher.tools.JSONUtils;
@@ -209,7 +210,8 @@ public class InvasionTracker extends JPanel {
             messageTitle = "Invasion Gone!";
         }
 
-        Notify notify = Notify.create().title(messageTitle).text(invasion.getDistrict() + " - " + invasion.getCogType().replace("\u0003", "")).darkStyle().position(Pos.BOTTOM_RIGHT).hideAfter(5000).image(CustomLauncherRewrite.icon);
+        String notificationText = invasion.getDistrict() + " - " + invasion.getCogType().replace("\u0003", "");
+        Notify notify = Notify.Companion.create().title(messageTitle).text(notificationText).theme(Theme.Companion.getDefaultDark()).position(Position.BOTTOM_RIGHT).hideAfter(5000).image(CustomLauncherRewrite.icon);
         notify.show();
     }
 

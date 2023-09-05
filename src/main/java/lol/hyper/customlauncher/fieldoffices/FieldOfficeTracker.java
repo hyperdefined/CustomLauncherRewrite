@@ -18,7 +18,8 @@
 package lol.hyper.customlauncher.fieldoffices;
 
 import dorkbox.notify.Notify;
-import dorkbox.notify.Pos;
+import dorkbox.notify.Position;
+import dorkbox.notify.Theme;
 import lol.hyper.customlauncher.ConfigHandler;
 import lol.hyper.customlauncher.CustomLauncherRewrite;
 import lol.hyper.customlauncher.tools.JSONUtils;
@@ -198,8 +199,8 @@ public class FieldOfficeTracker extends JPanel {
             messageTitle = "Field Office Gone!";
         }
 
-        Notify notify = Notify.create().title(messageTitle).text(zonesToStreets.get(fieldOffice.getArea()) + " - " + fieldOffice.getDifficulty() + " star").darkStyle().position(Pos.BOTTOM_RIGHT).hideAfter(5000).image(CustomLauncherRewrite.icon);
-
+        String notificationText = zonesToStreets.get(fieldOffice.getArea()) + " - " + fieldOffice.getDifficulty() + " star(s)";
+        Notify notify = Notify.Companion.create().title(messageTitle).text(notificationText).theme(Theme.Companion.getDefaultDark()).position(Position.BOTTOM_RIGHT).hideAfter(5000).image(CustomLauncherRewrite.icon);
         notify.show();
     }
 
