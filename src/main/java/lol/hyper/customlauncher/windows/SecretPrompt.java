@@ -107,7 +107,8 @@ public class SecretPrompt extends JFrame {
                     Map<String, String> newLoginRequest = new HashMap<>();
                     newLoginRequest.put("username", account.username());
                     newLoginRequest.put("password", realPassword);
-                    new LoginHandler(newLoginRequest);
+                    LoginHandler loginHandler = new LoginHandler(newLoginRequest);
+                    loginHandler.handleRequest();
                     dispose();
                     return;
                 }

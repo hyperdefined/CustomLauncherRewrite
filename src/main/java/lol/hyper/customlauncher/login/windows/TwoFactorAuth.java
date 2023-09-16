@@ -82,7 +82,8 @@ public class TwoFactorAuth extends JFrame {
                 HashMap<String, String> newLoginRequest = new HashMap<>();
                 newLoginRequest.put("authToken", token);
                 newLoginRequest.put("appToken", userAuthCode.getText());
-                new LoginHandler(newLoginRequest);
+                LoginHandler loginHandler = new LoginHandler(newLoginRequest);
+                loginHandler.handleRequest();
                 dispose();
             } else {
                 JOptionPane.showMessageDialog(this, "You must enter the code.", "Error", JOptionPane.ERROR_MESSAGE);

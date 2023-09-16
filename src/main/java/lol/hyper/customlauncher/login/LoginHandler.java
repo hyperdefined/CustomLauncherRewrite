@@ -53,6 +53,10 @@ public class LoginHandler {
      * Track how many attempts for login.
      */
     private int attempts = 0;
+    /**
+     * The current login request details.
+     */
+    private final Map<String, String> loginRequest;
 
     /**
      * Starts the login process.
@@ -60,20 +64,18 @@ public class LoginHandler {
      * @param loginRequest The login request to process. This is simple a key/value Map.
      */
     public LoginHandler(Map<String, String> loginRequest) {
-        handleLoginRequest(loginRequest);
+        this.loginRequest = loginRequest;
     }
 
     /**
      * Handle a login request. This will act based on whatever was received in the request.
-     *
-     * @param loginToProcess The request response.
      */
-    private void handleLoginRequest(Map<String, String> loginToProcess) {
+    public void handleRequest() {
         Map<String, String> receivedRequest;
         try {
             logger.info("Sending login request...");
             // send the login request to TTR
-            receivedRequest = sendRequest(loginToProcess);
+            receivedRequest = sendRequest(loginRequest);
             attempts += 1;
         } catch (Exception exception) {
             logger.error("Unable to send login request to TTR!", exception);
@@ -134,9 +136,9 @@ public class LoginHandler {
                     }
                 }
                 // send the request with the queueToken
-                HashMap<String, String> newLoginRequest = new HashMap<>();
-                newLoginRequest.put("queueToken", receivedRequest.get("queueToken"));
-                handleLoginRequest(newLoginRequest);
+                loginRequest.clear();
+                loginRequest.put("queueToken", receivedRequest.get("queueToken"));
+                handleRequest();
             }
             default -> // TTR sent back a weird status that we don't know about
             {

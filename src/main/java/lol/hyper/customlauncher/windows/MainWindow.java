@@ -174,7 +174,8 @@ public final class MainWindow extends JFrame {
                             HashMap<String, String> newLoginRequest = new HashMap<>();
                             newLoginRequest.put("username", selectedAccount.username());
                             newLoginRequest.put("password", selectedAccount.password());
-                            new LoginHandler(newLoginRequest);
+                            LoginHandler loginHandler = new LoginHandler(newLoginRequest);
+                            loginHandler.handleRequest();
                         }
                     }
                     // clear the selection
