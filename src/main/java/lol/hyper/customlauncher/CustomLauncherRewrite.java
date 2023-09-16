@@ -19,9 +19,11 @@ package lol.hyper.customlauncher;
 
 import lol.hyper.customlauncher.changelog.GameUpdateTracker;
 import lol.hyper.customlauncher.tools.ExceptionWindow;
+import lol.hyper.customlauncher.tools.PopUpWindow;
 import lol.hyper.customlauncher.windows.MainWindow;
 import lol.hyper.customlauncher.ttrupdater.TTRUpdater;
 import lol.hyper.customlauncher.updater.UpdateChecker;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -53,6 +55,10 @@ public class CustomLauncherRewrite {
      * This is set here since it includes the version.
      */
     public static String userAgent;
+    /**
+     * The operating system the user is using.
+     */
+    public static String OS = null;
 
     /**
      * The entry point for the program.
@@ -60,6 +66,12 @@ public class CustomLauncherRewrite {
      * @param args Only used for updating the program. Passing "--remove-old VERSION" will simply remove that old version.
      */
     public static void main(String[] args) {
+        if (SystemUtils.IS_OS_WINDOWS) {
+            OS = "win" + System.getProperty("sun.arch.data.model");
+        }
+        if (SystemUtils.IS_OS_LINUX) {
+            OS = "linux";
+        }
         // load the log4j2config
         System.setProperty("log4j.configurationFile", "log4j2config.xml");
         // load the version
@@ -72,6 +84,16 @@ public class CustomLauncherRewrite {
         version = properties.getProperty("version");
         // log some basic info
         logger = LogManager.getLogger(CustomLauncherRewrite.class);
+
+        if (OS == null) {
+            new PopUpWindow(null, "Unable to determine operating system!");
+            logger.error("Unable to determine operating system! Are we running something not supported?");
+            logger.info("OS: " + System.getProperty("os.name") + " " + System.getProperty("sun.arch.data.model") + "bit");
+            logger.info("Arch: " + System.getProperty("os.arch"));
+            logger.info("Java: " + System.getProperty("java.vm.version") + " (" + System.getProperty("java.vendor") + ")");
+            System.exit(1);
+        }
+
         logger.info("OS: " + System.getProperty("os.name") + " " + System.getProperty("sun.arch.data.model") + "bit");
         logger.info("Arch: " + System.getProperty("os.arch"));
         logger.info("Java: " + System.getProperty("java.vm.version") + " (" + System.getProperty("java.vendor") + ")");

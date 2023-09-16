@@ -18,9 +18,9 @@
 package lol.hyper.customlauncher.login;
 
 import lol.hyper.customlauncher.ConfigHandler;
+import lol.hyper.customlauncher.CustomLauncherRewrite;
 import lol.hyper.customlauncher.tools.ExceptionWindow;
 import lol.hyper.customlauncher.tools.PopUpWindow;
-import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -62,38 +62,33 @@ public final class LaunchGame extends Thread {
 
         String[] launchCommand = null;
 
-        if (SystemUtils.IS_OS_WINDOWS) {
-            if (System.getProperty("sun.arch.data.model").equalsIgnoreCase("64")) {
-                launchCommand = new String[]{"cmd", "/c", "TTREngine64.exe"};
-            } else {
-                launchCommand = new String[]{"cmd", "/c", "TTREngine.exe"};
-            }
-            logger.info("Launching game from " + ConfigHandler.INSTALL_LOCATION);
-        }
-        if (SystemUtils.IS_OS_LINUX) {
-            launchCommand = new String[]{"./TTREngine"};
+        switch (CustomLauncherRewrite.OS) {
+            case "linux" -> {
+                launchCommand = new String[]{"./TTREngine"};
+                // Make sure it's executable before running
+                File fullPath = new File(ConfigHandler.INSTALL_LOCATION, "TTREngine");
+                if (!fullPath.canExecute()) {
+                    logger.info(fullPath.getAbsolutePath() + " is not executable. Attempting to set it.");
+                    boolean result;
+                    try {
+                        result = fullPath.setExecutable(true);
+                    } catch (SecurityException exception) {
+                        logger.error("Unable to set " + fullPath.getAbsolutePath() + " as an executable!", exception);
+                        new ExceptionWindow(exception);
+                        return;
+                    }
 
-            // Make sure it's executable before running
-            File fullPath = new File(ConfigHandler.INSTALL_LOCATION, "TTREngine");
-            if (!fullPath.canExecute()) {
-                logger.info(fullPath.getAbsolutePath() + " is not executable. Attempting to set it.");
-                boolean result;
-                try {
-                    result = fullPath.setExecutable(true);
-                } catch (SecurityException exception) {
-                    logger.error("Unable to set " + fullPath.getAbsolutePath() + " as an executable!", exception);
-                    new ExceptionWindow(exception);
-                    return;
-                }
-
-                if (!result) {
-                    logger.error("Unable to set " + fullPath.getAbsolutePath() + " as an executable!");
-                    new PopUpWindow(null, "Unable to set " + fullPath.getAbsolutePath() + " as an executable!\nMake sure this file is executable!");
-                    return;
-                } else {
-                    logger.info(fullPath.getAbsolutePath() + " was set executable successfully!");
+                    if (!result) {
+                        logger.error("Unable to set " + fullPath.getAbsolutePath() + " as an executable!");
+                        new PopUpWindow(null, "Unable to set " + fullPath.getAbsolutePath() + " as an executable!\nMake sure this file is executable!");
+                        return;
+                    } else {
+                        logger.info(fullPath.getAbsolutePath() + " was set executable successfully!");
+                    }
                 }
             }
+            case "win32" -> launchCommand = new String[]{"cmd", "/c", "TTREngine.exe"};
+            case "win64" -> launchCommand = new String[]{"cmd", "/c", "TTREngine64.exe"};
         }
 
         if (launchCommand == null) {
@@ -101,6 +96,8 @@ public final class LaunchGame extends Thread {
             new PopUpWindow(null, "Unable to determine operating system!");
             return;
         }
+
+        logger.info("Launching game from " + ConfigHandler.INSTALL_LOCATION);
 
         // dirty little trick to redirect the output
         // the game freezes if you don't do this

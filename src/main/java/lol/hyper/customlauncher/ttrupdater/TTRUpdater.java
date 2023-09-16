@@ -24,7 +24,6 @@ import lol.hyper.customlauncher.tools.JSONUtils;
 import lol.hyper.customlauncher.tools.PopUpWindow;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.SystemUtils;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
@@ -133,29 +132,6 @@ public class TTRUpdater extends JFrame {
             dispose();
             return;
         }
-
-        String osType = null;
-
-        // set which OS we are using
-        // ttr labels all files for which OS they will be attached to
-        // windows = win32/win64
-        // linux = linux/linux2
-        if (SystemUtils.IS_OS_WINDOWS) {
-            if (System.getProperty("sun.arch.data.model").equalsIgnoreCase("64")) {
-                osType = "win64";
-            } else {
-                osType = "win32";
-            }
-        }
-        if (SystemUtils.IS_OS_LINUX) {
-            osType = "linux";
-        }
-
-        if (osType == null) {
-            new PopUpWindow(this, "We are unable to detect your operating system. Please report this to the GitHub!");
-            dispose();
-            return;
-        }
         progressBar.setMaximum(patches.length());
 
         ArrayList<String> filesToDownload = new ArrayList<>();
@@ -169,7 +145,7 @@ public class TTRUpdater extends JFrame {
             // get the list of OS's the file is for
             List<String> only = currentFile.getJSONArray("only").toList().stream().map(object -> Objects.toString(object, null)).toList();
             // if we are running the OS the file is for, check it
-            if (only.contains(osType)) {
+            if (only.contains(CustomLauncherRewrite.OS)) {
                 File localFile = new File(ConfigHandler.INSTALL_LOCATION, key);
                 updateStatus.setText("Checking file " + localFile.getName());
                 if (!localFile.exists()) {
@@ -194,7 +170,7 @@ public class TTRUpdater extends JFrame {
                 logger.info(ConfigHandler.INSTALL_LOCATION.getAbsolutePath() + File.separator + key);
                 logger.info("Local hash: " + localHash.toLowerCase(Locale.ENGLISH));
                 logger.info("Expected hash: " + onlineHash);
-                logger.info("Type: " + osType);
+                logger.info("Type: " + CustomLauncherRewrite.OS);
                 if (localHash.equalsIgnoreCase(onlineHash)) {
                     logger.info("File is good!");
                 } else {
