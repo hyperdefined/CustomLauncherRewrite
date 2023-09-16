@@ -27,7 +27,6 @@ import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -124,7 +123,7 @@ public class UpdateChecker {
 
         GitHubRelease release = api.getLatestVersion();
 
-        if (SystemUtils.IS_OS_WINDOWS) {
+        if (CustomLauncherRewrite.OS.contains("win")) {
             String newVersionName = "CustomLauncherRewrite-" + release.getTagVersion() + ".exe";
             URI finalDownload = null;
             for (String url : release.getReleaseAssets()) {
@@ -157,7 +156,7 @@ public class UpdateChecker {
         }
 
         // extract the tar.gz release file into the installation dir
-        if (SystemUtils.IS_OS_LINUX) {
+        if (CustomLauncherRewrite.OS.contains("linux")) {
             String newVersionName = "CustomLauncherRewrite-" + release.getTagVersion() + ".tar.gz";
             URI finalDownload = null;
             for (String url : release.getReleaseAssets()) {
@@ -204,11 +203,12 @@ public class UpdateChecker {
      * @param newVersion New version to launch.
      */
     private void launchNewVersion(String newVersion) {
-        String[] windowsCommand = {"cmd", "/c", "CustomLauncherRewrite-" + newVersion + ".exe", "--remove-old", CustomLauncherRewrite.version};
-        String linuxCommand = "./run.sh";
         ProcessBuilder pb = new ProcessBuilder();
-        if (SystemUtils.IS_OS_LINUX) {
-            pb.command(linuxCommand);
+        if (CustomLauncherRewrite.OS.contains("win")) {
+            String[] windowsCommand = {"cmd", "/c", "CustomLauncherRewrite-" + newVersion + ".exe", "--remove-old", CustomLauncherRewrite.version};
+            pb.command(windowsCommand);
+        } else {
+            pb.command("./run.sh");
 
             // delete the old version
             File current = new File(System.getProperty("user.dir") + File.separator + "CustomLauncherRewrite-" + CustomLauncherRewrite.version + ".jar");
@@ -218,9 +218,6 @@ public class UpdateChecker {
                 logger.error("Unable to launch new version!", exception);
                 new ExceptionWindow(exception);
             }
-        }
-        if (SystemUtils.IS_OS_WINDOWS) {
-            pb.command(windowsCommand);
         }
         pb.directory(new File(System.getProperty("user.dir")));
         try {
