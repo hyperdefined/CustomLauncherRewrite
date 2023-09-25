@@ -18,15 +18,15 @@
 package lol.hyper.customlauncher.login;
 
 import lol.hyper.customlauncher.ConfigHandler;
-import lol.hyper.customlauncher.CustomLauncherRewrite;
 import lol.hyper.customlauncher.tools.ExceptionWindow;
+import lol.hyper.customlauncher.tools.OSDetection;
 import lol.hyper.customlauncher.tools.PopUpWindow;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Map;
-import java.io.File;
 
 public final class LaunchGame extends Thread {
 
@@ -62,7 +62,7 @@ public final class LaunchGame extends Thread {
 
         String[] launchCommand = null;
 
-        switch (CustomLauncherRewrite.OS) {
+        switch (OSDetection.osType) {
             case "linux" -> {
                 launchCommand = new String[]{"./TTREngine"};
                 // Make sure it's executable before running

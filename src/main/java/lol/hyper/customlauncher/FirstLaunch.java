@@ -18,6 +18,7 @@
 package lol.hyper.customlauncher;
 
 import lol.hyper.customlauncher.tools.ExceptionWindow;
+import lol.hyper.customlauncher.tools.OSDetection;
 import lol.hyper.customlauncher.tools.PopUpWindow;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
@@ -37,9 +38,9 @@ public class FirstLaunch {
      */
     public FirstLaunch() {
         new PopUpWindow(null, "Welcome to CustomLauncherRewrite! I am first going to detect for an existing TTR install.\n I will copy screenshots, settings, and resource packs.");
-        if (CustomLauncherRewrite.OS.contains("linux")) {
+        if (OSDetection.isLinux()) {
             copyLinuxInstall();
-        } else {
+        } else if (OSDetection.isWindows()){
             copyWindowsInstall();
         }
     }

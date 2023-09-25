@@ -18,9 +18,9 @@
 package lol.hyper.customlauncher.login;
 
 import lol.hyper.customlauncher.CustomLauncherRewrite;
+import lol.hyper.customlauncher.login.windows.TwoFactorAuth;
 import lol.hyper.customlauncher.tools.ExceptionWindow;
 import lol.hyper.customlauncher.tools.PopUpWindow;
-import lol.hyper.customlauncher.login.windows.TwoFactorAuth;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;

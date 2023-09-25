@@ -21,6 +21,7 @@ import lol.hyper.customlauncher.ConfigHandler;
 import lol.hyper.customlauncher.CustomLauncherRewrite;
 import lol.hyper.customlauncher.tools.ExceptionWindow;
 import lol.hyper.customlauncher.tools.JSONUtils;
+import lol.hyper.customlauncher.tools.OSDetection;
 import lol.hyper.customlauncher.tools.PopUpWindow;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.apache.commons.io.FileUtils;
@@ -43,8 +44,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class TTRUpdater extends JFrame {
@@ -140,12 +143,12 @@ public class TTRUpdater extends JFrame {
         // key is the file name
         for (String key : patches.keySet()) {
             progressBar.setValue(progressBar.getValue() + 1);
-            JSONObject currentFile = (JSONObject) patches.get(key);
+            JSONObject currentFile = patches.getJSONObject(key);
             String onlineHash = currentFile.getString("hash");
             // get the list of OS's the file is for
             List<String> only = currentFile.getJSONArray("only").toList().stream().map(object -> Objects.toString(object, null)).toList();
             // if we are running the OS the file is for, check it
-            if (only.contains(CustomLauncherRewrite.OS)) {
+            if (only.contains(OSDetection.osType)) {
                 File localFile = new File(ConfigHandler.INSTALL_LOCATION, key);
                 updateStatus.setText("Checking file " + localFile.getName());
                 if (!localFile.exists()) {
@@ -170,7 +173,7 @@ public class TTRUpdater extends JFrame {
                 logger.info(ConfigHandler.INSTALL_LOCATION.getAbsolutePath() + File.separator + key);
                 logger.info("Local hash: " + localHash.toLowerCase(Locale.ENGLISH));
                 logger.info("Expected hash: " + onlineHash);
-                logger.info("Type: " + CustomLauncherRewrite.OS);
+                logger.info("Type: " + OSDetection.osType);
                 if (localHash.equalsIgnoreCase(onlineHash)) {
                     logger.info("File is good!");
                 } else {
@@ -268,6 +271,8 @@ public class TTRUpdater extends JFrame {
                 new ExceptionWindow(exception);
                 dispose();
             }
+        } else {
+            logger.info("No files need downloaded, we are up to date.");
         }
         logger.info("Finished checking for TTR updates!");
         new PopUpWindow(this, "Finished checking for TTR updates!");

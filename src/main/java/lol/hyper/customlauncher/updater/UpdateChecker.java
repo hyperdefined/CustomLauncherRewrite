@@ -19,6 +19,7 @@ package lol.hyper.customlauncher.updater;
 
 import lol.hyper.customlauncher.CustomLauncherRewrite;
 import lol.hyper.customlauncher.tools.ExceptionWindow;
+import lol.hyper.customlauncher.tools.OSDetection;
 import lol.hyper.customlauncher.tools.PopUpWindow;
 import lol.hyper.githubreleaseapi.GitHubRelease;
 import lol.hyper.githubreleaseapi.GitHubReleaseAPI;
@@ -123,7 +124,7 @@ public class UpdateChecker {
 
         GitHubRelease release = api.getLatestVersion();
 
-        if (CustomLauncherRewrite.OS.contains("win")) {
+        if (OSDetection.isWindows()) {
             String newVersionName = "CustomLauncherRewrite-" + release.getTagVersion() + ".exe";
             URI finalDownload = null;
             for (String url : release.getReleaseAssets()) {
@@ -156,7 +157,7 @@ public class UpdateChecker {
         }
 
         // extract the tar.gz release file into the installation dir
-        if (CustomLauncherRewrite.OS.contains("linux")) {
+        if (OSDetection.isLinux()) {
             String newVersionName = "CustomLauncherRewrite-" + release.getTagVersion() + ".tar.gz";
             URI finalDownload = null;
             for (String url : release.getReleaseAssets()) {
@@ -204,7 +205,7 @@ public class UpdateChecker {
      */
     private void launchNewVersion(String newVersion) {
         ProcessBuilder pb = new ProcessBuilder();
-        if (CustomLauncherRewrite.OS.contains("win")) {
+        if (OSDetection.isWindows()) {
             String[] windowsCommand = {"cmd", "/c", "CustomLauncherRewrite-" + newVersion + ".exe", "--remove-old", CustomLauncherRewrite.version};
             pb.command(windowsCommand);
         } else {
