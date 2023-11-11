@@ -120,7 +120,7 @@ public class AccountEncryption {
             // Return the decrypted data as a string
             return new String(decrypted, StandardCharsets.UTF_8);
         } catch (Exception exception) {
-            logger.error("Error while decrypting input text!", exception);
+            logger.warn("Incorrect passphrase entered for account");
         }
         return null;
     }
@@ -145,7 +145,7 @@ public class AccountEncryption {
             cipher.init(Cipher.DECRYPT_MODE, secretKey);
             return new String(cipher.doFinal(Base64.getDecoder().decode(encryptedPassword)), StandardCharsets.UTF_8);
         } catch (Exception exception) {
-            logger.error("Error while decrypting input text!", exception);
+            logger.warn("Incorrect passphrase entered for account");
             return null;
         }
     }
