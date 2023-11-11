@@ -18,6 +18,7 @@
 package lol.hyper.customlauncher.accounts;
 
 import lol.hyper.customlauncher.tools.JSONUtils;
+import lol.hyper.customlauncher.tools.PopUpWindow;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
@@ -96,6 +97,13 @@ public class Accounts {
                     if (type.toInt() == version) {
                         accountType = type;
                     }
+                }
+
+                if (accountType == null) {
+                    logger.warn("Unknown account version " + version + " for account " + username);
+                    logger.warn("Account data was modified? Skipping this account");
+                    new PopUpWindow(null, "The account " + username + " has an invalid version number: " + version + ". This means that the account data was modified. This account will not be loaded.");
+                    continue;
                 }
             }
 
