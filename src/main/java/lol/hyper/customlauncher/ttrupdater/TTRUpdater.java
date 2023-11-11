@@ -40,8 +40,6 @@ import java.awt.*;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -204,7 +202,9 @@ public class TTRUpdater extends JFrame {
 
             // download each file
             for (String fileToDownload : filesToDownload) {
+                // set the progress
                 progressBar.setMaximum(fileToDownload.length());
+                // get the file name from TTR to download
                 JSONObject file = patches.getJSONObject(fileToDownload);
                 String downloadName = file.getString("dl");
 
@@ -213,6 +213,7 @@ public class TTRUpdater extends JFrame {
                 progressBar.setVisible(true);
                 progressBar.setValue(progressBar.getValue() + 1);
 
+                // build the download URL
                 URL downloadURL;
                 try {
                     downloadURL = new URL(PATCHES_URL_DL + downloadName);
@@ -222,8 +223,11 @@ public class TTRUpdater extends JFrame {
                     dispose();
                     return;
                 }
+
+                // set the output to be in the temp folder
                 File downloadOutput = new File(tempFolder + File.separator + downloadName);
                 long downloadStart = System.nanoTime();
+                // download the file
                 if (!saveFile(downloadURL, downloadOutput)) {
                     logger.error("Unable to download file " + downloadName);
                     new PopUpWindow(this, "Unable to download file " + downloadName + ".");
@@ -249,27 +253,6 @@ public class TTRUpdater extends JFrame {
                 logger.info("Finished extracting file " + downloadName + ". Took " + extractedTime + "ms.");
                 currentProgress++;
                 totalUpdateStatus.setText(String.format("Progress: %d / %d", currentProgress, filesToDownload.size()));
-            }
-            // delete all files in the temp folder
-            File[] tempFolderFiles = tempFolder.listFiles();
-            if (tempFolderFiles != null) {
-                for (File currentFile : tempFolderFiles) {
-                    try {
-                        Files.delete(currentFile.toPath());
-                    } catch (IOException exception) {
-                        logger.error("Unable to delete file " + currentFile.getAbsolutePath(), exception);
-                        new ExceptionWindow(exception);
-                        dispose();
-                    }
-                }
-            }
-            // delete the actual temp folder
-            try {
-                Files.delete(Paths.get(System.getProperty("user.dir") + File.separator + "temp"));
-            } catch (IOException exception) {
-                logger.error("Unable to delete temp folder!", exception);
-                new ExceptionWindow(exception);
-                dispose();
             }
         } else {
             logger.info("No files need downloaded, we are up to date.");

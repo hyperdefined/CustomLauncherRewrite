@@ -32,6 +32,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Properties;
 
 public class CustomLauncherRewrite {
@@ -112,6 +113,28 @@ public class CustomLauncherRewrite {
 
         // check for updates
         new UpdateChecker(version);
+        File tempFolder = new File("temp");
+        if (tempFolder.exists()) {
+            // delete all files in the temp folder
+            File[] tempFolderFiles = tempFolder.listFiles();
+            if (tempFolderFiles != null) {
+                for (File currentFile : tempFolderFiles) {
+                    try {
+                        Files.delete(currentFile.toPath());
+                    } catch (IOException exception) {
+                        logger.error("Unable to delete file " + currentFile.getAbsolutePath(), exception);
+                        new ExceptionWindow(exception);
+                    }
+                }
+            }
+            // delete the actual temp folder
+            try {
+                Files.delete(Paths.get(System.getProperty("user.dir") + File.separator + "temp"));
+            } catch (IOException exception) {
+                logger.error("Unable to delete temp folder!", exception);
+                new ExceptionWindow(exception);
+            }
+        }
 
         // load ttr game updates
         GameUpdateTracker gameUpdateTracker = new GameUpdateTracker();
