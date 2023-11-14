@@ -70,12 +70,12 @@ public class LoginHandler {
     /**
      * Handle a login request. This will act based on whatever was received in the request.
      */
-    public void handleRequest() {
+    public void login() {
         Map<String, String> receivedRequest;
         try {
             logger.info("Sending login request...");
             // send the login request to TTR
-            receivedRequest = sendRequest(loginRequest);
+            receivedRequest = sendHttpRequest(loginRequest);
             attempts += 1;
         } catch (Exception exception) {
             logger.error("Unable to send login request to TTR!", exception);
@@ -138,7 +138,7 @@ public class LoginHandler {
                 // send the request with the queueToken
                 loginRequest.clear();
                 loginRequest.put("queueToken", receivedRequest.get("queueToken"));
-                handleRequest();
+                login();
             }
             default -> // TTR sent back a weird status that we don't know about
             {
@@ -155,7 +155,7 @@ public class LoginHandler {
      * @param loginRequest The login request to process.
      * @return The request that is sent back.
      */
-    private Map<String, String> sendRequest(Map<String, String> loginRequest) {
+    private Map<String, String> sendHttpRequest(Map<String, String> loginRequest) {
         HttpPost post = new HttpPost(REQUEST_URL);
         post.setHeader("User-Agent", CustomLauncherRewrite.userAgent);
         post.setHeader("Content-type", "application/x-www-form-urlencoded");

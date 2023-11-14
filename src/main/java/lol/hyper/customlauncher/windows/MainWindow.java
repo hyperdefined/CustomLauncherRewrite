@@ -64,11 +64,6 @@ public final class MainWindow extends JFrame {
         setTitle("CLR " + CustomLauncherRewrite.version);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
         setIconImage(CustomLauncherRewrite.icon);
 
         // tracker stuff
@@ -175,7 +170,7 @@ public final class MainWindow extends JFrame {
                             newLoginRequest.put("username", selectedAccount.username());
                             newLoginRequest.put("password", selectedAccount.password());
                             LoginHandler loginHandler = new LoginHandler(newLoginRequest);
-                            loginHandler.handleRequest();
+                            loginHandler.login();
                         }
                     }
                     // clear the selection

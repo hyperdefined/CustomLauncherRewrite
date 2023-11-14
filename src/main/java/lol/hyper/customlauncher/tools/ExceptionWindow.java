@@ -30,8 +30,8 @@ public class ExceptionWindow extends JFrame {
     public ExceptionWindow(Exception exception) {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (Exception exception2) {
+            exception2.printStackTrace();
         }
         // taken from https://stackoverflow.com/a/14011536
         StringBuilder sb = new StringBuilder(exception.getClass().getCanonicalName());

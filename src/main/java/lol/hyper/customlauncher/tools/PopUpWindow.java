@@ -35,8 +35,8 @@ public class PopUpWindow extends JDialog {
         super(parent, "Info", true);
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
         setIconImage(CustomLauncherRewrite.icon);
         setLayout(new BorderLayout());

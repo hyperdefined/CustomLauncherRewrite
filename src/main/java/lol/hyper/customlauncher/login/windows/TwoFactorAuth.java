@@ -41,8 +41,8 @@ public class TwoFactorAuth extends JFrame {
         setResizable(false);
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
         setIconImage(CustomLauncherRewrite.icon);
 
@@ -83,7 +83,7 @@ public class TwoFactorAuth extends JFrame {
                 newLoginRequest.put("authToken", token);
                 newLoginRequest.put("appToken", userAuthCode.getText());
                 LoginHandler loginHandler = new LoginHandler(newLoginRequest);
-                loginHandler.handleRequest();
+                loginHandler.login();
                 dispose();
             } else {
                 JOptionPane.showMessageDialog(this, "You must enter the code.", "Error", JOptionPane.ERROR_MESSAGE);

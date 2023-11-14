@@ -79,9 +79,21 @@ public class Accounts {
     }
 
     /**
+     * Get all usernames.
+     *
+     * @return All usernames.
+     */
+    public List<String> getUsernames() {
+        List<String> usernames = new ArrayList<>();
+        accounts.forEach(account -> usernames.add(account.username()));
+        return usernames;
+    }
+
+    /**
      * Loads accounts saved in the accounts.json file.
      */
     private void loadAccountsFromFile() {
+        logger.info("Loading accounts from accounts.json");
         accounts.clear();
         JSONArray accountsJSON = new JSONArray(JSONUtils.readFile(ACCOUNTS_FILE));
         for (int i = 0; i < accountsJSON.length(); i++) {
@@ -137,6 +149,8 @@ public class Accounts {
             // this will convert the old accounts system over
             writeAccounts();
         }
+        logger.info("Loaded " + accounts.size() + " accounts");
+        logger.info(accounts);
     }
 
     /**
@@ -154,6 +168,7 @@ public class Accounts {
      * Save all accounts to the accounts file.
      */
     public void writeAccounts() {
+        logger.info("Saving accounts to accounts.json");
         JSONArray accountsArray = new JSONArray();
         for (Account account : accounts) {
             JSONObject accountObj = new JSONObject();

@@ -35,8 +35,8 @@ public class AccountManagerWindow extends JFrame {
         setResizable(false);
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
         setIconImage(CustomLauncherRewrite.icon);
 

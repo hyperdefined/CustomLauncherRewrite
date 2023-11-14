@@ -51,8 +51,8 @@ public class SecretPrompt extends JFrame {
         setResizable(false);
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
         setIconImage(CustomLauncherRewrite.icon);
 
@@ -108,7 +108,7 @@ public class SecretPrompt extends JFrame {
                     newLoginRequest.put("username", account.username());
                     newLoginRequest.put("password", realPassword);
                     LoginHandler loginHandler = new LoginHandler(newLoginRequest);
-                    loginHandler.handleRequest();
+                    loginHandler.login();
                     dispose();
                     return;
                 }
