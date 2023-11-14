@@ -26,6 +26,8 @@ import org.apache.logging.log4j.Logger;
 import javax.swing.*;
 import java.awt.event.ItemEvent;
 import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class NewAccountWindow extends JFrame {
 
@@ -33,6 +35,11 @@ public class NewAccountWindow extends JFrame {
      * The NewAccountWindow logger.
      */
     private final Logger logger = LogManager.getLogger(this);
+
+    /**
+     * The regex for no special characters.
+     */
+    private final Pattern NO_SPECIAL_CHARACTERS = Pattern.compile("^[a-zA-Z0-9_.-]*$");
 
     /**
      * Creates a new account window.
@@ -128,12 +135,20 @@ public class NewAccountWindow extends JFrame {
             String enteredUsername = usernameTextField.getText();
             String enteredPassword = Arrays.toString(passwordField.getPassword());
             String enteredPassphrase = Arrays.toString(secretPhraseField.getPassword());
-            if (mainWindow.accounts.getUsernames().contains(enteredUsername)) {
-                JOptionPane.showMessageDialog(this, "You cannot add an account with the same username.", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
+
             if (usernameIsEmpty || passwordIsEmpty) {
                 JOptionPane.showMessageDialog(this, "You must fill in all text boxes.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            Matcher matcher = NO_SPECIAL_CHARACTERS.matcher(enteredUsername);
+            if (!matcher.find()) {
+                JOptionPane.showMessageDialog(this, "You cannot use special characters in your username.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (mainWindow.accounts.getUsernames().contains(enteredUsername)) {
+                JOptionPane.showMessageDialog(this, "You cannot add an account with the same username.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
