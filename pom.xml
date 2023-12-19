@@ -200,7 +200,7 @@
         <dependency>
             <groupId>com.dorkbox</groupId>
             <artifactId>Notify</artifactId>
-            <version>4.4</version>
+            <version>4.5</version>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>
