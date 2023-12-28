@@ -73,6 +73,7 @@ public class UpdateChecker {
      * @param currentVersion The current version of the program.
      */
     private void checkForUpdate(String currentVersion) {
+        logger.info("Checking for updates");
         String latestVersion = api.getLatestVersion().getTagVersion();
         GitHubRelease current;
         try {
@@ -82,6 +83,7 @@ public class UpdateChecker {
             new PopUpWindow(null, "It looks like you're running a version not present on GitHub.\nThis is the case if you're running in a dev environment!");
             return;
         }
+        logger.info("Latest version is " + latestVersion);
         int behind = api.getBuildsBehind(current);
         StringBuilder updates = new StringBuilder();
         // if the user is 1 or more build behind, ask to update
@@ -107,6 +109,8 @@ public class UpdateChecker {
                 launchNewVersion(latestVersion);
                 System.exit(0);
             }
+        } else {
+            logger.info("Running latest version");
         }
     }
 
@@ -114,9 +118,8 @@ public class UpdateChecker {
      * Downloads the latest version of the launcher from GitHub.
      */
     private void downloadLatestVersion() {
-        if (api.getAllReleases() == null || api.getAllReleases().isEmpty()) {
+        if (api.getAllReleases().isEmpty()) {
             logger.error("Unable to look for updates!");
-            logger.error("getAllReleases() is null: " + (api.getAllReleases() == null));
             logger.error("getAllReleases() is empty: " + (api.getAllReleases().isEmpty()));
             new PopUpWindow(null, "Unable to look for updates! Check the log for more information.");
             return;
@@ -239,7 +242,7 @@ public class UpdateChecker {
         try (FileInputStream fileInputStream = new FileInputStream(downloadedFile); BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream); GzipCompressorInputStream gzipInputStream = new GzipCompressorInputStream(bufferedInputStream); TarArchiveInputStream tarArchiveInputStream = new TarArchiveInputStream(gzipInputStream)) {
 
             TarArchiveEntry entry;
-            while ((entry = tarArchiveInputStream.getNextTarEntry()) != null) {
+            while ((entry = tarArchiveInputStream.getNextEntry()) != null) {
                 if (entry.isDirectory()) {
                     new File(System.getProperty("user.dir"), entry.getName()).mkdirs();
                 } else {

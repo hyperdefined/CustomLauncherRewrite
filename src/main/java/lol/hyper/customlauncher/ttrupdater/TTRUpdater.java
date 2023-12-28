@@ -125,7 +125,7 @@ public class TTRUpdater extends JFrame {
             logger.warn("Can't find current install directory. Skipping updates.");
         }
 
-        logger.info("We are checking for TTR updates!");
+        logger.info("Starting TTRUpdater");
         // read the patches
         JSONObject patches = JSONUtils.requestJSON(PATCHES_URL);
         if (patches == null) {
@@ -172,10 +172,7 @@ public class TTRUpdater extends JFrame {
                 logger.info("Local hash: " + localHash.toLowerCase(Locale.ENGLISH));
                 logger.info("Expected hash: " + onlineHash);
                 logger.info("Type: " + OSDetection.osType);
-                if (localHash.equalsIgnoreCase(onlineHash)) {
-                    logger.info("File is good!");
-                } else {
-                    logger.info("File is outdated! Will be downloaded.");
+                if (!localHash.equalsIgnoreCase(onlineHash)) {
                     filesToDownload.add(key);
                 }
             }

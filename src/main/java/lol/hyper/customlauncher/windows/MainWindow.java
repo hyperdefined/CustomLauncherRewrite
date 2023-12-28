@@ -35,8 +35,7 @@ import org.json.JSONObject;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.util.HashMap;
 
 public final class MainWindow extends JFrame {
@@ -178,6 +177,15 @@ public final class MainWindow extends JFrame {
                 }
             }
         });
+
+        WindowListener listener = new WindowAdapter() {
+            public void windowClosing(WindowEvent event) {
+                Frame frame = (Frame) event.getSource();
+                logger.info("Closing " + frame.getTitle());
+            }
+        };
+
+        addWindowListener(listener);
 
         setSize(500, 450);
         tabs.add("Accounts", panel);

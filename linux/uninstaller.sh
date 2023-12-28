@@ -16,7 +16,7 @@
 # along with CustomLauncherRewrite.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-read -p "Before we uninstall, would you like to keep your TTR files? These include screenshots and resource packs. Enter 'Y' to keep them, 'N' to wipe them.: " input
+read -r -p "Before we uninstall, would you like to keep your TTR files? These include screenshots and resource packs. Enter 'Y' to keep them, 'N' to wipe them.: " input
 
 if [ "$input" != "Y" ]; then
   keep_ttr_files=false
