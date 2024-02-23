@@ -160,7 +160,6 @@ public class DistrictTracker extends JPanel {
      */
     private void makeRequest() {
         String DISTRICT_URL = "https://www.toontownrewritten.com/api/population";
-        logger.info("Reading " + DISTRICT_URL + " for current population...");
         JSONObject lastResult = JSONUtils.requestJSON(DISTRICT_URL);
 
         // if the request failed, stop the task
@@ -171,8 +170,6 @@ public class DistrictTracker extends JPanel {
         }
 
         isDown = false; // make sure to set this to false since we can read the API
-
-        logger.info("Reading " + DISTRICT_URL + " for current districts...");
 
         JSONObject populationByDistrict = lastResult.getJSONObject("populationByDistrict");
         // iterate through each district

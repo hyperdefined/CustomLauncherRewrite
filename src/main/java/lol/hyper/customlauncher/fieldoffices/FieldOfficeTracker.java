@@ -205,7 +205,6 @@ public class FieldOfficeTracker extends JPanel {
      */
     private void makeRequest() {
         String FIELD_OFFICE_URL = "https://www.toontownrewritten.com/api/fieldoffices";
-        logger.info("Reading " + FIELD_OFFICE_URL + " for current field offices...");
         JSONObject lastResult = JSONUtils.requestJSON(FIELD_OFFICE_URL);
 
         // if the request failed, stop the task

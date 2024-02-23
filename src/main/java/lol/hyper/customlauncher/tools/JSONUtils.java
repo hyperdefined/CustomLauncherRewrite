@@ -77,6 +77,7 @@ public class JSONUtils {
      * @return The response JSONObject. Returns null if there was some issue.
      */
     public static JSONObject requestJSON(String url) {
+        logger.info("Fetching url: " + url);
         String rawJSON;
         try {
             URLConnection conn = new URL(url).openConnection();

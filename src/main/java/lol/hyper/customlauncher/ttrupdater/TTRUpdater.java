@@ -127,7 +127,8 @@ public class TTRUpdater extends JFrame {
 
         logger.info("Starting TTRUpdater");
         // read the patches
-        JSONObject patches = JSONUtils.requestJSON(PATCHES_BASE_URL + manifest);
+        String patchManifest = PATCHES_BASE_URL + manifest;
+        JSONObject patches = JSONUtils.requestJSON(patchManifest);
         if (patches == null) {
             logger.error("patchesmanifest.txt returned null!");
             dispose();

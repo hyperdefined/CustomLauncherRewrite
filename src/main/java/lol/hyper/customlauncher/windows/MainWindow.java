@@ -65,6 +65,12 @@ public final class MainWindow extends JFrame {
         setResizable(false);
         setIconImage(CustomLauncherRewrite.icon);
 
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception exception) {
+            throw new RuntimeException(exception);
+        }
+
         // tracker stuff
         InvasionTracker invasionTracker = new InvasionTracker(configHandler);
         FieldOfficeTracker fieldOfficeTracker = new FieldOfficeTracker(configHandler);

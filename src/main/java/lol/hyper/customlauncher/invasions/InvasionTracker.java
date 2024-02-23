@@ -215,7 +215,6 @@ public class InvasionTracker extends JPanel {
      */
     private void makeRequest() {
         String INVASION_URL = "https://api.toon.plus/invasions";
-        logger.info("Reading " + INVASION_URL + " for current invasions...");
         JSONObject lastResult = JSONUtils.requestJSON(INVASION_URL);
 
         // if the request failed, stop the task
