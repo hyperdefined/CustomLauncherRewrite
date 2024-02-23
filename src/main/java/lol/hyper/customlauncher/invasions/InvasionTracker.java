@@ -250,9 +250,6 @@ public class InvasionTracker extends JPanel {
                 }
                 logger.info("Tracking new invasion for " + district + ". Cogs: " + cogsDefeated + "/" + cogsTotal + ". ETA: " + newInvasion.endTime);
             } else {
-                if (!invasions.containsKey(district)) {
-                    return; // JUST IN CASE
-                }
                 // if we already have it saved, update the information that we have saved already
                 // we want to update the total cogs defeated and the end time
                 Invasion tempInv = invasions.get(district);

@@ -18,11 +18,9 @@
 package lol.hyper.customlauncher.changelog;
 
 import lol.hyper.customlauncher.tools.ScrollableTextWindow;
-import lol.hyper.customlauncher.ttrupdater.TTRUpdater;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Set;
@@ -55,28 +53,6 @@ public class GameUpdatesWindow extends JPanel {
             gameUpdatedModel.addRow(data);
         }
         gameUpdatesTable.setModel(gameUpdatedModel);
-
-
-        // check for updates button
-        JButton ttrUpdateButton = new JButton("Check for TTR Updates");
-        ttrUpdateButton.addActionListener(e -> SwingUtilities.invokeLater(() -> {
-            TTRUpdater ttrUpdater = new TTRUpdater();
-            ttrUpdater.setVisible(true);
-
-            SwingWorker<Void, Void> worker = new SwingWorker<>() {
-                @Override
-                protected Void doInBackground() {
-                    ttrUpdater.checkUpdates();
-                    return null;
-                }
-            };
-
-            worker.execute();
-        }));
-        ttrUpdateButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        ttrUpdateButton.setMaximumSize(new Dimension(300, ttrUpdateButton.getMinimumSize().height));
-        add(ttrUpdateButton);
-
         gameUpdatesTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent event) {

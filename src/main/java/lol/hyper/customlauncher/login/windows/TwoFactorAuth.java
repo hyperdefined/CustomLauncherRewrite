@@ -60,9 +60,9 @@ public class TwoFactorAuth extends JFrame {
         // 2fa and toonguard codes are 6 long
         userAuthCode.addKeyListener(new KeyAdapter() {
             @Override
-            public void keyTyped(KeyEvent e) {
+            public void keyTyped(KeyEvent event) {
                 if (userAuthCode.getText().length() >= 6) {
-                    e.consume();
+                    event.consume();
                 }
             }
         });

@@ -67,8 +67,8 @@ public class CustomLauncherRewrite {
         final Properties properties = new Properties();
         try {
             properties.load(CustomLauncherRewrite.class.getClassLoader().getResourceAsStream("project.properties"));
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException exception) {
+            exception.printStackTrace();
         }
         version = properties.getProperty("version");
         // log some basic info
@@ -138,11 +138,6 @@ public class CustomLauncherRewrite {
 
         // load ttr game updates
         GameUpdateTracker gameUpdateTracker = new GameUpdateTracker();
-
-        // run the TTR updater
-        TTRUpdater ttrUpdater = new TTRUpdater();
-        ttrUpdater.setVisible(true);
-        ttrUpdater.checkUpdates();
 
         // run the main window
         SwingUtilities.invokeLater(() -> {

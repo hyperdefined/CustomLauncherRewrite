@@ -53,7 +53,7 @@ public class TTRUpdater extends JFrame {
     /**
      * The URL used for checking files. Not sure why this is a "txt" file if it returns a JSON.
      */
-    public final String PATCHES_URL = "https://cdn.toontownrewritten.com/content/patchmanifest.txt";
+    public final String PATCHES_BASE_URL = "https://cdn.toontownrewritten.com";
     /**
      * The URL used for storing downloads. This is the root URL, so pass in the file name.
      */
@@ -86,8 +86,8 @@ public class TTRUpdater extends JFrame {
         setResizable(false);
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
-            logger.error(e);
+        } catch (Exception exception) {
+            logger.error(exception);
         }
 
         setIconImage(CustomLauncherRewrite.icon);
@@ -117,7 +117,7 @@ public class TTRUpdater extends JFrame {
     /**
      * Check for updates!
      */
-    public void checkUpdates() {
+    public void checkUpdates(String manifest) {
         // don't run the updater if the folder doesn't exist
         if (!ConfigHandler.INSTALL_LOCATION.exists()) {
             JOptionPane.showMessageDialog(this, "Unable to check for TTR updates. We are unable to find your TTR install directory.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -127,7 +127,7 @@ public class TTRUpdater extends JFrame {
 
         logger.info("Starting TTRUpdater");
         // read the patches
-        JSONObject patches = JSONUtils.requestJSON(PATCHES_URL);
+        JSONObject patches = JSONUtils.requestJSON(PATCHES_BASE_URL + manifest);
         if (patches == null) {
             logger.error("patchesmanifest.txt returned null!");
             dispose();

@@ -21,6 +21,7 @@ import lol.hyper.customlauncher.ConfigHandler;
 import lol.hyper.customlauncher.tools.ExceptionWindow;
 import lol.hyper.customlauncher.tools.OSDetection;
 import lol.hyper.customlauncher.tools.PopUpWindow;
+import lol.hyper.customlauncher.ttrupdater.TTRUpdater;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -42,6 +43,10 @@ public final class LaunchGame extends Thread {
      * The game server to use.
      */
     private final String gameServer;
+    /**
+     * The file to check for TTR updates.
+     */
+    private final String manifest;
 
     /**
      * Creates a LaunchGame instance.
@@ -49,9 +54,10 @@ public final class LaunchGame extends Thread {
      * @param cookie     The login cookie to use.
      * @param gameServer The game server to use.
      */
-    public LaunchGame(String cookie, String gameServer) {
+    public LaunchGame(String cookie, String gameServer, String manifest) {
         this.cookie = cookie;
         this.gameServer = gameServer;
+        this.manifest = manifest;
     }
 
     /**
@@ -96,6 +102,11 @@ public final class LaunchGame extends Thread {
             new PopUpWindow(null, "Unable to determine operating system!");
             return;
         }
+
+        // run the TTR updater
+        TTRUpdater ttrUpdater = new TTRUpdater();
+        ttrUpdater.setVisible(true);
+        ttrUpdater.checkUpdates(manifest);
 
         logger.info("Launching game from " + ConfigHandler.INSTALL_LOCATION);
 

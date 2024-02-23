@@ -97,9 +97,7 @@ public class LoginHandler {
         String eta = receivedRequest.get("eta");
 
         // log the request details
-        logger.info("banner=" + banner);
-        logger.info("status=" + status);
-        logger.info("eta=" + eta);
+        logger.info(receivedRequest);
 
         // act based on the login status
         // TTR has different statuses for login responses
@@ -116,7 +114,8 @@ public class LoginHandler {
                 logger.info("Login was successful, launching game...");
                 String gameServer = receivedRequest.get("gameserver");
                 String cookie = receivedRequest.get("cookie");
-                LaunchGame launchGame = new LaunchGame(cookie, gameServer);
+                String manifest = receivedRequest.get("manifest");
+                LaunchGame launchGame = new LaunchGame(cookie, gameServer, manifest);
                 launchGame.start();
             }
             case "delayed" -> // login request was put into a queue
@@ -131,8 +130,8 @@ public class LoginHandler {
                     // send the login request again after 5 seconds
                     try {
                         TimeUnit.SECONDS.sleep(5);
-                    } catch (InterruptedException e) {
-                        logger.error(e);
+                    } catch (InterruptedException exception) {
+                        logger.error(exception);
                     }
                 }
                 // send the request with the queueToken
@@ -195,8 +194,8 @@ public class LoginHandler {
         try {
             httpClient.close();
             response.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (IOException exception) {
+            throw new RuntimeException(exception);
         }
         return receivedDetails;
     }
