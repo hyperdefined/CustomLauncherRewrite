@@ -33,15 +33,11 @@ public class ConfigHandler {
     /**
      * The main config file.
      */
-    public final File CONFIG_FILE = new File("config", "config.json");
+    private final File CONFIG_FILE = new File("config", "config.json");
     /**
      * The config version, used for detecting and changes.
      */
     public final int CONFIG_VERSION = 1;
-    /**
-     * TTR's install folder.
-     */
-    public static File INSTALL_LOCATION;
     /**
      * The config's content.
      */
@@ -50,11 +46,31 @@ public class ConfigHandler {
      * The ConfigHandler logger.
      */
     private final Logger logger = LogManager.getLogger(this);
+    /**
+     * Show invasion notifications?
+     */
+    private boolean invasionNotifications;
+    /**
+     * Show field office notifications?
+     */
+    private boolean fieldOfficeNotifications;
+    /**
+     * TTR install path.
+     */
+    private File installPath;
 
     /**
      * Initializes the config.
      */
     public ConfigHandler() {
+        createConfigFolder();
+        loadConfig(true);
+    }
+
+    /**
+     * Creates the config.
+     */
+    public void createConfigFolder() {
         File CONFIG_FOLDER = new File("config");
         if (!CONFIG_FOLDER.exists()) {
             try {
@@ -65,7 +81,6 @@ public class ConfigHandler {
                 new ExceptionWindow(exception);
             }
         }
-        loadConfig(true);
     }
 
     /**
@@ -74,7 +89,7 @@ public class ConfigHandler {
      * @return Yes/No
      */
     public boolean showCogInvasionNotifications() {
-        return configJSON.getBoolean("showInvasionNotifications");
+        return invasionNotifications;
     }
 
     /**
@@ -83,7 +98,16 @@ public class ConfigHandler {
      * @return Yes/No
      */
     public boolean showFieldOfficeNotifications() {
-        return configJSON.getBoolean("showFieldOfficeNotifications");
+        return fieldOfficeNotifications;
+    }
+
+    /**
+     * Get TTR install path.
+     *
+     * @return The installation path.
+     */
+    public File getInstallPath() {
+        return installPath;
     }
 
     /**
@@ -145,13 +169,15 @@ public class ConfigHandler {
             }
         }
         setDefaults();
-        INSTALL_LOCATION = new File(configJSON.getString("ttrInstallLocation"));
+        installPath = new File(configJSON.getString("ttrInstallLocation"));
+        invasionNotifications = configJSON.getBoolean("showInvasionNotifications");
+        fieldOfficeNotifications = configJSON.getBoolean("showFieldOfficeNotifications");
 
         // create the ttr-files folder
-        if (!INSTALL_LOCATION.exists()) {
+        if (!(installPath.exists())) {
             try {
-                Files.createDirectory(INSTALL_LOCATION.toPath());
-                logger.info("Creating TTR install folder at " + INSTALL_LOCATION.getAbsolutePath());
+                Files.createDirectory(installPath.toPath());
+                logger.info("Creating TTR install folder at " + installPath);
                 new FirstLaunch();
             } catch (IOException exception) {
                 logger.error("Cannot create TTR folder!", exception);
@@ -161,9 +187,9 @@ public class ConfigHandler {
 
         if (log) {
             logger.info("Config version: " + configJSON.getInt("version"));
-            logger.info("showInvasionNotifications: " + showCogInvasionNotifications());
-            logger.info("showFieldOfficeNotifications: " + showFieldOfficeNotifications());
-            logger.info("ttrInstallLocation: " + INSTALL_LOCATION.getAbsolutePath());
+            logger.info("showInvasionNotifications: " + invasionNotifications);
+            logger.info("showFieldOfficeNotifications: " + fieldOfficeNotifications);
+            logger.info("ttrInstallLocation: " + installPath.getAbsolutePath());
         }
     }
 }

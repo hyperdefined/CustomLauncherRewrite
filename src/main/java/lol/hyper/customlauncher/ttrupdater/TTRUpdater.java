@@ -74,6 +74,10 @@ public class TTRUpdater extends JFrame {
      * The total file status.
      */
     private final JLabel totalUpdateStatus;
+    /**
+     * TTR install path.
+     */
+    private File installPath;
 
     /**
      * Creates the TTR updater window.
@@ -118,8 +122,10 @@ public class TTRUpdater extends JFrame {
      * Check for updates!
      */
     public void checkUpdates(String manifest) {
+        ConfigHandler configHandler = new ConfigHandler();
+        installPath = configHandler.getInstallPath();
         // don't run the updater if the folder doesn't exist
-        if (!ConfigHandler.INSTALL_LOCATION.exists()) {
+        if (!installPath.exists()) {
             JOptionPane.showMessageDialog(this, "Unable to check for TTR updates. We are unable to find your TTR install directory.", "Error", JOptionPane.ERROR_MESSAGE);
             dispose();
             logger.warn("Can't find current install directory. Skipping updates.");
@@ -148,11 +154,11 @@ public class TTRUpdater extends JFrame {
             List<String> only = currentFile.getJSONArray("only").toList().stream().map(object -> Objects.toString(object, null)).toList();
             // if we are running the OS the file is for, check it
             if (only.contains(OSDetection.osType)) {
-                File localFile = new File(ConfigHandler.INSTALL_LOCATION, key);
+                File localFile = new File(installPath, key);
                 updateStatus.setText("Checking file " + localFile.getName());
                 if (!localFile.exists()) {
                     logger.info("-----------------------------------------------------------------------");
-                    logger.info(ConfigHandler.INSTALL_LOCATION.getAbsolutePath() + File.separator + key);
+                    logger.info(installPath.getAbsolutePath() + File.separator + key);
                     logger.info("This file is missing and will be downloaded.");
                     filesToDownload.add(key);
                     continue;
@@ -169,7 +175,7 @@ public class TTRUpdater extends JFrame {
                     return;
                 }
                 logger.info("-----------------------------------------------------------------------");
-                logger.info(ConfigHandler.INSTALL_LOCATION.getAbsolutePath() + File.separator + key);
+                logger.info(installPath.getAbsolutePath() + File.separator + key);
                 logger.info("Local hash: " + localHash.toLowerCase(Locale.ENGLISH));
                 logger.info("Expected hash: " + onlineHash);
                 logger.info("Type: " + OSDetection.osType);
@@ -236,7 +242,7 @@ public class TTRUpdater extends JFrame {
                 updateStatus.setText("Finished downloading " + downloadName);
 
                 long startTime = System.nanoTime();
-                logger.info("Extracting " + downloadOutput.getAbsolutePath() + " to " + ConfigHandler.INSTALL_LOCATION + File.separator + fileToDownload);
+                logger.info("Extracting " + downloadOutput.getAbsolutePath() + " to " + installPath + File.separator + fileToDownload);
                 updateStatus.setText("Extracting " + downloadOutput + " to " + fileToDownload);
                 try {
                     // extract the file to the new location
@@ -289,7 +295,7 @@ public class TTRUpdater extends JFrame {
      */
     private void decompressBz2(String temp, String outputName) throws IOException {
         File tempFile = new File("temp" + File.separator + temp);
-        File output = new File(ConfigHandler.INSTALL_LOCATION, outputName);
+        File output = new File(installPath, outputName);
 
         long totalBytes = tempFile.length();
         long bytesRead = 0;

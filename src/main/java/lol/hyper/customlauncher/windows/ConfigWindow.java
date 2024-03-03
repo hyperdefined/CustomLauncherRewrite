@@ -27,7 +27,6 @@ import java.awt.*;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class ConfigWindow extends JPanel {
 
@@ -37,23 +36,33 @@ public class ConfigWindow extends JPanel {
     private final Logger logger = LogManager.getLogger(this);
 
     /**
+     * Textbox for TTR install.
+     */
+    public JTextField ttrInstallBox;
+    /**
+     * Check box for invasion notifications.
+     */
+    public JCheckBox showInvasionNotificationsBox;
+    /**
+     * Check box for field office notifications.
+     */
+    public JCheckBox showFieldOfficeNotificationsBox;
+
+    /**
      * Creates a config window.
-     *
-     * @param configHandler The ConfigHandler instance.
      */
     public ConfigWindow(ConfigHandler configHandler) {
-        configHandler.loadConfig(false);
 
         // GUI elements
         setLayout(null);
 
         JLabel ttrInstall = new JLabel("<html>TTR Installation</html>");
-        JTextField ttrInstallBox = new JTextField(ConfigHandler.INSTALL_LOCATION.getAbsolutePath());
+        ttrInstallBox = new JTextField(configHandler.getInstallPath().getAbsolutePath());
         ttrInstallBox.setCaretPosition(0);
         JLabel showInvasionNotificationsText = new JLabel("<html>Show invasion notifications?</html>");
-        JCheckBox showInvasionNotificationsBox = new JCheckBox();
+        showInvasionNotificationsBox = new JCheckBox();
         JLabel showFieldOfficeNotificationsText = new JLabel("<html>Show field office notifications?</html>");
-        JCheckBox showFieldOfficeNotificationsBox = new JCheckBox();
+        showFieldOfficeNotificationsBox = new JCheckBox();
         JButton saveButton = new JButton("Save");
 
         JButton browseButton = new JButton("Browse");
@@ -77,7 +86,8 @@ public class ConfigWindow extends JPanel {
             File testPath = new File(newInstallPath);
             if (!(testPath.exists()) && !(testPath.isDirectory())) {
                 JOptionPane.showMessageDialog(this, newInstallPath + " is not a valid path!", "Error", JOptionPane.ERROR_MESSAGE);
-                ttrInstallBox.setText(ConfigHandler.INSTALL_LOCATION.getAbsolutePath());
+                // set the textbox to the old value
+                ttrInstallBox.setText(configHandler.getInstallPath().getAbsolutePath());
                 ttrInstallBox.setCaretPosition(0);
             } else {
                 new PopUpWindow(null, "Settings saved!");
@@ -92,10 +102,7 @@ public class ConfigWindow extends JPanel {
 
                 configHandler.editMultiple(newValues);
 
-                logger.info("Saving new config to " + configHandler.CONFIG_FILE.getAbsolutePath());
-                logger.info("ttrInstallLocation: " + newInstallPath);
-                logger.info("showInvasionNotifications: " + showInvasionNotifications);
-                logger.info("showFieldOfficeNotifications: " + showFieldOfficeNotifications);
+                logger.info("Updating config: " + newValues);
             }
         });
         ttrInstall.setBounds(20, 15, 100, 30);

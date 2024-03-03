@@ -141,7 +141,7 @@ public class CustomLauncherRewrite {
 
         // run the main window
         SwingUtilities.invokeLater(() -> {
-            MainWindow frame = new MainWindow(configHandler, gameUpdateTracker);
+            MainWindow frame = new MainWindow(gameUpdateTracker);
             frame.setVisible(true);
         });
     }

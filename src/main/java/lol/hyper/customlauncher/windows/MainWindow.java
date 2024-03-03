@@ -56,10 +56,9 @@ public final class MainWindow extends JFrame {
     /**
      * Creates the main window interface, and mainly handles the entire program.
      *
-     * @param configHandler     The config, loaded on startup before this.
      * @param gameUpdateTracker The game update tracker that was created before this.
      */
-    public MainWindow(ConfigHandler configHandler, GameUpdateTracker gameUpdateTracker) {
+    public MainWindow(GameUpdateTracker gameUpdateTracker) {
         setTitle("CLR " + CustomLauncherRewrite.version);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -70,6 +69,9 @@ public final class MainWindow extends JFrame {
         } catch (Exception exception) {
             throw new RuntimeException(exception);
         }
+
+        // Config instance
+        ConfigHandler configHandler = new ConfigHandler();
 
         // tracker stuff
         InvasionTracker invasionTracker = new InvasionTracker(configHandler);
@@ -121,6 +123,13 @@ public final class MainWindow extends JFrame {
                         }
                     }
                 }
+                // settings tab
+                case 5 -> {
+                    // update the config to reflect what we have saved
+                    configWindow.showInvasionNotificationsBox.setSelected(configHandler.showCogInvasionNotifications());
+                    configWindow.showFieldOfficeNotificationsBox.setSelected(configHandler.showFieldOfficeNotifications());
+                    configWindow.ttrInstallBox.setText(configHandler.getInstallPath().getAbsolutePath());
+                }
             }
         });
 
@@ -149,14 +158,7 @@ public final class MainWindow extends JFrame {
             public void mouseClicked(MouseEvent event) {
                 @SuppressWarnings("unchecked") JList<Account> accountList = (JList<Account>) event.getSource();
                 if (event.getClickCount() == 2) {
-                    if (!ConfigHandler.INSTALL_LOCATION.exists()) {
-                        JOptionPane.showMessageDialog(MainWindow.this, "Unable to launch the game. The install location cannot be found.", "Error", JOptionPane.ERROR_MESSAGE);
-                        // clear the selection
-                        accountList.getSelectionModel().clearSelection();
-                        return;
-                    }
-                    // check if the game is online
-                    // before launching
+                    // check if the game is online before launching
                     boolean isOnline = checkTTRStatus();
                     if (!isOnline) {
                         return;

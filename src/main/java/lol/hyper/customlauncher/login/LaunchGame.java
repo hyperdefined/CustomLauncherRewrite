@@ -25,6 +25,7 @@ import lol.hyper.customlauncher.ttrupdater.TTRUpdater;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
@@ -64,6 +65,13 @@ public final class LaunchGame extends Thread {
      * Launch the game.
      */
     public void run() {
+        ConfigHandler configHandler = new ConfigHandler();
+        File installPath = configHandler.getInstallPath();
+        if (!installPath.exists()) {
+            JOptionPane.showMessageDialog(null, "Unable to launch the game. The install location cannot be found.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
         ProcessBuilder pb = new ProcessBuilder();
 
         String[] launchCommand = null;
@@ -72,7 +80,7 @@ public final class LaunchGame extends Thread {
             case "linux" -> {
                 launchCommand = new String[]{"./TTREngine"};
                 // Make sure it's executable before running
-                File fullPath = new File(ConfigHandler.INSTALL_LOCATION, "TTREngine");
+                File fullPath = new File(installPath, "TTREngine");
                 if (!fullPath.canExecute()) {
                     logger.info(fullPath.getAbsolutePath() + " is not executable. Attempting to set it.");
                     boolean result;
@@ -108,7 +116,7 @@ public final class LaunchGame extends Thread {
         ttrUpdater.setVisible(true);
         ttrUpdater.checkUpdates(manifest);
 
-        logger.info("Launching game from " + ConfigHandler.INSTALL_LOCATION);
+        logger.info("Launching game from " + installPath.getAbsolutePath());
 
         // dirty little trick to redirect the output
         // the game freezes if you don't do this
@@ -117,7 +125,7 @@ public final class LaunchGame extends Thread {
         pb.redirectErrorStream(true);
 
         // make sure we set the working directory and command
-        pb.directory(ConfigHandler.INSTALL_LOCATION);
+        pb.directory(installPath);
         pb.command(launchCommand);
 
         Map<String, String> env = pb.environment();
