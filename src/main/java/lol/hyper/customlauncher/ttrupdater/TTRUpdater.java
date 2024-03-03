@@ -262,7 +262,6 @@ public class TTRUpdater extends JFrame {
             logger.info("No files need downloaded, we are up to date.");
         }
         logger.info("Finished checking for TTR updates!");
-        new PopUpWindow(this, "Finished checking for TTR updates!");
         dispose();
     }
 
