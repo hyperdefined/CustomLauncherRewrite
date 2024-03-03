@@ -43,6 +43,7 @@ public class JSONUtils {
      * @return The data from the file.
      */
     public static String readFile(File file) {
+        logger.info("Reading file: " + file.getAbsolutePath());
         byte[] encoded = new byte[0];
         try {
             encoded = Files.readAllBytes(file.toPath());
@@ -60,6 +61,7 @@ public class JSONUtils {
      * @param file The file to write to.
      */
     public static void writeFile(Object data, File file) {
+        logger.info("Writing file: " + file.getAbsolutePath());
         try {
             FileWriter writer = new FileWriter(file);
             writer.write(data.toString());
@@ -109,6 +111,7 @@ public class JSONUtils {
      * @return The response JSONArray. Returns null if there was some issue.
      */
     public static JSONArray requestJSONArray(String url) {
+        logger.info("Fetching url: " + url);
         String rawJSON;
         try {
             URLConnection conn = new URL(url).openConnection();

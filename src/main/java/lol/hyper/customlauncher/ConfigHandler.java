@@ -26,6 +26,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Map;
 
 public class ConfigHandler {
 
@@ -86,16 +87,19 @@ public class ConfigHandler {
     }
 
     /**
-     * Edit a config's value. This will write to the file.
+     * Edit multiple config values at once.
      *
-     * @param key   The key.
-     * @param value The value we want to set.
+     * @param values The key=values to change to.
      */
-    public void editConfig(String key, Object value) {
-        if (configJSON.has(key)) {
-            configJSON.put(key, value);
-            JSONUtils.writeFile(configJSON, CONFIG_FILE);
+    public void editMultiple(Map<String, Object> values) {
+        for (Map.Entry<String, Object> entry : values.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            if (configJSON.has(key)) {
+                configJSON.put(key, value);
+            }
         }
+        JSONUtils.writeFile(configJSON, CONFIG_FILE);
     }
 
     /**
@@ -117,8 +121,8 @@ public class ConfigHandler {
         }
         if (changed) {
             configJSON.put("version", CONFIG_VERSION);
+            JSONUtils.writeFile(configJSON, CONFIG_FILE);
         }
-        JSONUtils.writeFile(configJSON, CONFIG_FILE);
     }
 
     /**
@@ -132,6 +136,7 @@ public class ConfigHandler {
         } else {
             configJSON = new JSONObject(JSONUtils.readFile(CONFIG_FILE));
             if (!configJSON.has("version")) {
+                logger.info("Config does not have a version set, adding to it");
                 configJSON.put("version", CONFIG_VERSION);
                 JSONUtils.writeFile(configJSON, CONFIG_FILE);
             }

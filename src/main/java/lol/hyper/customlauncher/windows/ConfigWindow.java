@@ -25,6 +25,9 @@ import org.apache.logging.log4j.Logger;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class ConfigWindow extends JPanel {
 
@@ -82,9 +85,12 @@ public class ConfigWindow extends JPanel {
                 boolean showInvasionNotifications = showInvasionNotificationsBox.isSelected();
                 boolean showFieldOfficeNotifications = showFieldOfficeNotificationsBox.isSelected();
 
-                configHandler.editConfig("showInvasionNotifications", showInvasionNotifications);
-                configHandler.editConfig("showFieldOfficeNotifications", showFieldOfficeNotifications);
-                configHandler.editConfig("ttrInstallLocation", newInstallPath);
+                Map<String, Object> newValues = new HashMap<>();
+                newValues.put("showInvasionNotifications", showInvasionNotifications);
+                newValues.put("showFieldOfficeNotifications", showFieldOfficeNotifications);
+                newValues.put("ttrInstallLocation", newInstallPath);
+
+                configHandler.editMultiple(newValues);
 
                 logger.info("Saving new config to " + configHandler.CONFIG_FILE.getAbsolutePath());
                 logger.info("ttrInstallLocation: " + newInstallPath);
