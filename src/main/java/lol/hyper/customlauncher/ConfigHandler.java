@@ -26,7 +26,6 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Map;
 
 public class ConfigHandler {
 
@@ -111,18 +110,22 @@ public class ConfigHandler {
     }
 
     /**
-     * Edit multiple config values at once.
+     * Update the config and save it to disk.
      *
-     * @param values The key=values to change to.
+     * @param invasionNotifications    Show invasion notifications?
+     * @param fieldOfficeNotifications Show field office notifications?
+     * @param path                     TTR install path.
      */
-    public void editMultiple(Map<String, Object> values) {
-        for (Map.Entry<String, Object> entry : values.entrySet()) {
-            String key = entry.getKey();
-            Object value = entry.getValue();
-            if (configJSON.has(key)) {
-                configJSON.put(key, value);
-            }
-        }
+    public void updateConfig(boolean invasionNotifications, boolean fieldOfficeNotifications, File path) {
+        // make sure we change what we have loaded
+        this.invasionNotifications = invasionNotifications;
+        this.fieldOfficeNotifications = fieldOfficeNotifications;
+        this.installPath = path;
+
+        // edit the json, then save it
+        configJSON.put("showInvasionNotifications", invasionNotifications);
+        configJSON.put("showFieldOfficeNotifications", fieldOfficeNotifications);
+        configJSON.put("ttrInstallLocation", path.getAbsolutePath());
         JSONUtils.writeFile(configJSON, CONFIG_FILE);
     }
 

@@ -94,15 +94,8 @@ public class ConfigWindow extends JPanel {
 
                 boolean showInvasionNotifications = showInvasionNotificationsBox.isSelected();
                 boolean showFieldOfficeNotifications = showFieldOfficeNotificationsBox.isSelected();
-
-                Map<String, Object> newValues = new HashMap<>();
-                newValues.put("showInvasionNotifications", showInvasionNotifications);
-                newValues.put("showFieldOfficeNotifications", showFieldOfficeNotifications);
-                newValues.put("ttrInstallLocation", newInstallPath);
-
-                configHandler.editMultiple(newValues);
-
-                logger.info("Updating config: " + newValues);
+                configHandler.updateConfig(showInvasionNotifications, showFieldOfficeNotifications, testPath);
+                logger.info("Saving config");
             }
         });
         ttrInstall.setBounds(20, 15, 100, 30);
