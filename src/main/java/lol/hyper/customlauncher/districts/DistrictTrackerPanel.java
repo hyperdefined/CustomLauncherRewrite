@@ -18,8 +18,6 @@
 package lol.hyper.customlauncher.districts;
 
 import lol.hyper.customlauncher.tools.JSONUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
 import javax.swing.Timer;
@@ -69,17 +67,13 @@ public class DistrictTrackerPanel extends JPanel {
      */
     public boolean isDown = false;
     /**
-     * The DistrictTracker logger.
-     */
-    private final Logger logger = LogManager.getLogger(this);
-    /**
      * Scheduler for making API requests.
      */
     private ScheduledExecutorService executor;
 
 
     /**
-     * Handle reading and displaying information from the population API.
+     * Creates a DistrictTrackerPanel. It handles the window and tracking of each district.
      */
     public DistrictTrackerPanel() {
         // GUI elements

@@ -82,7 +82,7 @@ public class InvasionTrackerPanel extends JPanel {
      */
     private final ConfigHandler configHandler;
     /**
-     * The InvasionTracker logger.
+     * The InvasionTrackerPanel logger.
      */
     private final Logger logger = LogManager.getLogger(this);
     /**
@@ -91,8 +91,7 @@ public class InvasionTrackerPanel extends JPanel {
     private ScheduledExecutorService executor;
 
     /**
-     * This tracker will process and display the InvasionTask. It handles the window and tracking
-     * of each invasion.
+     * Creates a InvasionTrackerPanel. It handles the window and tracking of each invasion.
      */
     public InvasionTrackerPanel(ConfigHandler configHandler) {
         this.configHandler = configHandler;

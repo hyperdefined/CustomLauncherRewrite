@@ -36,15 +36,15 @@ public class ConfigPanel extends JPanel {
     /**
      * Textbox for TTR install.
      */
-    public JTextField ttrInstallBox;
+    public final JTextField ttrInstallBox;
     /**
      * Check box for invasion notifications.
      */
-    public JCheckBox showInvasionNotificationsBox;
+    public final JCheckBox showInvasionNotificationsBox;
     /**
      * Check box for field office notifications.
      */
-    public JCheckBox showFieldOfficeNotificationsBox;
+    public final JCheckBox showFieldOfficeNotificationsBox;
 
     /**
      * Creates a config window.

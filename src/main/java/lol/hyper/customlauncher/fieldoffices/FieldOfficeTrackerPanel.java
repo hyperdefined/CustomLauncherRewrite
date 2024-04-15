@@ -82,7 +82,7 @@ public class FieldOfficeTrackerPanel extends JPanel {
      */
     private final ConfigHandler configHandler;
     /**
-     * The FieldOfficeTracker logger.
+     * The FieldOfficeTrackerPanel logger.
      */
     private final Logger logger = LogManager.getLogger(this);
     /**
@@ -92,8 +92,7 @@ public class FieldOfficeTrackerPanel extends JPanel {
 
 
     /**
-     * This tracker will process and display the FieldOfficeTask. It handles the window and tracking
-     * of each field office.
+     * Creates a FieldOfficeTrackerPanel. It handles the window and tracking of each field office.
      */
     public FieldOfficeTrackerPanel(ConfigHandler configHandler) {
         // zone IDs to street names

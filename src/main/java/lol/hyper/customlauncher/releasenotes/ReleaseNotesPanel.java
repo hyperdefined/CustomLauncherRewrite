@@ -25,11 +25,11 @@ import java.awt.event.MouseEvent;
 public class ReleaseNotesPanel extends JPanel {
 
     /**
-     * Creates a game updates window.
+     * Creates the release notes panel for displaying all updates.
      *
-     * @param gameUpdateTracker The tracker used to fetch the updates.
+     * @param releaseNotesTracker The tracker used to fetch the updates.
      */
-    public ReleaseNotesPanel(ReleaseNotesTracker gameUpdateTracker) {
+    public ReleaseNotesPanel(ReleaseNotesTracker releaseNotesTracker) {
         // GUI elements
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
@@ -45,7 +45,7 @@ public class ReleaseNotesPanel extends JPanel {
         add(scrollPane);
 
         gameUpdatedModel.setRowCount(0);
-        for (GameUpdate gameUpdate : gameUpdateTracker.getAllGameUpdates()) {
+        for (GameUpdate gameUpdate : releaseNotesTracker.getAllGameUpdates()) {
             String[] data = new String[]{gameUpdate.version(), gameUpdate.date()};
             gameUpdatedModel.addRow(data);
         }
@@ -62,7 +62,7 @@ public class ReleaseNotesPanel extends JPanel {
                         String selectedVersion = (String) gameUpdatesTable.getValueAt(selectedRow, versionColumnIndex);
                         gameUpdatesTable.getSelectionModel().clearSelection();
                         // open the release notes for said version clicked
-                        gameUpdateTracker.getAllGameUpdates().stream().filter(update -> selectedVersion.equalsIgnoreCase(update.version())).findAny().ifPresent(gameUpdate -> SwingUtilities.invokeLater(() -> new ReleaseNotesWindow(gameUpdate)));
+                        releaseNotesTracker.getAllGameUpdates().stream().filter(update -> selectedVersion.equalsIgnoreCase(update.version())).findAny().ifPresent(gameUpdate -> SwingUtilities.invokeLater(() -> new ReleaseNotesWindow(gameUpdate)));
                     }
                 }
             }

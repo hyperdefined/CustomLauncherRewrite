@@ -30,7 +30,7 @@ import java.util.TreeSet;
 public class ReleaseNotesTracker {
 
     /**
-     * The GameUpdateTracker logger.
+     * The ReleaseNotesTracker logger.
      */
     private final Logger logger = LogManager.getLogger(this);
     /**
@@ -39,7 +39,7 @@ public class ReleaseNotesTracker {
     private final SortedSet<GameUpdate> allGameUpdates = new TreeSet<>(Comparator.comparingInt(GameUpdate::id).reversed());
 
     /**
-     * Download all updates. This is only called if the file isn't there.
+     * Read all release notes and save them.
      */
     public void getAllReleaseNotes() {
         logger.info("Fetching game updates...");
@@ -60,7 +60,7 @@ public class ReleaseNotesTracker {
     }
 
     /**
-     * Get all game updates that were fetched from TTR.
+     * Get all release notes that were fetched from TTR.
      *
      * @return The set containing the updates.
      */
