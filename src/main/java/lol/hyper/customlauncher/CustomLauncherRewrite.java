@@ -17,9 +17,8 @@
 
 package lol.hyper.customlauncher;
 
-import lol.hyper.customlauncher.changelog.GameUpdateTracker;
+import lol.hyper.customlauncher.releasenotes.ReleaseNotesTracker;
 import lol.hyper.customlauncher.tools.ExceptionWindow;
-import lol.hyper.customlauncher.ttrupdater.TTRUpdater;
 import lol.hyper.customlauncher.updater.UpdateChecker;
 import lol.hyper.customlauncher.windows.MainWindow;
 import org.apache.logging.log4j.LogManager;
@@ -137,7 +136,7 @@ public class CustomLauncherRewrite {
         }
 
         // load ttr game updates
-        GameUpdateTracker gameUpdateTracker = new GameUpdateTracker();
+        ReleaseNotesTracker gameUpdateTracker = new ReleaseNotesTracker();
         gameUpdateTracker.getAllReleaseNotes();
 
         // run the main window

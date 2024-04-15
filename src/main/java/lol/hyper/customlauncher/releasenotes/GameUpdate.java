@@ -15,7 +15,7 @@
  * along with CustomLauncherRewrite.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package lol.hyper.customlauncher.changelog;
+package lol.hyper.customlauncher.releasenotes;
 
 /**
  * @param id      The ID of the update.

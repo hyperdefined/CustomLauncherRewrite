@@ -21,11 +21,11 @@ import lol.hyper.customlauncher.ConfigHandler;
 import lol.hyper.customlauncher.CustomLauncherRewrite;
 import lol.hyper.customlauncher.accounts.Account;
 import lol.hyper.customlauncher.accounts.Accounts;
-import lol.hyper.customlauncher.changelog.GameUpdateTracker;
-import lol.hyper.customlauncher.changelog.GameUpdatesWindow;
-import lol.hyper.customlauncher.districts.DistrictTracker;
-import lol.hyper.customlauncher.fieldoffices.FieldOfficeTracker;
-import lol.hyper.customlauncher.invasions.InvasionTracker;
+import lol.hyper.customlauncher.releasenotes.ReleaseNotesTracker;
+import lol.hyper.customlauncher.releasenotes.ReleaseNotesPanel;
+import lol.hyper.customlauncher.districts.DistrictTrackerPanel;
+import lol.hyper.customlauncher.fieldoffices.FieldOfficeTrackerPanel;
+import lol.hyper.customlauncher.invasions.InvasionTrackerPanel;
 import lol.hyper.customlauncher.login.LoginHandler;
 import lol.hyper.customlauncher.tools.JSONUtils;
 import lol.hyper.customlauncher.tools.PopUpWindow;
@@ -58,7 +58,7 @@ public final class MainWindow extends JFrame {
      *
      * @param gameUpdateTracker The game update tracker that was created before this.
      */
-    public MainWindow(GameUpdateTracker gameUpdateTracker) {
+    public MainWindow(ReleaseNotesTracker gameUpdateTracker) {
         setTitle("CLR " + CustomLauncherRewrite.version);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -74,11 +74,11 @@ public final class MainWindow extends JFrame {
         ConfigHandler configHandler = new ConfigHandler();
 
         // tracker stuff
-        InvasionTracker invasionTracker = new InvasionTracker(configHandler);
-        FieldOfficeTracker fieldOfficeTracker = new FieldOfficeTracker(configHandler);
-        DistrictTracker districtTracker = new DistrictTracker();
-        ConfigWindow configWindow = new ConfigWindow(configHandler);
-        GameUpdatesWindow gameUpdatesWindow = new GameUpdatesWindow(gameUpdateTracker);
+        InvasionTrackerPanel invasionTracker = new InvasionTrackerPanel(configHandler);
+        FieldOfficeTrackerPanel fieldOfficeTracker = new FieldOfficeTrackerPanel(configHandler);
+        DistrictTrackerPanel districtTracker = new DistrictTrackerPanel();
+        ConfigPanel configWindow = new ConfigPanel(configHandler);
+        ReleaseNotesPanel gameUpdatesWindow = new ReleaseNotesPanel(gameUpdateTracker);
 
         // GUI elements
         JPanel panel = new JPanel();

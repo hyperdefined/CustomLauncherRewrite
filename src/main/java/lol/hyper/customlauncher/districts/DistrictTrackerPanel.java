@@ -34,7 +34,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class DistrictTracker extends JPanel {
+public class DistrictTrackerPanel extends JPanel {
 
     /**
      * All current districts saved locally.
@@ -81,7 +81,7 @@ public class DistrictTracker extends JPanel {
     /**
      * Handle reading and displaying information from the population API.
      */
-    public DistrictTracker() {
+    public DistrictTrackerPanel() {
         // GUI elements
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 

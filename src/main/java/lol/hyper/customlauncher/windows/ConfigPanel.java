@@ -25,10 +25,8 @@ import org.apache.logging.log4j.Logger;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 
-public class ConfigWindow extends JPanel {
+public class ConfigPanel extends JPanel {
 
     /**
      * The ConfigWindow logger.
@@ -51,7 +49,7 @@ public class ConfigWindow extends JPanel {
     /**
      * Creates a config window.
      */
-    public ConfigWindow(ConfigHandler configHandler) {
+    public ConfigPanel(ConfigHandler configHandler) {
 
         // GUI elements
         setLayout(null);
@@ -69,7 +67,7 @@ public class ConfigWindow extends JPanel {
         browseButton.addActionListener(e -> {
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-            int choice = fileChooser.showOpenDialog(ConfigWindow.this);
+            int choice = fileChooser.showOpenDialog(ConfigPanel.this);
             if (choice == JFileChooser.APPROVE_OPTION) {
                 String selectedPath = fileChooser.getSelectedFile().getAbsolutePath();
                 ttrInstallBox.setText(selectedPath);

@@ -15,21 +15,21 @@
  * along with CustomLauncherRewrite.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package lol.hyper.customlauncher.changelog;
+package lol.hyper.customlauncher.releasenotes;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class GameUpdatesWindow extends JPanel {
+public class ReleaseNotesPanel extends JPanel {
 
     /**
      * Creates a game updates window.
      *
      * @param gameUpdateTracker The tracker used to fetch the updates.
      */
-    public GameUpdatesWindow(GameUpdateTracker gameUpdateTracker) {
+    public ReleaseNotesPanel(ReleaseNotesTracker gameUpdateTracker) {
         // GUI elements
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 

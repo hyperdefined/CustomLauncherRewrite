@@ -43,7 +43,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class InvasionTracker extends JPanel {
+public class InvasionTrackerPanel extends JPanel {
 
     /**
      * All current invasions saved locally.
@@ -94,7 +94,7 @@ public class InvasionTracker extends JPanel {
      * This tracker will process and display the InvasionTask. It handles the window and tracking
      * of each invasion.
      */
-    public InvasionTracker(ConfigHandler configHandler) {
+    public InvasionTrackerPanel(ConfigHandler configHandler) {
         this.configHandler = configHandler;
 
         // GUI elements

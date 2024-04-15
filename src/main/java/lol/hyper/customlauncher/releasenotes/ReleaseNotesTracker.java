@@ -15,7 +15,7 @@
  * along with CustomLauncherRewrite.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package lol.hyper.customlauncher.changelog;
+package lol.hyper.customlauncher.releasenotes;
 
 import lol.hyper.customlauncher.tools.JSONUtils;
 import org.apache.logging.log4j.LogManager;
@@ -27,7 +27,7 @@ import java.util.Comparator;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-public class GameUpdateTracker {
+public class ReleaseNotesTracker {
 
     /**
      * The GameUpdateTracker logger.

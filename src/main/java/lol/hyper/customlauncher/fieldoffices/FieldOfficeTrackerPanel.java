@@ -39,7 +39,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class FieldOfficeTracker extends JPanel {
+public class FieldOfficeTrackerPanel extends JPanel {
 
     /**
      * All current field offices saved locally.
@@ -95,7 +95,7 @@ public class FieldOfficeTracker extends JPanel {
      * This tracker will process and display the FieldOfficeTask. It handles the window and tracking
      * of each field office.
      */
-    public FieldOfficeTracker(ConfigHandler configHandler) {
+    public FieldOfficeTrackerPanel(ConfigHandler configHandler) {
         // zone IDs to street names
         zonesToStreets.put(3100, "Walrus Way");
         zonesToStreets.put(3200, "Sleet Street");

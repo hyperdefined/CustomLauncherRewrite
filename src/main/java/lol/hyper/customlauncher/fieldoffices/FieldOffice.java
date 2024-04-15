@@ -112,7 +112,7 @@ public class FieldOffice implements Comparable<FieldOffice> {
 
     @Override
     public String toString() {
-        return FieldOfficeTracker.zonesToStreets.get(area);
+        return FieldOfficeTrackerPanel.zonesToStreets.get(area);
     }
 
     @Override
