@@ -20,17 +20,15 @@ package lol.hyper.customlauncher.changelog;
 /**
  * @param id      The ID of the update.
  * @param version The version of the update.
- * @param notes   The update changelog.
  * @param date    The date of the update.
  */
-public record GameUpdate(int id, String version, String notes, String date) implements Comparable<GameUpdate> {
+public record GameUpdate(int id, String version, String date) implements Comparable<GameUpdate> {
 
     /**
      * Creates a game update.
      *
      * @param id      The update ID.
      * @param version The update version.
-     * @param notes   The update release notes.
      * @param date    The update date.
      */
     public GameUpdate {
@@ -44,16 +42,6 @@ public record GameUpdate(int id, String version, String notes, String date) impl
     @Override
     public int id() {
         return id;
-    }
-
-    /**
-     * Get the release notes of the update.
-     *
-     * @return The notes formatted.
-     */
-    @Override
-    public String notes() {
-        return notes;
     }
 
     /**
@@ -101,6 +89,6 @@ public record GameUpdate(int id, String version, String notes, String date) impl
 
     @Override
     public int hashCode() {
-        return id * version.hashCode() * notes.hashCode();
+        return id * version.hashCode();
     }
 }

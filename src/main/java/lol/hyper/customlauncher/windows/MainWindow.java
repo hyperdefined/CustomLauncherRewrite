@@ -78,7 +78,7 @@ public final class MainWindow extends JFrame {
         FieldOfficeTracker fieldOfficeTracker = new FieldOfficeTracker(configHandler);
         DistrictTracker districtTracker = new DistrictTracker();
         ConfigWindow configWindow = new ConfigWindow(configHandler);
-        GameUpdatesWindow gameUpdatesWindow = new GameUpdatesWindow(gameUpdateTracker.allGameUpdates);
+        GameUpdatesWindow gameUpdatesWindow = new GameUpdatesWindow(gameUpdateTracker);
 
         // GUI elements
         JPanel panel = new JPanel();

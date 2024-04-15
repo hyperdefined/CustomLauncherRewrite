@@ -15,14 +15,33 @@
  * along with CustomLauncherRewrite.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package lol.hyper.customlauncher.tools;
+/*
+ * This file is part of CustomLauncherRewrite.
+ *
+ * CustomLauncherRewrite is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * CustomLauncherRewrite is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with CustomLauncherRewrite.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package lol.hyper.customlauncher.changelog;
 
 import lol.hyper.customlauncher.CustomLauncherRewrite;
+import lol.hyper.customlauncher.tools.JSONUtils;
+import org.json.JSONObject;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class ScrollableTextWindow extends JFrame {
+public class ReleaseNotesWindow extends JFrame {
 
     /**
      * The text area for the window.
@@ -30,13 +49,12 @@ public class ScrollableTextWindow extends JFrame {
     private final JTextPane textArea;
 
     /**
-     * Creates a window with scrollable text.
+     * Creates a release note window to display a single update.
      *
-     * @param title The title of the window.
-     * @param text  The text to display.
+     * @param gameUpdate The game update to show.
      */
-    public ScrollableTextWindow(String title, String text) {
-        setTitle(title);
+    public ReleaseNotesWindow(GameUpdate gameUpdate) {
+        setTitle(gameUpdate.version());
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
         try {
@@ -56,7 +74,12 @@ public class ScrollableTextWindow extends JFrame {
         verticalScrollBar.setValue(verticalScrollBar.getMinimum());
         getContentPane().add(scrollPane);
 
-        formatContent(text);
+        JSONObject notesJSON = JSONUtils.requestJSON("https://www.toontownrewritten.com/api/releasenotes/" + gameUpdate.id());
+        if (notesJSON == null) {
+            return;
+        }
+        String notes = notesJSON.getString("body");
+        formatContent(notes);
 
         setLocationRelativeTo(null);
         pack();

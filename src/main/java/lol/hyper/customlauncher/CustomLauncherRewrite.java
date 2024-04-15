@@ -138,6 +138,7 @@ public class CustomLauncherRewrite {
 
         // load ttr game updates
         GameUpdateTracker gameUpdateTracker = new GameUpdateTracker();
+        gameUpdateTracker.getAllReleaseNotes();
 
         // run the main window
         SwingUtilities.invokeLater(() -> {

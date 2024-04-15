@@ -17,22 +17,19 @@
 
 package lol.hyper.customlauncher.changelog;
 
-import lol.hyper.customlauncher.tools.ScrollableTextWindow;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Set;
 
 public class GameUpdatesWindow extends JPanel {
 
     /**
      * Creates a game updates window.
      *
-     * @param gameUpdates All them GameUpdates.
+     * @param gameUpdateTracker The tracker used to fetch the updates.
      */
-    public GameUpdatesWindow(Set<GameUpdate> gameUpdates) {
+    public GameUpdatesWindow(GameUpdateTracker gameUpdateTracker) {
         // GUI elements
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
@@ -48,7 +45,7 @@ public class GameUpdatesWindow extends JPanel {
         add(scrollPane);
 
         gameUpdatedModel.setRowCount(0);
-        for (GameUpdate gameUpdate : gameUpdates) {
+        for (GameUpdate gameUpdate : gameUpdateTracker.getAllGameUpdates()) {
             String[] data = new String[]{gameUpdate.version(), gameUpdate.date()};
             gameUpdatedModel.addRow(data);
         }
@@ -65,7 +62,7 @@ public class GameUpdatesWindow extends JPanel {
                         String selectedVersion = (String) gameUpdatesTable.getValueAt(selectedRow, versionColumnIndex);
                         gameUpdatesTable.getSelectionModel().clearSelection();
                         // open the release notes for said version clicked
-                        gameUpdates.stream().filter(update -> selectedVersion.equalsIgnoreCase(update.version())).findAny().ifPresent(gameUpdate -> SwingUtilities.invokeLater(() -> new ScrollableTextWindow(selectedVersion, gameUpdate.notes())));
+                        gameUpdateTracker.getAllGameUpdates().stream().filter(update -> selectedVersion.equalsIgnoreCase(update.version())).findAny().ifPresent(gameUpdate -> SwingUtilities.invokeLater(() -> new ReleaseNotesWindow(gameUpdate)));
                     }
                 }
             }
