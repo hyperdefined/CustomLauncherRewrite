@@ -39,7 +39,7 @@ public class NewAccountWindow extends JFrame {
     /**
      * The regex for no special characters.
      */
-    private final Pattern NO_SPECIAL_CHARACTERS = Pattern.compile("^[a-zA-Z0-9_.-]*$");
+    private final Pattern NO_SPECIAL_CHARACTERS = Pattern.compile("^[a-zA-Z0-9\\s_.-]*$");
 
     /**
      * Creates a new account window.
