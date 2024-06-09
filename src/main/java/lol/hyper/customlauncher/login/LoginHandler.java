@@ -188,7 +188,13 @@ public class LoginHandler {
         HashMap<String, String> receivedDetails = new HashMap<>();
 
         for (String x : responseJSON.keySet()) {
-            receivedDetails.put(x, responseJSON.getString(x));
+            if (!responseJSON.isNull(x)) {
+                receivedDetails.put(x, responseJSON.getString(x));
+            }
+            else {
+                receivedDetails.put(x, null);
+                logger.warn("Value of '" + x + "' in login response was null.");
+            }
         }
 
         try {
