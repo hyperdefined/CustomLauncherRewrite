@@ -133,8 +133,8 @@ public class NewAccountWindow extends JFrame {
             boolean secretIsEmpty = secretPhraseField.getPassword().length == 0;
             boolean encrypt = encryptedCheck.isSelected();
             String enteredUsername = usernameTextField.getText();
-            String enteredPassword = Arrays.toString(passwordField.getPassword());
-            String enteredPassphrase = Arrays.toString(secretPhraseField.getPassword());
+            String enteredPassword = String.valueOf(passwordField.getPassword());
+            String enteredPassphrase = String.valueOf(secretPhraseField.getPassword());
 
             if (usernameIsEmpty || passwordIsEmpty) {
                 JOptionPane.showMessageDialog(this, "You must fill in all text boxes.", "Error", JOptionPane.ERROR_MESSAGE);
