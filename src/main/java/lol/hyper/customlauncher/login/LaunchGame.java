@@ -76,6 +76,11 @@ public final class LaunchGame extends Thread {
 
         String[] launchCommand = null;
 
+        // run the TTR updater
+        TTRUpdater ttrUpdater = new TTRUpdater();
+        ttrUpdater.setVisible(true);
+        ttrUpdater.checkUpdates(manifest);
+
         switch (OSDetection.osType) {
             case "linux" -> {
                 launchCommand = new String[]{"./TTREngine"};
@@ -110,11 +115,6 @@ public final class LaunchGame extends Thread {
             new PopUpWindow(null, "Unable to determine operating system!");
             return;
         }
-
-        // run the TTR updater
-        TTRUpdater ttrUpdater = new TTRUpdater();
-        ttrUpdater.setVisible(true);
-        ttrUpdater.checkUpdates(manifest);
 
         logger.info("Launching game from " + installPath.getAbsolutePath());
 
