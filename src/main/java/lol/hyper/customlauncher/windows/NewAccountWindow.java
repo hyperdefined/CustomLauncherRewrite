@@ -25,7 +25,6 @@ import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.event.ItemEvent;
-import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
