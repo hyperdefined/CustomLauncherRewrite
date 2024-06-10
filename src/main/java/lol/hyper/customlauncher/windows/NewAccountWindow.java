@@ -25,7 +25,6 @@ import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.event.ItemEvent;
-import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -39,7 +38,7 @@ public class NewAccountWindow extends JFrame {
     /**
      * The regex for no special characters.
      */
-    private final Pattern NO_SPECIAL_CHARACTERS = Pattern.compile("^[a-zA-Z0-9_.-]*$");
+    private final Pattern NO_SPECIAL_CHARACTERS = Pattern.compile("^[a-zA-Z0-9\\s_.-]*$");
 
     /**
      * Creates a new account window.
@@ -133,8 +132,8 @@ public class NewAccountWindow extends JFrame {
             boolean secretIsEmpty = secretPhraseField.getPassword().length == 0;
             boolean encrypt = encryptedCheck.isSelected();
             String enteredUsername = usernameTextField.getText();
-            String enteredPassword = Arrays.toString(passwordField.getPassword());
-            String enteredPassphrase = Arrays.toString(secretPhraseField.getPassword());
+            String enteredPassword = String.valueOf(passwordField.getPassword());
+            String enteredPassphrase = String.valueOf(secretPhraseField.getPassword());
 
             if (usernameIsEmpty || passwordIsEmpty) {
                 JOptionPane.showMessageDialog(this, "You must fill in all text boxes.", "Error", JOptionPane.ERROR_MESSAGE);
