@@ -79,9 +79,6 @@ public class CustomLauncherRewrite {
 
         userAgent = "CustomLauncherRewrite https://github.com/hyperdefined/CustomLauncherRewrite " + version;
 
-        // set the config
-        ConfigHandler configHandler = new ConfigHandler();
-
         // load the icon
         InputStream iconStream = CustomLauncherRewrite.class.getResourceAsStream("/icon.png");
         if (iconStream != null) {
