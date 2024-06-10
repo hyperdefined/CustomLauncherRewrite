@@ -76,7 +76,9 @@ public final class LaunchGame extends Thread {
 
         String[] launchCommand = null;
 
-        // run the TTR updater
+        // Check for TTR updates after login
+        // We do this after login since TTR sends back a patch manifest to check game files after login
+        // This used to not be the case, but we follow what the real launcher does
         TTRUpdater ttrUpdater = new TTRUpdater();
         ttrUpdater.setVisible(true);
         ttrUpdater.checkUpdates(manifest);
