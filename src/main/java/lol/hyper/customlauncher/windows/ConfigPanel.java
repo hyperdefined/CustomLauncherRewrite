@@ -47,7 +47,7 @@ public class ConfigPanel extends JPanel {
     public final JCheckBox showFieldOfficeNotificationsBox;
 
     /**
-     * Creates a config window.
+     * Creates a ConfigPanel.
      */
     public ConfigPanel(ConfigHandler configHandler) {
 
