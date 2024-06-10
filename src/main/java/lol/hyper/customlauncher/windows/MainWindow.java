@@ -79,6 +79,7 @@ public final class MainWindow extends JFrame {
         DistrictTrackerPanel districtTracker = new DistrictTrackerPanel();
         ConfigPanel configWindow = new ConfigPanel(configHandler);
         ReleaseNotesPanel gameUpdatesWindow = new ReleaseNotesPanel(gameUpdateTracker);
+        AboutPanel aboutPanel = new AboutPanel();
 
         // GUI elements
         JPanel panel = new JPanel();
@@ -202,6 +203,7 @@ public final class MainWindow extends JFrame {
         tabs.add("Population", districtTracker);
         tabs.add("Game Updates", gameUpdatesWindow);
         tabs.add("Settings", configWindow);
+        tabs.add("About", aboutPanel);
         tabs.setBorder(null);
         add(tabs);
         setLocationRelativeTo(null);
