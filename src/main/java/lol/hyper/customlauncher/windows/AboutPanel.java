@@ -45,6 +45,8 @@ public class AboutPanel extends JPanel {
 
         JTextPane aboutBox = new JTextPane();
         aboutBox.setEditable(false);
+        aboutBox.getCaret().setVisible(false);
+        aboutBox.setHighlighter(null);
         aboutBox.setContentType("text/html");
 
         String text = "<html>CustomLauncherRewrite " + CustomLauncherRewrite.version +
