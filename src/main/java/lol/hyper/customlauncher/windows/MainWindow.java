@@ -44,6 +44,12 @@ public final class MainWindow extends JFrame {
      * The list of accounts used to display on the main window.
      */
     private final DefaultListModel<Account> accountsModel = new DefaultListModel<>();
+
+    /**
+     * Config instance
+     */  
+    public final ConfigHandler configHandler = new ConfigHandler();
+
     /**
      * Accounts currently loaded.
      */
@@ -69,9 +75,6 @@ public final class MainWindow extends JFrame {
         } catch (Exception exception) {
             throw new RuntimeException(exception);
         }
-
-        // Config instance
-        ConfigHandler configHandler = new ConfigHandler();
 
         // tracker stuff
         InvasionTrackerPanel invasionTracker = new InvasionTrackerPanel(configHandler);

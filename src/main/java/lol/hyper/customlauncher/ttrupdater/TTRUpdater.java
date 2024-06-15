@@ -170,7 +170,7 @@ public class TTRUpdater extends JFrame {
                 if (!localFile.exists()) {
                     logger.info("-----------------------------------------------------------------------");
                     logger.info(installPath.getAbsolutePath() + File.separator + key);
-                    logger.info("This file is keymissing and will be downloaded.");
+                    logger.info("This file is missing and will be downloaded.");
                     filesToDownload.add(key);
                     continue;
                 }
@@ -191,7 +191,7 @@ public class TTRUpdater extends JFrame {
                     
                         cacheJSON.put(key, localHash);
                     }
-                    
+
                     //Otherwise, just use the cached hash
                     else localHash = cacheJSON.getString(key);
                 } catch (Exception exception) {
