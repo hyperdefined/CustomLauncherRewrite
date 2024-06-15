@@ -80,6 +80,11 @@ public class TTRUpdater extends JFrame {
     private File installPath;
 
     /**
+     * Cache for patches/files. Stores files hashes.
+     */
+    private File cacheFile;
+
+    /**
      * Creates the TTR updater window.
      */
     public TTRUpdater() {
@@ -124,6 +129,12 @@ public class TTRUpdater extends JFrame {
     public void checkUpdates(String manifest) {
         ConfigHandler configHandler = new ConfigHandler();
         installPath = configHandler.getInstallPath();
+        cacheFile = new File (installPath, "patchCache.json");
+
+        JSONObject cacheJSON;
+        if (!cacheFile.exists()) cacheJSON = new JSONObject();
+        else cacheJSON = new JSONObject(JSONUtils.readFile(cacheFile));
+
         // don't run the updater if the folder doesn't exist
         if (!installPath.exists()) {
             JOptionPane.showMessageDialog(this, "Unable to check for TTR updates. We are unable to find your TTR install directory.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -159,7 +170,7 @@ public class TTRUpdater extends JFrame {
                 if (!localFile.exists()) {
                     logger.info("-----------------------------------------------------------------------");
                     logger.info(installPath.getAbsolutePath() + File.separator + key);
-                    logger.info("This file is missing and will be downloaded.");
+                    logger.info("This file is keymissing and will be downloaded.");
                     filesToDownload.add(key);
                     continue;
                 }
@@ -167,7 +178,22 @@ public class TTRUpdater extends JFrame {
                 // the file exists locally, check the SHA1 and compare it to TTR's
                 String localHash;
                 try {
-                    localHash = calcSHA1(localFile);
+                    //If no hash is cached, fallback to calculating it
+                    if(cacheJSON.isNull(key)) {
+                        logger.info("No hash for " + key + " found in cache."); 
+                        logger.info("Calculating SHA1 hash of " + key + " from patch manifest.");
+                        long hashStart = System.nanoTime();
+
+                        localHash = calcSHA1(localFile);
+
+                        long hashTime = TimeUnit.MILLISECONDS.convert(System.nanoTime() - hashStart, TimeUnit.NANOSECONDS);
+                        logger.info("Finished calculating SHA1 of " + key + ". Took " + hashTime + "ms.");
+                    
+                        cacheJSON.put(key, localHash);
+                    }
+                    
+                    //Otherwise, just use the cached hash
+                    else localHash = cacheJSON.getString(key);
                 } catch (Exception exception) {
                     logger.error("Unable to calculate SHA1 hash for file " + localFile.getAbsolutePath(), exception);
                     new ExceptionWindow(exception);
@@ -255,8 +281,18 @@ public class TTRUpdater extends JFrame {
                 updateStatus.setText("Finished extracting file " + fileToDownload);
                 long extractedTime = TimeUnit.MILLISECONDS.convert(System.nanoTime() - startTime, TimeUnit.NANOSECONDS);
                 logger.info("Finished extracting file " + downloadName + ". Took " + extractedTime + "ms.");
+
+                //Cache the hash from the patch manifest
+                logger.info("Caching SHA1 hash of " + fileToDownload);
+                JSONObject currentFile = patches.getJSONObject(fileToDownload);
+                String localHash = currentFile.getString("hash");
+                cacheJSON.put(fileToDownload, localHash);
+
                 currentProgress++;
                 totalUpdateStatus.setText(String.format("Progress: %d / %d", currentProgress, filesToDownload.size()));
+            
+                //Store any changes to the patch cache
+                JSONUtils.writeFile(cacheJSON, cacheFile);
             }
         } else {
             logger.info("No files need downloaded, we are up to date.");
