@@ -18,7 +18,7 @@
 
 # Check if Java is installed and the version is at least 17
 if (( $(java -version 2>&1 | grep -Po '(?<=")[0-9]{2}') >= 17 )); then
-    latest=$(ls -t CustomLauncherRewrite-*.jar | head -n1)
+    latest=$(find . -name "CustomLauncherRewrite-*.jar" -type f -printf "%T@ %p\n" | sort -nr | head -n1 | cut -d' ' -f2-)
     java -jar "$latest"
 else
     if command -v notify-send &> /dev/null; then
