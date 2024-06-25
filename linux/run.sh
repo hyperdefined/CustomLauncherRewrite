@@ -21,5 +21,11 @@ if java -version 2>&1 | grep -q "version \"17"; then
     latest=$(ls -t CustomLauncherRewrite-*.jar | head -n1)
     java -jar "$latest"
 else
-    notify-send -i stop "Please update Java JRE to version 17 or higher!"
+    if command -v notify-send &> /dev/null; then
+        notify-send -i stop "CustomLauncherRewrite" "Please update Java JRE to version 17 or higher!"
+    elif command -v zenity &> /dev/null; then
+        zenity --warning --text="Please update Java JRE to version 17 or higher!" --title="CustomLauncherRewrite"
+    else
+        echo "Please update Java JRE to version 17 or higher!"
+    fi
 fi
