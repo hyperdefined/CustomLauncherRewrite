@@ -62,24 +62,7 @@ public class ConfigHandler {
      * Initializes the config.
      */
     public ConfigHandler() {
-        createConfigFolder();
         loadConfig(true);
-    }
-
-    /**
-     * Creates the config.
-     */
-    public void createConfigFolder() {
-        File CONFIG_FOLDER = new File("config");
-        if (!CONFIG_FOLDER.exists()) {
-            try {
-                logger.info("Creating config folder at " + CONFIG_FOLDER.getAbsolutePath());
-                Files.createDirectory(CONFIG_FOLDER.toPath());
-            } catch (IOException exception) {
-                logger.error("Cannot create config folder!", exception);
-                new ExceptionWindow(exception);
-            }
-        }
     }
 
     /**
