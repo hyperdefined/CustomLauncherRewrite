@@ -132,6 +132,21 @@ public class CustomLauncherRewrite {
             }
         }
 
+        File configFolder = new File("config");
+        try {
+            if (!configFolder.exists()) {
+                logger.info("Config folder is missing, making folder at " + configFolder.getAbsolutePath());
+                if (configFolder.mkdir()) {
+                    logger.info("Config folder created!");
+                } else {
+                    logger.warn("Unable to create config folder!");
+                }
+            }
+        } catch (Exception exception) {
+            logger.error("Unable to create config folder!", exception);
+            new ExceptionWindow(exception);
+        }
+
         // load ttr game updates
         ReleaseNotesTracker gameUpdateTracker = new ReleaseNotesTracker();
         gameUpdateTracker.getAllReleaseNotes();
