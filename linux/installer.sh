@@ -48,8 +48,8 @@ fi
 
 # Symlink on desktop (e.g. desktop shortcut)
 ln -s /usr/share/applications/customlauncherrewrite.desktop "$DESKTOP_DIR/customlauncherrewrite.desktop"
-sudo chmod +x "$DESKTOP_DIR/customlauncherrewrite.desktop"
 sudo chown "$USER":"$USER" "$DESKTOP_DIR/customlauncherrewrite.desktop"
+chmod +x "$DESKTOP_DIR/customlauncherrewrite.desktop"
 
 # Make sure the user owns the folder to run
 echo "Setting correct perms to install location..."
