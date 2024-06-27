@@ -27,15 +27,23 @@ else
   keep_ttr_files=true
 fi
 
+# Read the install location
+INSTALL_DIR=$(head -n1 ~/.customlauncherrewrite-location)
+
+# Make sure the location is valid
+if [ -z "$INSTALL_DIR" ]; then
+  echo "Installation location cannot be determined! Using default..."
+  INSTALL_DIR="/opt/CustomLauncherRewrite"
+fi
+
 if $keep_ttr_files; then
-  echo "Removing /opt/CustomLauncherRewrite but keeping TTR files..."
-  # remove everything but ttr-files folder
-  sudo find /opt/CustomLauncherRewrite/* -type d -not -name 'ttr-files' -exec rm -rf {} +
-  sudo rm /opt/CustomLauncherRewrite/CustomLauncherRewrite*
-  sudo rm /opt/CustomLauncherRewrite/run.sh
+  echo "Removing $INSTALL_DIR but keeping TTR files..."
+  # Remove everything but ttr-files folder
+  sudo find "$INSTALL_DIR" -mindepth 1 -not -path "./ttr-files*" -delete
 else
-  echo "Removing /opt/CustomLauncherRewrite..."
-  sudo rm -r /opt/CustomLauncherRewrite
+  # Remove everything
+  echo "Removing $INSTALL_DIR..."
+  sudo rm -r "$INSTALL_DIR"
 fi
 
 # Find the user's desktop
@@ -50,5 +58,6 @@ echo "Removing the desktop entry..."
 sudo rm "$DESKTOP_DIR/customlauncherrewrite.desktop"
 rm ~/.local/share/icons/customlauncherrewrite-icon.png
 sudo rm /usr/share/applications/customlauncherrewrite.desktop
+rm ~/.customlauncherrewrite-location
 
 echo "CustomLauncherRewrite has been uninstalled!"
