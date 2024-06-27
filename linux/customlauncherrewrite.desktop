@@ -2,7 +2,7 @@
 Type=Application
 Name=CustomLauncherRewrite
 Comment=An all purpose custom TTR launcher.
-Path=/opt/CustomLauncherRewrite
+Path={INSTALL_DIR}
 Icon=customlauncherrewrite-icon.png
 Exec=bash run.sh
 Terminal=false

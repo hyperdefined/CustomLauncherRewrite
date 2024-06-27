@@ -19,17 +19,20 @@
 # taken from https://gist.github.com/steinwaywhw/a4cd19cda655b8249d908261a62687f8
 DOWNLOADURL=$(curl -s https://api.github.com/repos/hyperdefined/CustomLauncherRewrite/releases/latest | grep "browser_download_url"  | grep "tar.gz" | cut -d '"' -f 4)
 OUTPUTFILE=${DOWNLOADURL##*/}
-INSTALLDIR=/opt/CustomLauncherRewrite #In case support for a custom install directory is added
 
 echo "Downloading latest version from ""$DOWNLOADURL"""
-
 wget -q -P /tmp/ "$DOWNLOADURL"
 
+echo "CustomLauncherRewrite will install itself to /opt/CustomLauncherRewrite by default. If you want to specify a different directory, enter one below."
+echo "If you want to leave it default, just press enter."
+read -r -p "Enter the installation directory (will create folder): " USER_INSTALLDIR < /dev/tty
+INSTALLDIR=${USER_INSTALLDIR:-/opt/CustomLauncherRewrite}
 echo "Creating $INSTALLDIR...".
-sudo mkdir -p $INSTALLDIR
+sudo mkdir -p "$INSTALLDIR"
+echo "$INSTALLDIR" > ~/.customlauncherrewrite-location
 
 echo "Extracting ""$OUTPUTFILE""..."
-sudo tar -xf /tmp/"$OUTPUTFILE" -C $INSTALLDIR
+sudo tar -xf /tmp/"$OUTPUTFILE" -C "$INSTALLDIR"
 
 echo "Downloading desktop entry..."
 # Create the icons directory just in case it doesn't exist
@@ -37,6 +40,7 @@ echo "Downloading desktop entry..."
 mkdir -p ~/.local/share/icons/
 wget -q -O ~/.local/share/icons/customlauncherrewrite-icon.png https://raw.githubusercontent.com/hyperdefined/CustomLauncherRewrite/master/src/main/resources/icon.png
 sudo wget -q -P /usr/share/applications https://raw.githubusercontent.com/hyperdefined/CustomLauncherRewrite/master/linux/customlauncherrewrite.desktop
+sudo sed -i "s|{INSTALL_DIR}|$INSTALLDIR|g" /usr/share/applications/customlauncherrewrite.desktop
 
 # Find the user's desktop
 if command -v xdg-user-dir >/dev/null 2>&1; then
@@ -53,8 +57,8 @@ chmod +x "$DESKTOP_DIR/customlauncherrewrite.desktop"
 
 # Make sure the user owns the folder to run
 echo "Setting correct perms to install location..."
-sudo chown -R "$USER":"$USER" $INSTALLDIR
-sudo chmod -R 755 $INSTALLDIR
+sudo chown -R "$USER":"$USER" "$INSTALLDIR"
+sudo chmod -R 755 "$INSTALLDIR"
 
 # Delete any temp files
 rm -rf /tmp/CustomLauncherRewrite*
