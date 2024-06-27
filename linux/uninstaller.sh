@@ -36,12 +36,15 @@ if [ -z "$INSTALL_DIR" ]; then
   INSTALL_DIR="/opt/CustomLauncherRewrite"
 fi
 
+# Delete all files in the root of the install location
+sudo find "$INSTALL_DIR" -maxdepth 1 -type f -delete
+
 if $keep_ttr_files; then
   echo "Removing $INSTALL_DIR but keeping TTR files..."
-  # Remove everything but ttr-files folder
-  sudo find "$INSTALL_DIR" -mindepth 1 -not -path "./ttr-files*" -delete
+  # Remove all folders but ttr-files folder
+  sudo find "$INSTALL_DIR" -mindepth 1 -maxdepth 1 -type d -not -name "ttr-files" -exec rm -rf {} +
 else
-  # Remove everything
+  # Remove the entire directory
   echo "Removing $INSTALL_DIR..."
   sudo rm -r "$INSTALL_DIR"
 fi
