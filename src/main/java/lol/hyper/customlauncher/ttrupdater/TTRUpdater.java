@@ -78,6 +78,10 @@ public class TTRUpdater extends JFrame {
      * TTR install path.
      */
     private File installPath;
+    /**
+     * Used to determine if the game was updated successfully.
+     */
+    private boolean status = false;
 
     /**
      * Creates the TTR updater window.
@@ -197,6 +201,7 @@ public class TTRUpdater extends JFrame {
                 logger.error("Unable to create temp folder!");
                 new PopUpWindow(this, "Unable to create temp folder!");
                 dispose();
+                return;
             }
 
             logger.info(filesToDownload.size() + " file(s) are going to be downloaded.");
@@ -236,6 +241,7 @@ public class TTRUpdater extends JFrame {
                     logger.error("Unable to download file " + downloadName);
                     new PopUpWindow(this, "Unable to download file " + downloadName + ".");
                     dispose();
+                    return;
                 }
                 long downloadTime = TimeUnit.MILLISECONDS.convert(System.nanoTime() - downloadStart, TimeUnit.NANOSECONDS);
                 logger.info("Finished downloading " + downloadOutput.getAbsolutePath() + ". Took " + downloadTime + "ms.");
@@ -251,6 +257,7 @@ public class TTRUpdater extends JFrame {
                     logger.error("Unable to extract file " + downloadName, exception);
                     new ExceptionWindow(exception);
                     dispose();
+                    return;
                 }
                 updateStatus.setText("Finished extracting file " + fileToDownload);
                 long extractedTime = TimeUnit.MILLISECONDS.convert(System.nanoTime() - startTime, TimeUnit.NANOSECONDS);
@@ -262,7 +269,17 @@ public class TTRUpdater extends JFrame {
             logger.info("No files need downloaded, we are up to date.");
         }
         logger.info("Finished checking for TTR updates!");
+        status = true;
         dispose();
+    }
+
+    /**
+     * Returns the status of the updater.
+     *
+     * @return True if it was successful, false if it failed.
+     */
+    public boolean status() {
+        return status;
     }
 
     /**

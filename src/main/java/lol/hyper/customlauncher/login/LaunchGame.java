@@ -83,6 +83,13 @@ public final class LaunchGame extends Thread {
         ttrUpdater.setVisible(true);
         ttrUpdater.checkUpdates(manifest);
 
+        // If the updater failed, don't launch the game
+        if (!ttrUpdater.status()) {
+            PopUpWindow popUpWindow = new PopUpWindow(null, "There was an issue in updating the game.");
+            popUpWindow.dispose();
+            return;
+        }
+
         switch (OSDetection.osType) {
             case "linux" -> {
                 launchCommand = new String[]{"./TTREngine"};
