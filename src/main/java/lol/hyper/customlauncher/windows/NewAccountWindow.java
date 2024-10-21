@@ -166,8 +166,8 @@ public class NewAccountWindow extends JFrame {
             JOptionPane.showMessageDialog(this, enteredUsername + " was saved!");
             dispose();
             logger.info("Saved new account!");
-            logger.info("Username: " + enteredUsername);
-            logger.info("Encrypted: " + encrypt);
+            logger.info("Username: {}", enteredUsername);
+            logger.info("Encrypted: {}", encrypt);
         });
 
         add(panel);

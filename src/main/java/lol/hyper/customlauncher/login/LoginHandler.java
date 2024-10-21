@@ -89,7 +89,7 @@ public class LoginHandler {
             return;
         }
 
-        logger.info("Attempt: " + attempts);
+        logger.info("Attempt: {}", attempts);
         logger.info("Received login response:");
         // get the login status
         String status = receivedRequest.get("success");
@@ -141,7 +141,7 @@ public class LoginHandler {
             }
             default -> // TTR sent back a weird status that we don't know about
             {
-                logger.error("Weird login response: " + status);
+                logger.error("Weird login response: {}", status);
                 logger.info(receivedRequest);
                 new PopUpWindow(null, "TTR sent back a weird response, or we got an invalid response.\nCheck the log for more information.");
             }
@@ -193,7 +193,7 @@ public class LoginHandler {
             }
             else {
                 receivedDetails.put(x, null);
-                logger.warn("Value of '" + x + "' in login response was null.");
+                logger.warn("Value of '{}' in login response was null.", x);
             }
         }
 

@@ -74,8 +74,8 @@ public class CustomLauncherRewrite {
         logger = LogManager.getLogger(CustomLauncherRewrite.class);
 
         logger.info("Program is starting.");
-        logger.info("Running version " + version);
-        logger.info("Current directory " + System.getProperty("user.dir"));
+        logger.info("Running version {}", version);
+        logger.info("Current directory {}", System.getProperty("user.dir"));
 
         userAgent = "CustomLauncherRewrite https://github.com/hyperdefined/CustomLauncherRewrite " + version;
 
@@ -100,10 +100,10 @@ public class CustomLauncherRewrite {
                 try {
                     Files.delete(new File("CustomLauncherRewrite-" + oldVersion + ".exe").toPath());
                 } catch (IOException exception) {
-                    logger.error("Unable to delete old version " + oldVersion);
+                    logger.error("Unable to delete old version {}", oldVersion);
                     new ExceptionWindow(exception);
                 }
-                logger.info("Deleting old version " + oldVersion);
+                logger.info("Deleting old version {}", oldVersion);
             }
         }
 
@@ -118,7 +118,7 @@ public class CustomLauncherRewrite {
                     try {
                         Files.delete(currentFile.toPath());
                     } catch (IOException exception) {
-                        logger.error("Unable to delete file " + currentFile.getAbsolutePath(), exception);
+                        logger.error("Unable to delete file {}", currentFile.getAbsolutePath(), exception);
                         new ExceptionWindow(exception);
                     }
                 }
@@ -135,7 +135,7 @@ public class CustomLauncherRewrite {
         File configFolder = new File("config");
         try {
             if (!configFolder.exists()) {
-                logger.info("Config folder is missing, making folder at " + configFolder.getAbsolutePath());
+                logger.info("Config folder is missing, making folder at {}", configFolder.getAbsolutePath());
                 if (configFolder.mkdir()) {
                     logger.info("Config folder created!");
                 } else {

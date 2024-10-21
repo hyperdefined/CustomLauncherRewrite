@@ -65,7 +65,7 @@ public class FirstLaunch {
             new PopUpWindow(null, "I am unable to find your TTR install location. You'll have to manually copy things over that you wish to keep.");
             return;
         }
-        logger.info("Found existing TTR install at " + windowsInstall);
+        logger.info("Found existing Windows TTR install at {}", windowsInstall);
         copyFiles(windowsInstall);
     }
 
@@ -79,7 +79,7 @@ public class FirstLaunch {
             new PopUpWindow(null, "I am unable to find your TTR install location. You'll have to manually copy things over that you wish to keep.");
             return;
         }
-        logger.info("Found existing TTR install at " + linuxInstall);
+        logger.info("Found existing Linux TTR install at {}", linuxInstall);
         copyFiles(linuxInstall);
     }
 

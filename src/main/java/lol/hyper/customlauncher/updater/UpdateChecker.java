@@ -83,7 +83,7 @@ public class UpdateChecker {
             new PopUpWindow(null, "It looks like you're running a version not present on GitHub.\nThis is the case if you're running in a dev environment!");
             return;
         }
-        logger.info("Latest version is " + latestVersion);
+        logger.info("Latest version is {}", latestVersion);
         int behind = api.getBuildsBehind(current);
         StringBuilder updates = new StringBuilder();
         // if the user is 1 or more build behind, ask to update
@@ -100,7 +100,7 @@ public class UpdateChecker {
                 updates.append("----------------------------------------\nVersion: ").append(tag).append("\n").append(api.getReleaseByTag(tag).getReleaseNotes()).append("\n");
             }
             textArea.setText(updates.toString());
-            logger.info("A new version is available! Version: " + latestVersion);
+            logger.info("A new version is available! Version: {}", latestVersion);
 
             int dialogResult = JOptionPane.showConfirmDialog(null, scrollPane, "Updates", JOptionPane.YES_NO_OPTION);
             if (dialogResult == JOptionPane.YES_OPTION) {
@@ -120,7 +120,7 @@ public class UpdateChecker {
     private void downloadLatestVersion() {
         if (api.getAllReleases().isEmpty()) {
             logger.error("Unable to look for updates!");
-            logger.error("getAllReleases() is empty: " + (api.getAllReleases().isEmpty()));
+            logger.error("getAllReleases() is empty: {}", api.getAllReleases().isEmpty());
             new PopUpWindow(null, "Unable to look for updates! Check the log for more information.");
             return;
         }
@@ -142,17 +142,17 @@ public class UpdateChecker {
                 }
             }
             if (finalDownload == null) {
-                logger.error("Unable to find Windows file " + newVersionName + " in assets!");
+                logger.error("Unable to find Windows file {} in assets!", newVersionName);
                 new PopUpWindow(null, "Unable to find Windows file " + newVersionName + " in assets!");
                 return;
             }
 
-            logger.info("Downloading new version from " + finalDownload);
+            logger.info("Downloading new version from {}", finalDownload);
             File output = new File(newVersionName);
             try {
                 FileUtils.copyURLToFile(finalDownload.toURL(), output);
             } catch (IOException exception) {
-                logger.error("Unable to download file from " + finalDownload, exception);
+                logger.error("Unable to download file from {}", finalDownload, exception);
                 new ExceptionWindow(exception);
                 return;
             }
@@ -175,27 +175,27 @@ public class UpdateChecker {
                 }
             }
             if (finalDownload == null) {
-                logger.error("Unable to find Windows file " + newVersionName + " in assets!");
+                logger.error("Unable to find Windows file {} in assets!", newVersionName);
                 new PopUpWindow(null, "Unable to find Linux file " + newVersionName + " in assets!");
                 return;
             }
 
-            logger.info("Downloading new version from " + finalDownload);
+            logger.info("Downloading new version from {}", finalDownload);
             File output = new File(newVersionName);
             try {
                 FileUtils.copyURLToFile(finalDownload.toURL(), output);
             } catch (IOException exception) {
-                logger.error("Unable to download file from " + finalDownload, exception);
+                logger.error("Unable to download file from {}", finalDownload, exception);
                 new ExceptionWindow(exception);
                 return;
             }
 
-            logger.info("Extracting " + output + " to " + System.getProperty("user.dir"));
+            logger.info("Extracting {} to {}", output, System.getProperty("user.dir"));
             decompress(newVersionName);
             try {
                 FileUtils.delete(output);
             } catch (IOException exception) {
-                logger.error("Unable to delete file " + output, exception);
+                logger.error("Unable to delete file {}", output, exception);
                 new ExceptionWindow(exception);
             }
         }
@@ -257,7 +257,7 @@ public class UpdateChecker {
                 }
             }
         } catch (IOException exception) {
-            logger.error("Unable to decompress file " + downloadedFile, exception);
+            logger.error("Unable to decompress file {}", downloadedFile, exception);
             new ExceptionWindow(exception);
         }
     }

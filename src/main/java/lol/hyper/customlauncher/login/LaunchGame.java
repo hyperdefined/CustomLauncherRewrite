@@ -96,22 +96,22 @@ public final class LaunchGame extends Thread {
                 // Make sure it's executable before running
                 File fullPath = new File(installPath, "TTREngine");
                 if (!fullPath.canExecute()) {
-                    logger.info(fullPath.getAbsolutePath() + " is not executable. Attempting to set it.");
+                    logger.info("{} is not executable. Attempting to set it.", fullPath.getAbsolutePath());
                     boolean result;
                     try {
                         result = fullPath.setExecutable(true);
                     } catch (SecurityException exception) {
-                        logger.error("Unable to set " + fullPath.getAbsolutePath() + " as an executable!", exception);
+                        logger.error("Unable to set {} as an executable!", fullPath.getAbsolutePath(), exception);
                         new ExceptionWindow(exception);
                         return;
                     }
 
                     if (!result) {
-                        logger.error("Unable to set " + fullPath.getAbsolutePath() + " as an executable!");
+                        logger.error("Unable to set {} as an executable!", fullPath.getAbsolutePath());
                         new PopUpWindow(null, "Unable to set " + fullPath.getAbsolutePath() + " as an executable!\nMake sure this file is executable!");
                         return;
                     } else {
-                        logger.info(fullPath.getAbsolutePath() + " was set executable successfully!");
+                        logger.info("{} was set executable successfully!", fullPath.getAbsolutePath());
                     }
                 }
             }
@@ -125,7 +125,7 @@ public final class LaunchGame extends Thread {
             return;
         }
 
-        logger.info("Launching game from " + installPath.getAbsolutePath());
+        logger.info("Launching game from {}", installPath.getAbsolutePath());
 
         // dirty little trick to redirect the output
         // the game freezes if you don't do this

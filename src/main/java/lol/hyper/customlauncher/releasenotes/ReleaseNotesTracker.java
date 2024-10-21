@@ -56,7 +56,7 @@ public class ReleaseNotesTracker {
             GameUpdate newUpdate = new GameUpdate(id, version, date);
             allGameUpdates.add(newUpdate);
         }
-        logger.info("Found " + updateList.length() + " total game updates");
+        logger.info("Found {} total game updates", updateList.length());
     }
 
     /**

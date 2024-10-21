@@ -45,15 +45,15 @@ public class OSDetection {
         if (osType == null) {
             new PopUpWindow(null, "We are unable to detect your operating system. Please report this to the GitHub page.\nInclude the log file please.");
             logger.error("Unable to determine operating system! Are we running something not supported?");
-            logger.info("OS: " + System.getProperty("os.name") + " " + System.getProperty("sun.arch.data.model") + "bit");
-            logger.info("Arch: " + System.getProperty("os.arch"));
-            logger.info("Java: " + System.getProperty("java.vm.version") + " (" + System.getProperty("java.vendor") + ")");
+            logger.info("OS: {} {}bit", System.getProperty("os.name"), System.getProperty("sun.arch.data.model"));
+            logger.info("Arch: {}", System.getProperty("os.arch"));
+            logger.info("Java: {} ({})", System.getProperty("java.vm.version"), System.getProperty("java.vendor"));
             System.exit(1);
         }
-        logger.info("OS type detected as " + osType);
-        logger.info("Actual OS: " + System.getProperty("os.name") + " " + System.getProperty("sun.arch.data.model") + "bit");
-        logger.info("Arch: " + System.getProperty("os.arch"));
-        logger.info("Java: " + System.getProperty("java.vm.version") + " (" + System.getProperty("java.vendor") + ")");
+        logger.info("OS type detected as {}", osType);
+        logger.info("Actual OS: {} {}bit", System.getProperty("os.name"), System.getProperty("sun.arch.data.model"));
+        logger.info("Arch: {}", System.getProperty("os.arch"));
+        logger.info("Java: {} ({})", System.getProperty("java.vm.version"), System.getProperty("java.vendor"));
     }
 
     /**

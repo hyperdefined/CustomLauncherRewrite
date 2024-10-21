@@ -112,7 +112,7 @@ public class Accounts {
                 }
 
                 if (accountType == null) {
-                    logger.warn("Unknown account version " + version + " for account " + username);
+                    logger.warn("Unknown account version {} for account {}", version, username);
                     logger.warn("Account data was modified? Skipping this account");
                     new PopUpWindow(null, "The account " + username + " has an invalid version number: " + version + ". This means that the account data was modified. This account will not be loaded.");
                     continue;
@@ -149,7 +149,7 @@ public class Accounts {
             // this will convert the old accounts system over
             writeAccounts();
         }
-        logger.info("Loaded " + accounts.size() + " accounts");
+        logger.info("Loaded {} accounts", accounts.size());
         logger.info(accounts);
     }
 

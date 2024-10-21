@@ -246,7 +246,7 @@ public class InvasionTrackerPanel extends JPanel {
                 if (configHandler.showCogInvasionNotifications()) {
                     showNotification(newInvasion, true);
                 }
-                logger.info("Tracking new invasion for " + district + ". Cogs: " + cogsDefeated + "/" + cogsTotal + ". ETA: " + newInvasion.endTime);
+                logger.info("Tracking new invasion for {}. Cogs: {}/{}. ETA: {}", district, cogsDefeated, cogsTotal, newInvasion.endTime);
             } else {
                 // if we already have it saved, update the information that we have saved already
                 // we want to update the total cogs defeated and the end time
@@ -255,7 +255,7 @@ public class InvasionTrackerPanel extends JPanel {
                 // ignore mega invasion cog count
                 if (!temp.getBoolean("MegaInvasion")) {
                     int cogsDefeated = temp.getInt("CurrentProgress");
-                    logger.info("Updating invasion details for " + district + ". Cogs: " + tempInv.getCogsDefeated() + " -> " + cogsDefeated + ". ETA: " + tempInv.endTime);
+                    logger.info("Updating invasion details for {}. Cogs: {} -> {}. ETA: {}", district, tempInv.getCogsDefeated(), cogsDefeated, tempInv.endTime);
                     tempInv.updateCogsDefeated(cogsDefeated);
                     tempInv.endTime = Instant.parse(temp.getString("EstimatedCompletion")).atZone(ZoneId.systemDefault());
                 }
@@ -278,7 +278,7 @@ public class InvasionTrackerPanel extends JPanel {
                     showNotification(pair.getValue(), false);
                 }
                 it.remove();
-                logger.info("Removing saved invasion for " + district + ". Tracked for " + savedDuration);
+                logger.info("Removing saved invasion for {}. Tracked for {}", district, savedDuration);
             }
         }
         runs++;

@@ -79,7 +79,7 @@ public class DeleteAccountWindow extends JFrame {
                     mainWindow.refreshAccountList();
                     JOptionPane.showMessageDialog(DeleteAccountWindow.this, account.username() + " was deleted!");
                     dispose();
-                    logger.info("Deleting account " + account.username());
+                    logger.info("Deleting account {}", account.username());
                 }
             }
         });

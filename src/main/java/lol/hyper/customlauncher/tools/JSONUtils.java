@@ -24,6 +24,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
@@ -43,12 +45,12 @@ public class JSONUtils {
      * @return The data from the file.
      */
     public static String readFile(File file) {
-        logger.info("Reading file: " + file.getAbsolutePath());
+        logger.info("Reading file: {}", file.getAbsolutePath());
         byte[] encoded = new byte[0];
         try {
             encoded = Files.readAllBytes(file.toPath());
         } catch (IOException exception) {
-            logger.error("Unable to read file " + file, exception);
+            logger.error("Unable to read file {}", file, exception);
             new ExceptionWindow(exception);
         }
         return new String(encoded, StandardCharsets.UTF_8);
@@ -61,13 +63,13 @@ public class JSONUtils {
      * @param file The file to write to.
      */
     public static void writeFile(Object data, File file) {
-        logger.info("Writing file: " + file.getAbsolutePath());
+        logger.info("Writing file: {}", file.getAbsolutePath());
         try {
             FileWriter writer = new FileWriter(file);
             writer.write(data.toString());
             writer.close();
         } catch (IOException exception) {
-            logger.error("Unable to write file " + file, exception);
+            logger.error("Unable to write file {}", file, exception);
             new ExceptionWindow(exception);
         }
     }
@@ -79,10 +81,10 @@ public class JSONUtils {
      * @return The response JSONObject. Returns null if there was some issue.
      */
     public static JSONObject requestJSON(String url) {
-        logger.info("Fetching url: " + url);
+        logger.info("Fetching url: {}", url);
         String rawJSON;
         try {
-            URLConnection conn = new URL(url).openConnection();
+            URLConnection conn = new URI(url).toURL().openConnection();
             conn.setRequestProperty("User-Agent", CustomLauncherRewrite.userAgent);
             conn.connect();
 
@@ -91,14 +93,13 @@ public class JSONUtils {
             rawJSON = reader.lines().collect(Collectors.joining(System.lineSeparator()));
             reader.close();
 
-        } catch (IOException exception) {
-            logger.error("Unable to read URL " + url, exception);
+        } catch (Exception exception) {
+            logger.error("Unable to read URL {}", url, exception);
             new ExceptionWindow(exception);
             return null;
         }
-
         if (rawJSON.isEmpty()) {
-            logger.error("Read JSON from " + url + " returned an empty string!");
+            logger.error("Read JSON from {} returned an empty string!", url);
             return null;
         }
         return new JSONObject(rawJSON);
@@ -111,10 +112,10 @@ public class JSONUtils {
      * @return The response JSONArray. Returns null if there was some issue.
      */
     public static JSONArray requestJSONArray(String url) {
-        logger.info("Fetching url: " + url);
+        logger.info("Fetching url: {}", url);
         String rawJSON;
         try {
-            URLConnection conn = new URL(url).openConnection();
+            URLConnection conn = new URI(url).toURL().openConnection();
             conn.setRequestProperty("User-Agent", CustomLauncherRewrite.userAgent);
             conn.connect();
 
@@ -123,14 +124,14 @@ public class JSONUtils {
             rawJSON = reader.lines().collect(Collectors.joining(System.lineSeparator()));
             reader.close();
 
-        } catch (IOException exception) {
-            logger.error("Unable to read URL " + url, exception);
+        } catch (Exception exception) {
+            logger.error("Unable to read URL {}", url, exception);
             new ExceptionWindow(exception);
             return null;
         }
 
         if (rawJSON.isEmpty()) {
-            logger.error("Read JSON from " + url + " returned an empty string!");
+            logger.error("Read JSON from {} returned an empty string!", url);
             return null;
         }
         return new JSONArray(rawJSON);

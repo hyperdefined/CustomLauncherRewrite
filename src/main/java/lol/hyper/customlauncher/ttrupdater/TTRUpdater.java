@@ -39,6 +39,7 @@ import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 import java.awt.*;
 import java.io.*;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -162,7 +163,7 @@ public class TTRUpdater extends JFrame {
                 updateStatus.setText("Checking file " + localFile.getName());
                 if (!localFile.exists()) {
                     logger.info("-----------------------------------------------------------------------");
-                    logger.info(installPath.getAbsolutePath() + File.separator + key);
+                    logger.info("{}{}{}", installPath.getAbsolutePath(), File.separator, key);
                     logger.info("This file is missing and will be downloaded.");
                     filesToDownload.add(key);
                     continue;
@@ -173,16 +174,16 @@ public class TTRUpdater extends JFrame {
                 try {
                     localHash = calcSHA1(localFile);
                 } catch (Exception exception) {
-                    logger.error("Unable to calculate SHA1 hash for file " + localFile.getAbsolutePath(), exception);
+                    logger.error("Unable to calculate SHA1 hash for file {}", localFile.getAbsolutePath(), exception);
                     new ExceptionWindow(exception);
                     dispose();
                     return;
                 }
                 logger.info("-----------------------------------------------------------------------");
-                logger.info(installPath.getAbsolutePath() + File.separator + key);
-                logger.info("Local hash: " + localHash.toLowerCase(Locale.ENGLISH));
-                logger.info("Expected hash: " + onlineHash);
-                logger.info("Type: " + OSDetection.osType);
+                logger.info("{}{}{}", installPath.getAbsolutePath(), File.separator, key);
+                logger.info("Local hash: {}", localHash.toLowerCase(Locale.ENGLISH));
+                logger.info("Expected hash: {}", onlineHash);
+                logger.info("Type: {}", OSDetection.osType);
                 if (!localHash.equalsIgnoreCase(onlineHash)) {
                     filesToDownload.add(key);
                 }
@@ -194,7 +195,7 @@ public class TTRUpdater extends JFrame {
         // we store files we need to download in filesToDownload
         // if there are files in that list, download them
         int currentProgress = 0;
-        if (filesToDownload.size() > 0) {
+        if (!filesToDownload.isEmpty()) {
             totalUpdateStatus.setText(String.format("Progress: %d / %d", currentProgress, filesToDownload.size()));
             File tempFolder = new File("temp");
             if (!tempFolder.exists() && !tempFolder.mkdirs()) {
@@ -204,7 +205,7 @@ public class TTRUpdater extends JFrame {
                 return;
             }
 
-            logger.info(filesToDownload.size() + " file(s) are going to be downloaded.");
+            logger.info("{} file(s) are going to be downloaded.", filesToDownload.size());
             logger.info(filesToDownload);
 
             progressBar.setValue(0); // reset
@@ -217,7 +218,7 @@ public class TTRUpdater extends JFrame {
                 JSONObject file = patches.getJSONObject(fileToDownload);
                 String downloadName = file.getString("dl");
 
-                logger.info("Downloading " + PATCHES_URL_DL + downloadName);
+                logger.info("Downloading " + PATCHES_URL_DL + "{}", downloadName);
                 updateStatus.setText("Downloading " + downloadName);
                 progressBar.setVisible(true);
                 progressBar.setValue(progressBar.getValue() + 1);
@@ -225,9 +226,9 @@ public class TTRUpdater extends JFrame {
                 // build the download URL
                 URL downloadURL;
                 try {
-                    downloadURL = new URL(PATCHES_URL_DL + downloadName);
-                } catch (MalformedURLException exception) {
-                    logger.error("Invalid URL " + PATCHES_URL_DL + downloadName);
+                    downloadURL = new URI(PATCHES_URL_DL + downloadName).toURL();
+                } catch (Exception exception) {
+                    logger.error("Invalid URL " + PATCHES_URL_DL + "{}", downloadName);
                     new ExceptionWindow(exception);
                     dispose();
                     return;
@@ -238,30 +239,30 @@ public class TTRUpdater extends JFrame {
                 long downloadStart = System.nanoTime();
                 // download the file
                 if (!saveFile(downloadURL, downloadOutput)) {
-                    logger.error("Unable to download file " + downloadName);
+                    logger.error("Unable to download file {}", downloadName);
                     new PopUpWindow(this, "Unable to download file " + downloadName + ".");
                     dispose();
                     return;
                 }
                 long downloadTime = TimeUnit.MILLISECONDS.convert(System.nanoTime() - downloadStart, TimeUnit.NANOSECONDS);
-                logger.info("Finished downloading " + downloadOutput.getAbsolutePath() + ". Took " + downloadTime + "ms.");
+                logger.info("Finished downloading {}. Took {}ms.", downloadOutput.getAbsolutePath(), downloadTime);
                 updateStatus.setText("Finished downloading " + downloadName);
 
                 long startTime = System.nanoTime();
-                logger.info("Extracting " + downloadOutput.getAbsolutePath() + " to " + installPath + File.separator + fileToDownload);
+                logger.info("Extracting {} to {}{}{}", downloadOutput.getAbsolutePath(), installPath, File.separator, fileToDownload);
                 updateStatus.setText("Extracting " + downloadOutput + " to " + fileToDownload);
                 try {
                     // extract the file to the new location
                     decompressBz2(downloadName, fileToDownload);
                 } catch (IOException exception) {
-                    logger.error("Unable to extract file " + downloadName, exception);
+                    logger.error("Unable to extract file {}", downloadName, exception);
                     new ExceptionWindow(exception);
                     dispose();
                     return;
                 }
                 updateStatus.setText("Finished extracting file " + fileToDownload);
                 long extractedTime = TimeUnit.MILLISECONDS.convert(System.nanoTime() - startTime, TimeUnit.NANOSECONDS);
-                logger.info("Finished extracting file " + downloadName + ". Took " + extractedTime + "ms.");
+                logger.info("Finished extracting file {}. Took {}ms.", downloadName, extractedTime);
                 currentProgress++;
                 totalUpdateStatus.setText(String.format("Progress: %d / %d", currentProgress, filesToDownload.size()));
             }

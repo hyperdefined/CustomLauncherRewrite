@@ -165,9 +165,9 @@ public final class MainWindow extends JFrame {
                         return;
                     }
                     Account selectedAccount = accountList.getSelectedValue();
-                    logger.info("Using account: " + selectedAccount.username());
+                    logger.info("Using account: {}", selectedAccount.username());
                     Account.Type accountType = selectedAccount.accountType();
-                    logger.info("Account type is " + accountType.toInt());
+                    logger.info("Account type is {}", accountType.toInt());
                     switch (accountType) {
                         case ENCRYPTED, LEGACY_ENCRYPTED -> SwingUtilities.invokeLater(() -> {
                             SecretPrompt secretPrompt = new SecretPrompt(accounts, selectedAccount);
@@ -190,7 +190,7 @@ public final class MainWindow extends JFrame {
         WindowListener listener = new WindowAdapter() {
             public void windowClosing(WindowEvent event) {
                 Frame frame = (Frame) event.getSource();
-                logger.info("Closing " + frame.getTitle());
+                logger.info("Closing {}", frame.getTitle());
             }
         };
 
@@ -232,11 +232,11 @@ public final class MainWindow extends JFrame {
         }
 
         boolean status = ttrStatusJSON.getBoolean("open");
-        logger.info("Game status: " + status);
+        logger.info("Game status: {}", status);
         // ttr is down, show the banner if there is one
         if (ttrStatusJSON.has("banner")) {
             String banner = ttrStatusJSON.getString("banner");
-            logger.info("TTR's banner returned: " + banner);
+            logger.info("TTR's banner returned: {}", banner);
             new PopUpWindow(this, banner);
         }
         return status;

@@ -151,7 +151,7 @@ public class ConfigHandler {
                 JSONUtils.writeFile(configJSON, CONFIG_FILE);
             }
             if (configJSON.getInt("version") != CONFIG_VERSION) {
-                logger.warn("Config version is not correct! Somethings will not work correctly. Version should be " + CONFIG_VERSION + " but read " + configJSON.getInt("version"));
+                logger.warn("Config version is not correct! Somethings will not work correctly. Version should be " + CONFIG_VERSION + " but read {}", configJSON.getInt("version"));
             }
         }
         setDefaults();
@@ -163,7 +163,7 @@ public class ConfigHandler {
         if (!(installPath.exists())) {
             try {
                 Files.createDirectory(installPath.toPath());
-                logger.info("Creating TTR install folder at " + installPath);
+                logger.info("Creating TTR install folder at {}", installPath);
                 new FirstLaunch();
             } catch (IOException exception) {
                 logger.error("Cannot create TTR folder!", exception);
@@ -172,10 +172,10 @@ public class ConfigHandler {
         }
 
         if (log) {
-            logger.info("Config version: " + configJSON.getInt("version"));
-            logger.info("showInvasionNotifications: " + invasionNotifications);
-            logger.info("showFieldOfficeNotifications: " + fieldOfficeNotifications);
-            logger.info("ttrInstallLocation: " + installPath.getAbsolutePath());
+            logger.info("Config version: {}", configJSON.getInt("version"));
+            logger.info("showInvasionNotifications: {}", invasionNotifications);
+            logger.info("showFieldOfficeNotifications: {}", fieldOfficeNotifications);
+            logger.info("ttrInstallLocation: {}", installPath.getAbsolutePath());
         }
     }
 }
