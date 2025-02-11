@@ -40,7 +40,7 @@ public class FirstLaunch {
         new PopUpWindow(null, "Welcome to CustomLauncherRewrite! I am first going to detect for an existing TTR install.\n I will copy screenshots, settings, and resource packs.");
         if (OSDetection.isLinux()) {
             copyLinuxInstall();
-        } else if (OSDetection.isWindows()){
+        } else if (OSDetection.isWindows()) {
             copyWindowsInstall();
         }
     }
@@ -96,12 +96,15 @@ public class FirstLaunch {
         File newInstall = new File("ttr-files");
         try {
             if (settings.exists()) {
+                logger.info("Copying {} --> {}{}settings.json", settings.getAbsolutePath(), newInstall.getAbsolutePath(), File.separator);
                 FileUtils.copyFileToDirectory(settings, newInstall);
             }
             if (resourcePacks.exists()) {
+                logger.info("Copying {} --> {}{}resources", resourcePacks.getAbsolutePath(), newInstall.getAbsolutePath(), File.separator);
                 FileUtils.copyDirectory(resourcePacks, new File(newInstall, "resources"));
             }
             if (screenshots.exists()) {
+                logger.info("Copying {} --> {}{}screenshots", screenshots.getAbsolutePath(), newInstall.getAbsolutePath(), File.separator);
                 FileUtils.copyDirectory(screenshots, new File(newInstall, "screenshots"));
             }
         } catch (IOException exception) {
