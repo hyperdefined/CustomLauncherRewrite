@@ -58,6 +58,8 @@ public class PopUpWindow extends JDialog {
         buttonPanel.add(okButton);
         frame.add(buttonPanel, BorderLayout.SOUTH);
 
+        this.setResizable(false);
+
         setContentPane(frame);
 
         pack();
