@@ -28,6 +28,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.stream.Collectors;
@@ -37,6 +40,10 @@ public class JSONUtils {
      * The JSONUtils logger.
      */
     private static final Logger logger = LogManager.getLogger(JSONUtils.class);
+    /**
+     * HttpClient for requests.
+     */
+    private static final HttpClient client = HttpClient.newHttpClient();
 
     /**
      * Read contents of a file.
@@ -81,28 +88,27 @@ public class JSONUtils {
      * @return The response JSONObject. Returns null if there was some issue.
      */
     public static JSONObject requestJSON(String url) {
-        logger.info("Fetching url: {}", url);
-        String rawJSON;
+        logger.info("Fetching JSONObject from {}", url);
         try {
-            URLConnection conn = new URI(url).toURL().openConnection();
-            conn.setRequestProperty("User-Agent", CustomLauncherRewrite.userAgent);
-            conn.connect();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .header("Accept", "application/json")
+                    .header("User-Agent", CustomLauncherRewrite.getUserAgent())
+                    .GET()
+                    .build();
 
-            InputStream in = conn.getInputStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-            rawJSON = reader.lines().collect(Collectors.joining(System.lineSeparator()));
-            reader.close();
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
+            if (response.statusCode() == 200) {
+                return new JSONObject(response.body());
+            } else {
+                logger.error("HTTP status code {} for {} in getting JSONObject", response.statusCode(), url);
+                return null;
+            }
         } catch (Exception exception) {
-            logger.error("Unable to read URL {}", url, exception);
-            new ExceptionWindow(exception);
+            logger.error("Unable to request JSONObject", exception);
             return null;
         }
-        if (rawJSON.isEmpty()) {
-            logger.error("Read JSON from {} returned an empty string!", url);
-            return null;
-        }
-        return new JSONObject(rawJSON);
     }
 
     /**
@@ -112,28 +118,26 @@ public class JSONUtils {
      * @return The response JSONArray. Returns null if there was some issue.
      */
     public static JSONArray requestJSONArray(String url) {
-        logger.info("Fetching url: {}", url);
-        String rawJSON;
+        logger.info("Fetching JSONArray from {}", url);
         try {
-            URLConnection conn = new URI(url).toURL().openConnection();
-            conn.setRequestProperty("User-Agent", CustomLauncherRewrite.userAgent);
-            conn.connect();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .header("Accept", "application/json")
+                    .header("User-Agent", CustomLauncherRewrite.getUserAgent())
+                    .GET()
+                    .build();
 
-            InputStream in = conn.getInputStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-            rawJSON = reader.lines().collect(Collectors.joining(System.lineSeparator()));
-            reader.close();
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
+            if (response.statusCode() == 200) {
+                return new JSONArray(response.body());
+            } else {
+                logger.error("HTTP status code {} for {} in getting JSONArray", response.statusCode(), url);
+                return null;
+            }
         } catch (Exception exception) {
-            logger.error("Unable to read URL {}", url, exception);
-            new ExceptionWindow(exception);
+            logger.error("Unable to request JSONArray", exception);
             return null;
         }
-
-        if (rawJSON.isEmpty()) {
-            logger.error("Read JSON from {} returned an empty string!", url);
-            return null;
-        }
-        return new JSONArray(rawJSON);
     }
 }

@@ -39,20 +39,20 @@ public class CustomLauncherRewrite {
     /**
      * Stores the version, loaded from 'project.properties.'
      */
-    public static String version;
+    private static String version;
     /**
      * The main logger.
      */
-    public static Logger logger;
+    private static Logger logger;
     /**
      * The program's icon.
      */
-    public static Image icon;
+    private static Image icon;
     /**
      * The user agent used for requests.
      * This is set here since it includes the version.
      */
-    public static String userAgent;
+    private static String userAgent;
 
     /**
      * The entry point for the program.
@@ -67,7 +67,7 @@ public class CustomLauncherRewrite {
         try {
             properties.load(CustomLauncherRewrite.class.getClassLoader().getResourceAsStream("project.properties"));
         } catch (IOException exception) {
-            exception.printStackTrace();
+            logger.error(exception);
         }
         version = properties.getProperty("version");
         // log some basic info
@@ -156,5 +156,32 @@ public class CustomLauncherRewrite {
             MainWindow frame = new MainWindow(gameUpdateTracker);
             frame.setVisible(true);
         });
+    }
+
+    /**
+     * Get the user agent for requests.
+     *
+     * @return The user agent.
+     */
+    public static String getUserAgent() {
+        return userAgent;
+    }
+
+    /**
+     * Get the icon for setting up windows.
+     *
+     * @return The icon.
+     */
+    public static Image getIcon() {
+        return icon;
+    }
+
+    /**
+     * Get the version of the program.
+     *
+     * @return The version.
+     */
+    public static String getVersion() {
+        return version;
     }
 }

@@ -232,7 +232,7 @@ public class InvasionTrackerPanel extends JPanel {
         }
 
         String notificationText = invasion.getDistrict() + " - " + invasion.getCogType().replace("\u0003", "");
-        Notify notify = Notify.Companion.create().title(messageTitle).text(notificationText).theme(Theme.Companion.getDefaultDark()).position(Position.BOTTOM_RIGHT).hideAfter(5000).image(CustomLauncherRewrite.icon);
+        Notify notify = Notify.Companion.create().title(messageTitle).text(notificationText).theme(Theme.Companion.getDefaultDark()).position(Position.BOTTOM_RIGHT).hideAfter(5000).image(CustomLauncherRewrite.getIcon());
         notify.show();
     }
 

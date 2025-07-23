@@ -195,7 +195,7 @@ public class FieldOfficeTrackerPanel extends JPanel {
         }
 
         String notificationText = zonesToStreets.get(fieldOffice.getArea()) + " - " + fieldOffice.getDifficulty() + " star(s)";
-        Notify notify = Notify.Companion.create().title(messageTitle).text(notificationText).theme(Theme.Companion.getDefaultDark()).position(Position.BOTTOM_RIGHT).hideAfter(5000).image(CustomLauncherRewrite.icon);
+        Notify notify = Notify.Companion.create().title(messageTitle).text(notificationText).theme(Theme.Companion.getDefaultDark()).position(Position.BOTTOM_RIGHT).hideAfter(5000).image(CustomLauncherRewrite.getIcon());
         notify.show();
     }
 

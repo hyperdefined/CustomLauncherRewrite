@@ -209,13 +209,13 @@ public class UpdateChecker {
     private void launchNewVersion(String newVersion) {
         ProcessBuilder pb = new ProcessBuilder();
         if (OSDetection.isWindows()) {
-            String[] windowsCommand = {"cmd", "/c", "CustomLauncherRewrite-" + newVersion + ".exe", "--remove-old", CustomLauncherRewrite.version};
+            String[] windowsCommand = {"cmd", "/c", "CustomLauncherRewrite-" + newVersion + ".exe", "--remove-old", CustomLauncherRewrite.getVersion()};
             pb.command(windowsCommand);
         } else {
             pb.command("./run.sh");
 
             // delete the old version
-            File current = new File(System.getProperty("user.dir") + File.separator + "CustomLauncherRewrite-" + CustomLauncherRewrite.version + ".jar");
+            File current = new File(System.getProperty("user.dir") + File.separator + "CustomLauncherRewrite-" + CustomLauncherRewrite.getVersion() + ".jar");
             try {
                 Files.delete(current.toPath());
             } catch (IOException exception) {

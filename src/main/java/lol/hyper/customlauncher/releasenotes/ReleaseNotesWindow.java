@@ -36,6 +36,8 @@ package lol.hyper.customlauncher.releasenotes;
 
 import lol.hyper.customlauncher.CustomLauncherRewrite;
 import lol.hyper.customlauncher.tools.JSONUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
 import javax.swing.*;
@@ -60,9 +62,10 @@ public class ReleaseNotesWindow extends JFrame {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception exception) {
-            exception.printStackTrace();
+            Logger logger = LogManager.getLogger(this);
+            logger.error(exception);
         }
-        setIconImage(CustomLauncherRewrite.icon);
+        setIconImage(CustomLauncherRewrite.getIcon());
         setPreferredSize(new Dimension(600, 500));
 
         textArea = new JTextPane();

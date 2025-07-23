@@ -43,7 +43,7 @@ public class ReleaseNotesTracker {
      */
     public void getAllReleaseNotes() {
         logger.info("Fetching game updates...");
-        JSONArray updateList = JSONUtils.requestJSONArray("https://www.toontownrewritten.com/api/releasenotes/");
+        JSONArray updateList = JSONUtils.requestJSONArray("https://www.toontownrewritten.com/api/releasenotes");
         if (updateList == null) {
             logger.warn("Unable to fetch game updates! API returned null on response.");
             return;

@@ -46,9 +46,9 @@ public class DeleteAccountWindow extends JFrame {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception exception) {
-            exception.printStackTrace();
+            logger.error(exception);
         }
-        setIconImage(CustomLauncherRewrite.icon);
+        setIconImage(CustomLauncherRewrite.getIcon());
 
         // GUI elements
         JPanel panel = new JPanel();

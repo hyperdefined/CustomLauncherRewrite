@@ -21,21 +21,18 @@ import lol.hyper.customlauncher.CustomLauncherRewrite;
 import lol.hyper.customlauncher.login.windows.TwoFactorAuth;
 import lol.hyper.customlauncher.tools.ExceptionWindow;
 import lol.hyper.customlauncher.tools.PopUpWindow;
-import org.apache.hc.client5.http.classic.methods.HttpPost;
-import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
-import org.apache.hc.client5.http.impl.classic.HttpClients;
-import org.apache.hc.core5.http.NameValuePair;
-import org.apache.hc.core5.http.ParseException;
-import org.apache.hc.core5.http.io.entity.EntityUtils;
-import org.apache.hc.core5.http.message.BasicNameValuePair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
 import javax.swing.*;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URLEncoder;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -57,6 +54,10 @@ public class LoginHandler {
      * The current login request details.
      */
     private final Map<String, String> loginRequest;
+    /**
+     * HttpClient for requests.
+     */
+    private final HttpClient client = HttpClient.newHttpClient();
 
     /**
      * Starts the login process.
@@ -155,54 +156,45 @@ public class LoginHandler {
      * @return The request that is sent back.
      */
     private Map<String, String> sendHttpRequest(Map<String, String> loginRequest) {
-        HttpPost post = new HttpPost(REQUEST_URL);
-        post.setHeader("User-Agent", CustomLauncherRewrite.userAgent);
-        post.setHeader("Content-type", "application/x-www-form-urlencoded");
-
-        List<NameValuePair> urlParameters = new ArrayList<>();
+        StringBuilder formBody = new StringBuilder();
         for (Map.Entry<String, String> entry : loginRequest.entrySet()) {
-            urlParameters.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
+            if (!formBody.isEmpty()) {
+                formBody.append("&");
+            }
+            formBody.append(URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8));
+            formBody.append("=");
+            formBody.append(URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8));
         }
 
-        post.setEntity(new UrlEncodedFormEntity(urlParameters));
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(REQUEST_URL))
+                .header("User-Agent", CustomLauncherRewrite.getUserAgent())
+                .header("Content-Type", "application/x-www-form-urlencoded")
+                .POST(HttpRequest.BodyPublishers.ofString(formBody.toString()))
+                .build();
 
-        CloseableHttpClient httpClient = HttpClients.createDefault();
-        CloseableHttpResponse response;
+        HttpResponse<String> response;
         try {
-            response = httpClient.execute(post);
-        } catch (IOException exception) {
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (IOException | InterruptedException exception) {
             logger.error("Unable to send login request!", exception);
             new ExceptionWindow(exception);
             return Collections.emptyMap();
         }
 
-        String responseData;
-        try {
-            responseData = EntityUtils.toString(response.getEntity());
-        } catch (IOException | ParseException exception) {
-            logger.error("Unable to send login request!", exception);
-            new ExceptionWindow(exception);
-            return Collections.emptyMap();
-        }
+        String responseData = response.body();
         JSONObject responseJSON = new JSONObject(responseData);
-        HashMap<String, String> receivedDetails = new HashMap<>();
+        Map<String, String> receivedDetails = new HashMap<>();
 
-        for (String x : responseJSON.keySet()) {
-            if (!responseJSON.isNull(x)) {
-                receivedDetails.put(x, responseJSON.getString(x));
-            }
-            else {
-                receivedDetails.put(x, null);
-                logger.warn("Value of '{}' in login response was null.", x);
+        for (String key : responseJSON.keySet()) {
+            if (!responseJSON.isNull(key)) {
+                receivedDetails.put(key, responseJSON.getString(key));
+            } else {
+                receivedDetails.put(key, null);
+                logger.warn("Value of '{}' in login response was null.", key);
             }
         }
 
-        try {
-            httpClient.close();
-            response.close();
-        } catch (IOException exception) {
-            throw new RuntimeException(exception);
-        }
         return receivedDetails;
     }
 }

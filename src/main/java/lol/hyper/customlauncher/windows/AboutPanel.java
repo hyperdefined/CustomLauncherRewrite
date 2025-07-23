@@ -49,7 +49,7 @@ public class AboutPanel extends JPanel {
         aboutBox.setHighlighter(null);
         aboutBox.setContentType("text/html");
 
-        String text = "<html>CustomLauncherRewrite " + CustomLauncherRewrite.version +
+        String text = "<html>CustomLauncherRewrite " + CustomLauncherRewrite.getVersion() +
                 "<br><hr>" + "CustomLauncherRewrite is an all purpose launcher for Toontown Rewritten. Created and maintained by hyperdefined.<br><br>" +
                 "Contributors:<br>" + "- <a href=\"https://github.com/ahmouse15\">ahmouse15</a>" +
                 "</html>";

@@ -25,11 +25,6 @@ import lol.hyper.customlauncher.tools.OSDetection;
 import lol.hyper.customlauncher.tools.PopUpWindow;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.apache.commons.io.FileUtils;
-import org.apache.hc.client5.http.classic.methods.HttpGet;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
-import org.apache.hc.client5.http.impl.classic.HttpClients;
-import org.apache.hc.core5.http.HttpEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
@@ -38,9 +33,11 @@ import javax.swing.*;
 import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 import java.awt.*;
 import java.io.*;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -83,6 +80,10 @@ public class TTRUpdater extends JFrame {
      * Used to determine if the game was updated successfully.
      */
     private boolean status = false;
+    /**
+     * HttpClient for requests.
+     */
+    private final HttpClient client = HttpClient.newHttpClient();
 
     /**
      * Creates the TTR updater window.
@@ -99,7 +100,7 @@ public class TTRUpdater extends JFrame {
             logger.error(exception);
         }
 
-        setIconImage(CustomLauncherRewrite.icon);
+        setIconImage(CustomLauncherRewrite.getIcon());
 
         // GUI elements
         JPanel panel = new JPanel();
@@ -339,32 +340,39 @@ public class TTRUpdater extends JFrame {
     private boolean saveFile(URL downloadURL, File downloadOutput) {
         boolean isSucceed = true;
 
-        CloseableHttpClient httpClient = HttpClients.createDefault();
-
-        HttpGet httpGet = new HttpGet(downloadURL.toString());
-        httpGet.addHeader("User-Agent", CustomLauncherRewrite.userAgent);
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(downloadURL.toString()))
+                .header("User-Agent", CustomLauncherRewrite.getUserAgent())
+                .GET()
+                .build();
 
         try {
-            CloseableHttpResponse httpResponse = httpClient.execute(httpGet);
-            HttpEntity imageEntity = httpResponse.getEntity();
-            progressBar.setMaximum(100);
-            final FileOutputStream output = FileUtils.openOutputStream(downloadOutput);
-            try {
-                final byte[] buffer = new byte[4046];
+            HttpResponse<InputStream> response = client.send(request, HttpResponse.BodyHandlers.ofInputStream());
+
+            long contentLength = response.headers()
+                    .firstValueAsLong("Content-Length")
+                    .orElse(-1);
+
+            try (InputStream input = response.body();
+                 FileOutputStream output = new FileOutputStream(downloadOutput)) {
+
+                byte[] buffer = new byte[4096];
                 long count = 0;
                 int n;
-                while (-1 != (n = imageEntity.getContent().read(buffer))) {
+
+                progressBar.setMaximum(100);
+
+                while ((n = input.read(buffer)) != -1) {
                     output.write(buffer, 0, n);
                     count += n;
-                    progressBar.setValue((int) (count * 100 / imageEntity.getContentLength()));
+                    if (contentLength > 0) {
+                        int percent = (int) (count * 100 / contentLength);
+                        progressBar.setValue(percent);
+                    }
                 }
-                output.close();
-            } catch (IOException exception) {
-                logger.error("Unable to save file!", exception);
-                isSucceed = false;
             }
-        } catch (IOException exception) {
-            logger.error("Unable to save file!", exception);
+        } catch (IOException | InterruptedException e) {
+            logger.error("Unable to save file!", e);
             isSucceed = false;
         }
 

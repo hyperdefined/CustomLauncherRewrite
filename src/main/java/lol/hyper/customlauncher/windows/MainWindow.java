@@ -59,15 +59,15 @@ public final class MainWindow extends JFrame {
      * @param gameUpdateTracker The game update tracker that was created before this.
      */
     public MainWindow(ReleaseNotesTracker gameUpdateTracker) {
-        setTitle("CLR " + CustomLauncherRewrite.version);
+        setTitle("CLR " + CustomLauncherRewrite.getVersion());
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
-        setIconImage(CustomLauncherRewrite.icon);
+        setIconImage(CustomLauncherRewrite.getIcon());
 
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception exception) {
-            throw new RuntimeException(exception);
+            logger.error(exception);
         }
 
         // Config instance
