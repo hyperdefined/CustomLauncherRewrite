@@ -5,7 +5,7 @@
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/hyperdefined/CustomLauncherRewrite) [![Downloads](https://img.shields.io/github/downloads/hyperdefined/CustomLauncherRewrite/total?logo=github)](https://github.com/hyperdefined/CustomLauncherRewrite/releases) [![badge](https://img.shields.io/badge/made%20with-love%20&%20fluff-red)](https://www.gnu.org/licenses/gpl-3.0) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![wakatime](https://wakatime.com/badge/user/992a7647-176a-477c-8086-e1abfba87ff4/project/c164aaf8-23ad-4bbc-9807-44eb3db04263.svg)](https://wakatime.com/badge/user/992a7647-176a-477c-8086-e1abfba87ff4/project/c164aaf8-23ad-4bbc-9807-44eb3db04263)
 </div>
 
-CustomLauncherRewrite is an all purpose launcher for Toontown Rewritten. This launcher is based on my old one, [Multitoon Helper](https://github.com/hyperdefined/multitoon-helper). This one is built from the ground up and includes many features!
+CustomLauncherRewrite is an all-purpose launcher for Toontown Rewritten. This launcher is based on my old one, [Multitoon Helper](https://github.com/hyperdefined/multitoon-helper). This one is built from the ground up and includes many features!
 
 ## Features
 ### Account Saving
