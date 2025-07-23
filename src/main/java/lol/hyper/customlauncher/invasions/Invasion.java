@@ -36,7 +36,7 @@ public class Invasion implements Comparable<Invasion> {
     /**
      * The end time reported by the API.
      */
-    public ZonedDateTime endTime;
+    private ZonedDateTime endTime;
     /**
      * The current cog defeated count.
      */
@@ -49,6 +49,10 @@ public class Invasion implements Comparable<Invasion> {
      * Stores when we started to track this invasion locally.
      */
     private final long cacheStartTime;
+    /**
+     * How fast the invasion is being defeated.
+     */
+    private double defeatRate;
 
     /**
      * Creates a new invasion.
@@ -100,6 +104,42 @@ public class Invasion implements Comparable<Invasion> {
      */
     public String getDistrict() {
         return district;
+    }
+
+    /**
+     * Get the defeat rate.
+     *
+     * @return The defeat rate.
+     */
+    public double getDefeatRate() {
+        return defeatRate;
+    }
+
+    /**
+     * Set the defeat rate.
+     *
+     * @param defeatRate The new defeat rate.
+     */
+    public void setDefeatRate(double defeatRate) {
+        this.defeatRate = defeatRate;
+    }
+
+    /**
+     * Get when the invasion will end roughly.
+     *
+     * @return When it ends.
+     */
+    public ZonedDateTime getEndTime() {
+        return endTime;
+    }
+
+    /**
+     * Set when the invasion will end.
+     *
+     * @param endTime The end time.
+     */
+    public void setEndTime(ZonedDateTime endTime) {
+        this.endTime = endTime;
     }
 
     /**

@@ -25,6 +25,7 @@ import lol.hyper.customlauncher.CustomLauncherRewrite;
 import lol.hyper.customlauncher.tools.JSONUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.swing.Timer;
@@ -36,6 +37,7 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.*;
@@ -48,7 +50,15 @@ public class InvasionTrackerPanel extends JPanel {
     /**
      * All current invasions saved locally.
      */
-    private final Map<String, Invasion> invasions = new HashMap<>();
+    private final Map<Integer, Invasion> invasions = new HashMap<>();
+    /**
+     * Cog ID map.
+     */
+    private final Map<Integer, String> cogMap = new HashMap<>();
+    /**
+     * District ID map.
+     */
+    private final Map<Integer, String> districtMap = new HashMap<>();
     /**
      * The table for displaying invasions.
      */
@@ -121,6 +131,23 @@ public class InvasionTrackerPanel extends JPanel {
         timer.setDelay(500);
         timer.start();
 
+        // fetch ToonHQ's data
+        logger.info("Fetching ToonHQ district data...");
+        JSONArray districts = JSONUtils.requestJSONArray("https://toonhq.org/api/districts/");
+        logger.info("Fetching ToonHQ cog data...");
+        JSONArray cogs = JSONUtils.requestJSONArray("https://toonhq.org/api/cogs/");
+
+        if (districts == null || cogs == null) {
+            logger.info("No districts or cogs found");
+            logger.info("Cog data: {}", cogs);
+            logger.info("District data: {}", districts);
+            isDown = true;
+            return;
+        }
+
+        updateDistrictMap(districts);
+        updateCogMap(cogs);
+
         // start the timer for reading the API
         startInvasionRefresh();
     }
@@ -132,7 +159,7 @@ public class InvasionTrackerPanel extends JPanel {
         invasionTableModel.setRowCount(0);
         // create a separate list of all the invasions
         List<Invasion> sortedInvasions = new ArrayList<>();
-        for (Map.Entry<String, Invasion> entry : invasions.entrySet()) {
+        for (Map.Entry<Integer, Invasion> entry : invasions.entrySet()) {
             sortedInvasions.add(entry.getValue());
         }
         // sort this new list alphabetically
@@ -149,7 +176,7 @@ public class InvasionTrackerPanel extends JPanel {
                 timeLeft = "Mega Invasion";
             } else {
                 cogs = invasion.getCogsDefeated() + "/" + invasion.getCogsTotal();
-                timeLeftSeconds = ChronoUnit.SECONDS.between(LocalDateTime.now(), invasion.endTime);
+                timeLeftSeconds = ChronoUnit.SECONDS.between(LocalDateTime.now(), invasion.getEndTime());
                 if (timeLeftSeconds <= 0) {
                     timeLeft = "Ending soon...";
                 } else {
@@ -213,7 +240,7 @@ public class InvasionTrackerPanel extends JPanel {
      * Make the request and handle the information it returns.
      */
     private void makeRequest() {
-        String INVASION_URL = "https://api.toon.plus/invasions";
+        String INVASION_URL = "https://toonhq.org/api/invasions/1/";
         JSONObject lastResult = JSONUtils.requestJSON(INVASION_URL);
 
         // if the request failed, stop the task
@@ -225,63 +252,111 @@ public class InvasionTrackerPanel extends JPanel {
 
         isDown = false; // make sure to set this to false since we can read the API
 
-        // iterate through each of the invasions (separate JSONs)
-        Iterator<String> keys = lastResult.keys();
-        while (keys.hasNext()) {
-            String key = keys.next();
-            // each key is stored as district/cogType
-            String district = key.substring(0, key.indexOf('/'));
-            // if we do not have that invasion stored, create a new invasion object
-            // and add it to the list
-            if (!invasions.containsKey(district)) {
-                JSONObject temp = lastResult.getJSONObject(key);
-                String cogType = temp.getString("Type");
-                int cogsDefeated = temp.getInt("CurrentProgress");
-                int cogsTotal = temp.getInt("MaxProgress");
-                boolean megaInvasion = temp.getBoolean("MegaInvasion");
-                Invasion newInvasion = new Invasion(district, cogType, cogsTotal, megaInvasion);
+        // iterate through each of the invasions
+        JSONArray invasionsArray = lastResult.getJSONArray("invasions");
+        for (int i = 0; i < invasionsArray.length(); i++) {
+            JSONObject invasion = invasionsArray.getJSONObject(i);
+            int districtId = invasion.getInt("district");
+            String districtName = districtMap.get(districtId);
+            String cogType = cogMap.get(invasion.getInt("cog"));
+            int cogsTotal = invasion.getInt("total");
+            int cogsDefeated = invasion.getInt("defeated");
+            double defeatRate = invasion.getDouble("defeat_rate");
+
+            // this is a new invasion that we are not tracking currently
+            if (!invasions.containsKey(districtId)) {
+                // store the information about it
+                Invasion newInvasion = new Invasion(districtName, cogType, cogsTotal, false);
                 newInvasion.updateCogsDefeated(cogsDefeated);
-                newInvasion.endTime = Instant.parse(temp.getString("EstimatedCompletion")).atZone(ZoneId.systemDefault());
-                invasions.put(district, newInvasion);
+                newInvasion.setDefeatRate(defeatRate);
+                invasions.put(districtId, newInvasion);
+
+                // show notification for it
                 if (configHandler.showCogInvasionNotifications()) {
                     showNotification(newInvasion, true);
                 }
-                logger.info("Tracking new invasion for {}. Cogs: {}/{}. ETA: {}", district, cogsDefeated, cogsTotal, newInvasion.endTime);
+
+                // calculate how long it has left (estimate)
+                double secondsRemaining = (cogsTotal - cogsDefeated) / defeatRate;
+                ZonedDateTime estimatedEnd = Instant.now().plusSeconds((long) secondsRemaining).atZone(ZoneId.systemDefault());
+                newInvasion.setEndTime(estimatedEnd);
+
+                logger.info("Tracking new invasion for {}. Cogs: {}/{}", districtName, cogsDefeated, cogsTotal);
             } else {
-                // if we already have it saved, update the information that we have saved already
-                // we want to update the total cogs defeated and the end time
-                Invasion tempInv = invasions.get(district);
-                JSONObject temp = lastResult.getJSONObject(key);
-                // ignore mega invasion cog count
-                if (!temp.getBoolean("MegaInvasion")) {
-                    int cogsDefeated = temp.getInt("CurrentProgress");
-                    logger.info("Updating invasion details for {}. Cogs: {} -> {}. ETA: {}", district, tempInv.getCogsDefeated(), cogsDefeated, tempInv.endTime);
-                    tempInv.updateCogsDefeated(cogsDefeated);
-                    tempInv.endTime = Instant.parse(temp.getString("EstimatedCompletion")).atZone(ZoneId.systemDefault());
-                }
+                // update the information for the invasion
+                Invasion tempInv = invasions.get(districtId);
+                tempInv.updateCogsDefeated(cogsDefeated);
+                tempInv.setDefeatRate(defeatRate);
+
+                // calculate how long it has left (estimate)
+                double secondsRemaining = (cogsTotal - cogsDefeated) / defeatRate;
+                ZonedDateTime estimatedEnd = Instant.now().plusSeconds((long) secondsRemaining).atZone(ZoneId.systemDefault());
+                tempInv.setEndTime(estimatedEnd);
+
+                logger.info("Updating invasion for {}. Cogs: {}/{}", districtName, cogsDefeated, cogsTotal);
             }
         }
 
         // we look at the current invasion list and see if any invasions
         // are not on the invasion JSON (aka that invasion is gone)
-        Iterator<Map.Entry<String, Invasion>> it = invasions.entrySet().iterator();
+        Iterator<Map.Entry<Integer, Invasion>> it = invasions.entrySet().iterator();
         while (it.hasNext()) {
-            Map.Entry<String, Invasion> pair = it.next();
-            String cogType = pair.getValue().getCogType();
-            String district = pair.getKey();
-            // district/cog name
-            String key = district + "/" + cogType;
-            // if the invasion no longer exists on the API, remove it from our list
-            if (!lastResult.has(key)) {
+            Map.Entry<Integer, Invasion> pair = it.next();
+            boolean isOnApi = false;
+            for (int i = 0; i < invasionsArray.length(); i++) {
+                JSONObject invasion = invasionsArray.getJSONObject(i);
+                int districtId = invasion.getInt("district");
+                if (pair.getKey().equals(districtId)) {
+                    isOnApi = true;
+                }
+            }
+
+            if (!isOnApi) {
                 String savedDuration = (System.nanoTime() - pair.getValue().getCacheStartTime()) / 1000000000 + " seconds.";
                 if (configHandler.showCogInvasionNotifications()) {
                     showNotification(pair.getValue(), false);
                 }
                 it.remove();
-                logger.info("Removing saved invasion for {}. Tracked for {}", district, savedDuration);
+                logger.info("Removing saved invasion for {}. Tracked for {}", pair.getKey(), savedDuration);
             }
         }
         runs++;
         lastFetched = System.currentTimeMillis();
+    }
+
+    /**
+     * Update the district ID map from ToonHQ.
+     *
+     * @param data The JSON data from their API.
+     */
+    private void updateDistrictMap(JSONArray data) {
+        for (int i = 0; i < data.length(); i++) {
+            JSONObject district = data.getJSONObject(i);
+            int gameId = district.getInt("game");
+            // make sure we pull TTR districts (id = 1)
+            if (gameId == 1) {
+                int id = district.getInt("id");
+                String name = district.getString("name");
+                districtMap.put(id, name);
+            }
+        }
+    }
+
+    /**
+     * Update the cog ID map from ToonHQ.
+     *
+     * @param data The JSON data from their API.
+     */
+    private void updateCogMap(JSONArray data) {
+        for (int i = 0; i < data.length(); i++) {
+            JSONObject cog = data.getJSONObject(i);
+            int gameId = cog.getInt("game");
+            // make sure we pull TTR cogs (id = 1)
+            if (gameId == 1) {
+                int id = cog.getInt("id");
+                String name = cog.getString("name");
+                cogMap.put(id, name);
+            }
+        }
     }
 }
