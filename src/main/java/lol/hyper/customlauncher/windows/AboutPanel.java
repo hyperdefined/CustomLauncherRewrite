@@ -34,7 +34,6 @@ public class AboutPanel extends JPanel {
      */
     private final Logger logger = LogManager.getLogger(this);
 
-
     /**
      * Creates an AboutPanel.
      */

@@ -24,7 +24,6 @@ import lol.hyper.customlauncher.tools.JSONUtils;
 import lol.hyper.customlauncher.tools.OSDetection;
 import lol.hyper.customlauncher.tools.PopUpWindow;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
-import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
@@ -49,17 +48,9 @@ import java.util.concurrent.TimeUnit;
 public class TTRUpdater extends JFrame {
 
     /**
-     * The URL used for checking files. Not sure why this is a "txt" file if it returns a JSON.
-     */
-    public final String PATCHES_BASE_URL = "https://cdn.toontownrewritten.com";
-    /**
-     * The URL used for storing downloads. This is the root URL, so pass in the file name.
-     */
-    public final String PATCHES_URL_DL = "https://download.toontownrewritten.com/patches/";
-    /**
      * The TTRUpdater logger.
      */
-    public final Logger logger = LogManager.getLogger(this);
+    private final Logger logger = LogManager.getLogger(this);
     /**
      * The main progress bar on the window.
      */
@@ -139,7 +130,8 @@ public class TTRUpdater extends JFrame {
 
         logger.info("Starting TTRUpdater");
         // read the patches
-        String patchManifest = PATCHES_BASE_URL + manifest;
+        String patchesManifestRootUrl = "https://cdn.toontownrewritten.com";
+        String patchManifest = patchesManifestRootUrl + manifest;
         JSONObject patches = JSONUtils.requestJSON(patchManifest);
         if (patches == null) {
             logger.error("patchesmanifest.txt returned null!");
@@ -159,7 +151,7 @@ public class TTRUpdater extends JFrame {
             // get the list of OS's the file is for
             List<String> only = currentFile.getJSONArray("only").toList().stream().map(object -> Objects.toString(object, null)).toList();
             // if we are running the OS the file is for, check it
-            if (only.contains(OSDetection.osType)) {
+            if (only.contains(OSDetection.getOsType())) {
                 File localFile = new File(installPath, key);
                 updateStatus.setText("Checking file " + localFile.getName());
                 if (!localFile.exists()) {
@@ -184,7 +176,7 @@ public class TTRUpdater extends JFrame {
                 logger.info("{}{}{}", installPath.getAbsolutePath(), File.separator, key);
                 logger.info("Local hash: {}", localHash.toLowerCase(Locale.ENGLISH));
                 logger.info("Expected hash: {}", onlineHash);
-                logger.info("Type: {}", OSDetection.osType);
+                logger.info("Type: {}", OSDetection.getOsType());
                 if (!localHash.equalsIgnoreCase(onlineHash)) {
                     filesToDownload.add(key);
                 }
@@ -219,7 +211,8 @@ public class TTRUpdater extends JFrame {
                 JSONObject file = patches.getJSONObject(fileToDownload);
                 String downloadName = file.getString("dl");
 
-                logger.info("Downloading " + PATCHES_URL_DL + "{}", downloadName);
+                String patchesRootUrl = "https://download.toontownrewritten.com/patches/";
+                logger.info("Downloading {}{}", patchesRootUrl, downloadName);
                 updateStatus.setText("Downloading " + downloadName);
                 progressBar.setVisible(true);
                 progressBar.setValue(progressBar.getValue() + 1);
@@ -227,9 +220,9 @@ public class TTRUpdater extends JFrame {
                 // build the download URL
                 URL downloadURL;
                 try {
-                    downloadURL = new URI(PATCHES_URL_DL + downloadName).toURL();
+                    downloadURL = new URI(patchesRootUrl + downloadName).toURL();
                 } catch (Exception exception) {
-                    logger.error("Invalid URL " + PATCHES_URL_DL + "{}", downloadName);
+                    logger.error("Invalid URL " + patchesRootUrl + "{}", downloadName);
                     new ExceptionWindow(exception);
                     dispose();
                     return;

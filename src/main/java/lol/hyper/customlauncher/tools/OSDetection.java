@@ -26,7 +26,7 @@ public class OSDetection {
     /**
      * Stores what OS we are running. Can be win32/win64 or linux.
      */
-    public static String osType = null;
+    private static String osType = null;
 
     static {
         if (SystemUtils.IS_OS_WINDOWS) {
@@ -72,5 +72,14 @@ public class OSDetection {
      */
     public static boolean isWindows() {
         return osType.contains("win");
+    }
+
+    /**
+     * Get the OS type.
+     *
+     * @return The OS type: (linux/win32/win64)
+     */
+    public static String getOsType() {
+        return osType;
     }
 }

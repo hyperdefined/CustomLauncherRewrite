@@ -17,6 +17,9 @@
 
 package lol.hyper.customlauncher.tools;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -25,20 +28,21 @@ public class ExceptionWindow extends JFrame {
     /**
      * Create a popup window for exceptions.
      *
-     * @param exception The exception to display on the window.
+     * @param exceptionToDisplay The exception to display on the window.
      */
-    public ExceptionWindow(Exception exception) {
+    public ExceptionWindow(Exception exceptionToDisplay) {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception exception2) {
-            exception2.printStackTrace();
+        } catch (Exception exception) {
+            Logger logger = LogManager.getLogger(this);
+            logger.error(exception);
         }
         // taken from https://stackoverflow.com/a/14011536
-        StringBuilder sb = new StringBuilder(exception.getClass().getCanonicalName());
+        StringBuilder sb = new StringBuilder(exceptionToDisplay.getClass().getCanonicalName());
         sb.append(": ");
-        sb.append(exception.getMessage());
+        sb.append(exceptionToDisplay.getMessage());
         sb.append("\n");
-        for (StackTraceElement ste : exception.getStackTrace()) {
+        for (StackTraceElement ste : exceptionToDisplay.getStackTrace()) {
             sb.append(ste.toString());
             sb.append("\n");
         }

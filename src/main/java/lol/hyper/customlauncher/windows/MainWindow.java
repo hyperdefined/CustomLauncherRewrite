@@ -97,7 +97,7 @@ public final class MainWindow extends JFrame {
             switch (selectedIndex) {
                 // invasions tab
                 case 1 -> {
-                    if (invasionTracker.isDown) {
+                    if (invasionTracker.isDown()) {
                         int dialogResult = JOptionPane.showConfirmDialog(this, "It looks like the invasion API is down, would you want to try again?", "Invasion Tracker", JOptionPane.YES_NO_OPTION);
                         if (dialogResult == JOptionPane.YES_OPTION) {
                             invasionTracker.startInvasionRefresh();
@@ -107,7 +107,7 @@ public final class MainWindow extends JFrame {
 
                 // field offices tab
                 case 2 -> {
-                    if (fieldOfficeTracker.isDown) {
+                    if (fieldOfficeTracker.isDown()) {
                         int dialogResult = JOptionPane.showConfirmDialog(this, "It looks like the field office API is down, would you want to try again?", "Field Office Tracker", JOptionPane.YES_NO_OPTION);
                         if (dialogResult == JOptionPane.YES_OPTION) {
                             fieldOfficeTracker.startFieldOfficeRefresh();
@@ -117,7 +117,7 @@ public final class MainWindow extends JFrame {
 
                 // population tab
                 case 3 -> {
-                    if (districtTracker.isDown) {
+                    if (districtTracker.isDown()) {
                         int dialogResult = JOptionPane.showConfirmDialog(this, "It looks like the population API is down, would you want to try again?", "Population Tracker", JOptionPane.YES_NO_OPTION);
                         if (dialogResult == JOptionPane.YES_OPTION) {
                             districtTracker.startDistrictRefresh();

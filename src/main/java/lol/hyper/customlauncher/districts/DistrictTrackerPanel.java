@@ -65,12 +65,11 @@ public class DistrictTrackerPanel extends JPanel {
     /**
      * Tracks if the API is offline.
      */
-    public boolean isDown = false;
+    private boolean isDown = false;
     /**
      * Scheduler for making API requests.
      */
     private ScheduledExecutorService executor;
-
 
     /**
      * Creates a DistrictTrackerPanel. It handles the window and tracking of each district.
@@ -201,5 +200,14 @@ public class DistrictTrackerPanel extends JPanel {
             }
         }
         lastFetched = System.currentTimeMillis();
+    }
+
+    /**
+     * Is the API down?
+     *
+     * @return True/false if the API is down.
+     */
+    public boolean isDown() {
+        return isDown;
     }
 }

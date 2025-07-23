@@ -36,7 +36,7 @@ public class ConfigHandler {
     /**
      * The config version, used for detecting and changes.
      */
-    public final int CONFIG_VERSION = 1;
+    private final int CONFIG_VERSION = 1;
     /**
      * The config's content.
      */

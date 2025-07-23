@@ -72,11 +72,11 @@ public class FieldOfficeTrackerPanel extends JPanel {
     /**
      * Maps for zone IDs to street names.
      */
-    public static final Map<Integer, String> zonesToStreets = new HashMap<>();
+    private static final Map<Integer, String> zonesToStreets = new HashMap<>();
     /**
      * Tracks if the API is offline.
      */
-    public boolean isDown = false;
+    private boolean isDown = false;
     /**
      * The ConfigHandler instance.
      */
@@ -262,5 +262,23 @@ public class FieldOfficeTrackerPanel extends JPanel {
         }
         runs++;
         lastFetched = System.currentTimeMillis();
+    }
+
+    /**
+     * Is the API down?
+     *
+     * @return True/false if the API is down.
+     */
+    public boolean isDown() {
+        return isDown;
+    }
+
+    /**
+     * Get the list of zone IDs to street names.
+     *
+     * @return The map.
+     */
+    public static Map<Integer, String> getZonesToStreets() {
+        return zonesToStreets;
     }
 }

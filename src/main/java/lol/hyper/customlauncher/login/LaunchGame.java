@@ -35,7 +35,7 @@ public final class LaunchGame extends Thread {
     /**
      * The LaunchGame logger.
      */
-    public final Logger logger = LogManager.getLogger(this);
+    private final Logger logger = LogManager.getLogger(this);
     /**
      * The account's login cookie.
      */
@@ -90,7 +90,7 @@ public final class LaunchGame extends Thread {
             return;
         }
 
-        switch (OSDetection.osType) {
+        switch (OSDetection.getOsType()) {
             case "linux" -> {
                 launchCommand = new String[]{"./TTREngine"};
                 // Make sure it's executable before running

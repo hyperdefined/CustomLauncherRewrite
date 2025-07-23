@@ -37,11 +37,11 @@ public class Accounts {
     /**
      * The accounts file.
      */
-    public static final File ACCOUNTS_FILE = new File("config", "accounts.json");
+    private static final File ACCOUNTS_FILE = new File("config", "accounts.json");
     /**
      * The Accounts logger.
      */
-    public final Logger logger = LogManager.getLogger(this);
+    private final Logger logger = LogManager.getLogger(this);
 
     /**
      * Creates an Account object.

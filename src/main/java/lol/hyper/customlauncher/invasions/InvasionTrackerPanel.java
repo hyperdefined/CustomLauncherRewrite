@@ -86,7 +86,7 @@ public class InvasionTrackerPanel extends JPanel {
     /**
      * Tracks if the API is offline.
      */
-    public boolean isDown = false;
+    private boolean isDown = false;
     /**
      * The ConfigHandler instance.
      */
@@ -358,5 +358,14 @@ public class InvasionTrackerPanel extends JPanel {
                 cogMap.put(id, name);
             }
         }
+    }
+
+    /**
+     * Is the API down?
+     *
+     * @return True/false if the API is down.
+     */
+    public boolean isDown() {
+        return isDown;
     }
 }
