@@ -125,6 +125,10 @@ public class InvasionTrackerPanel extends JPanel {
         lastFetchedLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         add(lastFetchedLabel);
 
+        JLabel disclaimerLabel = new JLabel("This information is not fully accurate, but rough estimates.");
+        disclaimerLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        add(disclaimerLabel);
+
         // start the refresh for updating the table
         ActionListener actionListener = e -> updateInvasionListGUI();
         Timer timer = new Timer(0, actionListener);
@@ -262,6 +266,13 @@ public class InvasionTrackerPanel extends JPanel {
             int cogsTotal = invasion.getInt("total");
             int cogsDefeated = invasion.getInt("defeated");
             double defeatRate = invasion.getDouble("defeat_rate");
+            long asOf = invasion.getLong("as_of");
+
+            // estimate time left
+            double secondsRemaining = (cogsTotal - cogsDefeated) / defeatRate;
+            double secondsElapsed = (System.currentTimeMillis() / 1000.0) - asOf;
+            long secondsLeft = Math.max((long) (secondsRemaining - secondsElapsed), 0);
+            ZonedDateTime estimatedEnd = ZonedDateTime.now().plusSeconds(secondsLeft);
 
             // this is a new invasion that we are not tracking currently
             if (!invasions.containsKey(districtId)) {
@@ -269,6 +280,7 @@ public class InvasionTrackerPanel extends JPanel {
                 Invasion newInvasion = new Invasion(districtName, cogType, cogsTotal, false);
                 newInvasion.updateCogsDefeated(cogsDefeated);
                 newInvasion.setDefeatRate(defeatRate);
+                newInvasion.setEndTime(estimatedEnd);
                 invasions.put(districtId, newInvasion);
 
                 // show notification for it
@@ -276,24 +288,16 @@ public class InvasionTrackerPanel extends JPanel {
                     showNotification(newInvasion, true);
                 }
 
-                // calculate how long it has left (estimate)
-                double secondsRemaining = (cogsTotal - cogsDefeated) / defeatRate;
-                ZonedDateTime estimatedEnd = Instant.now().plusSeconds((long) secondsRemaining).atZone(ZoneId.systemDefault());
-                newInvasion.setEndTime(estimatedEnd);
-
                 logger.info("Tracking new invasion for {}. Cogs: {}/{}", districtName, cogsDefeated, cogsTotal);
             } else {
                 // update the information for the invasion
                 Invasion tempInv = invasions.get(districtId);
+                int oldCogsDefeated = tempInv.getCogsDefeated();
                 tempInv.updateCogsDefeated(cogsDefeated);
                 tempInv.setDefeatRate(defeatRate);
-
-                // calculate how long it has left (estimate)
-                double secondsRemaining = (cogsTotal - cogsDefeated) / defeatRate;
-                ZonedDateTime estimatedEnd = Instant.now().plusSeconds((long) secondsRemaining).atZone(ZoneId.systemDefault());
                 tempInv.setEndTime(estimatedEnd);
 
-                logger.info("Updating invasion for {}. Cogs: {}/{}", districtName, cogsDefeated, cogsTotal);
+                logger.info("Updating invasion for {}. Cogs: {} -> {}", districtName, oldCogsDefeated, cogsDefeated);
             }
         }
 
