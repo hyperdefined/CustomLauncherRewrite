@@ -61,10 +61,6 @@ public class ToonDataPanel extends JPanel {
      */
     private boolean isDown = false;
     /**
-     * The InvasionTrackerPanel logger.
-     */
-    private final Logger logger = LogManager.getLogger(this);
-    /**
      * Scheduler for making API requests.
      */
     private ScheduledExecutorService executor;
