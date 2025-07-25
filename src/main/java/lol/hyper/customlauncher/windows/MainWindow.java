@@ -29,6 +29,7 @@ import lol.hyper.customlauncher.invasions.InvasionTrackerPanel;
 import lol.hyper.customlauncher.login.LoginHandler;
 import lol.hyper.customlauncher.tools.JSONUtils;
 import lol.hyper.customlauncher.tools.PopUpWindow;
+import lol.hyper.customlauncher.toondata.ToonDataPanel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
@@ -80,6 +81,7 @@ public final class MainWindow extends JFrame {
         ConfigPanel configWindow = new ConfigPanel(configHandler);
         ReleaseNotesPanel gameUpdatesWindow = new ReleaseNotesPanel(gameUpdateTracker);
         AboutPanel aboutPanel = new AboutPanel();
+        ToonDataPanel toonDataPanel = new ToonDataPanel();
 
         // GUI elements
         JPanel panel = new JPanel();
@@ -121,6 +123,15 @@ public final class MainWindow extends JFrame {
                         int dialogResult = JOptionPane.showConfirmDialog(this, "It looks like the population API is down, would you want to try again?", "Population Tracker", JOptionPane.YES_NO_OPTION);
                         if (dialogResult == JOptionPane.YES_OPTION) {
                             districtTracker.startDistrictRefresh();
+                        }
+                    }
+                }
+                // toon data tab
+                case 4 -> {
+                    if (toonDataPanel.isDown()) {
+                        int dialogResult = JOptionPane.showConfirmDialog(this, "It looks like the companion API is down.\nOpen TTR and make sure the setting is enabled. Would you like to try again?", "Toon Data", JOptionPane.YES_NO_OPTION);
+                        if (dialogResult == JOptionPane.YES_OPTION) {
+                            toonDataPanel.startDataRefresh();
                         }
                     }
                 }
@@ -201,6 +212,7 @@ public final class MainWindow extends JFrame {
         tabs.add("Invasions", invasionTracker);
         tabs.add("Field Offices", fieldOfficeTracker);
         tabs.add("Population", districtTracker);
+        tabs.add("Toon Data", toonDataPanel);
         tabs.add("Game Updates", gameUpdatesWindow);
         tabs.add("Settings", configWindow);
         tabs.add("About", aboutPanel);

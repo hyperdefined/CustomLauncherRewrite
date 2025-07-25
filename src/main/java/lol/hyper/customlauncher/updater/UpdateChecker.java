@@ -142,7 +142,7 @@ public class UpdateChecker {
                 }
             }
             if (finalDownload == null) {
-                logger.error("Unable to find Windows file {} in assets!", newVersionName);
+                logger.error("Unable to find Windows file URL {} in assets!", newVersionName);
                 new PopUpWindow(null, "Unable to find Windows file " + newVersionName + " in assets!");
                 return;
             }
@@ -175,7 +175,7 @@ public class UpdateChecker {
                 }
             }
             if (finalDownload == null) {
-                logger.error("Unable to find Windows file {} in assets!", newVersionName);
+                logger.error("Unable to find Linux file URL {} in assets!", newVersionName);
                 new PopUpWindow(null, "Unable to find Linux file " + newVersionName + " in assets!");
                 return;
             }

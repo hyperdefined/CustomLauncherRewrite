@@ -25,15 +25,11 @@ import org.json.JSONObject;
 
 import java.io.*;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.stream.Collectors;
 
 public class JSONUtils {
     /**
@@ -103,6 +99,38 @@ public class JSONUtils {
                 return new JSONObject(response.body());
             } else {
                 logger.error("HTTP status code {} for {} in getting JSONObject", response.statusCode(), url);
+                return null;
+            }
+        } catch (Exception exception) {
+            logger.error("Unable to request JSONObject", exception);
+            return null;
+        }
+    }
+
+    /**
+     * Get local TTR companion data.
+     *
+     * @param url           The URL to get JSON from.
+     * @param authorization The session.
+     * @return The response JSONObject. Returns null if there was some issue.
+     */
+    public static JSONObject requestCompanionData(String url, String authorization) {
+        logger.info("Fetching companion data from {}", url);
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .header("Accept", "application/json")
+                    .header("User-Agent", CustomLauncherRewrite.getUserAgent())
+                    .header("Authorization", authorization)
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                return new JSONObject(response.body());
+            } else {
+                logger.error("HTTP status code {} for {} in getting JSONObject from companion data", response.statusCode(), url);
                 return null;
             }
         } catch (Exception exception) {

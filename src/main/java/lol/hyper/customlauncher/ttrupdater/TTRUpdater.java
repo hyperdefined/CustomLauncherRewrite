@@ -222,7 +222,7 @@ public class TTRUpdater extends JFrame {
                 try {
                     downloadURL = new URI(patchesRootUrl + downloadName).toURL();
                 } catch (Exception exception) {
-                    logger.error("Invalid URL " + patchesRootUrl + "{}", downloadName);
+                    logger.error("Invalid URL {}{}", patchesRootUrl, downloadName);
                     new ExceptionWindow(exception);
                     dispose();
                     return;
