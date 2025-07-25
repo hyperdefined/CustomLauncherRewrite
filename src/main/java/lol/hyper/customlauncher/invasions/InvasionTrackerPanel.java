@@ -296,8 +296,9 @@ public class InvasionTrackerPanel extends JPanel {
                 tempInv.updateCogsDefeated(cogsDefeated);
                 tempInv.setDefeatRate(defeatRate);
                 tempInv.setEndTime(estimatedEnd);
-
-                logger.info("Updating invasion for {}. Cogs: {} -> {}", districtName, oldCogsDefeated, cogsDefeated);
+                if (oldCogsDefeated != cogsDefeated) {
+                    logger.info("Updating invasion for {}. Cogs: {} -> {}", districtName, oldCogsDefeated, cogsDefeated);
+                }
             }
         }
 
