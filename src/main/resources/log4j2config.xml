@@ -16,7 +16,7 @@
   ~ along with CustomLauncherRewrite.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<Configuration status="INFO">
+<Configuration status="OFF">
     <Appenders>
         <Console name="ConsoleAppender" target="SYSTEM_OUT">
             <PatternLayout pattern="%highlight{[%d{yyy-MM-dd HH:mm:ss}] [%level] [%class{1}] %msg%n}{FATAL=red, ERROR=red, WARN=yellow, INFO=green, DEBUG=blue, TRACE=white}" disableAnsi="false"/>
