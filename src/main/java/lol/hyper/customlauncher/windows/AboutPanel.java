@@ -47,6 +47,7 @@ public class AboutPanel extends JPanel {
         aboutBox.getCaret().setVisible(false);
         aboutBox.setHighlighter(null);
         aboutBox.setContentType("text/html");
+        aboutBox.setFocusable(false);
 
         String text = "<html>CustomLauncherRewrite " + CustomLauncherRewrite.getVersion() +
                 "<br><hr>" + "CustomLauncherRewrite is an all purpose launcher for Toontown Rewritten. Created and maintained by hyperdefined.<br><br>" +
@@ -64,6 +65,6 @@ public class AboutPanel extends JPanel {
             }
         });
 
-        add(aboutBox);
+        add(new JScrollPane(aboutBox), BorderLayout.CENTER);
     }
 }
