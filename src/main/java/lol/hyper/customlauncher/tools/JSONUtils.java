@@ -112,18 +112,18 @@ public class JSONUtils {
     /**
      * Get local TTR companion data.
      *
-     * @param url           The URL to get JSON from.
-     * @param authorization The session.
+     * @param url     The URL to get JSON from.
+     * @param session The session token.
      * @return The response JSONObject. Returns null if there was some issue.
      */
-    public static JSONObject requestCompanionData(String url, String authorization) {
+    public static JSONObject requestCompanionData(String url, String session) {
         logger.info("Fetching companion data from {}", url);
         try {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url))
                     .header("Accept", "application/json")
                     .header("User-Agent", CustomLauncherRewrite.getUserAgent())
-                    .header("Authorization", authorization)
+                    .header("Authorization", session)
                     .GET()
                     .build();
 
@@ -133,10 +133,11 @@ public class JSONUtils {
                 return new JSONObject(response.body());
             } else {
                 logger.error("HTTP status code {} for {} in getting JSONObject from companion data", response.statusCode(), url);
+                new PopUpWindow(null, "HTTP status code " + response.statusCode() + " for " + url);
                 return null;
             }
         } catch (Exception exception) {
-            logger.error("Unable to request JSONObject", exception);
+            logger.error("Unable to request companion data", exception);
             return null;
         }
     }

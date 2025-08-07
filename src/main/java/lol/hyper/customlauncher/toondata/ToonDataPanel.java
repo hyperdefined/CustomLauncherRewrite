@@ -72,6 +72,10 @@ public class ToonDataPanel extends JPanel {
      * The toon data we pulled from the game.
      */
     private final Map<String, String> toonData = new HashMap<>();
+    /**
+     * The ToonDataPanel logger.
+     */
+    private final Logger logger = LogManager.getLogger(this);
 
     /**
      * Creates a InvasionTrackerPanel. It handles the window and tracking of each invasion.
@@ -106,6 +110,7 @@ public class ToonDataPanel extends JPanel {
         // use this as a session
         // this can be anything according to the API
         session = String.valueOf(System.currentTimeMillis());
+        logger.info("Using session {}", session);
 
         // start the timer for reading the API
         startDataRefresh();
